@@ -1,28 +1,45 @@
-import { ethers, ContractReceipt, ContractTransaction } from 'ethers';
+import { ethers, ContractReceipt, ContractTransaction, utils, BigNumber } from 'ethers';
 import type { NextPage } from 'next'
-import { CONTRACT_ADDRESS } from '../config/env';
-import {provider, signer} from '../lib/ethers'
+import { CONTRACT_ADDRESS } from '~/config/env';
+import {provider, signer} from '~/lib/ethers'
+import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
+import { Rat } from '~/types';
+import { useEffect, useState } from 'react';
+import { pubsub } from '~/lib/pubsub';
 const Home: NextPage = () => {
-  const abi = [
-    "function name() view returns (string)",
-    "function cost() view returns (uint256)",
-    "function createToken() public payable returns (uint256)",
-  ]
+  const [weiCost, setWeiCost] = useState(BigNumber.from(0));
+  const [ethCost, setEthCost] = useState(0);
+  const [contract, setContract] = useState<Rat | null>(null);
   const test = async () => {
-    if (CONTRACT_ADDRESS) {
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer)
-      const cost = await contract.cost().then(data => ethers.BigNumber.from(data).toBigInt())
-      signer.getBalance().then(data => console.log(ethers.BigNumber.from(data).toBigInt()))
+    if (contract) {
       try {
-        const tx: ContractReceipt = await contract.createToken({value: cost}).then((t: ContractTransaction) => t.wait());
-        console.log(tx?.events?.[1].args);
-      } catch (err) {
+        const tx = await contract.createToken({value: weiCost}).then((t: ContractTransaction) => t.wait());
+        const tokenId = tx?.events?.[1].args?.["tokenId"].toString();
+        fetch("./api/generate-rat", {
+          method: "post",
+          body: JSON.stringify({
+            tokenId
+          })
+        }).then(res => res.json()).then(console.log);
+      } catch (err: any) {
         console.error(err.message);
       }
     }
   };
+
+  useEffect(() => {
+    if (CONTRACT_ADDRESS) {
+      const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
+      setContract(c);
+      c.cost().then(data => {
+        setEthCost(parseFloat(utils.formatEther(data)));
+        setWeiCost(data);
+      })
+    }
+  }, []);
   return (
     <div>
+      <h1>Cost: {ethCost}eth</h1>
       <button onClick={test}>Click Me</button>
     </div>
   )
