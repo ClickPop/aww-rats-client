@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "install": "yarn && cd smart-contracts && yarn",
     "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
-    "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && next build",
+    "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && yarn compile && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "cd smart-contracts && yarn compile"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^2.17.0",

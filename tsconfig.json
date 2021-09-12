@@ -19,6 +19,6 @@
       "smart-contracts/*": ["./smart-contracts/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/scripts/syncSmartContract.js"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "smart-contracts"]
 }
