@@ -5,7 +5,7 @@ import { RAT_COST } from '~/config/env';
   const [owner] = await ethers.getSigners();
   const Rat = await ethers.getContractFactory("Rat", owner);
   const rat = await Rat.deploy(RAT_COST).then(r => r.deployed());
-  console.log(await rat.hasRole(await rat.ADMIN_ROLE(), owner.address));
+  console.log(rat.address);
 })().then(() => process.exit(0)).catch(e => {
   console.error(e);
   process.exit(1);

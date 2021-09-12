@@ -22,22 +22,20 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface RatInterface extends ethers.utils.Interface {
   functions: {
-    "ADMIN_ROLE()": FunctionFragment;
-    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "changeCost(uint256)": FunctionFragment;
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
+    "denominator()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getRoleAdmin(bytes32)": FunctionFragment;
-    "grantRole(bytes32,address)": FunctionFragment;
-    "hasRole(bytes32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
+    "numerator()": FunctionFragment;
+    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "renounceRole(bytes32,address)": FunctionFragment;
-    "revokeRole(bytes32,address)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "storeAsset(uint256,string)": FunctionFragment;
@@ -45,16 +43,10 @@ interface RatInterface extends ethers.utils.Interface {
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "updateRoyalty(uint256,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "ADMIN_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DEFAULT_ADMIN_ROLE",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -70,37 +62,31 @@ interface RatInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "denominator",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getRoleAdmin",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "grantRole",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "hasRole",
-    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "numerator", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceRole",
-    values: [BytesLike, string]
+    functionFragment: "renounceOwnership",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "revokeRole",
-    values: [BytesLike, string]
+    functionFragment: "royaltyInfo",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -127,12 +113,15 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateRoyalty",
+    values: [BigNumberish, BigNumberish]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "DEFAULT_ADMIN_ROLE",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "changeCost", data: BytesLike): Result;
@@ -142,26 +131,29 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getApproved",
+    functionFragment: "denominator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getRoleAdmin",
+    functionFragment: "getApproved",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "numerator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceRole",
+    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "royaltyInfo",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -181,22 +173,26 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateRoyalty",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
-    "RoleGranted(bytes32,address,address)": EventFragment;
-    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
     "TokenMinted(uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -245,10 +241,6 @@ export class Rat extends BaseContract {
   interface: RatInterface;
 
   functions: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -268,24 +260,12 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    denominator(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     isApprovedForAll(
       owner: string,
@@ -295,22 +275,26 @@ export class Rat extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
+    numerator(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    royaltyInfo(
+      tokenId: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -357,11 +341,18 @@ export class Rat extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateRoyalty(
+      num: BigNumberish,
+      denom: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
-
-  ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   approve(
     to: string,
@@ -382,24 +373,12 @@ export class Rat extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  denominator(overrides?: CallOverrides): Promise<BigNumber>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  grantRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  hasRole(
-    role: BytesLike,
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   isApprovedForAll(
     owner: string,
@@ -409,19 +388,23 @@ export class Rat extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
+  numerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  renounceRole(
-    role: BytesLike,
-    account: string,
+  renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  revokeRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  royaltyInfo(
+    tokenId: BigNumberish,
+    salePrice: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+  >;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -466,11 +449,18 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateRoyalty(
+    num: BigNumberish,
+    denom: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -485,24 +475,12 @@ export class Rat extends BaseContract {
 
     createToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    denominator(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     isApprovedForAll(
       owner: string,
@@ -512,19 +490,21 @@ export class Rat extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
+    numerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    royaltyInfo(
+      tokenId: BigNumberish,
+      salePrice: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -568,6 +548,17 @@ export class Rat extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateRoyalty(
+      num: BigNumberish,
+      denom: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -589,31 +580,12 @@ export class Rat extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
-    RoleAdminChanged(
-      role?: BytesLike | null,
-      previousAdminRole?: BytesLike | null,
-      newAdminRole?: BytesLike | null
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): TypedEventFilter<
-      [string, string, string],
-      { role: string; previousAdminRole: string; newAdminRole: string }
-    >;
-
-    RoleGranted(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): TypedEventFilter<
-      [string, string, string],
-      { role: string; account: string; sender: string }
-    >;
-
-    RoleRevoked(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): TypedEventFilter<
-      [string, string, string],
-      { role: string; account: string; sender: string }
+      [string, string],
+      { previousOwner: string; newOwner: string }
     >;
 
     TokenMinted(
@@ -631,10 +603,6 @@ export class Rat extends BaseContract {
   };
 
   estimateGas: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -654,25 +622,10 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    denominator(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -684,21 +637,23 @@ export class Rat extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
+    numerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    royaltyInfo(
+      tokenId: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -746,15 +701,20 @@ export class Rat extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateRoyalty(
+      num: BigNumberish,
+      denom: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    DEFAULT_ADMIN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -777,25 +737,10 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    denominator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -807,21 +752,23 @@ export class Rat extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    numerator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    royaltyInfo(
+      tokenId: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -867,6 +814,17 @@ export class Rat extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateRoyalty(
+      num: BigNumberish,
+      denom: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

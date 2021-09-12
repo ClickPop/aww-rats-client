@@ -3,6 +3,8 @@
 /* eslint-disable */
 export type { AccessControl } from "./AccessControl";
 export type { IAccessControl } from "./IAccessControl";
+export type { Ownable } from "./Ownable";
+export type { IERC2981 } from "./IERC2981";
 export type { ERC721 } from "./ERC721";
 export type { ERC721URIStorage } from "./ERC721URIStorage";
 export type { IERC721Metadata } from "./IERC721Metadata";
@@ -14,6 +16,8 @@ export type { Rat } from "./Rat";
 
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { IAccessControl__factory } from "./factories/IAccessControl__factory";
+export { Ownable__factory } from "./factories/Ownable__factory";
+export { IERC2981__factory } from "./factories/IERC2981__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721URIStorage__factory } from "./factories/ERC721URIStorage__factory";
 export { IERC721Metadata__factory } from "./factories/IERC721Metadata__factory";
