@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
-    "build": "next build",
+    "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && next build",
     "start": "next start",
     "lint": "next lint"
   },
