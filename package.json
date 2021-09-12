@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "install": "yarn && cd smart-contracts && yarn",
+    "install-all": "yarn && cd smart-contracts && yarn",
     "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
     "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && yarn compile && next build",
     "start": "next start",
