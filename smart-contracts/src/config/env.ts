@@ -8,3 +8,4 @@ export const MUMBAI_TESTNET = "https://rpc-mumbai.maticvigil.com/";
 export const MUMBAI_TESTNET_CHAIN_ID = 80001;
 export const RAT_COST = BigInt(parseFloat(process.env.RAT_COST ?? "0.025") * Math.pow(10, 18));
 export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
+export const CONTRACT_URI = process.env.CONTRACT_URI ?? ""

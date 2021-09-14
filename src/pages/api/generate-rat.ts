@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { pubsub } from '~/lib/pubsub'
-import {GetTopicsResponse} from '@google-cloud/pubsub'
+import { GENERATOR_URL } from '~/config/env';
 
 type Data = {
   status: 'success' | 'error',
   error?: unknown
+  data?: unknown
 }
 
 export default async function handler(
@@ -17,11 +17,24 @@ export default async function handler(
   }
   try {
     const {body} = req;
-    const data = Buffer.from(body);
-    await pubsub.topic("projects/awwrats/topics/TokenMinted").publish(data);
-    res.status(200).json({status: 'success'})
+    const tokenId = typeof body === "object" ? Buffer.from(body.tokenId) : Buffer.from(JSON.parse(body).tokenId);
+    if (!GENERATOR_URL) {
+      throw new Error("Unknown generator URL")
+    }
+    const generatedRes = await fetch(GENERATOR_URL, {
+      method: "post",
+      body: JSON.stringify({
+        tokenId
+      })
+    });
+    const generated = await generatedRes.json();
+    if (!generatedRes.ok) {
+      throw new Error(generated.error)
+    }
+    console.log(generated);
+    res.status(200).json({status: 'success', data: generated});
   } catch (err) {
     console.error(err);
-    return res.status(500).json({status: 'error', error: err});
+    return res.status(500).json({status: 'error', error: (err as Error).message});
   }
 }

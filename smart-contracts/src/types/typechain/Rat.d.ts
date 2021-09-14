@@ -25,6 +25,7 @@ interface RatInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "changeCost(uint256)": FunctionFragment;
+    "contractURI()": FunctionFragment;
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
     "denominator()": FunctionFragment;
@@ -38,6 +39,7 @@ interface RatInterface extends ethers.utils.Interface {
     "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setContractURI(string)": FunctionFragment;
     "storeAsset(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -55,6 +57,10 @@ interface RatInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "changeCost",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "contractURI",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "cost", values?: undefined): string;
   encodeFunctionData(
@@ -97,6 +103,10 @@ interface RatInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setContractURI",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "storeAsset",
     values: [BigNumberish, string]
   ): string;
@@ -125,6 +135,10 @@ interface RatInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "changeCost", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "contractURI",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createToken",
@@ -160,6 +174,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setContractURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "storeAsset", data: BytesLike): Result;
@@ -254,6 +272,8 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    contractURI(overrides?: CallOverrides): Promise<[string]>;
+
     cost(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     createToken(
@@ -317,6 +337,11 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setContractURI(
+      newContractURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     storeAsset(
       id: BigNumberish,
       uri: string,
@@ -366,6 +391,8 @@ export class Rat extends BaseContract {
     newCost: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  contractURI(overrides?: CallOverrides): Promise<string>;
 
   cost(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -427,6 +454,11 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setContractURI(
+    newContractURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   storeAsset(
     id: BigNumberish,
     uri: string,
@@ -470,6 +502,8 @@ export class Rat extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     changeCost(newCost: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    contractURI(overrides?: CallOverrides): Promise<string>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -524,6 +558,11 @@ export class Rat extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setContractURI(
+      newContractURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -616,6 +655,8 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    contractURI(overrides?: CallOverrides): Promise<BigNumber>;
+
     cost(overrides?: CallOverrides): Promise<BigNumber>;
 
     createToken(
@@ -677,6 +718,11 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setContractURI(
+      newContractURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     storeAsset(
       id: BigNumberish,
       uri: string,
@@ -730,6 +776,8 @@ export class Rat extends BaseContract {
       newCost: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     cost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -789,6 +837,11 @@ export class Rat extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setContractURI(
+      newContractURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

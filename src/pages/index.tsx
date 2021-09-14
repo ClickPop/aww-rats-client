@@ -1,18 +1,19 @@
-import { ethers, ContractReceipt, ContractTransaction, utils, BigNumber } from 'ethers';
+import { ethers, ContractTransaction, utils, BigNumber } from 'ethers';
 import type { NextPage } from 'next'
 import { CONTRACT_ADDRESS } from '~/config/env';
-import {provider, signer} from '~/lib/ethers'
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 import { Rat } from '~/types';
 import { useEffect, useState } from 'react';
-import { pubsub } from '~/lib/pubsub';
+import { useEthers } from '~/hooks/useEthers';
 const Home: NextPage = () => {
   const [weiCost, setWeiCost] = useState(BigNumber.from(0));
   const [ethCost, setEthCost] = useState(0);
   const [contract, setContract] = useState<Rat | null>(null);
+  const {provider, signer} = useEthers();
   const test = async () => {
-    if (contract) {
+    if (contract && provider) {
       try {
+        await provider.send("eth_requestAccounts", []);
         const tx = await contract.createToken({value: weiCost}).then((t: ContractTransaction) => t.wait());
         const tokenId = tx?.events?.[1].args?.["tokenId"].toString();
         fetch("./api/generate-rat", {
@@ -28,7 +29,8 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
-    if (CONTRACT_ADDRESS) {
+    console.log(signer);
+    if (CONTRACT_ADDRESS && signer) {
       const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
       setContract(c);
       c.cost().then(data => {
@@ -36,7 +38,7 @@ const Home: NextPage = () => {
         setWeiCost(data);
       })
     }
-  }, []);
+  }, [signer]);
   return (
     <div>
       <h1>Cost: {ethCost}eth</h1>

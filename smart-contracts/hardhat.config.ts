@@ -25,9 +25,6 @@ import {
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.4",
-    settings: {
-      optimizer: true,
-    },
   },
   networks: {
     hardhat: {

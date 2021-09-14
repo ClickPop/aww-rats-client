@@ -8,14 +8,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Rat is ERC721URIStorage, Ownable {
   uint256 private _tokenIds;
   address payable private _owner;
+  string private _contractURI;
   uint256 public cost;
   uint public numerator;
   uint public denominator;
   event TokenMinted(uint256 tokenId);
 
-  constructor(uint256 initCost) ERC721("AwwRat", "RAT") {
+  constructor(uint256 initCost, string memory initContractURI) ERC721("AwwRat", "RAT") {
     _tokenIds = 0;
     cost = initCost;
+    _contractURI = initContractURI;
   }
 
   function createToken() public payable returns (uint256) {
@@ -59,6 +61,15 @@ contract Rat is ERC721URIStorage, Ownable {
   //     _owner.transfer(msg.value * (numerator / denominator));
   //   }
   // }
+
+  // This function is used by OpenSea to auto pickup our contract as a storefront.
+  function contractURI() public view returns (string memory) {
+    return _contractURI;
+  }
+
+  function setContractURI(string memory newContractURI) public onlyOwner {
+    _contractURI = newContractURI;
+  }
 
   function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
     return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
