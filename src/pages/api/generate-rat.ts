@@ -1,16 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { GENERATOR_URL } from '~/config/env';
-
-type Data = {
-  status: 'success' | 'error',
-  error?: unknown
-  data?: unknown
-}
+import { GeneratorResponse } from '~/types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<GeneratorResponse>
 ) {
   if (req.method !== 'POST') {
     return res.status(400).json({status: 'error', error: "Incorrect method"});

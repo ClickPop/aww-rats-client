@@ -10,3 +10,18 @@ export type EthersState = {
   provider?: Web3Provider,
   signer?: JsonRpcSigner
 }
+
+export type LOADING_STATE = "TOKEN" | "GENERATOR" | null
+
+export type GeneratorResponse = {
+  status: 'success' | 'error',
+  error?: unknown
+  data?: GeneratorSuccessData 
+}
+
+type GeneratorSuccessData = {
+  status: string
+  tokenId: string
+  tokenUri: string
+  txHash: string
+}
