@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Rat is ERC721URIStorage, Ownable {
   uint256 private _tokenIds;
-  address payable private _owner;
   string private _contractURI;
   uint256 public cost;
   uint public numerator;
@@ -26,7 +25,6 @@ contract Rat is ERC721URIStorage, Ownable {
     _safeMint(msg.sender, newItemId);
     emit TokenMinted(newItemId);
     _tokenIds++;
-    _owner.transfer(msg.value);
     return newItemId;
   }
 
@@ -69,6 +67,10 @@ contract Rat is ERC721URIStorage, Ownable {
 
   function setContractURI(string memory newContractURI) public onlyOwner {
     _contractURI = newContractURI;
+  }
+
+  function withdraw() public payable onlyOwner {
+    payable(owner()).transfer(address(this).balance);
   }
 
   function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {

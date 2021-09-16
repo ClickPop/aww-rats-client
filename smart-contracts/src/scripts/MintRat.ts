@@ -7,6 +7,7 @@ import { RAT_COST, CONTRACT_ADDRESS } from "~/config/env";
   const rat = Rat.attach(CONTRACT_ADDRESS ?? "");
   try {
     const tx = await rat.createToken({ value: RAT_COST }).then((r) => r.wait());
+    console.log(tx.transactionHash)
     const tokenMintedId = tx.events?.find((e) => e.event === "TokenMinted")?.args?.["tokenId"];
     if (tokenMintedId) {
       const tokenId = ethers.BigNumber.from(tokenMintedId);
