@@ -9,12 +9,12 @@ const Home: NextPage = () => {
   const [weiCost, setWeiCost] = useState(BigNumber.from(0));
   const [ethCost, setEthCost] = useState(0);
   const [contract, setContract] = useState<Rat | null>(null);
-  const {provider, signer} = useEthers();
+  const [metamaskConn, setMetamaskConn] = useState(false);
+  const { provider, signer } = useEthers();
   const test = async () => {
     if (contract && provider) {
       try {
-        await provider.send("eth_requestAccounts", []);
-        const tx = await contract.createToken({value: weiCost}).then((t: ContractTransaction) => t.wait());
+        const tx = await contract.createToken({ value: weiCost }).then((t: ContractTransaction) => t.wait());
         const tokenId = tx?.events?.[1].args?.["tokenId"].toString();
         fetch("./api/generate-rat", {
           method: "post",
@@ -28,21 +28,31 @@ const Home: NextPage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(signer);
-    if (CONTRACT_ADDRESS && signer) {
-      const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
-      setContract(c);
-      c.cost().then(data => {
-        setEthCost(parseFloat(utils.formatEther(data)));
-        setWeiCost(data);
-      })
+  const connectToMetamask = async () => {
+    try {
+      await provider?.send("eth_requestAccounts", []);
+      setMetamaskConn(true);
+    } catch (err) {
+      console.error(err)
     }
-  }, [signer]);
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (CONTRACT_ADDRESS && metamaskConn) {
+        const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
+        setContract(c);
+        c.cost().then(data => {
+          setEthCost(parseFloat(utils.formatEther(data)));
+          setWeiCost(data);
+        })
+      }
+    })();
+  }, [metamaskConn, signer]);
   return (
     <div>
-      <h1>Cost: {ethCost}eth</h1>
-      <button onClick={test}>Click Me</button>
+      {metamaskConn ? <><h1>Cost: {ethCost}eth</h1>
+        <button onClick={test}>Click Me</button></> : <button onClick={connectToMetamask}>Connect to metamask</button>}
     </div>
   )
 }

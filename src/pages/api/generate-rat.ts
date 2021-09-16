@@ -17,7 +17,7 @@ export default async function handler(
   }
   try {
     const {body} = req;
-    const tokenId = typeof body === "object" ? Buffer.from(body.tokenId) : Buffer.from(JSON.parse(body).tokenId);
+    const tokenId = typeof body === "object" ? body.tokenId : JSON.parse(body).tokenId;
     if (!GENERATOR_URL) {
       throw new Error("Unknown generator URL")
     }
@@ -31,7 +31,6 @@ export default async function handler(
     if (!generatedRes.ok) {
       throw new Error(generated.error)
     }
-    console.log(generated);
     res.status(200).json({status: 'success', data: generated});
   } catch (err) {
     console.error(err);
