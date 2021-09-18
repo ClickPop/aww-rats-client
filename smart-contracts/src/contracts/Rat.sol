@@ -2,78 +2,66 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/interfaces/IERC2981.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Rat is ERC721URIStorage, Ownable {
-  uint256 private _tokenIds;
-  string private _contractURI;
-  uint256 public cost;
-  uint public numerator;
-  uint public denominator;
-  event TokenMinted(uint256 tokenId);
+  using SafeERC20 for IERC20;
 
-  constructor(uint256 initCost, string memory initContractURI) ERC721("AwwRat", "RAT") {
-    _tokenIds = 0;
-    cost = initCost;
+  string private _contractURI;
+  uint public numTokens = 0;
+  uint32 public maxTokens;
+  uint private _tokenIds = 0;
+  uint public cost = 0.025 ether;
+  
+  event TokenMinted(uint tokenId);
+
+  IERC20 public weth;
+
+  constructor(string memory initContractURI, address _weth, uint baseId, uint32 _maxTokens) ERC721("AwwRat", "RAT") {
+    _tokenIds = baseId;
     _contractURI = initContractURI;
+    maxTokens = _maxTokens;
+    weth = IERC20(_weth);
   }
 
-  function createToken() public payable returns (uint256) {
-    uint256 newItemId = _tokenIds;
-    require(msg.value >= cost, "Not enough currency");
+  function createToken() public payable returns (uint) {
+    require(numTokens < maxTokens, "Max number of tokens reached");
+    uint newItemId = _tokenIds;
+    uint wethBal = weth.balanceOf(msg.sender);
+    require(wethBal >= cost, "Not enough weth");
+    weth.safeTransferFrom(msg.sender, owner(), cost);
     _safeMint(msg.sender, newItemId);
-    emit TokenMinted(newItemId);
     _tokenIds++;
+    numTokens++;
+    emit TokenMinted(newItemId);
     return newItemId;
   }
 
-  function storeAsset(uint256 id, string memory uri) public {
-    bool canStore = msg.sender == ownerOf(id) || (owner() == msg.sender && _exists(id));
-    require(canStore, "Not admin or token owner");
+  function storeAsset(uint id, string memory uri) public onlyOwner {
     _setTokenURI(id, uri);
   }
-
-  function changeCost(uint256 newCost) public onlyOwner {
-    cost = newCost;
-  }
-
-  function updateRoyalty(uint num, uint denom) public onlyOwner {
-    numerator = num;
-    denominator = denom;
-  }
-
-  function royaltyInfo(uint256 tokenId, uint256 salePrice) external view returns (address receiver, uint256 royaltyAmount) {
-    require(_exists(tokenId), "Token does not exist");
-    uint256 royalty = salePrice * (numerator / denominator);
-    return (owner(), royalty);
-  }
-
-  /**  
-  * I am not entirely sure if we want to do this. I am not sure what sort of effect it might have. 
-  * The above is following EIP2981, but I am not sure how many market places even support that. 
-  */
-  // function _transfer(address from, address to, uint256 tokenId) internal virtual override {
-  //   super._transfer(from,to,tokenId);
-  //   if (from == address(0)) {
-  //     _owner.transfer(msg.value * (numerator / denominator));
-  //   }
-  // }
 
   // This function is used by OpenSea to auto pickup our contract as a storefront.
   function contractURI() public view returns (string memory) {
     return _contractURI;
   }
 
+  // These are a bunch of helper functions for updating the state of the contract after it has been deployed
+
   function setContractURI(string memory newContractURI) public onlyOwner {
     _contractURI = newContractURI;
   }
 
-  function withdraw() public payable onlyOwner {
-    payable(owner()).transfer(address(this).balance);
+  function setWethAddr(address newAddr) public onlyOwner {
+    weth = IERC20(newAddr);
   }
 
-  function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-    return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
+  function setCost(uint newCost) public onlyOwner {
+    cost = newCost;
+  }
+
+  function setMaxMinted(uint32 newMax) public onlyOwner {
+    maxTokens = newMax;
   }
 }

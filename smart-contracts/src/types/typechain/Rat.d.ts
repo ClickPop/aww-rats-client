@@ -24,30 +24,30 @@ interface RatInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "changeCost(uint256)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
-    "denominator()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "maxTokens()": FunctionFragment;
     "name()": FunctionFragment;
-    "numerator()": FunctionFragment;
+    "numTokens()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setContractURI(string)": FunctionFragment;
+    "setCost(uint256)": FunctionFragment;
+    "setMaxMinted(uint32)": FunctionFragment;
+    "setWethAddr(address)": FunctionFragment;
     "storeAsset(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateRoyalty(uint256,uint256)": FunctionFragment;
-    "withdraw()": FunctionFragment;
+    "weth()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -55,10 +55,6 @@ interface RatInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "changeCost",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "contractURI",
     values?: undefined
@@ -69,10 +65,6 @@ interface RatInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "denominator",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -80,8 +72,9 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
+  encodeFunctionData(functionFragment: "maxTokens", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "numerator", values?: undefined): string;
+  encodeFunctionData(functionFragment: "numTokens", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -90,10 +83,6 @@ interface RatInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "royaltyInfo",
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -107,6 +96,15 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "setContractURI",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setCost",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxMinted",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "setWethAddr", values: [string]): string;
   encodeFunctionData(
     functionFragment: "storeAsset",
     values: [BigNumberish, string]
@@ -128,15 +126,10 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "updateRoyalty",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
+  encodeFunctionData(functionFragment: "weth", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "changeCost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
     data: BytesLike
@@ -147,10 +140,6 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "denominator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -158,16 +147,13 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "maxTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "numerator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "numTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "royaltyInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -180,6 +166,15 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setContractURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setCost", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxMinted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setWethAddr",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "storeAsset", data: BytesLike): Result;
@@ -197,11 +192,7 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateRoyalty",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -270,11 +261,6 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    changeCost(
-      newCost: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     contractURI(overrides?: CallOverrides): Promise<[string]>;
 
     cost(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -282,8 +268,6 @@ export class Rat extends BaseContract {
     createToken(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    denominator(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -296,9 +280,11 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    maxTokens(overrides?: CallOverrides): Promise<[number]>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    numerator(overrides?: CallOverrides): Promise<[BigNumber]>;
+    numTokens(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -310,14 +296,6 @@ export class Rat extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    royaltyInfo(
-      tokenId: BigNumberish,
-      salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-    >;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -342,6 +320,21 @@ export class Rat extends BaseContract {
 
     setContractURI(
       newContractURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setCost(
+      newCost: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setMaxMinted(
+      newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setWethAddr(
+      newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -375,15 +368,7 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    updateRoyalty(
-      num: BigNumberish,
-      denom: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    withdraw(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    weth(overrides?: CallOverrides): Promise<[string]>;
   };
 
   approve(
@@ -394,11 +379,6 @@ export class Rat extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  changeCost(
-    newCost: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   contractURI(overrides?: CallOverrides): Promise<string>;
 
   cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -406,8 +386,6 @@ export class Rat extends BaseContract {
   createToken(
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  denominator(overrides?: CallOverrides): Promise<BigNumber>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -420,9 +398,11 @@ export class Rat extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  maxTokens(overrides?: CallOverrides): Promise<number>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
-  numerator(overrides?: CallOverrides): Promise<BigNumber>;
+  numTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -431,14 +411,6 @@ export class Rat extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  royaltyInfo(
-    tokenId: BigNumberish,
-    salePrice: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-  >;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -463,6 +435,21 @@ export class Rat extends BaseContract {
 
   setContractURI(
     newContractURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setCost(
+    newCost: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setMaxMinted(
+    newMax: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setWethAddr(
+    newAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -493,15 +480,7 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateRoyalty(
-    num: BigNumberish,
-    denom: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  withdraw(
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  weth(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     approve(
@@ -512,15 +491,11 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    changeCost(newCost: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
     contractURI(overrides?: CallOverrides): Promise<string>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
 
     createToken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    denominator(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -533,23 +508,17 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    maxTokens(overrides?: CallOverrides): Promise<number>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
-    numerator(overrides?: CallOverrides): Promise<BigNumber>;
+    numTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    royaltyInfo(
-      tokenId: BigNumberish,
-      salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-    >;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -576,6 +545,15 @@ export class Rat extends BaseContract {
       newContractURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setCost(newCost: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    setMaxMinted(
+      newMax: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setWethAddr(newAddr: string, overrides?: CallOverrides): Promise<void>;
 
     storeAsset(
       id: BigNumberish,
@@ -604,13 +582,7 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateRoyalty(
-      num: BigNumberish,
-      denom: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdraw(overrides?: CallOverrides): Promise<void>;
+    weth(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -663,11 +635,6 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    changeCost(
-      newCost: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -675,8 +642,6 @@ export class Rat extends BaseContract {
     createToken(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    denominator(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -689,9 +654,11 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    numerator(overrides?: CallOverrides): Promise<BigNumber>;
+    numTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -702,12 +669,6 @@ export class Rat extends BaseContract {
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    royaltyInfo(
-      tokenId: BigNumberish,
-      salePrice: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -733,6 +694,21 @@ export class Rat extends BaseContract {
 
     setContractURI(
       newContractURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setCost(
+      newCost: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setMaxMinted(
+      newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setWethAddr(
+      newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -766,15 +742,7 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    updateRoyalty(
-      num: BigNumberish,
-      denom: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    withdraw(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    weth(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -789,11 +757,6 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    changeCost(
-      newCost: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     cost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -801,8 +764,6 @@ export class Rat extends BaseContract {
     createToken(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    denominator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -815,9 +776,11 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    maxTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    numerator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    numTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -828,12 +791,6 @@ export class Rat extends BaseContract {
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    royaltyInfo(
-      tokenId: BigNumberish,
-      salePrice: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -859,6 +816,21 @@ export class Rat extends BaseContract {
 
     setContractURI(
       newContractURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setCost(
+      newCost: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMaxMinted(
+      newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setWethAddr(
+      newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -892,14 +864,6 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    updateRoyalty(
-      num: BigNumberish,
-      denom: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
