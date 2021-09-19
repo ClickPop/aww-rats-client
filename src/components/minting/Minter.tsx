@@ -17,14 +17,11 @@ export const Minter: FC<Props> = ({ethCost, contract}) => {
     if (contract && provider && signer) {
       try {
         setLoading("TOKEN");
-        console.log(await contract.owner())
         const wethAddr = await contract.weth();
         const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)"], signer);
         const cost = ethers.utils.parseEther(`${ethCost}`);
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
-        console.log(bal.gte(cost))
         const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
-        console.log(t.transactionHash);
         const tx = await contract.createToken().then(t => t.wait());
         setMintTx(tx.transactionHash)
         console.log(tx?.events?.map(e => e.args));

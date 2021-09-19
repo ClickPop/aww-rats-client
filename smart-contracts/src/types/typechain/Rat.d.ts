@@ -24,12 +24,19 @@ interface RatInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "burnToken(uint256)": FunctionFragment;
+    "burnedTokens(uint256)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
+    "defaultMaxTokensPerWallet()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getBurnedTokensByOwner(address)": FunctionFragment;
+    "getTokenOwners()": FunctionFragment;
+    "getTokensByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokens()": FunctionFragment;
+    "maxTokensPerWallet(address)": FunctionFragment;
     "name()": FunctionFragment;
     "numTokens()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -39,7 +46,8 @@ interface RatInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setContractURI(string)": FunctionFragment;
     "setCost(uint256)": FunctionFragment;
-    "setMaxMinted(uint32)": FunctionFragment;
+    "setMaxTokens(uint32)": FunctionFragment;
+    "setMaxTokensPerWallet(address,uint32)": FunctionFragment;
     "setWethAddr(address)": FunctionFragment;
     "storeAsset(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -56,6 +64,14 @@ interface RatInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "burnToken",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "burnedTokens",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "contractURI",
     values?: undefined
   ): string;
@@ -65,14 +81,34 @@ interface RatInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "defaultMaxTokensPerWallet",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBurnedTokensByOwner",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenOwners",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokensByOwner",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "maxTokens", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "maxTokensPerWallet",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "numTokens", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -101,8 +137,12 @@ interface RatInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setMaxMinted",
+    functionFragment: "setMaxTokens",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxTokensPerWallet",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setWethAddr", values: [string]): string;
   encodeFunctionData(
@@ -130,6 +170,11 @@ interface RatInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burnToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "burnedTokens",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
     data: BytesLike
@@ -140,7 +185,23 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "defaultMaxTokensPerWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnedTokensByOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenOwners",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokensByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -148,6 +209,10 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "maxTokens", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "maxTokensPerWallet",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "numTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -170,7 +235,11 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setCost", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setMaxMinted",
+    functionFragment: "setMaxTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxTokensPerWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -198,14 +267,18 @@ interface RatInterface extends ethers.utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "TokenBurned(uint256,address)": EventFragment;
     "TokenMinted(uint256)": EventFragment;
+    "TokenTransferred(uint256,address,address,uint256[],uint256[],address[])": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenBurned"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenMinted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -261,6 +334,16 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    burnToken(
+      id: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    burnedTokens(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     contractURI(overrides?: CallOverrides): Promise<[string]>;
 
     cost(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -269,10 +352,24 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<[number]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getBurnedTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     isApprovedForAll(
       owner: string,
@@ -281,6 +378,11 @@ export class Rat extends BaseContract {
     ): Promise<[boolean]>;
 
     maxTokens(overrides?: CallOverrides): Promise<[number]>;
+
+    maxTokensPerWallet(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -328,8 +430,14 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setMaxMinted(
+    setMaxTokens(
       newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setMaxTokensPerWallet(
+      wallet: string,
+      max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -379,6 +487,16 @@ export class Rat extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  burnToken(
+    id: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  burnedTokens(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   contractURI(overrides?: CallOverrides): Promise<string>;
 
   cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -387,10 +505,24 @@ export class Rat extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getBurnedTokensByOwner(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  getTokenOwners(overrides?: CallOverrides): Promise<string[]>;
+
+  getTokensByOwner(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   isApprovedForAll(
     owner: string,
@@ -399,6 +531,8 @@ export class Rat extends BaseContract {
   ): Promise<boolean>;
 
   maxTokens(overrides?: CallOverrides): Promise<number>;
+
+  maxTokensPerWallet(arg0: string, overrides?: CallOverrides): Promise<number>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -443,8 +577,14 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setMaxMinted(
+  setMaxTokens(
     newMax: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setMaxTokensPerWallet(
+    wallet: string,
+    max: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -491,16 +631,37 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    burnToken(id: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    burnedTokens(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     contractURI(overrides?: CallOverrides): Promise<string>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
 
-    createToken(overrides?: CallOverrides): Promise<BigNumber>;
+    createToken(overrides?: CallOverrides): Promise<void>;
+
+    defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getBurnedTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<string[]>;
+
+    getTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     isApprovedForAll(
       owner: string,
@@ -509,6 +670,11 @@ export class Rat extends BaseContract {
     ): Promise<boolean>;
 
     maxTokens(overrides?: CallOverrides): Promise<number>;
+
+    maxTokensPerWallet(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -548,8 +714,14 @@ export class Rat extends BaseContract {
 
     setCost(newCost: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    setMaxMinted(
+    setMaxTokens(
       newMax: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setMaxTokensPerWallet(
+      wallet: string,
+      max: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -612,9 +784,36 @@ export class Rat extends BaseContract {
       { previousOwner: string; newOwner: string }
     >;
 
+    TokenBurned(
+      tokenId?: null,
+      tokenOwner?: null
+    ): TypedEventFilter<
+      [BigNumber, string],
+      { tokenId: BigNumber; tokenOwner: string }
+    >;
+
     TokenMinted(
       tokenId?: null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
+    TokenTransferred(
+      tokenId?: null,
+      newOwner?: null,
+      oldOwner?: null,
+      newOwnerTokens?: null,
+      oldOwnerTokens?: null,
+      tokenHolders?: null
+    ): TypedEventFilter<
+      [BigNumber, string, string, BigNumber[], BigNumber[], string[]],
+      {
+        tokenId: BigNumber;
+        newOwner: string;
+        oldOwner: string;
+        newOwnerTokens: BigNumber[];
+        oldOwnerTokens: BigNumber[];
+        tokenHolders: string[];
+      }
+    >;
 
     Transfer(
       from?: string | null,
@@ -635,6 +834,16 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    burnToken(
+      id: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    burnedTokens(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -643,8 +852,22 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getBurnedTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTokensByOwner(
+      user: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -655,6 +878,11 @@ export class Rat extends BaseContract {
     ): Promise<BigNumber>;
 
     maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
+    maxTokensPerWallet(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -702,8 +930,14 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setMaxMinted(
+    setMaxTokens(
       newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setMaxTokensPerWallet(
+      wallet: string,
+      max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -757,6 +991,16 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    burnToken(
+      id: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    burnedTokens(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     cost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -765,8 +1009,24 @@ export class Rat extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    defaultMaxTokensPerWallet(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBurnedTokensByOwner(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTokensByOwner(
+      user: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -777,6 +1037,11 @@ export class Rat extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     maxTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    maxTokensPerWallet(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -824,8 +1089,14 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setMaxMinted(
+    setMaxTokens(
       newMax: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMaxTokensPerWallet(
+      wallet: string,
+      max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

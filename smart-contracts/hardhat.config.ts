@@ -14,8 +14,18 @@ import {
   MUMBAI_TESTNET_CHAIN_ID,
   PRIVATE_KEY_ADMIN,
   PRIVATE_KEY_USER,
-  CONTRACT_ADDRESS
+  CONTRACT_ADDRESS,
+  CONTRACT_URI,
+  WETH_CONTRACT_ADDRESS
 } from "./src/config/env";
+import { ContractFactory } from "@ethersproject/contracts";
+
+task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "", types.string).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").setAction(async ({contractUri, tokenAddress, contractName}, {ethers}) => {
+  const [owner] = await ethers.getSigners();
+  const Rat = await ethers.getContractFactory(contractName, owner) as ContractFactory;
+  const rat = await Rat.deploy(contractUri ?? CONTRACT_URI, tokenAddress ?? WETH_CONTRACT_ADDRESS, 0, 1000).then(r => r.deployed());
+  console.log(rat.address);
+})
 
 task("update-contract-uri", "Update the contract metadata uri for our collection on OpenSea").addPositionalParam("uri", "The new metadata URI that will be set on the smart-contract").setAction(async ({uri}, hre) => {
   try {
@@ -62,6 +72,11 @@ task("update-cost", "Update the cost of minting a token in ether").addPositional
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+      }
+    }
   },
   networks: {
     hardhat: {

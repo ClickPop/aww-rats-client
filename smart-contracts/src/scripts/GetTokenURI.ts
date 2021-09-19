@@ -6,7 +6,7 @@ import { CONTRACT_ADDRESS } from "~/config/env";
     const [_, user] = await ethers.getSigners();
     const Rat = await ethers.getContractFactory("Rat", user);
     const rat = Rat.attach(CONTRACT_ADDRESS ?? "");
-    const tx = await rat.tokenURI(3);
+    const tx = await rat.tokenURI(11);
     console.log(tx)
   } catch (err) {
     console.error(err);

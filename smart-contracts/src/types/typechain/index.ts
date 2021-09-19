@@ -3,6 +3,8 @@
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
 export type { IERC2981 } from "./IERC2981";
+export type { ERC20 } from "./ERC20";
+export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
 export type { ERC721 } from "./ERC721";
 export type { ERC721URIStorage } from "./ERC721URIStorage";
@@ -11,10 +13,13 @@ export type { IERC721 } from "./IERC721";
 export type { IERC721Receiver } from "./IERC721Receiver";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
+export type { MockERC20 } from "./MockERC20";
 export type { Rat } from "./Rat";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { IERC2981__factory } from "./factories/IERC2981__factory";
+export { ERC20__factory } from "./factories/ERC20__factory";
+export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721URIStorage__factory } from "./factories/ERC721URIStorage__factory";
@@ -23,4 +28,5 @@ export { IERC721__factory } from "./factories/IERC721__factory";
 export { IERC721Receiver__factory } from "./factories/IERC721Receiver__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
+export { MockERC20__factory } from "./factories/MockERC20__factory";
 export { Rat__factory } from "./factories/Rat__factory";
