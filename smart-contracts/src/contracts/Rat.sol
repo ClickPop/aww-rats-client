@@ -12,6 +12,7 @@ contract Rat is ERC721URIStorage, Ownable {
   uint public numTokens = 0;
   uint32 public maxTokens;
   uint32 public defaultMaxTokensPerWallet = 15;
+  bool public canMint = true;
   uint private _tokenIds = 0;
   uint public cost = 0.025 ether;
 
@@ -36,7 +37,7 @@ contract Rat is ERC721URIStorage, Ownable {
   }
 
   function createToken() public payable {
-    require(numTokens < maxTokens, "Max number of tokens reached");
+    require(numTokens < maxTokens && canMint, "Max number of tokens reached");
     uint newItemId = _tokenIds;
     uint wethBal = weth.balanceOf(msg.sender);
     require(wethBal >= cost, "Not enough weth");
@@ -52,6 +53,7 @@ contract Rat is ERC721URIStorage, Ownable {
     _tokenIds++;
     numTokens++;
     _tokensByOwner[msg.sender].push(newItemId);
+    canMint = numTokens < maxTokens;
     emit TokenMinted(newItemId);
   }
 
@@ -69,6 +71,7 @@ contract Rat is ERC721URIStorage, Ownable {
     removeTokenId(tokenOwner, id);
     _burnedTokensByOwner[tokenOwner].push(id);
     burnedTokens.push(id);
+    numTokens--;
     emit TokenBurned(id, tokenOwner);
   }
 
@@ -105,6 +108,7 @@ contract Rat is ERC721URIStorage, Ownable {
 
   function setMaxTokens(uint32 newMax) public onlyOwner {
     maxTokens = newMax;
+    canMint = numTokens < maxTokens;
   }
 
   function setMaxTokensPerWallet(address wallet, uint32 max) public onlyOwner {

@@ -26,6 +26,7 @@ interface RatInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "burnToken(uint256)": FunctionFragment;
     "burnedTokens(uint256)": FunctionFragment;
+    "canMint()": FunctionFragment;
     "contractURI()": FunctionFragment;
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
@@ -71,6 +72,7 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "burnedTokens",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "canMint", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "contractURI",
     values?: undefined
@@ -175,6 +177,7 @@ interface RatInterface extends ethers.utils.Interface {
     functionFragment: "burnedTokens",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "canMint", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
     data: BytesLike
@@ -344,6 +347,8 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    canMint(overrides?: CallOverrides): Promise<[boolean]>;
+
     contractURI(overrides?: CallOverrides): Promise<[string]>;
 
     cost(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -497,6 +502,8 @@ export class Rat extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  canMint(overrides?: CallOverrides): Promise<boolean>;
+
   contractURI(overrides?: CallOverrides): Promise<string>;
 
   cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -637,6 +644,8 @@ export class Rat extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    canMint(overrides?: CallOverrides): Promise<boolean>;
 
     contractURI(overrides?: CallOverrides): Promise<string>;
 
@@ -844,6 +853,8 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    canMint(overrides?: CallOverrides): Promise<BigNumber>;
+
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     cost(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1000,6 +1011,8 @@ export class Rat extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    canMint(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
