@@ -19,60 +19,61 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface IAccessControlInterface extends ethers.utils.Interface {
+interface IERC20Interface extends ethers.utils.Interface {
   functions: {
-    "getRoleAdmin(bytes32)": FunctionFragment;
-    "grantRole(bytes32,address)": FunctionFragment;
-    "hasRole(bytes32,address)": FunctionFragment;
-    "renounceRole(bytes32,address)": FunctionFragment;
-    "revokeRole(bytes32,address)": FunctionFragment;
+    "allowance(address,address)": FunctionFragment;
+    "approve(address,uint256)": FunctionFragment;
+    "balanceOf(address)": FunctionFragment;
+    "totalSupply()": FunctionFragment;
+    "transfer(address,uint256)": FunctionFragment;
+    "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getRoleAdmin",
-    values: [BytesLike]
+    functionFragment: "allowance",
+    values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "grantRole",
-    values: [BytesLike, string]
+    functionFragment: "approve",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "hasRole",
-    values: [BytesLike, string]
+    functionFragment: "transfer",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceRole",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "revokeRole",
-    values: [BytesLike, string]
+    functionFragment: "transferFrom",
+    values: [string, string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getRoleAdmin",
+    functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceRole",
+    functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
 
   events: {
-    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
-    "RoleGranted(bytes32,address,address)": EventFragment;
-    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "Approval(address,address,uint256)": EventFragment;
+    "Transfer(address,address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class IAccessControl extends BaseContract {
+export class IERC20 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -113,177 +114,180 @@ export class IAccessControl extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IAccessControlInterface;
+  interface: IERC20Interface;
 
   functions: {
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[BigNumber]>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    approve(
+      spender: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  grantRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  hasRole(
-    role: BytesLike,
-    account: string,
+  allowance(
+    owner: string,
+    spender: string,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<BigNumber>;
 
-  renounceRole(
-    role: BytesLike,
-    account: string,
+  approve(
+    spender: string,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  revokeRole(
-    role: BytesLike,
-    account: string,
+  balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  transfer(
+    recipient: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferFrom(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
-    hasRole(
-      role: BytesLike,
-      account: string,
+    approve(
+      spender: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
+
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
   };
 
   filters: {
-    RoleAdminChanged(
-      role?: BytesLike | null,
-      previousAdminRole?: BytesLike | null,
-      newAdminRole?: BytesLike | null
+    Approval(
+      owner?: string | null,
+      spender?: string | null,
+      value?: null
     ): TypedEventFilter<
-      [string, string, string],
-      { role: string; previousAdminRole: string; newAdminRole: string }
+      [string, string, BigNumber],
+      { owner: string; spender: string; value: BigNumber }
     >;
 
-    RoleGranted(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
+    Transfer(
+      from?: string | null,
+      to?: string | null,
+      value?: null
     ): TypedEventFilter<
-      [string, string, string],
-      { role: string; account: string; sender: string }
-    >;
-
-    RoleRevoked(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): TypedEventFilter<
-      [string, string, string],
-      { role: string; account: string; sender: string }
+      [string, string, BigNumber],
+      { from: string; to: string; value: BigNumber }
     >;
   };
 
   estimateGas: {
-    getRoleAdmin(
-      role: BytesLike,
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    grantRole(
-      role: BytesLike,
-      account: string,
+    approve(
+      spender: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getRoleAdmin(
-      role: BytesLike,
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    grantRole(
-      role: BytesLike,
-      account: string,
+    approve(
+      spender: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    hasRole(
-      role: BytesLike,
+    balanceOf(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

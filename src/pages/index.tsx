@@ -9,7 +9,6 @@ import { Minter } from '~/components/minting/Minter';
 
 const Home: NextPage = () => {
   const [metamaskConn, setMetamaskConn] = useState(false);
-  const [weiCost, setWeiCost] = useState(BigNumber.from(0));
   const [ethCost, setEthCost] = useState(0);
   const [contract, setContract] = useState<Rat | null>(null);
   const { provider, signer } = useEthers();
@@ -30,7 +29,6 @@ const Home: NextPage = () => {
         setContract(c);
         c.cost().then(data => {
           setEthCost(parseFloat(utils.formatEther(data)));
-          setWeiCost(data);
         })
       }
     })();
@@ -38,7 +36,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      {metamaskConn ? <Minter weiCost={weiCost} ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>}
+      {metamaskConn ? <Minter ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>}
     </div>
   )
 }
