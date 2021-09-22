@@ -1,26 +1,31 @@
 import React, { FC, useState } from 'react'
-import { BigNumber, ContractTransaction } from 'smart-contracts/node_modules/ethers/lib';
 import { useEthers } from '~/hooks/useEthers';
+import {ethers, BigNumber, ContractTransaction, ContractReceipt} from "ethers";
 import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
 
 type Props = {
-  weiCost: BigNumber;
   ethCost: number;
   contract: Rat | null
 }
 
-export const Minter: FC<Props> = ({weiCost, ethCost, contract}) => {
+export const Minter: FC<Props> = ({ethCost, contract}) => {
   const [loading, setLoading] = useState<LOADING_STATE>(null)
   const [mintTx, setMintTx] = useState("")
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(null)
-  const { provider } = useEthers();
+  const { provider, signer } = useEthers();
   const test = async () => {
-    if (contract && provider) {
+    if (contract && provider && signer) {
       try {
         setLoading("TOKEN");
-        const tx = await contract.createToken({ value: weiCost }).then((t: ContractTransaction) => t.wait());
+        const wethAddr = await contract.erc20();
+        const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)"], signer);
+        const cost = ethers.utils.parseEther(`${ethCost}`);
+        const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
+        const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
+        const tx = await contract.createToken().then(t => t.wait());
         setMintTx(tx.transactionHash)
-        const tokenId = tx?.events?.[1].args?.["tokenId"].toString();
+        console.log(tx?.events?.map(e => e.args));
+        const tokenId = tx?.events?.find(e => e.args?.['tokenId'])?.args?.["tokenId"].toString();
         setLoading("GENERATOR");
         const rat: GeneratorResponse = await fetch("./api/generate-rat", {
           method: "post",
@@ -64,7 +69,7 @@ export const Minter: FC<Props> = ({weiCost, ethCost, contract}) => {
         Generating rat...
       </h1>}
       <div>
-        <h1>Cost: {ethCost}eth</h1>
+        <h1>Cost: {ethCost}weth</h1>
         <button onClick={test}>Click Me</button>
       </div>
       <div>
