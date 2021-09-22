@@ -20,10 +20,10 @@ import {
 } from "./src/config/env";
 import { ContractFactory } from "@ethersproject/contracts";
 
-task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "", types.string).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").setAction(async ({contractUri, tokenAddress, contractName}, {ethers}) => {
+task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "", types.string).addPositionalParam("name", "Name to pass to the contract constructor", "AwwRat", types.string).addPositionalParam("symbol", "Symbol to pass to the contract constructor", "RAT", types.string).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").setAction(async ({contractUri, tokenAddress, contractName, name, symbol}, {ethers}) => {
   const [owner] = await ethers.getSigners();
   const Rat = await ethers.getContractFactory(contractName, owner) as ContractFactory;
-  const rat = await Rat.deploy(contractUri ?? CONTRACT_URI, tokenAddress ?? WETH_CONTRACT_ADDRESS, 0, 1000).then(r => r.deployed());
+  const rat = await Rat.deploy(contractUri ?? CONTRACT_URI, tokenAddress ?? WETH_CONTRACT_ADDRESS, 0, 1000, name, symbol).then(r => r.deployed());
   console.log(rat.address);
 })
 
@@ -39,12 +39,12 @@ task("update-contract-uri", "Update the contract metadata uri for our collection
   }
 })
 
-task("update-weth-address", "Update the address for our ERC-20 conversion").addPositionalParam("address", "The address of the ERC-20 token to use for accepting payment").setAction(async ({address}, hre) => {
+task("update-erc20-address", "Update the address for the ERC-20 contract we use for payments").addPositionalParam("address", "The address of the ERC-20 token to use for accepting payment").setAction(async ({address}, hre) => {
   try {
     const [signer] = await hre.ethers.getSigners();
     const Rat = await hre.ethers.getContractFactory("Rat", signer)
     const rat = Rat.attach(CONTRACT_ADDRESS ?? "")
-    const tx = await rat.setWethAddr(address).then(t => t.wait());
+    const tx = await rat.setERC20Address(address).then(t => t.wait());
     console.log("Transaction Hash:", tx.transactionHash);
   } catch (err) {
     console.error(err)

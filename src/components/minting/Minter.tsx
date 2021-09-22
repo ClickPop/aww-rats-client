@@ -17,7 +17,7 @@ export const Minter: FC<Props> = ({ethCost, contract}) => {
     if (contract && provider && signer) {
       try {
         setLoading("TOKEN");
-        const wethAddr = await contract.weth();
+        const wethAddr = await contract.erc20();
         const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)"], signer);
         const cost = ethers.utils.parseEther(`${ethCost}`);
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
