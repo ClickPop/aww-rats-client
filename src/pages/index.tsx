@@ -6,6 +6,11 @@ import { Rat } from '~/types';
 import { useEffect, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { Minter } from '~/components/minting/Minter';
+import { Hero } from '~/components/index/hero/Hero';
+import { About } from '~/components/index/about/About';
+import { Roadmap } from '~/components/index/roadmap/Roadmap';
+import { RatRace } from '~/components/index/rat-race/RatRace';
+import { Layout } from '~/components/layout/Layout';
 
 const Home: NextPage = () => {
   const [metamaskConn, setMetamaskConn] = useState(false);
@@ -35,9 +40,12 @@ const Home: NextPage = () => {
   }, [metamaskConn, signer]);
 
   return (
-    <div>
-      {metamaskConn ? <Minter ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>}
-    </div>
+    <Layout className="bg-dark">
+      <Hero />
+      <About />
+      <Roadmap />
+      <RatRace />
+    </Layout>
   )
 }
 
