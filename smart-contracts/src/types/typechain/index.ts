@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
+export type { IERC2981 } from "./IERC2981";
 export type { ERC20 } from "./ERC20";
 export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
@@ -16,6 +17,7 @@ export type { MockERC20 } from "./MockERC20";
 export type { Rat } from "./Rat";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
+export { IERC2981__factory } from "./factories/IERC2981__factory";
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";

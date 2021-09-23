@@ -30,7 +30,7 @@ describe("Rat", () => {
     initialBalOwner = await weth.balanceOf(owner.address);
     initialBalUser = await weth.balanceOf(user.address);
     const Rat = await ethers.getContractFactory("Rat", owner);
-    contract = await Rat.deploy(CONTRACT_URI, weth.address, 0, 1000).then(r => r.deployed());
+    contract = await Rat.deploy(CONTRACT_URI, weth.address, 0, 1000, "AwwRat", "RAT").then(r => r.deployed());
     cost = await contract.cost();
   })
 

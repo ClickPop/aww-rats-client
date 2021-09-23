@@ -33,7 +33,9 @@ interface RatInterface extends ethers.utils.Interface {
     "defaultMaxTokensPerWallet()": FunctionFragment;
     "erc20()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getBurnedTokens()": FunctionFragment;
     "getBurnedTokensByOwner(address)": FunctionFragment;
+    "getTokenOwners()": FunctionFragment;
     "getTokensByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxTokens()": FunctionFragment;
@@ -55,7 +57,7 @@ interface RatInterface extends ethers.utils.Interface {
     "storeAsset(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "tokenHolders(uint256)": FunctionFragment;
+    "tokenOwners(uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -95,8 +97,16 @@ interface RatInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getBurnedTokens",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getBurnedTokensByOwner",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenOwners",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getTokensByOwner",
@@ -168,7 +178,7 @@ interface RatInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "tokenHolders",
+    functionFragment: "tokenOwners",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -212,7 +222,15 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBurnedTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getBurnedTokensByOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenOwners",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -276,7 +294,7 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "tokenHolders",
+    functionFragment: "tokenOwners",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
@@ -390,10 +408,14 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getBurnedTokens(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
     getBurnedTokensByOwner(
       user: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<[string[]]>;
 
     getTokensByOwner(
       user: string,
@@ -499,7 +521,7 @@ export class Rat extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    tokenHolders(
+    tokenOwners(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -561,10 +583,14 @@ export class Rat extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getBurnedTokens(overrides?: CallOverrides): Promise<BigNumber[]>;
+
   getBurnedTokensByOwner(
     user: string,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
+
+  getTokenOwners(overrides?: CallOverrides): Promise<string[]>;
 
   getTokensByOwner(
     user: string,
@@ -664,7 +690,7 @@ export class Rat extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
-  tokenHolders(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  tokenOwners(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -715,10 +741,14 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getBurnedTokens(overrides?: CallOverrides): Promise<BigNumber[]>;
+
     getBurnedTokensByOwner(
       user: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<string[]>;
 
     getTokensByOwner(
       user: string,
@@ -810,10 +840,7 @@ export class Rat extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
-    tokenHolders(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    tokenOwners(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -877,7 +904,7 @@ export class Rat extends BaseContract {
       oldOwner?: null,
       newOwnerTokens?: null,
       oldOwnerTokens?: null,
-      tokenHolders?: null
+      tokenOwners?: null
     ): TypedEventFilter<
       [BigNumber, string, string, BigNumber[], BigNumber[], string[]],
       {
@@ -886,7 +913,7 @@ export class Rat extends BaseContract {
         oldOwner: string;
         newOwnerTokens: BigNumber[];
         oldOwnerTokens: BigNumber[];
-        tokenHolders: string[];
+        tokenOwners: string[];
       }
     >;
 
@@ -938,10 +965,14 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getBurnedTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
     getBurnedTokensByOwner(
       user: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokensByOwner(
       user: string,
@@ -1047,7 +1078,7 @@ export class Rat extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenHolders(
+    tokenOwners(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1115,10 +1146,14 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getBurnedTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getBurnedTokensByOwner(
       user: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getTokenOwners(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTokensByOwner(
       user: string,
@@ -1224,7 +1259,7 @@ export class Rat extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tokenHolders(
+    tokenOwners(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
