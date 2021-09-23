@@ -16,7 +16,7 @@ contract Rat is ERC721URIStorage, Ownable {
 
   uint private _tokenIds = 0;
 
-  address[] public tokenHolders;
+  address[] public tokenOwners;
   uint[] public burnedTokens;
 
   // These are mappings of address to arrays of token ids to signify the tokens owned, and tokens burned by a particular address
@@ -29,7 +29,7 @@ contract Rat is ERC721URIStorage, Ownable {
   // These events are used for us to track state changing transactions by type and avoid using the catch all Trasnfer event.
   event TokenMinted(uint tokenId);
   event TokenBurned(uint tokenId, address tokenOwner);
-  event TokenTransferred(uint tokenId, address newOwner, address oldOwner, uint[] newOwnerTokens, uint[] oldOwnerTokens, address[] tokenHolders);
+  event TokenTransferred(uint tokenId, address newOwner, address oldOwner, uint[] newOwnerTokens, uint[] oldOwnerTokens, address[] tokenOwners);
 
   // This is the ERC-20 compliant token we will accept as payment. The address to the token is supplied to the constructor, but we also have a method to change it after the fact if needed
   IERC20 public erc20;
@@ -72,7 +72,7 @@ contract Rat is ERC721URIStorage, Ownable {
     
     // 8. If this is the first token, add this wallet to the array of wallets that own tokens
     if (firstToken) {
-      tokenHolders.push(msg.sender);
+      tokenOwners.push(msg.sender);
     }
 
     // 9. Increment the number of tokens and the tokenId key
@@ -138,6 +138,14 @@ contract Rat is ERC721URIStorage, Ownable {
     return _tokensByOwner[user];
   }
 
+  function getTokenOwners() public view returns (address[] memory) {
+    return tokenOwners;
+  }
+
+  function getBurnedTokens() public view returns (uint[] memory) {
+    return burnedTokens;
+  }
+
   // These are a bunch of helper functions for updating the state of the contract after it has been deployed
   function setERC20Address(address newAddr) public onlyOwner {
     erc20 = IERC20(newAddr);
@@ -171,14 +179,14 @@ contract Rat is ERC721URIStorage, Ownable {
   function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override (ERC721) {
     // 1. We ignore minting (from address == 0) and burning (to address == 0) events
     if (from != address(0) && to != address(0)) {
-      // 2. We check if the "from" balance after transferring would be equal to 0 (Hence the balanceOf - 1), and if so remove them from the tokenHolders array
+      // 2. We check if the "from" balance after transferring would be equal to 0 (Hence the balanceOf - 1), and if so remove them from the tokenOwners array
       if (balanceOf(from) - 1 == 0) {
         removeTokenHolder(from);
       }
 
-      // 3. We check if this is the first token for the "to" wallet, we add them to the tokenHolders array
+      // 3. We check if this is the first token for the "to" wallet, we add them to the tokenOwners array
       if (balanceOf(to) == 0) {
-        tokenHolders.push(to);
+        tokenOwners.push(to);
       }
       // 4. These handle the internal state logic for transferring the token
       removeTokenId(from, tokenId);
@@ -188,7 +196,7 @@ contract Rat is ERC721URIStorage, Ownable {
         5. We emit a token transferred event for consumtion outside the block-chain.
         (Note: this is different from the Transfer event built into the OpenZeppelin ERC-721 spec)
       */
-      emit TokenTransferred(tokenId, to, from, _tokensByOwner[to], _tokensByOwner[from], tokenHolders);
+      emit TokenTransferred(tokenId, to, from, _tokensByOwner[to], _tokensByOwner[from], tokenOwners);
     }
     super._beforeTokenTransfer(from, to, tokenId);
   }
@@ -210,16 +218,16 @@ contract Rat is ERC721URIStorage, Ownable {
   }
 
   function removeTokenHolder(address tokenOwner) internal {
-    uint numHolders = tokenHolders.length;
+    uint numHolders = tokenOwners.length;
     for (uint256 i = 0; i < numHolders; i++) {
-      if (tokenHolders[i] == tokenOwner) {
+      if (tokenOwners[i] == tokenOwner) {
         if (i == numHolders - 1) {
-        tokenHolders.pop();
+        tokenOwners.pop();
         break;
       }
       
-      tokenHolders[i] = tokenHolders[numHolders - 1];
-      tokenHolders.pop();
+      tokenOwners[i] = tokenOwners[numHolders - 1];
+      tokenOwners.pop();
       break;
       }
     }

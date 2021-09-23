@@ -1,34 +1,36 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Aww, Rats! web-client and smart-contract mono repo
 
-## Getting Started
+This is a mono repo housing both the web-client and smart-contracts used by Aww, Rats!
 
-First, run the development server:
+## Setting up the project
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Node](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
+- Env variables (Lmk if you need these, but they should be in the Google Cloud secrets manager)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Installation
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. Run `yarn install-all` to install the deps for both parts of the repo.
+2. Make sure you have a file called `.env.local` with the required env vars. Again, these should be in Google Cloud Secrets Manager.
+4. Run `yarn dev` to start the development server (This will also run the Solidity compiler in watch mode).
+5. Navigate your browser to http://localhost:3000.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Running the entire flow locally
 
-## Learn More
+If you want to do all of the development locally you can run a local blockchain either from within `hardhat` (The framework we use for writing, testing, and managing the smart-contracts) or via [ganache](https://www.trufflesuite.com/ganache). You can also run the the [generator](https://github.com/ClickPop/aww-rats-generator) locally. Follow the README there for instructions on setting that up. Once you have it setup, make sure to set the `GENERATOR_URL` to `http://localhost:8080` in `.env.local`
 
-To learn more about Next.js, take a look at the following resources:
+In this case we are going to just worry about running locally with hardhat so there won't be any additional setup.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. In a separate terminal run `yarn dev:local-node`. This will start a local blockchain, deploy a mock ERC-20 token, supply each account with 10 tokens, and deploy the rat contract.
+2. You will get a ton of output, but scroll up and you should see a list of private keys and addresses:
+   1. ![wallet screenshot](wallets.png)
+3. You will want to take note of one of those private keys (Just not #0 as that is the address that gets used as the admin for the contracts) and [import it into Metamask](https://metamask.zendesk.com/hc/en-us/articles/360015489331-How-to-import-an-Account).
+4. Next you will want to take note of the address of the deployed `Rat ERC-721` contract:
+   1. ![rat deployed](rat-deploy.png)
+5. Take that address and add it to the as the `NEXT_PUBLIC_CONTRACT_ADDRESS` in your `.env.local`.
+6. You will also need to add the local development chain to Metamask:
+   1. ![metamask config](metamask.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+That should be it to get setup locally. Again, be sure to follow the directions in the generator repo's `README` to be sure that is setup correctly.

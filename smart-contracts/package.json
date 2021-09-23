@@ -7,7 +7,9 @@
   },
   "scripts": {
     "compile": "hardhat compile",
-    "watch": "hardhat watch"
+    "watch": "hardhat watch",
+    "setup-local": "hardhat run ./src/scripts/SetupLocal.ts --network localhost",
+    "test": "hardhat test"
   },
   "keywords": [],
   "author": "",

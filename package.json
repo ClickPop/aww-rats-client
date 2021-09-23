@@ -5,10 +5,12 @@
   "scripts": {
     "install-all": "yarn && cd smart-contracts && yarn",
     "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
+    "dev:local-node": "concurrently \"cd smart-contracts && yarn hardhat node\" \"cd smart-contracts && yarn setup-local\"",
     "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && yarn compile && next build",
     "start": "next start",
     "lint": "next lint",
-    "compile": "cd smart-contracts && yarn compile"
+    "compile": "cd smart-contracts && yarn compile",
+    "test-contract": "cd smart-contracts && yarn test"
   },
   "dependencies": {
     "ethers": "^5.4.6",
