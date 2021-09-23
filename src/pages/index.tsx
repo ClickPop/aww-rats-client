@@ -42,6 +42,9 @@ const Home: NextPage = () => {
   return (
     <Layout className="bg-dark">
       <Hero />
+      <div className="text-light w-fit mx-auto">
+        {metamaskConn ? <Minter ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>}
+      </div>
       <About />
       <Roadmap />
       <RatRace />
