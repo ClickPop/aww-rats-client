@@ -70,8 +70,8 @@ export const Roadmap = () => {
               <td className="text-left px-4 py-2">25%</td>
               <td className="text-left px-4 py-2">Our closet Dapp will release for all holders to add new accessories to dress up and decorate their rats. We will be dropping new accessories in the closet regularly.</td>
             </tr>
-            <tr>
             <tr className="border-b border-blue-300 border-solid">
+              <td className="text-left px-4 py-2">50%</td>
               <td className="text-left px-4 py-2">New alleyway in the sewer opens up.</td>
             </tr>
             <tr>
