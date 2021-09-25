@@ -1,24 +1,58 @@
-import React, { FC, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
 import {ethers, BigNumber, ContractTransaction, ContractReceipt} from "ethers";
 import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
+import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
+import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 
-type Props = {
-  ethCost: number;
-  contract: Rat | null
-}
-
-export const Minter: FC<Props> = ({ethCost, contract}) => {
+export const Minter = () => {
+  const { provider, signer, network } = useEthers();
+  const [metamaskConn, setMetamaskConn] = useState(false);
+  const [correctNetwork, setCorrectNetwork] = useState(false);
+  const [ethCost, setEthCost] = useState(0);
+  const [contract, setContract] = useState<Rat | null>(null);
   const [loading, setLoading] = useState<LOADING_STATE>(null)
   const [mintTx, setMintTx] = useState("")
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(null)
-  const { provider, signer } = useEthers();
+
+  const connectToMetamask = async () => {
+    try {
+      await provider?.send("eth_requestAccounts", []);
+      setMetamaskConn(true);
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (provider) {
+        const addrs = await provider.listAccounts();
+        setMetamaskConn(addrs.length > 0);
+        console.log(network);
+        setCorrectNetwork(network?.chainId === CHAIN_ID)
+      }
+      if (CONTRACT_ADDRESS && metamaskConn && network?.chainId === CHAIN_ID) {
+        try {
+          const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
+          setContract(c);
+          c.cost().then(data => {
+            setEthCost(parseFloat(ethers.utils.formatEther(data)));
+          })
+        } catch (err) {
+          console.error(err);
+          
+        }
+      }
+    })();
+  }, [metamaskConn, signer, provider, correctNetwork, network]);
+
   const test = async () => {
     if (contract && provider && signer) {
       try {
         setLoading("TOKEN");
         const wethAddr = await contract.erc20();
-        const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)"], signer);
+        const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
         const cost = ethers.utils.parseEther(`${ethCost}`);
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
         const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
@@ -44,20 +78,12 @@ export const Minter: FC<Props> = ({ethCost, contract}) => {
     }
   };
 
-  if (loading === "TOKEN") {
-    return (
-      <h1>
-        Minting token...
-      </h1>
-    )
+  if (!metamaskConn) {
+    return <button onClick={connectToMetamask}>Connect to MetaMask</button>
   }
 
-  if (loading === "GENERATOR") {
-    return (
-      <h1>
-        Generating rat...
-      </h1>
-    )
+  if (!correctNetwork) {
+    return <div>Please select the correct network</div>
   }
 
   return (
