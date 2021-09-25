@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
-import {ethers, BigNumber, ContractTransaction, ContractReceipt} from "ethers";
+import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
 import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
 import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
@@ -32,7 +32,7 @@ export const Minter = () => {
           })
         } catch (err) {
           console.error(err);
-          
+
         }
       }
     })();
@@ -83,18 +83,20 @@ export const Minter = () => {
       {loading === "GENERATOR" && <h1>
         Generating rat...
       </h1>}
-      <div>
-        <h1>Cost: {ethCost}weth</h1>
-        <button onClick={test}>Click Me</button>
-      </div>
-      <div>
-        {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}
-        {completedRat && <>
-          <p>SetTokenURI tx hash: <a href={`https://mumbai.polygonscan.com/tx/${completedRat.data?.txHash}`} target="_blank" rel="noopener noreferrer">{completedRat.data?.txHash}</a></p>  
-          <p>Token Id: {completedRat.data?.tokenId}</p>  
-          <p>Token URI: <a href={completedRat.data?.tokenUri} target="_blank" rel="noopener noreferrer">{completedRat.data?.tokenUri}</a></p>  
-        </>}
-      </div>
+      {!loading && <>
+        <div>
+          <h1>Cost: {ethCost}weth</h1>
+          <button onClick={test}>Click Me</button>
+        </div>
+        <div>
+          {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}
+          {completedRat && <>
+            <p>SetTokenURI tx hash: <a href={`https://mumbai.polygonscan.com/tx/${completedRat.data?.txHash}`} target="_blank" rel="noopener noreferrer">{completedRat.data?.txHash}</a></p>
+            <p>Token Id: {completedRat.data?.tokenId}</p>
+            <p>Token URI: <a href={completedRat.data?.tokenUri} target="_blank" rel="noopener noreferrer">{completedRat.data?.tokenUri}</a></p>
+          </>}
+        </div>
+      </>}
     </>
   )
 }
