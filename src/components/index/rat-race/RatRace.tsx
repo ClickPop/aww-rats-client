@@ -1,12 +1,13 @@
 import React from 'react'
 import { Image } from '~/components/shared/Image'
 import { Link } from '~/components/shared/Link'
+import ratRace from '~/assets/images/rat-race.png';
 
 export const RatRace = () => {
   return (
     <div className="w-full bg-dark text-tan">
       <div className="flex flex-col max-w-xl px-4 mx-auto py-16">
-        <Image className="h-80 w-80 mb-4 self-center" src="/rat-race.png" layout="fill" objectFit="cover" alt="Rat race trophy" />
+        <Image className="h-80 w-80 mb-4 self-center" src={ratRace} layout="fill" objectFit="cover" alt="Rat race trophy" placeholder="blur" />
         <div className="text-lg">
           <h2 className="mb-4 text-4xl font-bold">Welcome to the Rat Race.</h2>
           <p className="mb-8">When you own an Aww, Rat you automatically get an entry into the Rat Race - a regular competition between rats, with fabulous trash prizes.</p>

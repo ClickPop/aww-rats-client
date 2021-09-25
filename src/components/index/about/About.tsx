@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image } from '~/components/shared/Image'
+import ratBubbles from '~/assets/images/rat-bubbles.png';
 
 export const About = () => {
   return (
@@ -18,7 +19,7 @@ export const About = () => {
           </p>
         </div>
         <div className="w-128 h-128 p-8 ">
-          <Image className="w-full h-full" src="/rat-bubbles.png" layout="fill" objectFit="contain" alt="Some images of sample rats" />
+          <Image className="w-full h-full" src={ratBubbles} layout="fill" objectFit="contain" alt="Some images of sample rats" placeholder="blur" />
         </div>
       </div>
     </div>
