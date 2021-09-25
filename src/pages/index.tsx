@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import { Minter } from '~/components/minting/Minter';
 import { Hero } from '~/components/index/hero/Hero';
 import { About } from '~/components/index/about/About';
 import { Roadmap } from '~/components/index/roadmap/Roadmap';
@@ -11,9 +10,6 @@ const Home: NextPage = () => {
   return (
     <Layout className="bg-dark">
       <Hero />
-      <div className="text-light w-fit mx-auto">
-        <Minter />
-      </div>
       <About />
       <Roadmap />
       <FAQ />
