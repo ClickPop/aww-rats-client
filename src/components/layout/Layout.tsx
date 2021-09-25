@@ -4,7 +4,7 @@ import { Header } from '~/components/layout/Header'
 
 export const Layout: FC<{className?: string}> = ({children, className}) => {
   return (
-    <div className={`${className ?? ""} w-screen h-screen`}>
+    <div className={`${className ?? ""} w-full h-screen`}>
       <Header />
       {children}
       <Footer />
