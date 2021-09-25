@@ -8,11 +8,11 @@ export const Roadmap = () => {
     <div className="w-full bg-white text-slate">
       <div className="flex flex-col mx-auto max-w-xl pt-16 px-4">
         <Image className="imgfix overflow-hidden rounded-md mb-8" src={ratAlley} alt="Aww, Rats! Logo" placeholder="blur" />
-        <h2 className="text-4xl mb-3 font-bold">Roadmap</h2>
+        <h2 id="roadmap" className="text-4xl mb-3 font-bold">Roadmap</h2>
         <p class="mb-8">The first generation of rats includes 1,037 programmatically generated rats.</p>
 
         <h3 className="mb-4 text-2xl font-bold"><strike>Presale</strike> Complete</h3>
-        <p className="mb-2">We were initially going to sell 99 rats directly through OpenSea but found the OS shared contract didn’t give us what we need. Instead, we stopped minting our Big Cheese rats after 37. Big cheeses can be purchased on the secondary market and come with these benefits:</p>
+        <p className="mb-2">We were initially going to sell 99 rats directly through OpenSea but found the OS shared contract <Link href="https://medium.com/@awwratspack/aww-rats-an-update-on-our-minting-plans-3f4fbdaaa1e3" className="underline text-blue-500">didn’t give us what we need</Link>. Instead, we stopped minting our Big Cheese rats after 37. Big cheeses can be purchased on the secondary market and come with these benefits:</p>
         <ul className="list-disc pl-8 mb-8">
           <li className="list-item mb-2">Includes an exclusive torn ear, big cheese attribute and icon.</li>
           <li className="list-item mb-2">Access to Looks, the tool we built Aww, Rats with (when it’s ready) for as long as the application exists.</li>

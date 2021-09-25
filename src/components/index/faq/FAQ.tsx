@@ -4,7 +4,7 @@ export const FAQ = () => {
   return (
     <div className="w-full bg-white text-slate">
       <div className="flex flex-col mx-auto max-w-xl pt-8 pb-16 px-4">   
-        <h2 className="text-4xl mb-3 font-bold">FAQs</h2>
+        <h2 id="faqs" className="text-4xl mb-3 font-bold">FAQs</h2>
         <h3 className="text-2xl font-bold mb-3">What the heck is an NFT?</h3>
         <p className="mb-2">A non-fungible token (NFT) is a unique digital marker stored on the blockchain. NFTs can be representations of digital artwork, physical things, and even membership cards that offer someone access to content.</p>
         <p className="mb-10">In our case, the NFT proves your ownership of your unique image which can compete in our regular Rate Race. The neatest part? You can trade with others and grow your collection over time.</p>
