@@ -10,6 +10,8 @@ export type EthersState = {
   provider?: Web3Provider,
   signer?: JsonRpcSigner
   network?: providers.Network
+  connected?: boolean
+  account?: string
 }
 
 export type LOADING_STATE = "TOKEN" | "GENERATOR" | null

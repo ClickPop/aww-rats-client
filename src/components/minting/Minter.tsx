@@ -6,9 +6,7 @@ import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 
 export const Minter = () => {
-  const { provider, signer, network } = useEthers();
-  const [metamaskConn, setMetamaskConn] = useState(false);
-  const [correctNetwork, setCorrectNetwork] = useState(false);
+  const { provider, signer, network, connected, account } = useEthers();
   const [ethCost, setEthCost] = useState(0);
   const [contract, setContract] = useState<Rat | null>(null);
   const [loading, setLoading] = useState<LOADING_STATE>(null)
@@ -18,7 +16,6 @@ export const Minter = () => {
   const connectToMetamask = async () => {
     try {
       await provider?.send("eth_requestAccounts", []);
-      setMetamaskConn(true);
     } catch (err) {
       console.error(err)
     }
@@ -26,13 +23,7 @@ export const Minter = () => {
 
   useEffect(() => {
     (async () => {
-      if (provider) {
-        const addrs = await provider.listAccounts();
-        setMetamaskConn(addrs.length > 0);
-        console.log(network);
-        setCorrectNetwork(network?.chainId === CHAIN_ID)
-      }
-      if (CONTRACT_ADDRESS && metamaskConn && network?.chainId === CHAIN_ID) {
+      if (CONTRACT_ADDRESS && connected && network?.chainId === CHAIN_ID) {
         try {
           const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
           setContract(c);
@@ -45,7 +36,7 @@ export const Minter = () => {
         }
       }
     })();
-  }, [metamaskConn, signer, provider, correctNetwork, network]);
+  }, [connected, signer, provider, network]);
 
   const test = async () => {
     if (contract && provider && signer) {
@@ -58,7 +49,6 @@ export const Minter = () => {
         const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
         const tx = await contract.createToken().then(t => t.wait());
         setMintTx(tx.transactionHash)
-        console.log(tx?.events?.map(e => e.args));
         const tokenId = tx?.events?.find(e => e.args?.['tokenId'])?.args?.["tokenId"].toString();
         setLoading("GENERATOR");
         const rat: GeneratorResponse = await fetch("./api/generate-rat", {
@@ -67,7 +57,6 @@ export const Minter = () => {
             tokenId
           })
         }).then(res => res.json());
-        console.log({rat});
         setCompletedRat(rat)
         setLoading(null);
       } catch (err: any) {
@@ -78,11 +67,11 @@ export const Minter = () => {
     }
   };
 
-  if (!metamaskConn) {
+  if (!connected) {
     return <button onClick={connectToMetamask}>Connect to MetaMask</button>
   }
 
-  if (!correctNetwork) {
+  if (network?.chainId !== CHAIN_ID) {
     return <div>Please select the correct network</div>
   }
 
