@@ -7,7 +7,7 @@ export const Roadmap = () => {
   return (
     <div className="w-full bg-white text-slate">
       <div className="flex flex-col mx-auto max-w-lg py-16">
-        <Image className="w-128 h-80 overflow-hidden rounded-md mb-2" src={ratAlley} layout="fill" objectFit="fill" alt="Aww, Rats! Logo" />
+        <Image className="imgfix overflow-hidden rounded-md mb-2" src={ratAlley} alt="Aww, Rats! Logo" />
         <h2 className="text-4xl mb-3 font-bold">Roadmap</h2>
         <h3 className="text-2xl mb-2 font-bold">The first generation</h3>
         <p>The first generation of rats includes 990 programmatically generated rats.</p>
