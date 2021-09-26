@@ -9,13 +9,8 @@ export const Roadmap = () => {
       <div className="flex flex-col mx-auto max-w-xl pt-16 px-4">
         <Image className="imgfix overflow-hidden rounded-md mb-8" src={ratAlley} alt="Aww, Rats! Logo" placeholder="blur" />
         <h2 id="roadmap" className="text-4xl mb-3 font-bold">Roadmap</h2>
-<<<<<<< HEAD
-        <p class="mb-8">The first generation of rats includes 1,037 programmatically generated rats.</p>
-
-=======
         <p className="mb-8">The first generation of rats includes 1,037 programmatically generated rats.</p>
         {/** @ts-ignore */}
->>>>>>> 738e69220de71a289a801244a4e452a9d9833dc8
         <h3 className="mb-4 text-2xl font-bold"><strike>Presale</strike> Complete</h3>
         <p className="mb-2">We were initially going to sell 99 rats directly through OpenSea but found the OS shared contract <Link href="https://medium.com/@awwratspack/aww-rats-an-update-on-our-minting-plans-3f4fbdaaa1e3" className="underline text-blue-500">didn’t give us what we need</Link>. Instead, we stopped minting our Big Cheese rats after 37. Big cheeses can be purchased on the secondary market and come with these benefits:</p>
         <ul className="list-disc pl-8 mb-8">
@@ -65,19 +60,11 @@ export const Roadmap = () => {
           <tbody>
             <tr className="border-b border-blue-300 border-solid">
               <td className="text-left px-4 py-2">10%</td>
-<<<<<<< HEAD
-              <td className="text-left px-4 py-2">We'll hold our first rat race, the winner will get a custom designed rat minted.</td>
-            </tr>
-            <tr className="border-b border-blue-300 border-solid">
-              <td className="text-left px-4 py-2">After every 99 mints</td>
-              <td className="text-left px-4 py-2">We'll randomly select 1 holder to get a custom rat of their choosing added to the generation (and their wallet at no additional cost). The pieces will get added to the generator library so the community will be directly contributing to the rats.</td>
-=======
               <td className="text-left px-4 py-2">We&apos;ll hold our first rat race, the winner will get a custom designed rat minted.</td>
             </tr>
             <tr className="border-b border-blue-300 border-solid">
               <td className="text-left px-4 py-2">After every 99 mints</td>
               <td className="text-left px-4 py-2">We&apos;ll randomly select 1 holder to get a custom rat of their choosing added to the generation (and their wallet at no additional cost). The pieces will get added to the generator library so the community will be directly contributing to the rats.</td>
->>>>>>> 738e69220de71a289a801244a4e452a9d9833dc8
             </tr>
             <tr className="border-b border-blue-300 border-solid">
               <td className="text-left px-4 py-2">25%</td>
