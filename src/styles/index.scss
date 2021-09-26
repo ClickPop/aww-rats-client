@@ -8,11 +8,15 @@
 }
 
 .ratvatar {
-    width: 60rem;
-    height: 60rem;
+    min-height: 180px;
+    min-width: 180px;
+    height: 180px;
+    width: 180px;
 
     &-lg {
-        width: 200px;
-        height: 200px;
+        min-height: 220px;
+        min-width: 220px;
+        height: 220px;
+        width: 220px;
     }
 }
