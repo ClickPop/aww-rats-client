@@ -77,16 +77,15 @@ export const Minter = () => {
 
   return (
     <>
-      {loading === "TOKEN" && <h1>
+      {loading === "TOKEN" && <p className="p-4 mt-8">
         Minting token...
-      </h1>}
-      {loading === "GENERATOR" && <h1>
+      </p>}
+      {loading === "GENERATOR" && <p className="p-4 mt-8">
         Generating rat...
-      </h1>}
+      </p>}
       {!loading && <>
         <div>
-          <h1>Cost: {ethCost}weth</h1>
-          <button onClick={test}>Click Me</button>
+          <button className="p-4 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={test}>Mint a Rat for {ethCost}weth</button>
         </div>
         <div>
           {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}

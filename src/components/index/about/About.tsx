@@ -6,7 +6,7 @@ import swooshGray from '~/assets/images/swoosh-gray.svg';
 export const About = () => {
   return (
     <div className="bg-light">
-      <Image className="imgfix w-screen overflow-hidden" src={swooshGray} />
+      {/* <Image className="imgfix w-screen overflow-hidden" src={swooshGray} /> */}
       <div className="grid md:grid-cols-3 content-center max-w-4xl mx-auto text-slate pt-16 pb-24">
         <div className="md:col-span-2 p-4">
           <h1 className="text-4xl font-bold">What are Aww, Rats?</h1>
