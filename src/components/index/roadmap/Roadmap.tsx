@@ -5,8 +5,8 @@ import ratAlley from '~/assets/images/rat-alley.png'
 
 export const Roadmap = () => {
   return (
-    <div className="w-full bg-white text-slate">
-      <div className="flex flex-col mx-auto max-w-xl pt-16 px-4">
+    <div className="bg-white text-slate">
+      <div className="flex flex-col mx-auto max-w-xl pt-24 px-4">
         <Image className="imgfix overflow-hidden rounded-md mb-8" src={ratAlley} alt="Aww, Rats! Logo" placeholder="blur" />
         <h2 id="roadmap" className="text-4xl mb-3 font-bold">Roadmap</h2>
         <p className="mb-8">The first generation of rats includes 1,037 programmatically generated rats.</p>
