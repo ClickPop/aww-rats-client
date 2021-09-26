@@ -6,3 +6,13 @@
 .imgfix > div > div {
     display: block !important;
 }
+
+.ratvatar {
+    width: 60rem;
+    height: 60rem;
+
+    &-lg {
+        width: 200px;
+        height: 200px;
+    }
+}

@@ -45,11 +45,12 @@ export const Hero = () => {
           <h1 className="text-4xl mb-2 font-bold">An NFT Project By Creators, for Creators.</h1>
           <p className="text-lg">We&apos;re sharing the tools we built and the skills we learned with all of our rat holders so more artists can make generative art and NFTs.</p>
           <div className="text-light w-fit mx-auto">
-            {metamaskConn ? <Minter ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>}
+            <div className="text-light w-fit mx-auto">
+              <Minter />
+            </div>
           </div>
         </div>
       </div>
-      {/* {metamaskConn ? <Minter ethCost={ethCost} contract={contract} /> : <button onClick={connectToMetamask}>Connect to metamask</button>} */}
     </div>
   )
 }
