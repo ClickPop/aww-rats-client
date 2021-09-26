@@ -15,7 +15,8 @@ import {
   PRIVATE_KEY,
   CONTRACT_ADDRESS,
   CONTRACT_URI,
-  WETH_CONTRACT_ADDRESS
+  WETH_CONTRACT_ADDRESS,
+  ETHERSCAN_API_KEY
 } from "./src/config/env";
 import { ContractFactory } from "@ethersproject/contracts";
 
@@ -88,6 +89,11 @@ const config: HardhatUserConfig = {
         (k) => k !== undefined
       ) as string[],
     },
+    polygon: {
+      url: 'https://polygon-rpc.com/',
+      chainId: 137,
+      accounts: [PRIVATE_KEY].filter(k => k !== undefined) as string[]
+    }
   },
   paths: {
     sources: "./src/contracts",
@@ -99,6 +105,9 @@ const config: HardhatUserConfig = {
     compilation: {
       tasks: ['compile']
     }
+  },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY
   }
 };
 
