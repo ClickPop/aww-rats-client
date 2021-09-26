@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/** Fix issue with Next image component adding space below images **/
+.imgfix > div > div {
+    display: block !important;
+}
+
+.ratvatar {
+    min-height: 180px;
+    min-width: 180px;
+    height: 180px;
+    width: 180px;
+
+    &-lg {
+        min-height: 220px;
+        min-width: 220px;
+        height: 220px;
+        width: 220px;
+    }
+}
