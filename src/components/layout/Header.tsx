@@ -9,7 +9,7 @@ import twitter from '~/assets/svg/twitter-logo.svg'
 export const Header = () => {
   return (
     <div className="pt-4 w-full">
-      <Image className="w-full h-28 py-1 px-16" src={logo} layout="fill" objectFit="contain" alt="Aww, Rats! Logo" placeholder="blur" />
+      <Image className="w-full h-24 py-1 px-16" src={logo} layout="fill" objectFit="contain" alt="Aww, Rats! Logo" placeholder="blur" />
       <div className="flex max-w-2xl mx-auto align-center justify-between content-center px-4">
         <div className="flex items-center">
           <Link href="#roadmap" className="text-white p-2 mr-2">Roadmap</Link>
