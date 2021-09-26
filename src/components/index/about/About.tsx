@@ -1,11 +1,13 @@
 import React from 'react'
 import { Image } from '~/components/shared/Image'
-import ratBubbles from '~/assets/images/rat-bubbles.png';
+import ratBubbles from '~/assets/images/rat-bubbles.png'
+import swooshGray from '~/assets/images/swoosh-gray.svg';
 
 export const About = () => {
   return (
     <div className="bg-light">
-      <div className="grid md:grid-cols-3 content-center max-w-4xl mx-auto text-slate py-12">
+      <Image className="imgfix w-screen overflow-hidden" src={swooshGray} />
+      <div className="grid md:grid-cols-3 content-center max-w-4xl mx-auto text-slate pt-16 pb-24">
         <div className="md:col-span-2 p-4">
           <h1 className="text-4xl font-bold">What are Aww, Rats?</h1>
           <p className="my-4">

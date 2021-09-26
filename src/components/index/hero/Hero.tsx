@@ -44,7 +44,7 @@ export const Hero = () => {
   }, [metamaskConn, signer]);
 
   return (
-    <div className="pb-16 pt-12 overflow-hidden text-white w-full">
+    <div className="pb-24 pt-16 overflow-hidden text-white w-full">
       <div className="text-center justify-center items-center max-w-4xl mx-auto px-4">
         <h1 className="text-4xl mb-2 font-bold">An NFT Project By Creators, for Creators.</h1>
       </div>
