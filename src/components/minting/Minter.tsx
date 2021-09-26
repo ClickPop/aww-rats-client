@@ -68,7 +68,7 @@ export const Minter = () => {
   };
 
   if (!connected) {
-    return <button onClick={connectToMetamask}>Connect to MetaMask</button>
+    return <button className="px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={connectToMetamask}>Connect to MetaMask</button>
   }
 
   if (network?.chainId !== CHAIN_ID) {
@@ -77,15 +77,15 @@ export const Minter = () => {
 
   return (
     <>
-      {loading === "TOKEN" && <p className="p-4 mt-8">
+      {loading === "TOKEN" && <p className="px-4 py-3 mt-8">
         Minting token...
       </p>}
-      {loading === "GENERATOR" && <p className="p-4 mt-8">
+      {loading === "GENERATOR" && <p className="px-4 py-3 mt-8">
         Generating rat...
       </p>}
       {!loading && <>
         <div>
-          <button className="p-4 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={test}>Mint a Rat for {ethCost}weth</button>
+          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
         </div>
         <div>
           {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}
