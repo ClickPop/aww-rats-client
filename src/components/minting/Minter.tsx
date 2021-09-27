@@ -3,7 +3,6 @@ import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
 import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
 import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
-import { Link } from '~/components/shared/Link';
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 
 export const Minter = () => {
