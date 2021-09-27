@@ -1,9 +1,12 @@
 import React from 'react'
+import { Image } from '~/components/shared/Image'
+import Question from '~/assets/images/question.png'
 
 export const FAQ = () => {
   return (
     <div className="w-full bg-white text-slate">
-      <div className="flex flex-col mx-auto max-w-xl pt-8 pb-16 px-4">   
+      <div className="flex flex-col mx-auto max-w-xl py-20 px-4">
+        <Image className="w-12 h-12 mb-4" src={Question} layout="fill" objectFit="cover" alt="A curious rat face" placeholder="blur" />
         <h2 id="faqs" className="text-4xl mb-3 font-bold">FAQs</h2>
         <h3 className="text-2xl font-bold mb-3">What the heck is an NFT?</h3>
         <p className="mb-2">A non-fungible token (NFT) is a unique digital marker stored on the blockchain. NFTs can be representations of digital artwork, physical things, and even membership cards that offer someone access to content.</p>
