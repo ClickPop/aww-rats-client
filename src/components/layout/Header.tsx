@@ -11,9 +11,10 @@ export const Header = () => {
     <div className="pt-4 w-full">
       <Image className="w-full h-24 py-1 px-16" src={logo} layout="fill" objectFit="contain" alt="Aww, Rats! Logo" placeholder="blur" />
       <div className="flex max-w-2xl mx-auto align-center justify-between content-center px-4">
-        <div className="flex items-center">
-          <Link href="#roadmap" className="text-white p-2 mr-2">Roadmap</Link>
-          <Link href="#faqs" className="text-white p-2">FAQs</Link>
+        <div className="flex items-center rounded-md bg-light">
+          <Link href="#roadmap" className="hover:bg-yellow-200 duration-300 p-2 border-r border-black">Roadmap</Link>
+          <Link href="#generator" className="hover:bg-yellow-200 duration-300 p-2 border-r border-black">GeneRATor</Link>
+          <Link href="#faqs" className="hover:bg-yellow-200 duration-300 p-2">FAQs</Link>
         </div>
         <div className="flex justify-center items-center space-x-5">
           <Link href="https://www.twitter.com/awwratspack"><Image src={twitter} alt="Discord Logo" width={32} height={32} /></Link>
