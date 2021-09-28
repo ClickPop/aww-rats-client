@@ -72,7 +72,7 @@ export const Minter = () => {
   }
 
   if (network?.chainId !== CHAIN_ID) {
-    return <div className="px-4 py-3 mt-8">It looks like your wallet is on the wrong network. Make sure you're on the Matic Network (<a href="https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb" target="_blank" className="underline">learn more</a>).</div>
+    return <div className="px-4 py-3 mt-8">It looks like your wallet is on the wrong network. Make sure you&apos;re on the Matic Network (<a href="https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb" target="_blank" className="underline" rel="noreferrer">learn more</a>).</div>
   }
 
   return (

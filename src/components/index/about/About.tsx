@@ -7,7 +7,7 @@ import swooshWhite from '~/assets/images/swoosh-white.svg';
 export const About = () => {
   return (
     <div className="bg-light overflow-hidden">
-      <Image className="imgfix w-screen overflow-hidden" src={swooshGray} />
+      <Image className="imgfix w-screen overflow-hidden" src={swooshGray} alt="" />
       <div className="grid md:grid-cols-3 content-center max-w-4xl mx-auto text-slate pt-16 pb-24">
         <div className="md:col-span-2 p-4">
           <h1 className="text-4xl font-bold">What are Aww, Rats?</h1>
@@ -23,7 +23,7 @@ export const About = () => {
         </div>
         <Image className="w-full h-full" src={ratBubbles} alt="Some images of sample rats" placeholder="blur" />
       </div>
-      <Image className="imgfix w-screen overflow-hidden" src={swooshWhite} />
+      <Image className="imgfix w-screen overflow-hidden" src={swooshWhite} alt="" />
     </div>
   )
 }

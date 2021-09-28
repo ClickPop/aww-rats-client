@@ -10,7 +10,7 @@ export const Generator = () => {
         <Image className="imgfix overflow-hidden rounded-md mb-8" src={geneRATor} alt="The geneRATor machine." placeholder="blur" />
         <h2 id="generator" className="text-4xl mb-3 font-bold">The GeneRATor</h2>
         <p className="mb-4">The geneRATor is the tool that creates our rats. It designs a rat, assigns it rattributes, creates a backstory for it, and once it&apos;s sure the new critter is unique it to the blockchain.</p>
-        <p className="mb-8">The best part? We're going to open up our geneRATor our holders so they can make their own creations.</p>
+        <p className="mb-8">The best part? We&apos;re going to open up our geneRATor our holders so they can make their own creations.</p>
 
         <h3 className="mb-4 text-2xl font-bold">Rat Pieces</h3>
         <p className="mb-2">Each rat is made up of a number of pieces, some of which appear every time, and some which only appear sometimes:</p>
@@ -28,7 +28,7 @@ export const Generator = () => {
         </ul>
 
         <h3 className="mb-4 text-2xl font-bold">Rattributes</h3>
-        <p className="mb-2">Every rat has a variety of rattributes based on the pieces they're made up of.</p>
+        <p className="mb-2">Every rat has a variety of rattributes based on the pieces they&apos;re made up of.</p>
         <ul className="list-disc pl-8 mb-8">
           <li className="list-item mb-1">Rat type: A rat can be a street, lab, pet, or pack rat based on their dominant rattributes.</li>
           <li className="list-item mb-1">Cunning.</li>
@@ -37,7 +37,7 @@ export const Generator = () => {
         </ul>
 
         <h3 className="mb-4 text-2xl font-bold">Backstory</h3>
-        <p className="mb-2">Based on the type of rat that's created, the geneRATor writes a backstory that describes the rat's backstory.</p>
+        <p className="mb-2">Based on the type of rat that&apos;s created, the geneRATor writes a backstory that describes the rat&apos;s backstory.</p>
       </div>
     </div>
   )
