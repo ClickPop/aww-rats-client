@@ -2,8 +2,8 @@ import React from 'react'
 import { Image } from '~/components/shared/Image'
 import { Link } from '~/components/shared/Link'
 import logo from '~/assets/images/aww-rats-logo.png'
-import discord from '~/assets/svg/discord-logo.svg'
-import twitter from '~/assets/svg/twitter-logo.svg'
+import { TwitterLogo } from '~/components/shared/svg/TwitterLogo'
+import { DiscordLogo } from '~/components/shared/svg/DiscordLogo'
 
 
 export const Header = () => {
@@ -17,8 +17,8 @@ export const Header = () => {
           <Link href="#faqs" className="hover:bg-yellow-200 duration-300 p-2">FAQs</Link>
         </div>
         <div className="flex justify-center items-center space-x-5">
-          <Link href="https://www.twitter.com/awwratspack"><Image src={twitter} alt="Discord Logo" width={32} height={32} /></Link>
-          <Link href="https://discord.gg/2cwxkBkgf5"><Image src={discord} alt="Discord Logo" width={32} height={32} /></Link>
+          <Link href="https://www.twitter.com/awwratspack"><TwitterLogo width={32} height={32} /></Link>
+          <Link href="https://discord.gg/2cwxkBkgf5"><DiscordLogo width={32} height={32} /></Link>
         </div>
       </div>
     </div>

@@ -1,13 +1,15 @@
 import React from 'react'
 import { Image } from '~/components/shared/Image'
 import ratBubbles from '~/assets/images/rat-bubbles.png'
-import swooshGray from '~/assets/images/swoosh-gray.svg'
-import swooshWhite from '~/assets/images/swoosh-white.svg';
+import { GraySwoosh } from '~/components/shared/svg/GraySwoosh'
+import { WhiteSwoosh } from '~/components/shared/svg/WhiteSwoosh'
+
 
 export const About = () => {
   return (
     <div className="bg-light overflow-hidden">
-      <Image className="imgfix w-screen overflow-hidden" src={swooshGray} alt="" />
+      {/* <Image className="imgfix w-screen overflow-hidden" src={swooshGray} alt="" /> */}
+      <GraySwoosh />
       <div className="grid md:grid-cols-3 content-center max-w-4xl mx-auto text-slate pt-16 pb-24">
         <div className="md:col-span-2 p-4">
           <h1 className="text-4xl font-bold">What are Aww, Rats?</h1>
@@ -23,7 +25,7 @@ export const About = () => {
         </div>
         <Image className="w-full h-full" src={ratBubbles} alt="Some images of sample rats" placeholder="blur" />
       </div>
-      <Image className="imgfix w-screen overflow-hidden" src={swooshWhite} alt="" />
+      <WhiteSwoosh />
     </div>
   )
 }
