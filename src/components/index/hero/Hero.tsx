@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { Image } from '~/components/shared/Image'
 import { Link } from '~/components/shared/Link'
+import logo from '~/assets/images/aww-rats-logo.png'
 import rat01 from '~/assets/images/rats/rat-01.png'
 import rat02 from '~/assets/images/rats/rat-02.png'
 import rat03 from '~/assets/images/rats/rat-03.png'
@@ -45,7 +46,8 @@ export const Hero = () => {
   }, [metamaskConn, signer]);
 
   return (
-    <div className="pb-24 pt-16 overflow-hidden text-white w-full">
+    <div className="pb-24 pt-4 overflow-hidden text-white w-full">
+      <Image className="max-w-md mx-auto mb-8 p-4" src={logo} alt="Aww, Rats! Logo" placeholder="blur" />
       <div className="text-center justify-center items-center max-w-4xl mx-auto px-4">
         <h1 className="text-4xl mb-2 font-bold">An NFT Project By Creators, for Creators.</h1>
       </div>
