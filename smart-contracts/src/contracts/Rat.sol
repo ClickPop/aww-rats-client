@@ -13,6 +13,7 @@ contract Rat is ERC721URIStorage, Ownable {
   uint32 public maxTokens = 0;
   uint32 public defaultMaxTokensPerWallet = 15;
   bool public canMint = true;
+  string public baseURI;
 
   uint private _tokenIds = 0;
 
@@ -34,10 +35,11 @@ contract Rat is ERC721URIStorage, Ownable {
   // This is the ERC-20 compliant token we will accept as payment. The address to the token is supplied to the constructor, but we also have a method to change it after the fact if needed
   IERC20 public erc20;
 
-  constructor(string memory initContractURI, address _erc20, uint baseId, uint32 _maxTokens, string memory name, string memory symbol) ERC721(name, symbol) {
+  constructor(string memory initContractURI, string memory baseURI_, address _erc20, uint baseId, uint32 _maxTokens, string memory name, string memory symbol) ERC721(name, symbol) {
     _tokenIds = baseId;
     _contractURI = initContractURI;
     maxTokens = _maxTokens;
+    baseURI = baseURI_;
     erc20 = IERC20(_erc20);
   }
 
@@ -199,6 +201,10 @@ contract Rat is ERC721URIStorage, Ownable {
       emit TokenTransferred(tokenId, to, from, _tokensByOwner[to], _tokensByOwner[from], tokenOwners);
     }
     super._beforeTokenTransfer(from, to, tokenId);
+  }
+
+  function _baseURI() internal view override (ERC721) returns (string memory) {
+    return baseURI;
   }
 
   function removeTokenId(address addr, uint tokenId) internal {

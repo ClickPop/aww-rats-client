@@ -15,7 +15,7 @@ import rat04 from '~/assets/images/rats/rat-04.png'
 import rat05 from '~/assets/images/rats/rat-05.png'
 import rat06 from '~/assets/images/rats/rat-06.png'
 import rat07 from '~/assets/images/rats/rat-07.png'
-// import { Minter } from '~/components/minting/Minter';
+import { Minter } from '~/components/minting/Minter';
 
 export const Hero = () => {
 
@@ -64,11 +64,9 @@ export const Hero = () => {
       </div>
       <div className="text-center justify-center items-center max-w-2xl mx-auto px-4">
         <p className="text-lg mb-8">We&apos;re sharing the tools we built and the skills we learned with all of our rat holders so more artists can make generative art and NFTs.</p>
-        <p className="text-lg">We&apos;re getting ready to launch our mint - join our Discord to be in the know.</p>
-        <p className="mt-8"><Link href="https://discord.gg/2cwxkBkgf5" className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold px-4 py-3">Join the Discord</Link></p>
-        {/* <div className="text-light w-fit mx-auto">
+        <div className="text-light w-fit mx-auto">
           <Minter />
-        </div> */}
+        </div>
       </div>
     </div>
   )
