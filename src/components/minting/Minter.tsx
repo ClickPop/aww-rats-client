@@ -3,6 +3,8 @@ import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
 import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
 import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
+import { Image } from '~/components/shared/Image'
+import loader from '~/assets/images/loader-cheese.gif'
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 
 export const Minter = () => {
@@ -68,24 +70,30 @@ export const Minter = () => {
   };
 
   if (!connected) {
-    return <button className="px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={connectToMetamask}>Connect to MetaMask</button>
+    return <button className="px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={connectToMetamask}>Connect to MetaMask</button>
   }
 
   if (network?.chainId !== CHAIN_ID) {
-    return <div className="px-4 py-3 mt-8">It looks like your wallet is on the wrong network. Make sure you&apos;re on the Matic Network (<a href="https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb" target="_blank" className="underline" rel="noreferrer">learn more</a>).</div>
+    return <div className="px-4 py-3">It looks like your wallet is on the wrong network. Make sure you&apos;re on the Matic Network (<a href="https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb" target="_blank" className="underline" rel="noreferrer">learn more</a>).</div>
   }
 
   return (
     <>
-      {loading === "TOKEN" && <p className="px-4 py-3 mt-8">
-        Minting token...
-      </p>}
-      {loading === "GENERATOR" && <p className="px-4 py-3 mt-8">
-        Generating rat...
-      </p>}
+      {loading === "TOKEN" && <>
+        <Image src={loader} className="w-10 inline-block"/>
+        <p className="px-4 py-2">
+          Minting Token...
+        </p>
+      </>}
+      {loading === "GENERATOR" && <>
+        <Image src={loader} className="w-10 inline-block"/>
+        <p className="px-4 py-@">
+          Generating Rat...
+        </p>
+      </>}
       {!loading && <>
         <div>
-          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold mt-8" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
+          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
         </div>
         <div>
           {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}
