@@ -13,7 +13,7 @@ export const RatRace = () => {
           <p className="mb-8">When you own an Aww, Rat you automatically get an entry into the Rat Race - a regular competition between rats, with fabulous trash prizes.</p>
           <h3 className="mb-4 text-2xl font-bold">What can I win?</h3>
           <p className="mb-8">Each competition will have its own type of prize you can win - from a custom-drawn Aww, Rat NFT to crypto cash prizes and more!</p>
-          <h3 className="mb-4 text-2xl font-bold">How can I compete?.</h3>
+          <h3 className="mb-4 text-2xl font-bold">How can I compete?</h3>
           <p className="mb-2">Just by owning an Aww, Rat token you are automatically entered into the Rat Race!</p>
           <p className="mb-8">n the future, we will have different types of competitions that you may need to enter in order to compete in.</p>
           <h3 className="mb-4 text-2xl font-bold">Where are the competitions held?</h3>
