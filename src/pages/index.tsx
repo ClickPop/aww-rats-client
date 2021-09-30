@@ -13,6 +13,7 @@ const Home: NextPage = () => {
       <Hero />
       <About />
       <Roadmap />
+      <Generator />
       <FAQ />
       <RatRace />
     </Layout>
