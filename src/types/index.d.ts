@@ -14,7 +14,7 @@ export type EthersState = {
   account?: string
 }
 
-export type LOADING_STATE = "TOKEN" | "GENERATOR" | null
+export type LOADING_STATE = "APPROVAL" | "TOKEN" | "GENERATOR" | null
 
 export type GeneratorResponse = {
   status: 'success' | 'error',

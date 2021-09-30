@@ -43,12 +43,13 @@ export const Minter = () => {
   const test = async () => {
     if (contract && provider && signer) {
       try {
-        setLoading("TOKEN");
+        setLoading("APPROVAL");
         const wethAddr = await contract.erc20();
         const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
         const cost = ethers.utils.parseEther(`${ethCost}`);
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
         const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
+        setLoading("TOKEN");
         const tx = await contract.createToken().then(t => t.wait());
         setMintTx(tx.transactionHash)
         const tokenId = tx?.events?.find(e => e.args?.['tokenId'])?.args?.["tokenId"].toString();
@@ -79,18 +80,22 @@ export const Minter = () => {
 
   return (
     <>
-      {loading === "TOKEN" && <>
-        <Image src={loader} className="w-10 inline-block"/>
+      {loading && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
+      {loading === "APPROVAL" && 
+        <p className="px-4 py-2">
+          Approving WETH transfer...
+        </p>
+      }
+      {loading === "TOKEN" && 
         <p className="px-4 py-2">
           Minting Token...
         </p>
-      </>}
-      {loading === "GENERATOR" && <>
-        <Image src={loader} className="w-10 inline-block"/>
+      }
+      {loading === "GENERATOR" && 
         <p className="px-4 py-@">
           Generating Rat...
         </p>
-      </>}
+      }
       {!loading && <>
         <div>
           <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
