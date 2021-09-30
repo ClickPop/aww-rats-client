@@ -17,14 +17,14 @@ import {
   CONTRACT_URI,
   WETH_CONTRACT_ADDRESS,
   ETHERSCAN_API_KEY,
-  BASE_URI
+  DEFAULT_TOKEN_URI
 } from "./src/config/env";
 import { ContractFactory } from "@ethersproject/contracts";
 
-task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "", types.string).addPositionalParam("name", "Name to pass to the contract constructor", "AwwRat", types.string).addPositionalParam("symbol", "Symbol to pass to the contract constructor", "RAT", types.string).addPositionalParam("baseId", "Base Id to pass to the contract constructor", 0, types.int).addPositionalParam("maxTokens", "Max Token Count to pass to the contract constructor", 1000, types.int).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").addOptionalParam("baseUri", "Base URI for tokens to use before the actual token URI is set").setAction(async ({contractUri, tokenAddress, baseUri, contractName, name, symbol, baseId, maxTokens}, {ethers}) => {
+task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "", types.string).addPositionalParam("name", "Name to pass to the contract constructor", "AwwRat", types.string).addPositionalParam("symbol", "Symbol to pass to the contract constructor", "RAT", types.string).addPositionalParam("baseId", "Base Id to pass to the contract constructor", 0, types.int).addPositionalParam("maxTokens", "Max Token Count to pass to the contract constructor", 1000, types.int).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").addOptionalParam("defaultTokenUri", "Default Token URI for tokens to use before the actual token URI is set").setAction(async ({contractUri, tokenAddress, defaultTokenUri, contractName, name, symbol, baseId, maxTokens}, {ethers}) => {
   const [owner] = await ethers.getSigners();
   const Rat = await ethers.getContractFactory(contractName, owner) as ContractFactory;
-  const rat = await Rat.deploy(contractUri ?? CONTRACT_URI, baseUri ?? BASE_URI, tokenAddress ?? WETH_CONTRACT_ADDRESS, baseId, maxTokens, name, symbol).then(r => r.deployed());
+  const rat = await Rat.deploy(contractUri ?? CONTRACT_URI, defaultTokenUri ?? DEFAULT_TOKEN_URI, tokenAddress ?? WETH_CONTRACT_ADDRESS, baseId, maxTokens, name, symbol).then(r => r.deployed());
   console.log(rat.address);
 })
 
