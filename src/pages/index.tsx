@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { Hero } from '~/components/index/hero/Hero';
 import { About } from '~/components/index/about/About';
 import { Roadmap } from '~/components/index/roadmap/Roadmap';
@@ -10,6 +11,9 @@ import { Layout } from '~/components/layout/Layout';
 const Home: NextPage = () => {
   return (
     <Layout className="bg-dark">
+      <Head>
+        <title>Aww, Rats! NFTs</title>
+      </Head>
       <Hero />
       <About />
       <Roadmap />
