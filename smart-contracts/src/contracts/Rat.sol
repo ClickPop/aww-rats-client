@@ -13,6 +13,10 @@ contract Rat is ERC721URIStorage, Ownable {
   uint32 public maxTokens = 0;
   uint32 public defaultMaxTokensPerWallet = 15;
   bool public canMint = true;
+<<<<<<< Updated upstream
+=======
+  string public defaultTokenURI;
+>>>>>>> Stashed changes
 
   uint private _tokenIds = 0;
 
@@ -34,10 +38,11 @@ contract Rat is ERC721URIStorage, Ownable {
   // This is the ERC-20 compliant token we will accept as payment. The address to the token is supplied to the constructor, but we also have a method to change it after the fact if needed
   IERC20 public erc20;
 
-  constructor(string memory initContractURI, address _erc20, uint baseId, uint32 _maxTokens, string memory name, string memory symbol) ERC721(name, symbol) {
+  constructor(string memory initContractURI, string memory _defaultTokenURI, address _erc20, uint baseId, uint32 _maxTokens, string memory name, string memory symbol) ERC721(name, symbol) {
     _tokenIds = baseId;
     _contractURI = initContractURI;
     maxTokens = _maxTokens;
+    defaultTokenURI = _defaultTokenURI;
     erc20 = IERC20(_erc20);
   }
 
@@ -70,22 +75,25 @@ contract Rat is ERC721URIStorage, Ownable {
     // 7. Mint the token
     _safeMint(msg.sender, newItemId);
     
-    // 8. If this is the first token, add this wallet to the array of wallets that own tokens
+    // 8. Set tokenURI to default tokenURI
+    _setTokenURI(newItemId, defaultTokenURI);
+
+    // 9. If this is the first token, add this wallet to the array of wallets that own tokens
     if (firstToken) {
       tokenOwners.push(msg.sender);
     }
 
-    // 9. Increment the number of tokens and the tokenId key
+    // 10. Increment the number of tokens and the tokenId key
     _tokenIds++;
     numTokens++;
 
-    // 10. Add this token id to the list of tokens for this wallet
+    // 11. Add this token id to the list of tokens for this wallet
     _tokensByOwner[msg.sender].push(newItemId);
 
-    // 11. Set the global canMint flag based on the current total tokens
+    // 12. Set the global canMint flag based on the current total tokens
     canMint = numTokens < maxTokens;
 
-    // 12. Emit the token minted event for consumption outside the block-chain
+    // 13. Emit the token minted event for consumption outside the block-chain
     emit TokenMinted(newItemId);
   }
 
