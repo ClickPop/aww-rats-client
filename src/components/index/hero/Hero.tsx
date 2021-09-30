@@ -66,7 +66,7 @@ export const Hero = () => {
         <p className="text-lg mb-8">We&apos;re sharing the tools we built and the skills we learned with all of our rat holders so more artists can make generative art and NFTs.</p>
         <div className="text-light w-fit mx-auto">
           {/* <Minter /> */}
-          <p className="text-lg mb-8">We&apos;re going to be minting soon. Join <Link href="https://discord.gg/2cwxkBkgf5">the Discord</Link> so you know when we're going to launch!</p>
+          <p className="text-lg mb-8">We&apos;re going to be minting soon. Join <Link href="https://discord.gg/2cwxkBkgf5">the Discord</Link> so you know when we&apos;re going to launch!</p>
         </div>
       </div>
     </div>
