@@ -13,10 +13,7 @@ contract Rat is ERC721URIStorage, Ownable {
   uint32 public maxTokens = 0;
   uint32 public defaultMaxTokensPerWallet = 15;
   bool public canMint = true;
-<<<<<<< Updated upstream
-=======
   string public defaultTokenURI;
->>>>>>> Stashed changes
 
   uint private _tokenIds = 0;
 
