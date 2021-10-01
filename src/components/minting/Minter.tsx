@@ -149,6 +149,7 @@ export const Minter = () => {
             <p className="mb-8">{tokenMetadata.description}</p>
             
             <p className="font-semibold">Rattributes and Stats</p>
+            {imageURL && <Image src={imageURL} alt="Your newborn rat" width={352} height={352} className="rounded-full overflow-hidden" />}
             {tokenMetadata.attributes.map(attr => (
               <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
                 {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
