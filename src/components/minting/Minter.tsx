@@ -64,6 +64,7 @@ export const Minter = () => {
           })
         }).then(res => res.json());
         setCompletedRat(rat)
+        setLoading("METADATA")
         const metaHash = rat.data?.tokenUri.split("//")[1];
         if (metaHash) {
           const meta: Metadata = await fetch(`https://ipfs.io/ipfs/${metaHash}`).then(res => res.json());
@@ -71,7 +72,13 @@ export const Minter = () => {
           const imageHash = meta.image.split("//")[1];
           if (imageHash) {
             const imageURL = `https://ipfs.io/ipfs/${imageHash}`;
-            setImageURL(imageURL);
+            fetch(imageURL).then(res => res.blob()).then(data => {
+              const url = URL.createObjectURL(data);
+              setImageURL(url);
+            }).catch(err => {
+              console.error(err);
+              setImageURL('/rat-egg.png');
+            });
           }
         }
         setLoading(null);
@@ -128,7 +135,7 @@ export const Minter = () => {
       {!loading && <>
         <div>
           <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
-          <p className="mt-4 max-w-md mx-auto">You're going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank">a faucet</a> or ask in our discord.</p>
+          <p className="mt-4 max-w-md mx-auto">You&apos;re going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank" rel="noreferrer">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
           {tokenMetadata && <div className="rounded-md max-w-sm mx-auto bg-white p-4 text-gray-800 text-left">
