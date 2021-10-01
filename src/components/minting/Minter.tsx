@@ -128,20 +128,24 @@ export const Minter = () => {
       {!loading && <>
         <div>
           <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
+          <p className="mt-4 max-w-md mx-auto">You're going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
-          {mintTx && completedRat && <p>Your token id is {completedRat.data?.tokenId}. <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">See your transaction on polygonscan</a></p>}
-          {completedRat && <>
-            <p><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
-          </>}
-          {imageURL && <Image src={imageURL} alt="A cute rat" width={384} height={384} />}
-          {tokenMetadata && <div>
-            <h2>Name: {tokenMetadata.name}</h2>
-            <p>Description: {tokenMetadata.description}</p>
+          {tokenMetadata && <div className="rounded-md max-w-sm mx-auto bg-white p-4 text-gray-800 text-left">
+            <h2 className="text-2xl font-semibold mb-4 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
+            {completedRat && <>
+              <p className="mb-2"><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
+            </>}
+
+            {mintTx && completedRat && <p className="mb-4"><a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
+
+            <p className="mb-8">{tokenMetadata.description}</p>
+            
+            <p className="font-semibold">Rattributes and Stats</p>
             {tokenMetadata.attributes.map(attr => (
-              <div key={attr.trait_type ?? attr.value}>
+              <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
                 {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
-                <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p>{attr.trait_type}</p>
+                <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p className="font-semibold">{attr.trait_type}</p>
                 <p>{attr.value}</p></>)}
               </div>
             ))}  
