@@ -138,25 +138,30 @@ export const Minter = () => {
           <p className="mt-4 max-w-md mx-auto">You&apos;re going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank" rel="noreferrer">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
-          {tokenMetadata && <div className="rounded-md max-w-sm mx-auto bg-white p-4 text-gray-800 text-left">
-            <h2 className="text-2xl font-semibold mb-4 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
-            {completedRat && <>
-              <p className="mb-2"><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
-            </>}
+          {tokenMetadata && <div className="rounded-md max-w-sm mx-auto bg-white text-gray-800 text-left">
+            <div className="p-4">
+              <h2 className="text-2xl font-semibold mb-2 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
+              {completedRat && <>
+                <p className="mb-2"><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
+              </>}
 
-            {mintTx && completedRat && <p className="mb-4"><a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
-            {imageURL && <Image src={imageURL} alt="Your newborn rat" width={352} height={352} className="rounded-full overflow-hidden" />}
+              {mintTx && completedRat && <p><a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
+            </div>
 
-            <p className="mb-8">{tokenMetadata.description}</p>
-            
-            <p className="font-semibold">Rattributes and Stats</p>
-            {tokenMetadata.attributes.map(attr => (
-              <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
-                {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
-                <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p className="font-semibold">{attr.trait_type}</p>
-                <p>{attr.value}</p></>)}
-              </div>
-            ))}  
+            {imageURL && <Image src={imageURL} alt="Your newborn rat" width={352} height={352} className="imgfix mb-4" />}
+
+            <div className="p-4">
+              <p className="mb-4">{tokenMetadata.description}</p>
+              
+              <p className="font-semibold">Rattributes and Stats</p>
+              {tokenMetadata.attributes.map(attr => (
+                <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
+                  {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
+                  <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p className="font-semibold">{attr.trait_type}</p>
+                  <p>{attr.value}</p></>)}
+                </div>
+              ))} 
+            </div> 
           </div>}
         </div>
       </>}
