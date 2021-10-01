@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
-import { GeneratorResponse, LOADING_STATE, Rat } from '~/types';
+import { GeneratorResponse, LOADING_STATE, Metadata, Rat } from '~/types';
 import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
 import { Image } from '~/components/shared/Image'
+import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
 
@@ -14,6 +15,8 @@ export const Minter = () => {
   const [loading, setLoading] = useState<LOADING_STATE>(null)
   const [mintTx, setMintTx] = useState("")
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(null)
+  const [imageURL, setImageURL] = useState('');
+  const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
 
   const connectToMetamask = async () => {
     try {
@@ -61,6 +64,16 @@ export const Minter = () => {
           })
         }).then(res => res.json());
         setCompletedRat(rat)
+        const metaHash = rat.data?.tokenUri.split("//")[1];
+        if (metaHash) {
+          const meta: Metadata = await fetch(`https://ipfs.io/ipfs/${metaHash}`).then(res => res.json());
+          setTokenMetadata(meta);
+          const imageHash = meta.image.split("//")[1];
+          if (imageHash) {
+            const imageURL = `https://ipfs.io/ipfs/${imageHash}`;
+            setImageURL(imageURL);
+          }
+        }
         setLoading(null);
       } catch (err: any) {
         // TODO: Handle error better lol
@@ -87,7 +100,7 @@ export const Minter = () => {
             Approving WETH transfer...<br />
           </p>
           <p className="bg-light text-gray-700 rounded-md mt-4 p-3">
-            You'll need to confirm a transaction that gives our smart contract permission to transfer {ethCost} from your wallet.
+            You&apos;ll need to confirm a transaction that gives our smart contract permission to transfer {ethCost} from your wallet.
           </p>
         </>
       }
@@ -97,13 +110,19 @@ export const Minter = () => {
             Minting Token...
           </p>
           <p className="bg-light text-gray-700 rounded-md mt-4 p-3">
-            Now you confirm your actual rat mint. Once the mint is successful, we'll charge you {ethCost} for you rat.
+            Now you confirm your actual rat mint. Once the mint is successful, we&apos;ll charge you {ethCost} for you rat.
           </p>
         </>
       }
       {loading === "GENERATOR" && 
-        <p className="px-4 py-@">
+        <p className="px-4 py-2">
           Generating Rat...
+        </p>
+      }
+
+      {loading === "METADATA" && 
+        <p className="px-4 py-2">
+          Retreiving Metadata...
         </p>
       }
       {!loading && <>
@@ -113,9 +132,20 @@ export const Minter = () => {
         <div className="mt-8">
           {mintTx && completedRat && <p>Your token id is {completedRat.data?.tokenId}. <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">See your transaction on polygonscan</a></p>}
           {completedRat && <>
-            <p><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline">View your new rat on OpenSea</a></p>
-            <p><a href={completedRat.data?.tokenUri} target="_blank" rel="noopener noreferrer">{completedRat.data?.tokenUri}</a></p>
+            <p><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
           </>}
+          {imageURL && <Image src={imageURL} alt="A cute rat" width={384} height={384} />}
+          {tokenMetadata && <div>
+            <h2>Name: {tokenMetadata.name}</h2>
+            <p>Description: {tokenMetadata.description}</p>
+            {tokenMetadata.attributes.map(attr => (
+              <div key={attr.trait_type ?? attr.value}>
+                {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
+                <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p>{attr.trait_type}</p>
+                <p>{attr.value}</p></>)}
+              </div>
+            ))}  
+          </div>}
         </div>
       </>}
     </>
