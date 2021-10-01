@@ -82,14 +82,24 @@ export const Minter = () => {
     <>
       {loading && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
       {loading === "APPROVAL" && 
-        <p className="px-4 py-2">
-          Approving WETH transfer...
-        </p>
+        <>
+          <p className="px-4 py-2">
+            Approving WETH transfer...<br />
+          </p>
+          <p className="bg-light text-gray-700 rounded-md mt-4 p-3">
+            You'll need to confirm a transaction that gives our smart contract permission to transfer {ethCost} from your wallet.
+          </p>
+        </>
       }
       {loading === "TOKEN" && 
-        <p className="px-4 py-2">
-          Minting Token...
-        </p>
+        <>
+          <p className="px-4 py-2">
+            Minting Token...
+          </p>
+          <p className="bg-light text-gray-700 rounded-md mt-4 p-3">
+            Now you confirm your actual rat mint. Once the mint is successful, we'll charge you {ethCost} for you rat.
+          </p>
+        </>
       }
       {loading === "GENERATOR" && 
         <p className="px-4 py-@">
@@ -100,12 +110,11 @@ export const Minter = () => {
         <div>
           <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
         </div>
-        <div>
-          {mintTx && <p>Minting tx: <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer">{mintTx}</a></p>}
+        <div className="mt-8">
+          {mintTx && completedRat && <p>Your token id is {completedRat.data?.tokenId}. <a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">See your transaction on polygonscan</a></p>}
           {completedRat && <>
-            <p>SetTokenURI tx hash: <a href={`https://mumbai.polygonscan.com/tx/${completedRat.data?.txHash}`} target="_blank" rel="noopener noreferrer">{completedRat.data?.txHash}</a></p>
-            <p>Token Id: {completedRat.data?.tokenId}</p>
-            <p>Token URI: <a href={completedRat.data?.tokenUri} target="_blank" rel="noopener noreferrer">{completedRat.data?.tokenUri}</a></p>
+            <p><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline">View your new rat on OpenSea</a></p>
+            <p><a href={completedRat.data?.tokenUri} target="_blank" rel="noopener noreferrer">{completedRat.data?.tokenUri}</a></p>
           </>}
         </div>
       </>}
