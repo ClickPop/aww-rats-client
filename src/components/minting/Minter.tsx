@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
-import { GeneratorResponse, LOADING_STATE, Metadata, Rat } from '~/types';
-import { CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
+import { GeneratorResponse, LOADING_STATE, Metadata, OpenSeaAttribute, Rat } from '~/types';
+import { CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image'
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
@@ -90,6 +90,26 @@ export const Minter = () => {
     }
   };
 
+  const displayRattributes = (attribute: OpenSeaAttribute) => {
+    switch (attribute.display_type) {
+      case 'date':
+        return <>
+          <p className="font-semibold capitalize">{attribute.trait_type}</p>
+          <p>{format(new Date(attribute.value as number * 1000), "MMM dd yyyy")}</p>
+        </>
+      case 'number':
+        return <>
+          <p className="font-semibold capitalize">{attribute.trait_type}</p>
+          <p>{attribute.value} {attribute.max_value !== undefined && `out of ${attribute.max_value}`}</p>
+        </>
+      default:
+        return <>
+          <p className="font-semibold capitalize">{attribute.trait_type}</p>
+          <p>{attribute.value}</p>
+        </>
+    }
+  }
+
   if (!connected) {
     return <button className="px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={connectToMetamask}>Connect to MetaMask</button>
   }
@@ -138,7 +158,7 @@ export const Minter = () => {
           <p className="mt-4 max-w-md mx-auto">You&apos;re going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank" rel="noreferrer">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
-          {tokenMetadata && <div className="rounded-md max-w-sm mx-auto bg-white text-gray-800 text-left">
+          {tokenMetadata && <div className="rounded-md max-w-md mx-auto bg-white text-gray-800 text-left">
             <div className="p-4">
               <h2 className="text-2xl font-semibold mb-2 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
               {completedRat && <>
@@ -148,19 +168,19 @@ export const Minter = () => {
               {mintTx && completedRat && <p><a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
             </div>
 
-            {imageURL && <Image src={imageURL} alt="Your newborn rat" width={352} height={352} className="imgfix mb-4" />}
+            {imageURL && <Image src={imageURL} alt="Your newborn rat" width={448} height={448} className="imgfix mb-4" placeholder="blur" blurDataURL={RAT_EGG_BLUR} />}
 
             <div className="p-4">
               <p className="mb-4">{tokenMetadata.description}</p>
               
               <p className="font-semibold">Rattributes and Stats</p>
-              {tokenMetadata.attributes.map(attr => (
-                <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
-                  {attr.display_type === 'date' ? (<><p>{attr.trait_type}</p>
-                  <p>{format(new Date(attr.value as number * 1000), "MMM dd yyyy")}</p></>) : (<><p className="font-semibold">{attr.trait_type}</p>
-                  <p>{attr.value}</p></>)}
-                </div>
-              ))} 
+              <div className="grid grid-flow-row grid-cols-2 gap-4">
+                {tokenMetadata.attributes.map(attr => (
+                  <div className="mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1" key={attr.trait_type ?? attr.value}>
+                    {displayRattributes(attr)}
+                  </div>
+                ))} 
+              </div>
             </div> 
           </div>}
         </div>
