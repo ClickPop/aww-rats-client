@@ -14,7 +14,7 @@ export type EthersState = {
   account?: string
 }
 
-export type LOADING_STATE = "APPROVAL" | "TOKEN" | "GENERATOR" | null
+export type LOADING_STATE = "APPROVAL" | "TOKEN" | "GENERATOR" | "METADATA" | null
 
 export type GeneratorResponse = {
   status: 'success' | 'error',
@@ -27,4 +27,18 @@ type GeneratorSuccessData = {
   tokenId: string
   tokenUri: string
   txHash: string
+}
+
+export type Metadata = {
+  image: string;
+  name: string;
+  description: string;
+  attributes: OpenSeaAttribute[]
+}
+
+export type OpenSeaAttribute = {
+  trait_type?: string;
+  display_type?: 'string' | 'number' | 'boost_percentage' | 'boost_number' | 'date';
+  value: string | number;
+  max_value?: nunmber;
 }
