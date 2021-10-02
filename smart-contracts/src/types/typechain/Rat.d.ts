@@ -31,6 +31,7 @@ interface RatInterface extends ethers.utils.Interface {
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
     "defaultMaxTokensPerWallet()": FunctionFragment;
+    "defaultTokenURI()": FunctionFragment;
     "erc20()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getBurnedTokens()": FunctionFragment;
@@ -89,6 +90,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "defaultMaxTokensPerWallet",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "defaultTokenURI",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "erc20", values?: undefined): string;
@@ -214,6 +219,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "defaultMaxTokensPerWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "defaultTokenURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "erc20", data: BytesLike): Result;
@@ -401,6 +410,8 @@ export class Rat extends BaseContract {
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<[number]>;
 
+    defaultTokenURI(overrides?: CallOverrides): Promise<[string]>;
+
     erc20(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
@@ -576,6 +587,8 @@ export class Rat extends BaseContract {
 
   defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
 
+  defaultTokenURI(overrides?: CallOverrides): Promise<string>;
+
   erc20(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
@@ -733,6 +746,8 @@ export class Rat extends BaseContract {
     createToken(overrides?: CallOverrides): Promise<void>;
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
+
+    defaultTokenURI(overrides?: CallOverrides): Promise<string>;
 
     erc20(overrides?: CallOverrides): Promise<string>;
 
@@ -958,6 +973,8 @@ export class Rat extends BaseContract {
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<BigNumber>;
 
+    defaultTokenURI(overrides?: CallOverrides): Promise<BigNumber>;
+
     erc20(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
@@ -1138,6 +1155,8 @@ export class Rat extends BaseContract {
     defaultMaxTokensPerWallet(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    defaultTokenURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     erc20(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
