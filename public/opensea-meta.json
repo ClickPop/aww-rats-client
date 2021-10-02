@@ -1,0 +1,8 @@
+{
+"name": "Aww, Rats!",
+"description": "[Aww, Rats!](https://awwrats.com/) is a pack of 1,000 adorable little vermiNFTs that live on the blockchain.",
+"image": "https://awwrats.com/rat.png",
+"external_link": "https://awwrats.com/",
+"seller_fee_basis_points": 500,
+"fee_recipient": "0x38882F37879aE3d53100F90651Df448960dB4975"
+}
