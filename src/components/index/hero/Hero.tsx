@@ -8,6 +8,7 @@ import rat04 from '~/assets/images/rats/rat-04.png'
 import rat05 from '~/assets/images/rats/rat-05.png'
 import rat06 from '~/assets/images/rats/rat-06.png'
 import rat07 from '~/assets/images/rats/rat-07.png'
+import { Link } from '~/components/shared/Link'
 // import { Minter } from '~/components/minting/Minter'
 
 export const Hero = () => {
