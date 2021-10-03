@@ -24,7 +24,6 @@ interface RatInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "baseURI()": FunctionFragment;
     "burnToken(uint256)": FunctionFragment;
     "burnedTokens(uint256)": FunctionFragment;
     "canMint()": FunctionFragment;
@@ -72,7 +71,6 @@ interface RatInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "burnToken",
     values: [BigNumberish]
@@ -209,7 +207,6 @@ interface RatInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "burnedTokens",
@@ -400,8 +397,6 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    baseURI(overrides?: CallOverrides): Promise<[string]>;
-
     burnToken(
       id: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -584,8 +579,6 @@ export class Rat extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  baseURI(overrides?: CallOverrides): Promise<string>;
-
   burnToken(
     id: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -755,8 +748,6 @@ export class Rat extends BaseContract {
     ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseURI(overrides?: CallOverrides): Promise<string>;
 
     burnToken(id: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -984,8 +975,6 @@ export class Rat extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    baseURI(overrides?: CallOverrides): Promise<BigNumber>;
-
     burnToken(
       id: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1171,8 +1160,6 @@ export class Rat extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    baseURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     burnToken(
       id: BigNumberish,
