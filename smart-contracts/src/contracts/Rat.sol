@@ -13,7 +13,7 @@ contract Rat is ERC721URIStorage, Ownable {
   uint32 public maxTokens = 99;
   uint32 public defaultMaxTokensPerWallet = 1;
   bool public canMint = true;
-  string public defaultTokenURI = "https://awwrats.com/opensea-metadata.json";
+  string public defaultTokenURI = "https://www.awwrats.com/default-erc721-token-metadata.json";
 
   uint private _tokenIds = 0;
 
@@ -250,7 +250,7 @@ contract Rat is ERC721URIStorage, Ownable {
   }
 
   // This is used by OpenSea to auto-populate our contract as a collection
-  string private _contractURI = "https://www.awwrats.com/default-erc721-token-metadata.json";
+  string private _contractURI = "https://awwrats.com/opensea-metadata.json";
   
   function contractURI() public view returns (string memory) {
     return _contractURI;
