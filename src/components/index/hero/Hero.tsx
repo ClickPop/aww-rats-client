@@ -9,7 +9,6 @@ import rat05 from '~/assets/images/rats/rat-05.png'
 import rat06 from '~/assets/images/rats/rat-06.png'
 import rat07 from '~/assets/images/rats/rat-07.png'
 import { Minter } from '~/components/minting/Minter'
-import { Link } from '~/components/shared/Link'
 
 export const Hero = () => {
   return (
@@ -33,7 +32,6 @@ export const Hero = () => {
         <p className="text-lg mb-8">We&apos;re sharing the tools we built and the skills we learned with all of our rat holders so more artists can make generative art and NFTs.</p>
         <div className="text-light w-fit mx-auto">
           <Minter />
-          <p className="text-lg mb-8">We&apos;re going to be minting soon. Join <Link href="https://discord.gg/2cwxkBkgf5">the Discord</Link> so you know when we&apos;re going to launch!</p>
         </div>
       </div>
     </div>
