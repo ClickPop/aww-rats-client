@@ -10,10 +10,10 @@ contract Rat is ERC721URIStorage, Ownable {
 
   uint public numTokens = 0;
   uint public cost = 0.025 ether;
-  uint32 public maxTokens = 0;
-  uint32 public defaultMaxTokensPerWallet = 15;
+  uint32 public maxTokens = 99;
+  uint32 public defaultMaxTokensPerWallet = 1;
   bool public canMint = true;
-  string public defaultTokenURI;
+  string public defaultTokenURI = "https://awwrats.com/opensea-metadata.json";
 
   uint private _tokenIds = 0;
 
@@ -24,10 +24,11 @@ contract Rat is ERC721URIStorage, Ownable {
   mapping (address => uint[]) private _tokensByOwner;
   mapping (address => uint[]) private _burnedTokensByOwner;
   
+  // A maxTokensPerWallet of 0 is equivalent to an uncapped wallet (i.e. it can have an "infinite number of tokens" as long as the maximum token count hasn't been reached)
   mapping (address => uint32) public maxTokensPerWallet;
   mapping (address => bool) public walletBans;
 
-  // These events are used for us to track state changing transactions by type and avoid using the catch all Trasnfer event.
+  // These events are used for us to track state changing transactions by type and avoid using the catch all Transfer event.
   event TokenMinted(uint tokenId);
   event TokenBurned(uint tokenId, address tokenOwner);
   event TokenTransferred(uint tokenId, address newOwner, address oldOwner, uint[] newOwnerTokens, uint[] oldOwnerTokens, address[] tokenOwners);
@@ -35,11 +36,13 @@ contract Rat is ERC721URIStorage, Ownable {
   // This is the ERC-20 compliant token we will accept as payment. The address to the token is supplied to the constructor, but we also have a method to change it after the fact if needed
   IERC20 public erc20;
 
-  constructor(string memory initContractURI, string memory _defaultTokenURI, address _erc20, uint baseId, uint32 _maxTokens, string memory name, string memory symbol) ERC721(name, symbol) {
-    _tokenIds = baseId;
-    _contractURI = initContractURI;
-    maxTokens = _maxTokens;
-    defaultTokenURI = _defaultTokenURI;
+  constructor(string memory initContractURI, string memory _defaultTokenURI, address _erc20, uint baseId, uint32 _maxTokens, uint32 _defaultMaxTokensPerWallet, uint _cost, string memory name, string memory symbol) ERC721(name, symbol) {
+    _tokenIds = baseId != 0 ? baseId : 0;
+    _contractURI = bytes(initContractURI).length != 0 ? initContractURI : _contractURI;
+    maxTokens = maxTokens != 100 ? _maxTokens : maxTokens;
+    defaultTokenURI = bytes(_defaultTokenURI).length != 0 ? _defaultTokenURI : defaultTokenURI;
+    defaultMaxTokensPerWallet = _defaultMaxTokensPerWallet != 1 ? _defaultMaxTokensPerWallet : defaultMaxTokensPerWallet;
+    cost = _cost;
     erc20 = IERC20(_erc20);
   }
 
@@ -63,8 +66,8 @@ contract Rat is ERC721URIStorage, Ownable {
       maxTokensPerWallet[msg.sender] = defaultMaxTokensPerWallet;
     }
 
-    // 5. Checks that the balance of tokens for that wallet is less or equal than the max
-    require(balanceOf(msg.sender) <= maxTokensPerWallet[msg.sender], "Max tokens reached for wallet");
+    // 5. Checks that the balance of tokens for that wallet is less or equal than the max or that the max tokens for the wallet is 0, meaning it is uncapped.
+    require(balanceOf(msg.sender) < maxTokensPerWallet[msg.sender] || maxTokensPerWallet[msg.sender] == 0, "Max tokens reached for wallet");
 
     // 6. Transfers tokens from the sender of the transaction to the owner of the smart contract equal to the cost specified
     erc20.safeTransferFrom(msg.sender, owner(), cost);
@@ -165,16 +168,24 @@ contract Rat is ERC721URIStorage, Ownable {
     canMint = numTokens < maxTokens;
   }
 
-  function setMaxTokensPerWallet(address wallet, uint32 max) public onlyOwner {
-    maxTokensPerWallet[wallet] = max;
+  function setMaxTokensForWallets(address[] memory wallets, uint32 max) public onlyOwner {
+    for (uint256 i = 0; i < wallets.length; i++) {
+      maxTokensPerWallet[wallets[i]] = max;
+    }
   }
 
-  function setWalletBan(address wallet, bool banned) public onlyOwner {
-    walletBans[wallet] = banned;
+  function setWalletBan(address[] memory wallets, bool banned) public onlyOwner {
+    for (uint256 i = 0; i < wallets.length; i++) {
+      walletBans[wallets[i]] = banned;
+    }
   }
 
   function setMintingStatus(bool status) public onlyOwner {
     canMint = status;
+  }
+
+  function setDefaultMaxTokensPerWallet(uint32 _defaultMaxTokensPerWallet) public onlyOwner {
+    defaultMaxTokensPerWallet = _defaultMaxTokensPerWallet;
   }
 
   /** 
@@ -243,7 +254,7 @@ contract Rat is ERC721URIStorage, Ownable {
   }
 
   // This is used by OpenSea to auto-populate our contract as a collection
-  string private _contractURI;
+  string private _contractURI = "https://www.awwrats.com/default-erc721-token-metadata.json";
   
   function contractURI() public view returns (string memory) {
     return _contractURI;
