@@ -217,10 +217,6 @@ contract Rat is ERC721URIStorage, Ownable {
     super._beforeTokenTransfer(from, to, tokenId);
   }
 
-  function _baseURI() internal view override (ERC721) returns (string memory) {
-    return baseURI;
-  }
-
   function removeTokenId(address addr, uint tokenId) internal {
     uint numTokensByOwner = _tokensByOwner[addr].length;
     for (uint256 i = 0; i < numTokensByOwner; i++) {
