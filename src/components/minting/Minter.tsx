@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
 import { GeneratorResponse, LOADING_STATE, Metadata, OpenSeaAttribute, Rat } from '~/types';
-import { CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
+import { ALLOWED_WALLETS, CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image'
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
@@ -17,6 +17,8 @@ export const Minter = () => {
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(null)
   const [imageURL, setImageURL] = useState('');
   const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
+  const [access, setAccess] = useState<'loading' | 'granted' | 'denied'>('loading');
+  const [mintingError, setMintingError] = useState('');
 
   const connectToMetamask = async () => {
     try {
@@ -46,12 +48,14 @@ export const Minter = () => {
   const test = async () => {
     if (contract && provider && signer) {
       try {
-        setLoading("APPROVAL");
-        const wethAddr = await contract.erc20();
-        const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
-        const cost = ethers.utils.parseEther(`${ethCost}`);
-        const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
-        const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
+        if (ethCost !== 0) {
+          setLoading("APPROVAL");
+          const wethAddr = await contract.erc20();
+          const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
+          const cost = ethers.utils.parseEther(`${ethCost}`);
+          const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
+          const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
+        }
         setLoading("TOKEN");
         const tx = await contract.createToken().then(t => t.wait());
         setMintTx(tx.transactionHash)
@@ -84,7 +88,14 @@ export const Minter = () => {
         setLoading(null);
       } catch (err: any) {
         // TODO: Handle error better lol
-        console.error(err.message);
+        switch (err.data.message) {
+          case 'execution reverted: Max tokens reached for wallet':
+            setMintingError('Sorry, looks like you have reached the max number of tokens allowed per wallet.');
+            break;
+          default:
+            break;
+        }
+        console.error(err.message, err.data.message);
         setLoading(null);
       }
     }
@@ -110,6 +121,16 @@ export const Minter = () => {
     }
   }
 
+  useEffect(() => {
+    const checkAccess = async () => {
+      const addr = await signer?.getAddress();
+      if (addr) {
+        setAccess(ALLOWED_WALLETS?.includes(addr) ? 'granted' : 'denied');
+      }
+    }
+    checkAccess();
+  });
+
   if (!connected) {
     return <button className="px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={connectToMetamask}>Connect to MetaMask</button>
   }
@@ -118,9 +139,23 @@ export const Minter = () => {
     return <div className="px-4 py-3">It looks like your wallet is on the wrong network. Make sure you&apos;re on the Matic Network (<a href="https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb" target="_blank" className="underline" rel="noreferrer">learn more</a>).</div>
   }
 
+  
+  if (access === 'denied') {
+    return <div>
+      <p>YOU SHALL NOT MINT! <span role="img" aria-label="WIZARD">🧙‍♂️</span></p>
+      <p>But you will be able to soon. <span role="img" aria-label="RAT">🐀</span></p>
+    </div>
+  }
+  
+  if (mintingError) {
+    return <div>
+      <p>{mintingError}</p>
+    </div>
+  }
+
   return (
     <>
-      {loading && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
+      {loading || access === 'loading' && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
       {loading === "APPROVAL" && 
         <>
           <p className="px-4 py-2">
@@ -154,7 +189,7 @@ export const Minter = () => {
       }
       {!loading && <>
         <div>
-          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost}weth</span></button>
+          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost === 0 ? 'FREE' : `${ethCost}weth`}</span></button>
           <p className="mt-4 max-w-md mx-auto">You&apos;re going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank" rel="noreferrer">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
