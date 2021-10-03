@@ -1,12 +1,5 @@
 import React from 'react'
-import { ethers, utils, BigNumber } from 'ethers';
-import { CONTRACT_ADDRESS } from '~/config/env';
-import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
-import { Rat } from '~/types';
-import { useEffect, useState } from 'react';
-import { useEthers } from '~/hooks/useEthers';
 import { Image } from '~/components/shared/Image'
-import { Link } from '~/components/shared/Link'
 import logo from '~/assets/images/aww-rats-logo.png'
 import rat01 from '~/assets/images/rats/rat-01.png'
 import rat02 from '~/assets/images/rats/rat-02.png'
@@ -15,36 +8,10 @@ import rat04 from '~/assets/images/rats/rat-04.png'
 import rat05 from '~/assets/images/rats/rat-05.png'
 import rat06 from '~/assets/images/rats/rat-06.png'
 import rat07 from '~/assets/images/rats/rat-07.png'
+import { Link } from '~/components/shared/Link'
 // import { Minter } from '~/components/minting/Minter'
 
 export const Hero = () => {
-
-  const [metamaskConn, setMetamaskConn] = useState(false);
-  const [ethCost, setEthCost] = useState(0);
-  const [contract, setContract] = useState<Rat | null>(null);
-  const { provider, signer } = useEthers();
-
-  const connectToMetamask = async () => {
-    try {
-      await provider?.send("eth_requestAccounts", []);
-      setMetamaskConn(true);
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  useEffect(() => {
-    (async () => {
-      if (CONTRACT_ADDRESS && metamaskConn) {
-        const c = new ethers.Contract(CONTRACT_ADDRESS, RatABI.abi, signer) as Rat
-        setContract(c);
-        c.cost().then(data => {
-          setEthCost(parseFloat(utils.formatEther(data)));
-        })
-      }
-    })();
-  }, [metamaskConn, signer]);
-
   return (
     <div className="pb-24 pt-4 overflow-hidden text-white w-full">
       <Image className="max-w-md mx-auto mb-8 p-4" src={logo} alt="Aww, Rats! Logo" placeholder="blur" />

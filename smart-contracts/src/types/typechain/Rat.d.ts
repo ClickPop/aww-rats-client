@@ -32,6 +32,7 @@ interface RatInterface extends ethers.utils.Interface {
     "cost()": FunctionFragment;
     "createToken()": FunctionFragment;
     "defaultMaxTokensPerWallet()": FunctionFragment;
+    "defaultTokenURI()": FunctionFragment;
     "erc20()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getBurnedTokens()": FunctionFragment;
@@ -50,11 +51,12 @@ interface RatInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setContractURI(string)": FunctionFragment;
     "setCost(uint256)": FunctionFragment;
+    "setDefaultMaxTokensPerWallet(uint32)": FunctionFragment;
     "setERC20Address(address)": FunctionFragment;
     "setMaxTokens(uint32)": FunctionFragment;
-    "setMaxTokensPerWallet(address,uint32)": FunctionFragment;
+    "setMaxTokensForWallets(address[],uint32)": FunctionFragment;
     "setMintingStatus(bool)": FunctionFragment;
-    "setWalletBan(address,bool)": FunctionFragment;
+    "setWalletBan(address[],bool)": FunctionFragment;
     "storeAsset(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -91,6 +93,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "defaultMaxTokensPerWallet",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "defaultTokenURI",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "erc20", values?: undefined): string;
@@ -151,6 +157,10 @@ interface RatInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setDefaultMaxTokensPerWallet",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setERC20Address",
     values: [string]
   ): string;
@@ -159,8 +169,8 @@ interface RatInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setMaxTokensPerWallet",
-    values: [string, BigNumberish]
+    functionFragment: "setMaxTokensForWallets",
+    values: [string[], BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMintingStatus",
@@ -168,7 +178,7 @@ interface RatInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setWalletBan",
-    values: [string, boolean]
+    values: [string[], boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "storeAsset",
@@ -217,6 +227,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "defaultMaxTokensPerWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "defaultTokenURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "erc20", data: BytesLike): Result;
@@ -271,6 +285,10 @@ interface RatInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setCost", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setDefaultMaxTokensPerWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setERC20Address",
     data: BytesLike
   ): Result;
@@ -279,7 +297,7 @@ interface RatInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setMaxTokensPerWallet",
+    functionFragment: "setMaxTokensForWallets",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -406,6 +424,8 @@ export class Rat extends BaseContract {
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<[number]>;
 
+    defaultTokenURI(overrides?: CallOverrides): Promise<[string]>;
+
     erc20(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
@@ -486,6 +506,11 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setDefaultMaxTokensPerWallet(
+      _defaultMaxTokensPerWallet: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setERC20Address(
       newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -496,8 +521,8 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setMaxTokensPerWallet(
-      wallet: string,
+    setMaxTokensForWallets(
+      wallets: string[],
       max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -508,7 +533,7 @@ export class Rat extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setWalletBan(
-      wallet: string,
+      wallets: string[],
       banned: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -582,6 +607,8 @@ export class Rat extends BaseContract {
   ): Promise<ContractTransaction>;
 
   defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
+
+  defaultTokenURI(overrides?: CallOverrides): Promise<string>;
 
   erc20(overrides?: CallOverrides): Promise<string>;
 
@@ -657,6 +684,11 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setDefaultMaxTokensPerWallet(
+    _defaultMaxTokensPerWallet: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setERC20Address(
     newAddr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -667,8 +699,8 @@ export class Rat extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setMaxTokensPerWallet(
-    wallet: string,
+  setMaxTokensForWallets(
+    wallets: string[],
     max: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -679,7 +711,7 @@ export class Rat extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setWalletBan(
-    wallet: string,
+    wallets: string[],
     banned: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -742,6 +774,8 @@ export class Rat extends BaseContract {
     createToken(overrides?: CallOverrides): Promise<void>;
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<number>;
+
+    defaultTokenURI(overrides?: CallOverrides): Promise<string>;
 
     erc20(overrides?: CallOverrides): Promise<string>;
 
@@ -815,6 +849,11 @@ export class Rat extends BaseContract {
 
     setCost(newCost: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
+    setDefaultMaxTokensPerWallet(
+      _defaultMaxTokensPerWallet: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setERC20Address(newAddr: string, overrides?: CallOverrides): Promise<void>;
 
     setMaxTokens(
@@ -822,8 +861,8 @@ export class Rat extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setMaxTokensPerWallet(
-      wallet: string,
+    setMaxTokensForWallets(
+      wallets: string[],
       max: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -831,7 +870,7 @@ export class Rat extends BaseContract {
     setMintingStatus(status: boolean, overrides?: CallOverrides): Promise<void>;
 
     setWalletBan(
-      wallet: string,
+      wallets: string[],
       banned: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -969,6 +1008,8 @@ export class Rat extends BaseContract {
 
     defaultMaxTokensPerWallet(overrides?: CallOverrides): Promise<BigNumber>;
 
+    defaultTokenURI(overrides?: CallOverrides): Promise<BigNumber>;
+
     erc20(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
@@ -1049,6 +1090,11 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setDefaultMaxTokensPerWallet(
+      _defaultMaxTokensPerWallet: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setERC20Address(
       newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1059,8 +1105,8 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setMaxTokensPerWallet(
-      wallet: string,
+    setMaxTokensForWallets(
+      wallets: string[],
       max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1071,7 +1117,7 @@ export class Rat extends BaseContract {
     ): Promise<BigNumber>;
 
     setWalletBan(
-      wallet: string,
+      wallets: string[],
       banned: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1151,6 +1197,8 @@ export class Rat extends BaseContract {
     defaultMaxTokensPerWallet(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    defaultTokenURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     erc20(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1232,6 +1280,11 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setDefaultMaxTokensPerWallet(
+      _defaultMaxTokensPerWallet: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setERC20Address(
       newAddr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1242,8 +1295,8 @@ export class Rat extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setMaxTokensPerWallet(
-      wallet: string,
+    setMaxTokensForWallets(
+      wallets: string[],
       max: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1254,7 +1307,7 @@ export class Rat extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setWalletBan(
-      wallet: string,
+      wallets: string[],
       banned: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
