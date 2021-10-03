@@ -7,6 +7,7 @@ import { Image } from '~/components/shared/Image'
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
+import { Link } from '~/components/shared/Link';
 
 export const Minter = () => {
   const { provider, signer, network, connected, account } = useEthers();
@@ -141,10 +142,7 @@ export const Minter = () => {
 
   
   if (access === 'denied') {
-    return <div>
-      <p>YOU SHALL NOT MINT! <span role="img" aria-label="WIZARD">🧙‍♂️</span></p>
-      <p>But you will be able to soon. <span role="img" aria-label="RAT">🐀</span></p>
-    </div>
+    return <p className="text-lg mb-8">We&apos;re going to be minting soon. Join <Link href="https://discord.gg/2cwxkBkgf5">the Discord</Link> so you know when we&apos;re going to launch!</p>
   }
   
   if (mintingError) {
@@ -155,7 +153,7 @@ export const Minter = () => {
 
   return (
     <>
-      {loading || access === 'loading' && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
+      {(loading || access === 'loading') && <Image src={loader} className="w-10 inline-block" alt="Rat Cheese Loader"/>}
       {loading === "APPROVAL" && 
         <>
           <p className="px-4 py-2">
@@ -197,10 +195,10 @@ export const Minter = () => {
             <div className="p-4">
               <h2 className="text-2xl font-semibold mb-2 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
               {completedRat && <>
-                <p className="mb-2"><a href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
+                <p className="mb-2"><a href={`https://${(process.env.VERCEL && process.env.VERCEL_ENV === 'production') ? '' : 'testnets.'}opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
               </>}
 
-              {mintTx && completedRat && <p><a href={`https://mumbai.polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
+              {mintTx && completedRat && <p><a href={`https://${(process.env.VERCEL && process.env.VERCEL_ENV === 'production') ? '' : 'mumbai.'}polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
             </div>
 
             {imageURL && <Image src={imageURL} alt="Your newborn rat" width={448} height={448} className="imgfix mb-4" placeholder="blur" blurDataURL={RAT_EGG_BLUR} />}
