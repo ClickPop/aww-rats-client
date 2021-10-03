@@ -8,4 +8,4 @@ export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 export const CONTRACT_URI = process.env.CONTRACT_URI ?? ""
 export const WETH_CONTRACT_ADDRESS = process.env.WETH_CONTRACT_ADDRESS ?? ""
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY ?? ""
-export const BASE_URI = process.env.BASE_URI ?? ""
+export const DEFAULT_TOKEN_URI = process.env.DEFAULT_TOKEN_URI ?? ""
