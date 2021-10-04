@@ -126,7 +126,7 @@ export const Minter = () => {
     const checkAccess = async () => {
       const addr = await signer?.getAddress();
       if (addr) {
-        setAccess(ALLOWED_WALLETS?.includes(addr) ? 'granted' : 'denied');
+        setAccess(ALLOWED_WALLETS?.includes(addr.toLowerCase()) ? 'granted' : 'denied');
       }
     }
     checkAccess();
