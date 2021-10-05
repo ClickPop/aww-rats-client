@@ -16,7 +16,7 @@
 
 ## Helpful scripts
 
-Sometimes we want to make changes or check on some stuff with our contract. I wrote a couple scripts (Hardhat calls them "tasks") that make managing it a breeze.
+Sometimes we want to make changes or check on some stuff with our contract. I wrote a couple scripts (Hardhat calls them ["tasks"](https://hardhat.org/guides/create-task.html)) that make managing it a breeze.
 
 Just run `yarn hardhat` to see a list of all the available tasks and flags. The couple to note are:
 - `list-limbo-rats`
