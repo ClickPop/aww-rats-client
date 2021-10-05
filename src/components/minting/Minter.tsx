@@ -195,7 +195,7 @@ export const Minter = () => {
             <div className="p-4">
               <h2 className="text-2xl font-semibold mb-2 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
               {completedRat && <>
-                <p className="mb-2"><a href={`https://opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
+                <p className="mb-2"><a href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
               </>}
 
               {mintTx && completedRat && <p><a href={`https://polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
