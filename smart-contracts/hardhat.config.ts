@@ -21,6 +21,7 @@ import {
 } from "./src/config/env";
 import { ContractFactory } from "@ethersproject/contracts";
 import { parseEther } from "@ethersproject/units";
+import axios from "axios";
 
 task("deploy", "Deploy contract to the blockchain").addPositionalParam("contractName", "Contract to deploy (This is case sensitive, use the same name of the contract)", "Rat", types.string).addPositionalParam("name", "Name to pass to the contract constructor", "AwwRat", types.string).addPositionalParam("symbol", "Symbol to pass to the contract constructor", "RAT", types.string).addPositionalParam("baseId", "Base Id to pass to the contract constructor", 100, types.int).addPositionalParam("maxTokens", "Max Token Count to pass to the contract constructor", 99, types.int).addOptionalParam("contractUri", "The URI to the base contract metadata used by Opensea").addOptionalParam("tokenAddress", "Address of the ERC-20 contract we are using for accepting payments").addOptionalParam("defaultTokenUri", "Default Token URI for tokens to use before the actual token URI is set").addOptionalParam("cost", "Cost to mint a token", 0, types.float).setAction(async ({contractUri, tokenAddress, defaultTokenUri, contractName, name, symbol, baseId, maxTokens, cost}, {ethers}) => {
   try {
@@ -71,6 +72,43 @@ task("update-cost", "Update the cost of minting a token in ether").addPositional
     console.error(err)
   }
 })
+
+task('regenerate-rat', "Regenerate a Rat that doesn't have metadata").addPositionalParam("id", "Token ID to update").setAction(async ({id}, hre) => {
+  try {
+    const [signer] = await hre.ethers.getSigners();
+    const Rat = await hre.ethers.getContractFactory("Rat", signer)
+    const rat = Rat.attach(CONTRACT_ADDRESS ?? "")
+    const uri = await rat.tokenURI(id);
+    if (uri !== 'https://www.awwrats.com/default-erc721-token-metadata.json') {
+      throw new Error("Token already has metadata");
+    }
+    const res = await axios.post("https://awwrats.com/api/generate-rat", {
+      "tokenId": `${id}`
+    });
+    // @ts-ignore
+    console.log("Token stored", {id, txHash: res.data.data.txHash, tokenUri: res.data.data.tokenUri});
+  } catch (err) {
+    console.error(err)
+  }
+});
+
+task('list-limbo-rats', "Lists all rats that don't have an IPFS uri set for the token").setAction(async (_, hre) => {
+  try {
+    const [signer] = await hre.ethers.getSigners();
+    const Rat = await hre.ethers.getContractFactory("Rat", signer)
+    const rat = Rat.attach(CONTRACT_ADDRESS ?? "")
+    const numTokens = await rat.numTokens();
+    const tokenIds = new Array(numTokens.toNumber()).fill(0).map((_, i) => i + 100);
+    for (const id of tokenIds) {
+      const uri = await rat.tokenURI(id);
+      if (uri === 'https://www.awwrats.com/default-erc721-token-metadata.json') {
+        console.log(id);
+      }
+    }
+  } catch (err) {
+    console.error(err)
+  }
+});
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
