@@ -38,9 +38,13 @@ export const Minter = () => {
           c.cost().then(data => {
             setEthCost(parseFloat(ethers.utils.formatEther(data)));
           })
+          c.canMint().then(canMint => {
+            if (!canMint) {
+              setMintingError("Minting is currently closed.");
+            }
+          })
         } catch (err) {
           console.error(err);
-
         }
       }
     })();
@@ -55,6 +59,12 @@ export const Minter = () => {
           const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
           const cost = ethers.utils.parseEther(`${ethCost}`);
           const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
+          if (bal.lt(cost)) {
+            const signerAddr = await signer.getAddress();
+            const err = `Insufficient WETH. Cost is ${ethers.utils.formatEther(cost)}. Wallet balance at address ${signerAddr} is ${bal}`;
+            setMintingError(err);
+            throw new Error(err);
+          }
           const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
         }
         setLoading("TOKEN");
@@ -69,14 +79,18 @@ export const Minter = () => {
           })
         }).then(res => res.json());
         setCompletedRat(rat)
+        if (provider && rat.data) {
+          const tx = await provider.getTransaction(rat.data.txHash);
+          await tx.wait();
+        }
         setLoading("METADATA")
         const metaHash = rat.data?.tokenUri.split("//")[1];
         if (metaHash) {
-          const meta: Metadata = await fetch(`https://ipfs.io/ipfs/${metaHash}`).then(res => res.json());
+          const meta: Metadata = await fetch(`https://gateway.pinata.cloud/ipfs/${metaHash}`).then(res => res.json());
           setTokenMetadata(meta);
           const imageHash = meta.image.split("//")[1];
           if (imageHash) {
-            const imageURL = `https://ipfs.io/ipfs/${imageHash}`;
+            const imageURL = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
             fetch(imageURL).then(res => res.blob()).then(data => {
               const url = URL.createObjectURL(data);
               setImageURL(url);
@@ -89,14 +103,21 @@ export const Minter = () => {
         setLoading(null);
       } catch (err: any) {
         // TODO: Handle error better lol
-        switch (err.data.message) {
-          case 'execution reverted: Max tokens reached for wallet':
-            setMintingError('Sorry, looks like you have reached the max number of tokens allowed per wallet.');
-            break;
-          default:
-            break;
+        if (err.data?.message) {
+          switch (err.data.message) {
+            case 'execution reverted: Max tokens reached for wallet':
+              setMintingError('Sorry, looks like you have reached the max number of tokens allowed per wallet.');
+              break;
+            default:
+              setMintingError(`An error occurred. Please copy this error and reach out to use in Discord so we can see what might have happened: ${err.data.message}`)
+              break;
+          }
+        } else if (err?.message) {
+          if (err.message !== "MetaMask Tx Signature: User denied transaction signature.") {
+            setMintingError(`An error occurred. Please copy this error and reach out to use in Discord so we can see what might have happened: ${err.message}`)
+          }
         }
-        console.error(err.message, err.data.message);
+        console.error(err?.message, err.data?.message);
         setLoading(null);
       }
     }
