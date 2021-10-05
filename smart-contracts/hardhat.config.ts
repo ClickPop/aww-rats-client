@@ -73,7 +73,7 @@ task("update-cost", "Update the cost of minting a token in ether").addPositional
   }
 })
 
-task('regenerate-rat', "Regenerate a Rat that doesn't have metadata").addPositionalParam("id", "Token ID to update").setAction(async ({id}, hre) => {
+task('regenerate-rat', "Regenerate a Rat that doesn't have metadata").addPositionalParam("id", "Token ID to update", 0, types.int).setAction(async ({id}, hre) => {
   try {
     const [signer] = await hre.ethers.getSigners();
     const Rat = await hre.ethers.getContractFactory("Rat", signer)
