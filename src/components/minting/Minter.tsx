@@ -126,7 +126,7 @@ export const Minter = () => {
     const checkAccess = async () => {
       const addr = await signer?.getAddress();
       if (addr) {
-        setAccess(ALLOWED_WALLETS?.includes(addr) ? 'granted' : 'denied');
+        setAccess(ALLOWED_WALLETS?.includes(addr.toLowerCase()) ? 'granted' : 'denied');
       }
     }
     checkAccess();
@@ -195,10 +195,10 @@ export const Minter = () => {
             <div className="p-4">
               <h2 className="text-2xl font-semibold mb-2 mt-2">Your new friend {tokenMetadata.name} was just born!</h2>
               {completedRat && <>
-                <p className="mb-2"><a href={`https://${(process.env.VERCEL && process.env.VERCEL_ENV === 'production') ? '' : 'testnets.'}opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
+                <p className="mb-2"><a href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${completedRat.data?.tokenId}`} target="_blank" className="underline" rel="noreferrer">View your new rat on OpenSea</a></p>
               </>}
 
-              {mintTx && completedRat && <p><a href={`https://${(process.env.VERCEL && process.env.VERCEL_ENV === 'production') ? '' : 'mumbai.'}polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
+              {mintTx && completedRat && <p><a href={`https://polygonscan.com/tx/${mintTx}`} target="_blank" rel="noopener noreferrer" className="underline">View transaction on polygonscan</a></p>}
             </div>
 
             {imageURL && <Image src={imageURL} alt="Your newborn rat" width={448} height={448} className="imgfix mb-4" placeholder="blur" blurDataURL={RAT_EGG_BLUR} />}
