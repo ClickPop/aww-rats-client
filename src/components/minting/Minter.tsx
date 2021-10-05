@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
 import { GeneratorResponse, LOADING_STATE, Metadata, OpenSeaAttribute, Rat } from '~/types';
-import { ALLOWED_WALLETS, CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
+import { ALLOWED_WALLETS, CHAIN_ID, CONTRACT_ADDRESS, OPEN_MINTING, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image'
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
@@ -141,7 +141,7 @@ export const Minter = () => {
   }
 
   
-  if (access === 'denied') {
+  if (!OPEN_MINTING && access === 'denied') {
     return <p className="text-lg mb-8">We&apos;re going to be minting soon. Join <Link href="https://discord.gg/2cwxkBkgf5">the Discord</Link> so you know when we&apos;re going to launch!</p>
   }
   
