@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useEthers } from '~/hooks/useEthers';
-import { ethers, BigNumber, ContractTransaction, ContractReceipt } from "ethers";
-import { GeneratorResponse, LOADING_STATE, Metadata, OpenSeaAttribute, Rat } from '~/types';
+import { ethers, BigNumber, ContractReceipt } from "ethers";
+import { ERC20, GeneratorResponse, LOADING_STATE, Metadata, OpenSeaAttribute, Rat } from '~/types';
 import { ALLOWED_WALLETS, CHAIN_ID, CONTRACT_ADDRESS, OPEN_MINTING, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image'
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif'
 import RatABI from "smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json";
+import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { Link } from '~/components/shared/Link';
+import { parseEther, parseUnits } from '@ethersproject/units';
+
+type MintAndGenerateData = {tokenId?: string | null, rat?: GeneratorResponse | null};
 
 export const Minter = () => {
-  const { provider, signer, network, connected, account } = useEthers();
+  const { provider, signer, network, connected } = useEthers();
   const [ethCost, setEthCost] = useState(0);
   const [contract, setContract] = useState<Rat | null>(null);
   const [loading, setLoading] = useState<LOADING_STATE>(null)
@@ -20,6 +24,7 @@ export const Minter = () => {
   const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
   const [access, setAccess] = useState<'loading' | 'granted' | 'denied'>('loading');
   const [mintingError, setMintingError] = useState('');
+  const [tokenId, setTokenId] = useState('');
 
   const connectToMetamask = async () => {
     try {
@@ -50,62 +55,77 @@ export const Minter = () => {
     })();
   }, [connected, signer, provider, network]);
 
-  const test = async () => {
+  
+  const handleMintAndGenerate = async (skip?: LOADING_STATE[], data?: MintAndGenerateData) => {
     if (contract && provider && signer) {
-      try {
-        if (ethCost !== 0) {
-          setLoading("APPROVAL");
+      const approveWeth = async () => {
+          setLoading('INITIAL');
+          const signerAddr = await signer.getAddress();
           const wethAddr = await contract.erc20();
-          const weth = new ethers.Contract(wethAddr, ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 tokens) public returns (bool success)", "function name() view returns (string memory)", "function symbol() view returns (string memory)"], signer);
+          const weth = new ethers.Contract(wethAddr, ERC20ABI.abi, signer) as ERC20;
           const cost = ethers.utils.parseEther(`${ethCost}`);
-          const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
-          if (bal.lt(cost)) {
-            const signerAddr = await signer.getAddress();
-            const err = `Insufficient WETH. Cost is ${ethers.utils.formatEther(cost)}. Wallet balance at address ${signerAddr} is ${bal}`;
-            setMintingError(err);
-            throw new Error(err);
+          const allowance = await weth.allowance(signerAddr, contract.address);
+          if (ethCost !== 0 && allowance < cost) {
+            setLoading("APPROVAL");
+            const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
+            if (bal.lt(cost)) {
+              const err = `Insufficient WETH. Cost is ${ethers.utils.formatEther(cost)}. Wallet balance at address ${signerAddr} is ${bal}`;
+              setMintingError(err);
+              throw new Error(err);
+            }
+            await weth.approve(contract.address, cost).then(t => t.wait());
           }
-          const t: ContractReceipt = await weth.approve(contract.address, cost).then((t: ContractTransaction) => t.wait());
-        }
-        setLoading("TOKEN");
-        const tx = await contract.createToken().then(t => t.wait());
-        setMintTx(tx.transactionHash)
-        const tokenId = tx?.events?.find(e => e.args?.['tokenId'])?.args?.["tokenId"].toString();
-        setLoading("GENERATOR");
-        const rat: GeneratorResponse = await fetch("./api/generate-rat", {
-          method: "post",
-          body: JSON.stringify({
-            tokenId
-          })
-        }).then(res => res.json());
-        setCompletedRat(rat)
-        if (provider && rat.data) {
-          const tx = await provider.getTransaction(rat.data.txHash);
-          await tx.wait();
-        }
-        setLoading("METADATA")
-        const metaHash = rat.data?.tokenUri.split("//")[1];
-        if (metaHash) {
-          const meta: Metadata = await fetch(`https://gateway.pinata.cloud/ipfs/${metaHash}`).then(res => res.json());
-          setTokenMetadata(meta);
-          const imageHash = meta.image.split("//")[1];
-          if (imageHash) {
-            const imageURL = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
-            fetch(imageURL).then(res => res.blob()).then(data => {
-              const url = URL.createObjectURL(data);
-              setImageURL(url);
-            }).catch(err => {
-              console.error(err);
-              setImageURL('/rat-egg.png');
-            });
+      }
+
+      const mintToken = async () => {
+          setLoading("TOKEN");
+          const tx = await contract.createToken().then(t => t.wait());
+          setMintTx(tx.transactionHash)
+          const tokenId = tx?.events?.find(e => e.args?.['tokenId'])?.args?.["tokenId"].toString() as string;
+          setTokenId(tokenId);
+          return tokenId;
+      }
+
+      const generateRat = async (tokenId: string) => {
+          setLoading("GENERATOR");
+          const rat: GeneratorResponse = await fetch("./api/generate-rat", {
+            method: "post",
+            body: JSON.stringify({
+              tokenId
+            })
+          }).then(res => res.json());
+          if (provider && rat.data) {
+            const tx = await provider.getTransaction(rat.data.txHash);
+            await tx.wait();
+          } 
+          setCompletedRat(rat)
+          return rat;
+      }
+
+      const loadMetadata = async (rat: GeneratorResponse) => {
+          setLoading("METADATA")
+          const metaHash = rat.data?.tokenUri.split("//")[1];
+          if (metaHash) {
+            const meta: Metadata = await fetch(`https://gateway.pinata.cloud/ipfs/${metaHash}`).then(res => res.json());
+            setTokenMetadata(meta);
+            const imageHash = meta.image.split("//")[1];
+            if (imageHash) {
+              const imageURL = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
+              fetch(imageURL).then(res => res.blob()).then(data => {
+                const url = URL.createObjectURL(data);
+                setImageURL(url);
+              }).catch(err => {
+                console.error(err);
+                setImageURL('/rat-egg.png');
+              });
+            }
           }
-        }
-        setLoading(null);
-      } catch (err: any) {
-        // TODO: Handle error better lol
+      }
+
+      const handleError = async (err: any, data?: MintAndGenerateData) => {
         if (err.data?.message) {
-          switch (err.data.message) {
-            case 'execution reverted: Max tokens reached for wallet':
+          switch (true) {
+            case 'execution reverted: Max tokens reached for wallet' === err.data.message:
               setMintingError('Sorry, looks like you have reached the max number of tokens allowed per wallet.');
               break;
             default:
@@ -113,12 +133,65 @@ export const Minter = () => {
               break;
           }
         } else if (err?.message) {
+          if (err?.reason) {
+            const isRepriced = err.reason === "repriced";
+            if (err.reason === 'canceled' || (isRepriced && err?.cancelled)) {
+              return;
+            }
+            if (isRepriced && err?.receipt?.status === 1) {
+              if (err?.receipt?.transactionHash) {
+                const tx = await provider.getTransaction(err.receipt.transactionHash);
+                const completedTx = await tx.wait()
+                const last = skip?.slice(-1)[0];
+                const block = await provider.getBlock(completedTx.blockHash);
+                const event = contract.filters.TokenMinted();
+
+                const events = await contract.queryFilter(event, block.number, block.number);
+                const tokenId = events?.find(e => e.transactionHash === completedTx.transactionHash && e.args?.['tokenId'])?.args?.["tokenId"].toString() as string;
+                if (last) {
+                  switch (last) {
+                    case "INITIAL":
+                    case "APPROVAL":
+                    case 'TOKEN':
+                      return await handleMintAndGenerate(['APPROVAL', 'TOKEN'], {...data, tokenId});
+                    case 'GENERATOR':
+                      return await handleMintAndGenerate(['APPROVAL', 'TOKEN', 'GENERATOR'], data);
+                    case 'METADATA':
+                      return await handleMintAndGenerate(['APPROVAL', 'TOKEN', "GENERATOR", "METADATA"], data);
+                    default:
+                      return;
+                  }
+                } else {
+                  return await handleMintAndGenerate(['APPROVAL'], data);
+                }
+              }
+            }
+          }
           if (err.message !== "MetaMask Tx Signature: User denied transaction signature.") {
             setMintingError(`An error occurred. Please copy this error and reach out to use in Discord so we can see what might have happened: ${err.message}`)
           }
         }
-        console.error(err?.message, err.data?.message);
-        setLoading(null);
+        console.error(err);
+        console.log({err});
+      }
+
+      let tokenId = data?.tokenId;
+      let rat = data?.rat;
+      try {
+        if (!skip || !skip.includes("APPROVAL")) {
+          await approveWeth();
+        }
+        if (!skip || !skip.includes("TOKEN")) {
+          tokenId = await mintToken();
+        }
+        if (tokenId && (!skip || !skip.includes("GENERATOR"))) {
+          rat = await generateRat(tokenId);
+        }
+        if (rat && (!skip || skip.includes("METADATA"))) {
+          await loadMetadata(rat);
+        }
+      } catch (err: any) {
+        await handleError(err, {tokenId, rat});
       }
     }
   };
@@ -208,7 +281,10 @@ export const Minter = () => {
       }
       {!loading && <>
         <div>
-          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={test}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost === 0 ? 'FREE' : `${ethCost}weth`}</span></button>
+          <button className="rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold" onClick={async () => {
+            await handleMintAndGenerate();
+            setLoading(null);
+          }}><span className="px-4 py-3 inline-block border-r-2 border-black">Mint a Rat</span> <span className="px-4 py-3 pl-2 inline-block">{ethCost === 0 ? 'FREE' : `${ethCost}weth`}</span></button>
           <p className="mt-4 max-w-md mx-auto">You&apos;re going to need a very small amount of matic for your transactions. You can get some from <a href="https://matic.supply/" target="_blank" rel="noreferrer">a faucet</a> or ask in our discord.</p>
         </div>
         <div className="mt-8">
