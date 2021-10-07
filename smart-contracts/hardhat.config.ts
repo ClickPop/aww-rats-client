@@ -27,7 +27,7 @@ import { cursorTo } from 'readline';
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
   let i = 0;
-  setInterval(() => {
+  return setInterval(() => {
     let newChar = '';
     switch (i % 4) {
       case 0:
@@ -198,7 +198,7 @@ task('regenerate-rat', "Regenerate a Rat that doesn't have metadata")
   .addPositionalParam('id', 'Token ID to update', 0, types.int)
   .setAction(async ({ id }, hre) => {
     try {
-      ratLoader('Regenerating rat');
+      const interval = ratLoader('Regenerating rat');
       const [signer] = await hre.ethers.getSigners();
       const Rat = await hre.ethers.getContractFactory('Rat', signer);
       const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
@@ -211,7 +211,9 @@ task('regenerate-rat', "Regenerate a Rat that doesn't have metadata")
       const res = await axios.post('https://awwrats.com/api/generate-rat', {
         tokenId: `${id}`,
       });
-      console.log('Token stored', {
+      clearInterval(interval);
+      console.log();
+      console.log('The rat is in! 🐀 \n', {
         id,
         // @ts-ignore
         txHash: res.data.data.txHash,
@@ -228,7 +230,9 @@ task(
   "Lists all rats that don't have an IPFS uri set for the token",
 ).setAction(async (_, hre) => {
   try {
-    ratLoader('Loading stuck rats from contract (This can take a while)');
+    const interval = ratLoader(
+      'Loading stuck rats from contract (This can take a while)',
+    );
     const [signer] = await hre.ethers.getSigners();
     const Rat = await hre.ethers.getContractFactory('Rat', signer);
     const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
@@ -245,7 +249,13 @@ task(
         stuckIds.push(id.toString());
       }
     }
-    console.log(stuckIds);
+    clearInterval(interval);
+    console.log();
+    console.log(
+      stuckIds.length > 0
+        ? stuckIds
+        : 'All rats are hatched and cozied up in their corner of the sewer 🐀 ',
+    );
   } catch (err) {
     console.error(err);
   }
