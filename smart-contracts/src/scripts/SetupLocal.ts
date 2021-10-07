@@ -10,6 +10,6 @@ import { ethers } from "hardhat";
     console.log("10 tokens transferred to address", user.address);
   }
   const rat = await ethers.getContractFactory("Rat", admin);
-  const ratContract = await rat.deploy("test", "", contract.address, 0, 1000, "AwwRat", "RAT").then(c => c.deployed());
+  const ratContract = await rat.deploy("test", "test", contract.address, 0, 1000, 0, 0, "AwwRat", "RAT").then(c => c.deployed());
   console.log("RAT deployed at", ratContract.address);
 })();
