@@ -4,8 +4,11 @@ import { Link } from '~/components/shared/Link';
 import logo from '~/assets/images/aww-rats-avatar.png';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
+import { Connect } from '~/components/shared/Connect';
+import { useRouter } from "next/router";
 
 export const Header = () => {
+  const router = useRouter();
   return (
     <div className='pt-4 flex flex-col md:flex-row justify-between items-center w-full'>
       <Image
@@ -16,14 +19,18 @@ export const Header = () => {
       />
       <div className='flex px-4'>
         <div className='flex items-center text-white'>
-          <Link href='#roadmap' className='mr-4'>
+          {router.route !== "/" && <Connect />}
+          <Link href='/#roadmap' className='mr-4'>
             Roadmap
           </Link>
-          <Link href='#generator' className='mr-4'>
+          <Link href='/#generator' className='mr-4'>
             GeneRATor
           </Link>
-          <Link href='#faqs' className='mr-4'>
+          <Link href='/#faqs' className='mr-4'>
             FAQs
+          </Link>
+          <Link href='/closet' className='mr-4'>
+            Closet
           </Link>
           <Link href='https://www.twitter.com/awwratspack' className='mr-4'>
             <TwitterLogo width={24} height={24} />

@@ -465,6 +465,13 @@
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
   integrity sha512-jDJTpta+P4p1NZTFVLHJ/TLFVYVcOqv6l8xwOeBKNPMgY/zDYH/YH7SJbvrr/h1RcS9GzbPcLKGzpuK9cV56UA==
 
+"@neupauer/tailwindcss-plugin-colors@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@neupauer/tailwindcss-plugin-colors/-/tailwindcss-plugin-colors-1.0.0.tgz#cebb0787727986697d131a85a6035ac862127f24"
+  integrity sha512-mFp9QG21t/tKqHY0UR+uZVKsJGjlvQr3f1fO8Sp5h4fyfO3dV5S6WJWzVKmCM0QvXE/hszmKQptKLx4Ftfombw==
+  dependencies:
+    flat "^5.0.2"
+
 "@next/env@11.1.2":
   version "11.1.2"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-11.1.2.tgz#27996efbbc54c5f949f5e8c0a156e3aa48369b99"
@@ -1987,6 +1994,11 @@ flat-cache@^3.0.4:
     flatted "^3.1.0"
     rimraf "^3.0.2"
 
+flat@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/flat/-/flat-5.0.2.tgz#8ca6fe332069ffa9d324c327198c598259ceb241"
+  integrity sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==
+
 flatted@^3.1.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.2.tgz#64bfed5cb68fe3ca78b3eb214ad97b63bedce561"
@@ -2030,6 +2042,11 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
+
+fuse.js@^3.4.5:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
+  integrity sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
 
 get-caller-file@^2.0.5:
   version "2.0.5"
@@ -3504,6 +3521,13 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-select-search@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/react-select-search/-/react-select-search-3.0.8.tgz#c3b13ef02902dc3d8bf30da55dff39a9fec56c5f"
+  integrity sha512-9RfhAr7mv0NUGA2NDs50OHfqPplU3NAhJQlfKqB1pfSPO9uHu4J0Uc0LLRCym7zkp+7Ps+UMKyJoYBtt1fUJNg==
+  optionalDependencies:
+    fuse.js "^3.4.5"
 
 react@17.0.2:
   version "17.0.2"
