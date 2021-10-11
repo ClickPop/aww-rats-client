@@ -7,7 +7,6 @@ import {
   LOADING_STATE,
   Metadata,
   OpenSeaAttribute,
-  Rat,
 } from '~/types';
 import {
   ALLOWED_WALLETS,
@@ -18,11 +17,11 @@ import {
 } from '~/config/env';
 import { Image } from '~/components/shared/Image';
 import { format } from 'date-fns';
-import loader from '~/assets/images/loader-cheese.gif';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { Link } from '~/components/shared/Link';
 import { EthersContext } from '~/components/context/EthersContext';
 import { formatEther, parseEther } from '@ethersproject/units';
+import { CheeseLoader } from '~/components/shared/CheeseLoader';
 
 type MintAndGenerateData = {
   tokenId?: string | null;
@@ -346,13 +345,7 @@ export const Minter = () => {
 
   return (
     <>
-      {(loading || access === 'loading') && (
-        <Image
-          src={loader}
-          className='w-10 inline-block'
-          alt='Rat Cheese Loader'
-        />
-      )}
+      {(loading || access === 'loading') && <CheeseLoader className='w-10' />}
       {loading === 'APPROVAL' && (
         <>
           <p className='px-4 py-2'>
