@@ -67,7 +67,6 @@ export const Minter = () => {
     skip?: LOADING_STATE[],
     data?: MintAndGenerateData,
   ) => {
-    console.log(contract, provider, signer);
     if (contract && provider && signer) {
       const approveWeth = async () => {
         setLoading('INITIAL');
