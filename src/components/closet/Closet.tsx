@@ -270,7 +270,7 @@ const Closet = () => {
 
       <div className='container mx-auto flex justify-center mt-12 p-4 md:max-h-96 md:overflow-y-scroll'>
         {currentRat && loading.pieces && (
-          <CheeseLoader className='absolute left-1/2 w-80 h-80 md:-translate-x-1/2' />
+          <CheeseLoader className='absolute md:left-1/2 w-80 h-80 md:-translate-x-1/2' />
         )}
         {currentRat ? (
           <div
