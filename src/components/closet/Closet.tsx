@@ -39,6 +39,7 @@ const Closet = () => {
       width: 20 * 16,
       height: 20 * 16,
       preserveObjectStacking: true,
+      interactive: false
     });
     fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
       img.scaleToHeight(c?.height ?? 0);
@@ -224,25 +225,31 @@ const Closet = () => {
             </label>
           </div>
         </div>
-
-        <div className='w-60 h-80 overflow-auto'>
-          <div className='flex flex-col'>
+      </div>
+      
+      <div className='container mx-auto flex justify-center pt-2 pb-4 px-4'>
+          <div className='flex flex-col w-full'>
             {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
-              <div key={pieceType} className='flex flex-col h-full'>
+              <>
+              <h3 className="mt-4 mb-1 text-white bold capitalize text-xl">{pieceType}</h3>
+
+              <div key={pieceType} className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4'>
                 {pieces.map((piece) => (
+                  <div className="aspect-w-1 aspect-h-1 rounded-md border-slate border-4">
                   <Image
                     key={piece}
                     src={`${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`}
                     alt=''
                     layout='fill'
-                    className='w-60 h-60'
+                    className='w-full h-full'
                     onClick={() => tryOnClothes(pieceType, piece)}
                   />
+                  </div>
                 ))}
               </div>
+              </>
             ))}
           </div>
-        </div>
       </div>
 
       <div className='container mx-auto flex justify-center p-4'>

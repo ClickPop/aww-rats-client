@@ -2,6 +2,7 @@
   "name": "web-client",
   "version": "0.1.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "install-all": "yarn && cd smart-contracts && yarn",
     "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
@@ -15,6 +16,7 @@
     "test-contract": "cd smart-contracts && yarn test"
   },
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.3.0",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.6",
     "fabric": "^4.6.0",
