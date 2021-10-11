@@ -24,5 +24,8 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("@neupauer/tailwindcss-plugin-colors")],
+  plugins: [
+    require("@neupauer/tailwindcss-plugin-colors"),
+    require('@tailwindcss/aspect-ratio')
+  ]
 }
