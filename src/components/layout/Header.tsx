@@ -5,7 +5,7 @@ import logo from '~/assets/images/aww-rats-avatar.png';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
 import { Connect } from '~/components/shared/Connect';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 export const Header = () => {
   const router = useRouter();
@@ -19,7 +19,7 @@ export const Header = () => {
       />
       <div className='flex px-4'>
         <div className='flex items-center text-white'>
-          {router.route !== "/" && <Connect />}
+          {router.route !== '/' && <Connect />}
           <Link href='/#roadmap' className='mr-4'>
             Roadmap
           </Link>

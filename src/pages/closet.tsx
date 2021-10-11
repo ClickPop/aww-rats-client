@@ -1,7 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Layout } from '~/components/layout/Layout';
-import { Closet } from '~/components/closet/Closet';
+import dynamic from 'next/dynamic';
+const Closet = dynamic(() => import('~/components/closet/Closet'), {
+  ssr: false,
+});
 
 const Home: NextPage = () => {
   return (
@@ -26,13 +29,7 @@ const Home: NextPage = () => {
         />
         <meta property='og:image' content='/og-image.png' />
       </Head>
-
       <Closet />
-
-
-
-
-
     </Layout>
   );
 };
