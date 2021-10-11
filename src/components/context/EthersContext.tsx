@@ -25,7 +25,6 @@ export const EthersContextProvider: FC = ({ children }) => {
             RatABI.abi,
             signer,
           ) as Rat;
-          console.log(c);
           setContract(c);
         } catch (err) {
           console.error(err);
