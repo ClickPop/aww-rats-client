@@ -1,6 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers/lib/json-rpc-provider';
 import { ethers, providers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
+import { Rat } from 'smart-contracts/src/types/index';
 
 export * from 'smart-contracts/src/types';
 
@@ -53,3 +54,9 @@ export type OpenSeaAttribute = {
   value: string | number;
   max_value?: nunmber;
 };
+
+export interface EthersContextType extends EthersState {
+  contract?: Rat;
+  connectToMetamask: () => void;
+  signerAddr?: string;
+}

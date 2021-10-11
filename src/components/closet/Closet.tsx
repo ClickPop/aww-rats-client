@@ -1,317 +1,268 @@
-import React, { useEffect, useState } from 'react';
-import { useEthers } from '~/hooks/useEthers';
-import { ethers, BigNumber } from 'ethers';
-import SelectSearch, {fuzzySearch} from 'react-select-search/dist/cjs';
-import { SelectSearchProps, SelectSearchOption, OptionSnapshot } from 'react-select-search';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { BigNumber } from 'ethers';
+import Select, { SingleValue } from 'react-select';
 
+import { Metadata } from '~/types';
 import {
-  Metadata,
-  Rat,
-} from '~/types';
-import {
-  CHAIN_ID,
-  CONTRACT_ADDRESS,
   LAYER_ORDER,
   LAYER_HAS_BASE,
-  RAT_PIECES_PREFIX,
-  RAT_CLOSET_PIXEL,
   RAT_CLOSET_PLACEHOLDER,
-  CLOSET_PIECES
+  CLOSET_PIECES,
+  RAT_PIECES_PREFIX,
 } from '~/config/env';
-import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
-
-interface SimplifiedProperties {
-  [propName: string]: string;
-}
+import { EthersContext } from '~/components/context/EthersContext';
+import { fabric } from 'fabric';
+import { Canvas } from 'fabric/fabric-impl';
+import { Image } from '~/components/shared/Image';
 interface SimplifiedMetadata {
-  name: string
-  value: string
-  image: string
-  properties: SimplifiedProperties
-}
-interface SelectSearchImageOption extends SelectSearchOption {
-  image: string
+  label: string;
+  value: string;
+  properties: Map<string, string>;
 }
 
-const emptySimplifiedMetadata = (): SimplifiedMetadata => {
-  return {
-      name: "",
-      value: "",
-      image: "",
-      properties: {}
-  }
-}
-
-export const Closet = () => {
-  const { provider, signer, network, connected } = useEthers();
-  const [contract, setContract] = useState<Rat | null>(null);
-  const [signerTokens, setSignerTokens] = useState<Array<BigNumber> | null>(null);
-  const [rats, setRats] = useState<Array<SimplifiedMetadata | null> | null>(null);
+const Closet = () => {
+  const { signer, contract, signerAddr } = useContext(EthersContext);
+  const [signerTokens, setSignerTokens] = useState<BigNumber[] | null>(null);
+  const [rats, setRats] = useState<Array<SimplifiedMetadata | null> | null>(
+    null,
+  );
   const [currentRat, setCurrentRat] = useState<SimplifiedMetadata | null>(null);
+  const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
+  const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const [hideBackground, setHideBackground] = useState(false);
+  const [loading, setLoading] = useState<
+    null | 'TOKENS' | 'METADATA' | 'MIRROR'
+  >(null);
 
   useEffect(() => {
-    (async () => {
-      if (CONTRACT_ADDRESS && connected && network?.chainId === CHAIN_ID) {
-        try {
-          const signerAddress = await signer?.getAddress();
-          const c = new ethers.Contract(
-            CONTRACT_ADDRESS,
-            RatABI.abi,
-            signer,
-          ) as Rat;
-          setContract(c);
+    const c = new fabric.Canvas('closet-canvas', {
+      width: 20 * 16,
+      height: 20 * 16,
+      preserveObjectStacking: true,
+    });
+    fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
+      img.scaleToHeight(c?.height ?? 0);
+      img.scaleToWidth(c?.width ?? 0);
+      c.add(img);
+    });
+    setCanvas(c);
+  }, []);
 
-          if (signerAddress) {
-            let tokens = await c.getTokensByOwner(signerAddress);
-            setSignerTokens(tokens);
-          }
+  // Get all the tokens for an address
+  useEffect(() => {
+    (async () => {
+      if (contract && signerAddr) {
+        try {
+          setLoading('TOKENS');
+          let tokens = await contract.getTokensByOwner(signerAddr);
+          setSignerTokens(tokens);
         } catch (err) {
           console.error(err);
         }
+        setLoading(null);
       }
     })();
-  }, [connected, signer, provider, network]);
+  }, [signer, contract, signerAddr]);
 
+  // Get the metadata for those tokens and store them in state
   useEffect(() => {
     (async () => {
+      // Get token URI from contract then fetch token metadata from IFPS
       if (Array.isArray(signerTokens)) {
-        await getRatsMeta(signerTokens);
+        setLoading('METADATA');
+        const tempMetas = [];
+        for (const token of signerTokens) {
+          const uri = await contract?.tokenURI(token);
+          if (!uri?.includes('ipfs')) break;
+          const hash = uri?.split('//')[1];
+          if (hash) {
+            const meta: Metadata = await fetch(
+              `https://gateway.pinata.cloud/ipfs/${hash}`,
+            ).then((res) => res.json());
+
+            if (meta) {
+              tempMetas.push(meta);
+            }
+          }
+        }
+
+        // Set state with slightly simplified metadata
+        setRats(
+          tempMetas.map((rat) => ({
+            label: rat.name,
+            value: rat.image.replace(
+              'ipfs://',
+              'https://gateway.pinata.cloud/ipfs/',
+            ),
+            // We use a Map here to retain the correct order for layering assets
+            properties: new Map(
+              LAYER_ORDER.map((layer) => {
+                const attribute = rat.attributes.find(
+                  (attr) =>
+                    attr.trait_type &&
+                    attr.trait_type.toLowerCase() === layer.toLowerCase(),
+                );
+                let val = LAYER_HAS_BASE.includes(layer) ? 'base' : 'none';
+                if (attribute && typeof attribute.value === 'string') {
+                  val = attribute.value.replace(/\s|\%20/gi, '-').toLowerCase();
+                }
+                return [layer, val];
+              }),
+            ),
+          })),
+        );
+        setLoading(null);
       }
     })();
-  }, [signerTokens]);
+  }, [contract, signerTokens]);
+
+  const handleChangeRat = useCallback(
+    async (rat: SingleValue<SimplifiedMetadata | null>) => {
+      setLoading('MIRROR');
+      setCurrentRat(rat);
+      if (canvas) {
+        canvas.clear();
+        if (rat) {
+          const layers: [string, string][] = [];
+          rat.properties.forEach((val, key) => {
+            if (val !== 'none') {
+              layers.push([key, val]);
+            }
+          });
+          for (const [key, val] of layers) {
+            if (key !== 'background' || !hideBackground) {
+              const img = await new Promise<fabric.Image>((resolve) => {
+                fabric.Image.fromURL(
+                  `${RAT_PIECES_PREFIX}${key}-${val
+                    .toLowerCase()
+                    .replace(/ /g, '-')}.png`,
+                  resolve,
+                );
+              });
+              img.scaleToHeight(canvas?.height ?? 0);
+              img.scaleToWidth(canvas?.width ?? 0);
+              canvas.add(img);
+            }
+          }
+          canvas.renderAll();
+        } else {
+          fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
+            img.scaleToHeight(canvas?.height ?? 0);
+            img.scaleToWidth(canvas?.width ?? 0);
+            canvas.add(img);
+          });
+        }
+      }
+    },
+    [canvas, hideBackground],
+  );
 
   useEffect(() => {
-    if (currentRat) stackRatPieces(currentRat);
-  }, [currentRat]);
+    handleChangeRat(currentRat);
+  }, [hideBackground, currentRat, handleChangeRat]);
 
-  function init() {
-    // Populate closet items
-    getClosetItems();
-  
-    // Set variable to track whether closet items are selected
-    let pieceSelected = 0;
-  
-    // Listen for clicks on clothing items
-    document.querySelectorAll(".closet--piece").forEach((closetPiece) => {
-      closetPiece.addEventListener("click", (event) => {
-        console.log(pieceSelected);
-        // When a piece is selected set that piece
-        pieceType = event.target.dataset.pieceType;
-        pieceName = event.target.dataset.pieceName;
-        pieceUrl = `${RAT_PIECES_PREFIX}${pieceType}-${pieceName}.png`;
-        console.log(pieceType, pieceName, pieceUrl);
-        event.target.parentElement.style.backgroundColor = "#77779966";
-        ratPiece = ratContainer.querySelector(`.rat--piece.${pieceType}`);
-        console.log(ratPiece);
-        ratPiece.src = pieceUrl;
-        getSiblings(event.target.parentElement).forEach(
-          (li) => (li.style.backgroundColor = "")
+  const tryOnClothes = (pieceType: string, piece: string) => {
+    if (currentRat) {
+      if (currentRat.properties.get(pieceType) === piece) {
+        currentRat.properties.set(
+          pieceType,
+          oldClothes.get(pieceType) ?? 'none',
         );
-      });
-    });
-  }
-
-  const renderOption = (props: SelectSearchProps, option: SelectSearchImageOption, snapshot?: OptionSnapshot, className?: string) => {
-    console.log(props);
-    return (
-      //@ts-ignore
-        <button key={option.name} {...props} className={className + " rat-select-button"} type="button">
-            <figure className="w-10 h-10 float-left mr-4"><img src={`${option.image}`} alt={`Rat: ${option.name}`} /></figure>           
-            <span className="title text-lg leading-10">{option.name}</span>
-        </button>
-    );
-  }
-
-  const getSiblings = (e) => {
-    // for collecting siblings
-    let siblings = [];
-    // if no parent, return no sibling
-    if (!e.parentNode) {
-      return siblings;
-    }
-    // first child of the parent node
-    let sibling = e.parentNode.firstChild;
-  
-    // collecting siblings
-    while (sibling) {
-      if (sibling.nodeType === 1 && sibling !== e) {
-        siblings.push(sibling);
-      }
-      sibling = sibling.nextSibling;
-    }
-    return siblings;
-  }
-
-  const stackRatPieces = (rat: SimplifiedMetadata) => {
-    // Reset rat piece image layers
-    document.querySelectorAll(".rat--piece").forEach((e) => e.remove());
-    const ratContainer = document.querySelector(".rat");
-  
-    // Check if the rat name is in the list of rats
-    if (
-      rat &&
-      typeof rat === "object" &&
-      rat.hasOwnProperty("properties") &&
-      Array.isArray(LAYER_ORDER) &&
-      LAYER_ORDER.length > 0
-    ) {
-      // Build out the layers of images based on the contents of rats.js
-      LAYER_ORDER.forEach((pieceType, index) => {
-        if (rat.properties && pieceType in rat.properties) {
-          let image = document.createElement("img");
-          image.setAttribute("class", `rat--piece ${pieceType}`);
-          image.setAttribute("data-piece-type", pieceType);
-          image.setAttribute("data-piece-name", rat.properties[pieceType]);
-          image.setAttribute("style", `z-index:${index + 1};`);
-          image.src =
-            rat.properties[pieceType] === "none"
-              ? RAT_CLOSET_PIXEL
-              : `${RAT_PIECES_PREFIX}${pieceType}-${rat.properties[pieceType]}.png`;
-          console.log(image.src);
-          ratContainer?.appendChild(image);
-        }
-      });
-    }
-  }
-
-  const getClosetItems = () => {
-    for (let pieceType in CLOSET_PIECES) {
-      generateClosetSection(pieceType);
-    }
-  }
-
-  function generateClosetSection(pieceType) {
-    const closetContainer = document.querySelector(".closet");
-
-    if (closetContainer) {
-      let heading = document.createElement("h3");
-      heading.className = "text-gray-200 font-medium capitalize";
-      let headingText = document.createTextNode(pieceType);
-      heading.appendChild(headingText);
-      let piecesList = document.createElement("ul");
-      piecesList.setAttribute("class", "closet--pieces grid grid-cols-2 gap-4");
-      piecesList.setAttribute("data-piece-type", pieceType);
-      CLOSET_PIECES[pieceType].forEach((piece, index) => {
-        let pieceItem = document.createElement("li");
-        let image = document.createElement("img");
-        image.setAttribute("class", `closet--piece ${pieceType}`);
-        image.setAttribute("data-piece-type", pieceType);
-        image.setAttribute("data-piece-name", piece);
-        image.src = `${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`;
-        pieceItem.appendChild(image);
-        piecesList.appendChild(pieceItem);
-        image = null;
-        pieceItem = null;
-      });
-      closetContainer.appendChild(heading);
-      closetContainer.appendChild(piecesList);
-      heading = null;
-      piecesList = null;
-    }
-  }
-
-  const getRatsMeta = async (tokens: BigNumber[]) => {
-    let tempMetas = [];
-    for (let i = 0; i < tokens.length; i++) {
-      let uri = await contract?.tokenURI(tokens[i]);
-      let hash = uri?.split('//')[1];
-      if (hash) {
-        let meta: Metadata = await fetch(
-          `https://gateway.pinata.cloud/ipfs/${hash}`,
-        ).then((res) => res.json());
-
-        if (meta) {
-          tempMetas.push(meta);
-        }
+        handleChangeRat(currentRat);
+      } else {
+        const old = new Map(oldClothes);
+        old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
+        setOldClothes(old);
+        currentRat.properties.set(pieceType, piece);
+        handleChangeRat(currentRat);
       }
     }
-    setRats(simplifyRatsMeta(tempMetas));
-  }
+  };
 
-  const simplifyRatsMeta = (ipfsMetas: Array<Metadata>): Array<SimplifiedMetadata | null> => {
-    const simplifiedMetas: Array<SimplifiedMetadata | null> = ipfsMetas.map((rat) => {
-      if ("attributes" in rat && "image" in rat && "name" in rat) { 
-        let simplifiedMeta = emptySimplifiedMetadata();
-        simplifiedMeta.name = rat.name;
-        simplifiedMeta.value = rat.name;
-        simplifiedMeta.image = rat.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
-
-        // Loop through layer order config
-        LAYER_ORDER.forEach(layer => {
-          let attribute = rat.attributes.find((attr) => attr.trait_type && attr.trait_type.toLowerCase() === layer.toLowerCase());
-          Object.defineProperty(simplifiedMeta.properties, layer, {
-            value: (
-              attribute && typeof attribute.value === "string" 
-                ? attribute.value.replace(/\s|\%20/ig, "-").toLowerCase() 
-                : (LAYER_HAS_BASE.includes(layer)) ? "base" : "none"
-            )
-          });
-        });
-        return simplifiedMeta;
-      }
-      return null;
-    }).filter(meta => meta !== null);
-
-    return simplifiedMetas;
-  }
-
-  if (rats) {
-    init();
-    return(
-      <>
-        <div className="flex mt-4 mb-6 relative z-40">
-          <SelectSearch
-            className="select-search mx-auto"
+  return (
+    <>
+      <div className='flex mt-4 mb-6 relative z-40'>
+        {rats && (
+          <Select
+            className='select-search mx-auto'
             options={rats}
-            search
-            renderOption={renderOption}
-            filterOptions={fuzzySearch}
-            emptyMessage={() => <div style={{ textAlign: 'center', fontStyle: 'italic' }}>No rats found in your wallet...</div>}
-            placeholder="Select your rat"
-            onChange={(value: any, rat: SimplifiedMetadata | null) => {setCurrentRat(rat)}}
+            placeholder='Select your rat'
+            onChange={handleChangeRat}
+            isClearable
+            isSearchable
           />
-        </div>
+        )}
+      </div>
 
-        <div className="container mx-auto flex justify-center p-4">
-          <div>
-            <div
-              className="
+      <div className='container mx-auto flex justify-center p-4'>
+        <div>
+          <div
+            className='
                 border-solid border-8 border-gray-400
                 mirror
                 rounded-xl
                 overflow-hidden
                 w-80
                 h-80
-              "
-            >
-              <figure className="rat relative h-full">
-                <img className="rat--piece background" src={RAT_CLOSET_PLACEHOLDER} />
-              </figure>
-            </div>
-
-            <div className="mt-2 text-center">
-              <input type="checkbox" id="background" />
-              <label htmlFor="background" className="text-white">Remove Background</label>
-            </div>
+              '>
+            <canvas id='closet-canvas' className='w-full h-full' />
           </div>
 
-          <div className="px-4 w-60">
-            <div id="closet" className="closet"></div>
-          </div>
-        </div>
-
-        <div className="container mx-auto flex justify-center p-4">
-          <div className="w-100 mx-auto">
-            <button className="download py-2 px-3 text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800">Download it!</button>
+          <div className='mt-2 text-center'>
+            <input
+              type='checkbox'
+              id='background'
+              checked={hideBackground}
+              onChange={(e) => {
+                if (e.target.type === 'checkbox') {
+                  setHideBackground(e.target.checked);
+                }
+              }}
+            />
+            <label htmlFor='background' className='text-white'>
+              Remove Background
+            </label>
           </div>
         </div>
-      </> 
-    )
-  }
-  return (
-    <>
-      Rats go here
+
+        <div className='w-60 h-80 overflow-auto'>
+          <div className='flex flex-col'>
+            {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
+              <div key={pieceType} className='flex flex-col h-full'>
+                {pieces.map((piece) => (
+                  <Image
+                    key={piece}
+                    src={`${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`}
+                    alt=''
+                    layout='fill'
+                    className='w-60 h-60'
+                    onClick={() => tryOnClothes(pieceType, piece)}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className='container mx-auto flex justify-center p-4'>
+        <div className='w-100 mx-auto'>
+          {currentRat && canvas && (
+            <button
+              className='download py-2 px-3 text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+              onClick={(e) => {
+                const link = document.createElement('a');
+                link.download = `${currentRat.label}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+              }}>
+              Download it!
+            </button>
+          )}
+        </div>
+      </div>
     </>
   );
 };
 
+export default Closet;
