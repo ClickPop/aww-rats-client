@@ -12,7 +12,7 @@ import {
 } from '~/config/env';
 import { EthersContext } from '~/components/context/EthersContext';
 import { fabric } from 'fabric';
-import { Canvas } from 'fabric/fabric-impl';
+import { Canvas, StaticCanvas } from 'fabric/fabric-impl';
 import { Image } from '~/components/shared/Image';
 interface SimplifiedMetadata {
   label: string;
@@ -28,22 +28,21 @@ const Closet = () => {
   );
   const [currentRat, setCurrentRat] = useState<SimplifiedMetadata | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
-  const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const [canvas, setCanvas] = useState<StaticCanvas | null>(null);
   const [hideBackground, setHideBackground] = useState(false);
   const [loading, setLoading] = useState<
     null | 'TOKENS' | 'METADATA' | 'MIRROR'
   >(null);
 
   useEffect(() => {
-    const c = new fabric.Canvas('closet-canvas', {
+    const c = new fabric.StaticCanvas('closet-canvas', {
       width: 20 * 16,
       height: 20 * 16,
       preserveObjectStacking: true,
-      interactive: false
     });
     fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-      img.scaleToHeight(c?.height ?? 0);
-      img.scaleToWidth(c?.width ?? 0);
+      img.scaleToHeight(c.getHeight());
+      img.scaleToWidth(c.getWidth());
       c.add(img);
     });
     setCanvas(c);
@@ -140,16 +139,16 @@ const Closet = () => {
                   resolve,
                 );
               });
-              img.scaleToHeight(canvas?.height ?? 0);
-              img.scaleToWidth(canvas?.width ?? 0);
+              img.scaleToHeight(canvas.getHeight());
+              img.scaleToWidth(canvas.getWidth());
               canvas.add(img);
             }
           }
           canvas.renderAll();
         } else {
           fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-            img.scaleToHeight(canvas?.height ?? 0);
-            img.scaleToWidth(canvas?.width ?? 0);
+            img.scaleToHeight(canvas.getHeight());
+            img.scaleToWidth(canvas.getWidth());
             canvas.add(img);
           });
         }
@@ -171,9 +170,15 @@ const Closet = () => {
         );
         handleChangeRat(currentRat);
       } else {
-        const old = new Map(oldClothes);
-        old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
-        setOldClothes(old);
+        if (
+          !CLOSET_PIECES[pieceType as keyof typeof CLOSET_PIECES]?.includes(
+            currentRat.properties.get(pieceType) ?? '',
+          )
+        ) {
+          const old = new Map(oldClothes);
+          old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
+          setOldClothes(old);
+        }
         currentRat.properties.set(pieceType, piece);
         handleChangeRat(currentRat);
       }
@@ -226,30 +231,33 @@ const Closet = () => {
           </div>
         </div>
       </div>
-      
-      <div className='container mx-auto flex justify-center pt-2 pb-4 px-4'>
-          <div className='flex flex-col w-full'>
-            {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
-              <>
-              <h3 className="mt-4 mb-1 text-white bold capitalize text-xl">{pieceType}</h3>
 
-              <div key={pieceType} className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4'>
+      <div className='container mx-auto flex justify-center pt-2 pb-4 px-4'>
+        <div className='flex flex-col w-full'>
+          {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
+            <div key={pieceType}>
+              <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
+                {pieceType}
+              </h3>
+
+              <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4'>
                 {pieces.map((piece) => (
-                  <div className="aspect-w-1 aspect-h-1 rounded-md border-slate border-4">
-                  <Image
+                  <div
                     key={piece}
-                    src={`${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`}
-                    alt=''
-                    layout='fill'
-                    className='w-full h-full'
-                    onClick={() => tryOnClothes(pieceType, piece)}
-                  />
+                    className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
+                    <Image
+                      src={`${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`}
+                      alt=''
+                      layout='fill'
+                      className='w-full h-full'
+                      onClick={() => tryOnClothes(pieceType, piece)}
+                    />
                   </div>
                 ))}
               </div>
-              </>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className='container mx-auto flex justify-center p-4'>
