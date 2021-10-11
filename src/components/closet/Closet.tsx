@@ -181,35 +181,32 @@ const Closet = () => {
   };
 
   return (
-    <>
-      <div className='flex mt-4 mb-6 relative z-40'>
-        {rats && (
-          <Select
-            className='select-search mx-auto'
-            options={rats}
-            placeholder='Select your rat'
-            onChange={handleChangeRat}
-            isClearable
-            isSearchable
-          />
-        )}
-      </div>
+    <div className="max-w-7xl mx-auto pb-16 flex">
+      <div className='container max-w-sm mx-auto my-2 p-4'>
+          {rats && (
+            <Select
+              className='select-search mx-auto w-80 mb-4'
+              options={rats}
+              placeholder='Select your rat'
+              onChange={handleChangeRat}
+              isClearable
+              isSearchable
+            />
+          )}
 
-      <div className='container mx-auto flex justify-center p-4'>
-        <div>
           <div
             className='
-                border-solid border-8 border-gray-400
                 mirror
                 rounded-xl
                 overflow-hidden
+                mx-auto
                 w-80
                 h-80
               '>
             <canvas id='closet-canvas' className='w-full h-full' />
           </div>
 
-          <div className='mt-2 text-center'>
+          <div className='my-2 mx-auto text-center'>
             <input
               type='checkbox'
               id='background'
@@ -220,20 +217,32 @@ const Closet = () => {
                 }
               }}
             />
-            <label htmlFor='background' className='text-white'>
+            <label htmlFor='background' className='text-white ml-2'>
               Remove Background
             </label>
           </div>
-        </div>
+
+          {currentRat && canvas && (
+            <button
+              className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+              onClick={(e) => {
+                const link = document.createElement('a');
+                link.download = `${currentRat.label}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+              }}>
+              Download it!
+            </button>
+          )}
       </div>
       
-      <div className='container mx-auto flex justify-center pt-2 pb-4 px-4'>
+      <div className='container mx-auto flex justify-center p-4 max-h-screen'>
           <div className='flex flex-col w-full'>
             {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
               <>
               <h3 className="mt-4 mb-1 text-white bold capitalize text-xl">{pieceType}</h3>
 
-              <div key={pieceType} className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4'>
+              <div key={pieceType} className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4'>
                 {pieces.map((piece) => (
                   <div className="aspect-w-1 aspect-h-1 rounded-md border-slate border-4">
                   <Image
@@ -251,24 +260,7 @@ const Closet = () => {
             ))}
           </div>
       </div>
-
-      <div className='container mx-auto flex justify-center p-4'>
-        <div className='w-100 mx-auto'>
-          {currentRat && canvas && (
-            <button
-              className='download py-2 px-3 text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-              onClick={(e) => {
-                const link = document.createElement('a');
-                link.download = `${currentRat.label}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-              }}>
-              Download it!
-            </button>
-          )}
-        </div>
-      </div>
-    </>
+    </div>
   );
 };
 
