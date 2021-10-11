@@ -6,8 +6,6 @@ import { CHAIN_ID } from '~/config/env';
 export const Connect = () => {
   const { provider, network, connected } = useEthers();
 
-  console.log(provider);
-
   const connectToMetamask = async () => {
     try {
       await provider?.send('eth_requestAccounts', []);
