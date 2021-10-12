@@ -391,7 +391,7 @@ export const Minter = () => {
                 {ethCost === 0 ? 'FREE' : `${ethCost}weth`}
               </span>
             </button>
-            <RatPackSize className="text-center text-sm italic text-purple-400 mt-2"/>
+            <RatPackSize className='text-center text-sm italic text-purple-400 mt-2' />
             <p className='mt-4 max-w-md mx-auto'>
               You&apos;re going to need a very small amount of matic for your
               transactions. You can get some from{' '}

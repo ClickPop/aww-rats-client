@@ -17,11 +17,13 @@ export const RAT_EGG_BLUR =
 
 /* Closet Settings */
 export const RAT_PIECES_PREFIX = '/images/closet/pieces/';
+export const RAT_PIECES_THUMBNAIL_PREFIX = '/images/closet/thumbnails/';
 export const RAT_CLOSET_PLACEHOLDER = '/images/closet/rat-placeholder.png';
 export const LAYER_ORDER = [
   'background',
   'tail',
   'ears',
+  'hand',
   'color',
   'markings',
   'head',
@@ -45,12 +47,12 @@ export const CLOSET_PIECES = {
     'blazer-navy-tee',
     'robe-red',
     'sweater-orange',
-    'scarf-coffee',
+    'scarf',
     'costume-pumpkin',
     'costume-squid-game',
-    'sash',
+    'sash-big-cheese',
     'costume-cat',
-    'costume-vampire'
+    'costume-vampire',
   ],
   hat: [
     'costume-pumpkin',
@@ -58,14 +60,11 @@ export const CLOSET_PIECES = {
     'costume-squid-game',
     'tiara',
     'costume-cat',
-    'costume-vampire'
+    'costume-vampire',
   ],
-  snout: [
-    'costume-vampire'
-  ],
-  accessory: [
-    'costume-cat'
-  ],
+  snout: ['costume-vampire'],
+  accessory: ['costume-cat'],
+  hand: ['pumpkin-spice-latte', 'champagne'],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
