@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC, ComponentProps } from 'react';
 import { useEthers } from '~/hooks/useEthers';
-import { ethers, BigNumber, ContractReceipt } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import {
     Rat,
 } from '~/types';
@@ -11,7 +11,7 @@ import {
 
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 
-export const RatPackSize = () => {
+export const RatPackSize = ({ className, ...rest }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
   const { provider, signer, network, connected } = useEthers();
@@ -43,9 +43,9 @@ export const RatPackSize = () => {
   }, [connected, signer, provider, network]);
 
   if (ratPackSize > 0 && ratPackSize < maxRatPackSize) {
-    return (<div className="text-center"><p className="text-sm italic mb-2 text-purple-400">Currently {ratPackSize} rats in the sewer,<br />but there&apos;s room for {maxRatPackSize - ratPackSize} more...</p></div>)
+    return (<div><p className={className}>Currently {ratPackSize} rats in the sewer,<br />but there&apos;s room for {maxRatPackSize - ratPackSize} more...</p></div>)
   } else if (ratPackSize > 0 && ratPackSize >= maxRatPackSize) {
-    return (<div className="text-center"><p className="text-sm italic mb-2 text-purple-400">Looks like there&apos;s no more room in the sewer.</p></div>)
+    return (<div><p className={className}>Looks like there&apos;s no more room in the sewer.</p></div>)
   }
   return <></>
 }
