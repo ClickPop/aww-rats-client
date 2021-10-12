@@ -13,9 +13,11 @@ import {
 } from '~/config/env';
 import { EthersContext } from '~/components/context/EthersContext';
 import { fabric } from 'fabric';
+import { Connect } from '~/components/shared/Connect';
 import { Canvas, StaticCanvas } from 'fabric/fabric-impl';
 import { Image } from '~/components/shared/Image';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
+import { useRouter } from 'next/router';
 interface SimplifiedMetadata {
   label: string;
   value: string;
@@ -23,6 +25,7 @@ interface SimplifiedMetadata {
 }
 
 const Closet = () => {
+  const router = useRouter();
   const { signer, contract, signerAddr } = useContext(EthersContext);
   const [signerTokens, setSignerTokens] = useState<BigNumber[] | null>(null);
   const [rats, setRats] = useState<Array<SimplifiedMetadata | null> | null>(
@@ -208,6 +211,10 @@ const Closet = () => {
   return (
     <div className="max-w-7xl mx-auto pb-16 flex flex-col md:flex-row md:h-screen">
       <div className='container max-w-sm mx-auto my-2 p-4'>
+        <div className="mx-auto">
+          {router.route !== '/' && <Connect />}
+        </div>
+        
         {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
         {!loading.tokens && rats && (
           <Select

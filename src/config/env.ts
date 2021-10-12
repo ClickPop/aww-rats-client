@@ -48,8 +48,9 @@ export const CLOSET_PIECES = {
     'suit-navy',
     'sweater-orange',
     'tuxedo-pink',
+    'sash'
   ],
-  hat: ['costume-pumpkin', 'costume-scream-mask', 'costume-squid-game'],
+  hat: ['costume-pumpkin', 'costume-scream-mask', 'costume-squid-game', 'tiara'],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
