@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC, ComponentProps } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber } from 'ethers';
 import {
@@ -8,10 +8,13 @@ import {
   CHAIN_ID,
   CONTRACT_ADDRESS,
 } from '~/config/env';
-
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 
-export const RatPackSize = ({ className, ...rest }) => {
+interface Props {
+  className?: string;
+}
+
+export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
   const { provider, signer, network, connected } = useEthers();
