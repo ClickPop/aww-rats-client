@@ -1,0 +1,29 @@
+/* Set position of image layers in Rat mirror. */
+.rat--piece {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+  }
+  
+  .closet--pieces {
+    list-style-type: none;
+  }
+  
+  .closet--pieces li {
+    background: #777799;
+    border-radius: 0.35rem;
+    overflow: hidden;
+  }
+  
+  .closet--pieces li {
+    background: #77779933;
+    border-radius: 0.35rem;
+    overflow: hidden;
+  }
+  
+  .piece--title {
+    text-transform: capitalize;
+  }
+  

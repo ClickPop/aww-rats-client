@@ -18,11 +18,18 @@ module.exports = {
       },
       listStyleType: {
         circle: 'circle'
+      },
+      maxHeight: {
+        '1/2': '50%',
+        '2/3': '66%'        
       }
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@neupauer/tailwindcss-plugin-colors"),
+    require('@tailwindcss/aspect-ratio')
+  ]
 }
