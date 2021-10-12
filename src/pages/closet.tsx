@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Layout } from '~/components/layout/Layout';
+import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
 const Closet = dynamic(() => import('~/components/closet/Closet'), {
   ssr: false,
@@ -8,7 +8,7 @@ const Closet = dynamic(() => import('~/components/closet/Closet'), {
 
 const Home: NextPage = () => {
   return (
-    <Layout className='bg-dark'>
+    <LayoutNoFooter className='bg-dark'>
       <Head>
         <title>Aww, Rats! NFTs</title>
         <meta
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
         <meta property='og:image' content='/og-image.png' />
       </Head>
       <Closet />
-    </Layout>
+    </LayoutNoFooter>
   );
 };
 
