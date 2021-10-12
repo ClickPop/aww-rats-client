@@ -34,6 +34,7 @@ export const LAYER_ORDER = [
   'accessory',
   'hat',
   'pet',
+  'hand'
 ];
 export const LAYER_HAS_BASE = ['head', 'torso'];
 export const CLOSET_PIECES = {
@@ -43,14 +44,15 @@ export const CLOSET_PIECES = {
     'costume-pumpkin',
     'costume-squid-game',
     'robe-red',
-    'scarf-coffee',
+    'scarf',
     'suit-black',
     'suit-navy',
     'sweater-orange',
     'tuxedo-pink',
-    'sash'
+    'sash-big-cheese'
   ],
   hat: ['costume-pumpkin', 'costume-scream-mask', 'costume-squid-game', 'tiara'],
+  hand: ['pumpkin-spice-latte', 'champagne'],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
