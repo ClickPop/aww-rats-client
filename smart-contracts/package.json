@@ -2,6 +2,7 @@
   "name": "aww-rats-smart-contracts",
   "version": "1.0.0",
   "description": "",
+  "license": "SEE LICENSE IN LICENSE.md",
   "directories": {
     "test": "test"
   },
@@ -14,7 +15,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.6",

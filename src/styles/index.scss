@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwindcss/aspect-ratio
+
+@import "includes/select_search";
+@import "includes/closet";
 
 /** Fix issue with Next image component adding space below images **/
 .imgfix > div > div {
