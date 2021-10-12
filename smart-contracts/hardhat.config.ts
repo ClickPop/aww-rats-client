@@ -28,6 +28,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 import crypto from 'crypto';
+import { BigNumber } from '@ethersproject/bignumber';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -272,12 +273,15 @@ task('migrate-rat', 'Migrate a rat from old contract to new one')
   .addPositionalParam('birthday', "The rat's birthday", '', types.string)
   .setAction(async ({ metadataPath, imagePath, birthday }, hre) => {
     try {
+      const interval = ratLoader('Migrating rat to new contract');
       const [signer] = await hre.ethers.getSigners();
       const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const Weth = await hre.ethers.getContractFactory('ERC20', signer);
       const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const weth = Weth.attach(WETH_CONTRACT_ADDRESS ?? '');
+      await weth.approve(rat.address, await rat.cost());
       const img = fs.readFileSync(imagePath);
       const hash = crypto.createHash('md5').update(img).digest('hex');
-      console.log(hash);
       const image = fs.createReadStream(imagePath);
       const imageForm = new FormData();
       imageForm.append('file', image);
@@ -300,7 +304,7 @@ task('migrate-rat', 'Migrate a rat from old contract to new one')
           },
         },
       );
-      console.log(imageRes.status, imageRes.data);
+      console.log(' Image IPFS data', imageRes.data);
       const metaBuffer = fs.readFileSync(metadataPath);
       const meta = JSON.parse(metaBuffer.toString());
       // @ts-ignore
@@ -330,7 +334,25 @@ task('migrate-rat', 'Migrate a rat from old contract to new one')
           },
         },
       );
-      console.log(metaRes.status, metaRes.data);
+      console.log(' Metadata IPFS data', metaRes.data);
+      const ratTx = await rat.createToken().then((t) => t.wait());
+      const tokenId = ratTx.events?.find((e) => e.args?.['tokenId'])?.args?.[
+        'tokenId'
+      ] as BigNumber;
+      console.log(' Token minted. Token Id:', tokenId.toString());
+      if (tokenId) {
+        const uriTx = await rat
+          .storeAsset(
+            tokenId,
+            // @ts-ignore
+            `ipfs://${metaRes.data.IpfsHash}`,
+          )
+          .then((t) => t.wait());
+        if (uriTx) {
+          console.log(' New token URI', await rat.tokenURI(tokenId));
+        }
+      }
+      clearInterval(interval);
     } catch (err) {
       console.error(err);
     }
