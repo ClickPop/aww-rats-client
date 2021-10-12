@@ -16,6 +16,7 @@ import {
   RAT_EGG_BLUR,
 } from '~/config/env';
 import { Image } from '~/components/shared/Image';
+import { RatPackSize } from '~/components/minting/RatPackSize';
 import { format } from 'date-fns';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { Link } from '~/components/shared/Link';
@@ -390,6 +391,7 @@ export const Minter = () => {
                 {ethCost === 0 ? 'FREE' : `${ethCost}weth`}
               </span>
             </button>
+            <RatPackSize className="text-center text-sm italic text-purple-400 mt-2"/>
             <p className='mt-4 max-w-md mx-auto'>
               You&apos;re going to need a very small amount of matic for your
               transactions. You can get some from{' '}
