@@ -42,6 +42,7 @@ const Closet = () => {
     pieces: false,
   });
   const [loadedTokens, setLoadedTokens] = useState<string[]>([]);
+  const [tokenProgress, setTokenProgress] = useState<number>(0);
   useEffect(() => {
     const c = new fabric.StaticCanvas('closet-canvas', {
       width: 20 * 16,
@@ -166,6 +167,22 @@ const Closet = () => {
     [canvas, hideBackground],
   );
 
+  const calculatePercentage = (n: number, d: number): number => {
+    let perc: number = 0;
+    console.log(n,d);
+    if (n >= 0 && d > 0) {
+      if (n > d || n === d) {
+        perc = 1;
+      } else {
+        perc = n / d;
+      }
+    }
+
+    perc = (perc >= 0 && perc < 1) ? Math.round((perc * 10000))/100 : 100;
+
+    return perc;
+  }
+
   useEffect(() => {
     if (!currentRat) {
       setLoadedTokens([]);
@@ -206,6 +223,8 @@ const Closet = () => {
     }
     console.log(load);
     setLoading((l) => ({ ...l, pieces: load }));
+    setTokenProgress(calculatePercentage(loadedTokens.length, TOTAL_CLOSET_PIECES));
+    console.log(tokenProgress);
   }, [loadedTokens]);
 
   return (
@@ -275,9 +294,16 @@ const Closet = () => {
           )}
       </div>
 
-      <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-scroll'>
+      <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
         {currentRat && loading.pieces && (
-          <CheeseLoader className='absolute md:left-1/2 w-80 h-80 md:-translate-x-1/2' />
+          <div className="w-full mt-40 h-3/4 items-center text-center">
+            <CheeseLoader className="w-20 h-20"/>
+
+            <div className="mx-auto h-3 relative rounded-full overflow-hidden w-80">
+              <div className="w-full h-full bg-gray-200 absolute"></div>
+              <div className="h-full bg-green-500 absolute transition-width duration-300" style={{width: `${tokenProgress}%`}}></div>
+            </div>
+          </div>
         )}
         {currentRat ? (
           <div
