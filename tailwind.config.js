@@ -18,6 +18,10 @@ module.exports = {
       },
       listStyleType: {
         circle: 'circle'
+      },
+      maxHeight: {
+        '1/2': '50%',
+        '2/3': '66%'        
       }
     },
   },

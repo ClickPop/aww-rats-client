@@ -197,7 +197,7 @@ const Closet = () => {
   useEffect(() => {
     let load = true;
     console.log(loadedTokens.length, TOTAL_CLOSET_PIECES, CLOSET_PIECES);
-    if (loadedTokens.length === TOTAL_CLOSET_PIECES) {
+    if (loadedTokens.length >= TOTAL_CLOSET_PIECES) {
       load = false;
       console.log(load);
     }
@@ -206,7 +206,7 @@ const Closet = () => {
   }, [loadedTokens]);
 
   return (
-    <div className="max-w-7xl mx-auto pb-16 flex flex-col md:flex-row">
+    <div className="max-w-7xl mx-auto pb-16 flex flex-col md:flex-row md:h-screen">
       <div className='container max-w-sm mx-auto my-2 p-4'>
         {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
         {!loading.tokens && rats && (
@@ -268,7 +268,7 @@ const Closet = () => {
           )}
       </div>
 
-      <div className='container mx-auto flex justify-center mt-12 p-4 md:max-h-96 md:overflow-y-scroll'>
+      <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-scroll'>
         {currentRat && loading.pieces && (
           <CheeseLoader className='absolute md:left-1/2 w-80 h-80 md:-translate-x-1/2' />
         )}
