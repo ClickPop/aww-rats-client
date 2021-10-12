@@ -301,7 +301,7 @@ const Closet = () => {
 
             <div className="mx-auto h-3 relative rounded-full overflow-hidden w-80">
               <div className="w-full h-full bg-gray-200 absolute"></div>
-              <div className="h-full bg-green-500 absolute transition-width duration-300" style={{width: `${tokenProgress}%`}}></div>
+              <div className="h-full bg-purple-700 absolute transition-width duration-300" style={{width: `${tokenProgress}%`}}></div>
             </div>
           </div>
         )}
