@@ -18,11 +18,16 @@ import {
   WETH_CONTRACT_ADDRESS,
   ETHERSCAN_API_KEY,
   DEFAULT_TOKEN_URI,
+  IPFS_API_KEY,
+  IPFS_API_SECRET,
 } from './src/config/env';
+import { cursorTo } from 'readline';
 import { ContractFactory } from '@ethersproject/contracts';
 import { parseEther } from '@ethersproject/units';
 import axios from 'axios';
-import { cursorTo } from 'readline';
+import FormData from 'form-data';
+import fs from 'fs';
+import crypto from 'crypto';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -260,6 +265,76 @@ task(
     console.error(err);
   }
 });
+
+task('migrate-rat', 'Migrate a rat from old contract to new one')
+  .addPositionalParam('metadataPath', 'Relative path to the metadata file')
+  .addPositionalParam('imagePath', 'Relative path to the image to upload')
+  .addPositionalParam('birthday', "The rat's birthday", '', types.string)
+  .setAction(async ({ metadataPath, imagePath, birthday }, hre) => {
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const img = fs.readFileSync(imagePath);
+      const hash = crypto.createHash('md5').update(img).digest('hex');
+      console.log(hash);
+      const image = fs.createReadStream(imagePath);
+      const imageForm = new FormData();
+      imageForm.append('file', image);
+      imageForm.append(
+        'pinataMetadata',
+        JSON.stringify({ name: `${hash}.png` }),
+      );
+      const headers = {
+        pinata_api_key: IPFS_API_KEY,
+        pinata_secret_api_key: IPFS_API_SECRET,
+      };
+      const imageRes = await axios.post(
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        imageForm,
+        {
+          maxBodyLength: Infinity,
+          headers: {
+            ...headers,
+            'Content-Type': `multipart/form-data; boundary=${imageForm.getBoundary()}`,
+          },
+        },
+      );
+      console.log(imageRes.status, imageRes.data);
+      const metaBuffer = fs.readFileSync(metadataPath);
+      const meta = JSON.parse(metaBuffer.toString());
+      // @ts-ignore
+      meta.image = `ipfs://${imageRes.data.IpfsHash}`;
+      if (birthday) {
+        const birthdayUnix = Math.round(new Date(birthday).getTime() / 1000);
+        meta.attributes.push({
+          trait_type: 'birthday',
+          display_type: 'date',
+          value: birthdayUnix,
+        });
+      }
+      const body = {
+        pinataContent: meta,
+        pinataMetadata: {
+          name: `${hash}.json`,
+        },
+      };
+      const metaRes = await axios.post(
+        'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        body,
+        {
+          maxBodyLength: Infinity,
+          headers: {
+            ...headers,
+            'Content-Type': `application/json`,
+          },
+        },
+      );
+      console.log(metaRes.status, metaRes.data);
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more

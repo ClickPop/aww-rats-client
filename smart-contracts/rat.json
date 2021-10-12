@@ -1,0 +1,64 @@
+{
+  "name": "Rat Boi",
+  "description": "Rat Boi is a pet rat, that means it's a little cutie pie. It's favorite hobbies include snuggling, eating pizza rolls, and taking long naps.\n\n Rat Boi also helped build Aww, Rats!",
+  "attributes": [
+    {
+      "trait_type": "Accessory",
+      "value": "Can Soup"
+    },
+    {
+      "trait_type": "Background",
+      "value": "Dark"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Golden"
+    },
+    {
+      "trait_type": "Ears",
+      "value": "Torn Pink"
+    },
+    {
+      "trait_type": "Glasses",
+      "value": "Round Gold"
+    },
+    {
+      "trait_type": "Hat",
+      "value": "Halo"
+    },
+    {
+      "trait_type": "Markings",
+      "value": "White Star"
+    },
+    {
+      "trait_type": "Shirt",
+      "value": "Tee Unicorn"
+    },
+    {
+      "trait_type": "Snout",
+      "value": "Fangs"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Pet Rat"
+    },
+    {
+      "trait_type": "Rattitude",
+      "display_type": "number",
+      "value": 4,
+      "max_value": 7
+    },
+    {
+      "trait_type": "Cunning",
+      "display_type": "number",
+      "value": 4,
+      "max_value": 7
+    },
+    {
+      "trait_type": "Cuteness",
+      "display_type": "number",
+      "value": 5,
+      "max_value": 7
+    }
+  ]
+}
