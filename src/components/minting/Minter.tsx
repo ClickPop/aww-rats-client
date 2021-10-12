@@ -363,7 +363,7 @@ export const Minter = () => {
 
   return (
     <>
-      <RatPackSize contract={contract} />
+      <RatPackSize />
       {(loading || access === 'loading') && (
         <Image
           src={loader}
