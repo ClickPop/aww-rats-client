@@ -45,13 +45,16 @@ const Closet = () => {
   const [tokenProgress, setTokenProgress] = useState<number>(0);
   useEffect(() => {
     const c = new fabric.StaticCanvas('closet-canvas', {
-      width: 20 * 16,
-      height: 20 * 16,
+      width: 2048,
+      height: 2048,
       preserveObjectStacking: true,
     });
+    const canv = document.getElementById('closet-canvas');
+    if (canv) {
+      canv.style.transformOrigin = '0 0';
+      canv.style.transform = 'scale(0.1565)';
+    }
     fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-      img.scaleToHeight(c.getHeight());
-      img.scaleToWidth(c.getWidth());
       c.add(img);
     });
     setCanvas(c);
@@ -148,15 +151,11 @@ const Closet = () => {
                   resolve,
                 );
               });
-              img.scaleToHeight(canvas.getHeight());
-              img.scaleToWidth(canvas.getWidth());
               canvas.add(img);
             }
           }
         } else {
           fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-            img.scaleToHeight(canvas.getHeight());
-            img.scaleToWidth(canvas.getWidth());
             canvas.add(img);
           });
         }
@@ -169,7 +168,7 @@ const Closet = () => {
 
   const calculatePercentage = (n: number, d: number): number => {
     let perc: number = 0;
-    console.log(n,d);
+    console.log(n, d);
     if (n >= 0 && d > 0) {
       if (n > d || n === d) {
         perc = 1;
@@ -178,10 +177,10 @@ const Closet = () => {
       }
     }
 
-    perc = (perc >= 0 && perc < 1) ? Math.round((perc * 10000))/100 : 100;
+    perc = perc >= 0 && perc < 1 ? Math.round(perc * 10000) / 100 : 100;
 
     return perc;
-  }
+  };
 
   useEffect(() => {
     if (!currentRat) {
@@ -216,24 +215,20 @@ const Closet = () => {
 
   useEffect(() => {
     let load = true;
-    console.log(loadedTokens.length, TOTAL_CLOSET_PIECES, CLOSET_PIECES);
     if (loadedTokens.length >= TOTAL_CLOSET_PIECES) {
       load = false;
-      console.log(load);
     }
-    console.log(load);
     setLoading((l) => ({ ...l, pieces: load }));
-    setTokenProgress(calculatePercentage(loadedTokens.length, TOTAL_CLOSET_PIECES));
-    console.log(tokenProgress);
+    setTokenProgress(
+      calculatePercentage(loadedTokens.length, TOTAL_CLOSET_PIECES),
+    );
   }, [loadedTokens]);
 
   return (
-    <div className="max-w-7xl mx-auto pb-16 flex flex-col md:flex-row md:h-screen">
+    <div className='max-w-7xl mx-auto pb-16 flex flex-col md:flex-row md:h-screen'>
       <div className='container max-w-sm mx-auto my-2 p-4'>
-        <div className="mx-auto">
-          {router.route !== '/' && <Connect />}
-        </div>
-        
+        <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
+
         {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
         {!loading.tokens && rats && (
           <Select
@@ -246,8 +241,8 @@ const Closet = () => {
           />
         )}
 
-          <div
-            className='
+        <div
+          className='
                 mirror
                 rounded-xl
                 overflow-hidden
@@ -256,14 +251,15 @@ const Closet = () => {
                 h-80
                 relative
               '>
-            <canvas id='closet-canvas' className='w-full h-full' />
-            {loading.mirror && (
-              <div className='bg-black h-full w-full left-0 top-0 right-0 bottom-0 absolute'>
-                <CheeseLoader className='left-12 right-12 top-6 bottom-12 absolute' />
-              </div>
-            )}
-          </div>
+          <canvas id='closet-canvas' className='w-full h-full' />
+          {loading.mirror && (
+            <div className='bg-black h-full w-full left-0 top-0 right-0 bottom-0 absolute'>
+              <CheeseLoader className='left-12 right-12 top-6 bottom-12 absolute' />
+            </div>
+          )}
+        </div>
 
+        {currentRat && (
           <div className='my-2 mx-auto text-center'>
             <input
               type='checkbox'
@@ -279,29 +275,32 @@ const Closet = () => {
               Remove Background
             </label>
           </div>
+        )}
 
-          {currentRat && canvas && (
-            <button
-              className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-              onClick={(e) => {
-                const link = document.createElement('a');
-                link.download = `${currentRat.label}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-              }}>
-              Download it!
-            </button>
-          )}
+        {currentRat && canvas && (
+          <button
+            className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+            onClick={(e) => {
+              const link = document.createElement('a');
+              link.download = `${currentRat.label}.png`;
+              link.href = canvas.toDataURL();
+              link.click();
+            }}>
+            Download it!
+          </button>
+        )}
       </div>
 
       <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
         {currentRat && loading.pieces && (
-          <div className="w-full mt-40 h-3/4 items-center text-center">
-            <CheeseLoader className="w-20 h-20"/>
+          <div className='w-full mt-40 h-3/4 items-center text-center'>
+            <CheeseLoader className='w-20 h-20' />
 
-            <div className="mx-auto h-3 relative rounded-full overflow-hidden w-80">
-              <div className="w-full h-full bg-gray-200 absolute"></div>
-              <div className="h-full bg-purple-700 absolute transition-width duration-300" style={{width: `${tokenProgress}%`}}></div>
+            <div className='mx-auto h-3 relative rounded-full overflow-hidden w-80'>
+              <div className='w-full h-full bg-gray-200 absolute'></div>
+              <div
+                className='h-full bg-purple-700 absolute transition-width duration-300'
+                style={{ width: `${tokenProgress}%` }}></div>
             </div>
           </div>
         )}
