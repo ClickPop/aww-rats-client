@@ -17,11 +17,13 @@ export const RAT_EGG_BLUR =
 
 /* Closet Settings */
 export const RAT_PIECES_PREFIX = '/images/closet/pieces/';
+export const RAT_PIECES_THUMBNAIL_PREFIX = '/images/closet/thumbnails/';
 export const RAT_CLOSET_PLACEHOLDER = '/images/closet/rat-placeholder.png';
 export const LAYER_ORDER = [
   'background',
   'tail',
   'ears',
+  'hand',
   'color',
   'markings',
   'head',
@@ -34,7 +36,6 @@ export const LAYER_ORDER = [
   'accessory',
   'hat',
   'pet',
-  'hand',
 ];
 export const LAYER_HAS_BASE = ['head', 'torso'];
 export const CLOSET_PIECES = {

@@ -9,6 +9,7 @@ import {
   RAT_CLOSET_PLACEHOLDER,
   CLOSET_PIECES,
   RAT_PIECES_PREFIX,
+  RAT_PIECES_THUMBNAIL_PREFIX,
   TOTAL_CLOSET_PIECES,
 } from '~/config/env';
 import { EthersContext } from '~/components/context/EthersContext';
@@ -323,7 +324,7 @@ const Closet = () => {
                       key={piece}
                       className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
                       <Image
-                        src={`${RAT_PIECES_PREFIX}${pieceType}-${piece}.png`}
+                        src={`${RAT_PIECES_THUMBNAIL_PREFIX}${pieceType}-${piece}.png`}
                         alt=''
                         layout='fill'
                         className='w-full h-full'
