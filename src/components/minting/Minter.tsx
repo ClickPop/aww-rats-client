@@ -17,6 +17,7 @@ import {
   RAT_EGG_BLUR,
 } from '~/config/env';
 import { Image } from '~/components/shared/Image';
+import { RatPackSize } from '~/components/minting/RatPackSize';
 import { format } from 'date-fns';
 import loader from '~/assets/images/loader-cheese.gif';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
@@ -362,6 +363,7 @@ export const Minter = () => {
 
   return (
     <>
+      <RatPackSize contract={contract} />
       {(loading || access === 'loading') && (
         <Image
           src={loader}
