@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
-import { ethers, BigNumber, ContractReceipt } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import {
   ERC20,
   GeneratorResponse,
   LOADING_STATE,
   Metadata,
   OpenSeaAttribute,
-  Rat,
 } from '~/types';
 import {
   ALLOWED_WALLETS,
@@ -18,11 +17,11 @@ import {
 } from '~/config/env';
 import { Image } from '~/components/shared/Image';
 import { format } from 'date-fns';
-import loader from '~/assets/images/loader-cheese.gif';
-import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { Link } from '~/components/shared/Link';
-import { parseEther, parseUnits } from '@ethersproject/units';
+import { EthersContext } from '~/components/context/EthersContext';
+import { formatEther, parseEther } from '@ethersproject/units';
+import { CheeseLoader } from '~/components/shared/CheeseLoader';
 
 type MintAndGenerateData = {
   tokenId?: string | null;
@@ -32,7 +31,6 @@ type MintAndGenerateData = {
 export const Minter = () => {
   const { provider, signer, network, connected } = useEthers();
   const [ethCost, setEthCost] = useState(0);
-  const [contract, setContract] = useState<Rat | null>(null);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const [mintTx, setMintTx] = useState('');
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(
@@ -46,38 +44,23 @@ export const Minter = () => {
   const [mintingError, setMintingError] = useState('');
   const [tokenId, setTokenId] = useState('');
 
-  const connectToMetamask = async () => {
-    try {
-      await provider?.send('eth_requestAccounts', []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const { contract, connectToMetamask } = useContext(EthersContext);
 
   useEffect(() => {
-    (async () => {
-      if (CONTRACT_ADDRESS && connected && network?.chainId === CHAIN_ID) {
-        try {
-          const c = new ethers.Contract(
-            CONTRACT_ADDRESS,
-            RatABI.abi,
-            signer,
-          ) as Rat;
-          setContract(c);
-          c.cost().then((data) => {
-            setEthCost(parseFloat(ethers.utils.formatEther(data)));
-          });
-          c.canMint().then((canMint) => {
-            if (!canMint) {
-              setMintingError('Minting is currently closed.');
-            }
-          });
-        } catch (err) {
-          console.error(err);
-        }
+    const setupContract = async () => {
+      if (contract) {
+        contract.cost().then((cost) => {
+          setEthCost(parseFloat(formatEther(cost)));
+        });
+        contract.canMint().then((canMint) => {
+          if (!canMint) {
+            setMintingError('Minting is currently closed.');
+          }
+        });
       }
-    })();
-  }, [connected, signer, provider, network]);
+    };
+    setupContract();
+  }, [contract]);
 
   const handleMintAndGenerate = async (
     skip?: LOADING_STATE[],
@@ -362,13 +345,7 @@ export const Minter = () => {
 
   return (
     <>
-      {(loading || access === 'loading') && (
-        <Image
-          src={loader}
-          className='w-10 inline-block'
-          alt='Rat Cheese Loader'
-        />
-      )}
+      {(loading || access === 'loading') && <CheeseLoader className='w-10' />}
       {loading === 'APPROVAL' && (
         <>
           <p className='px-4 py-2'>

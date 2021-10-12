@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { EthersContextProvider } from '~/components/context/EthersContext';
 import '~/styles/index.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -29,7 +30,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='msapplication-TileColor' content='#2b5797' />
         <meta name='theme-color' content='#ffffff' />
       </Head>
-      <Component {...pageProps} />
+      <EthersContextProvider>
+        <Component {...pageProps} />
+      </EthersContextProvider>
     </>
   );
 }
