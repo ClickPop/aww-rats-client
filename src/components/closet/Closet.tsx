@@ -324,6 +324,7 @@ const Closet = () => {
                       key={piece}
                       className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
                       <Image
+                        loading='eager'
                         src={`${RAT_PIECES_THUMBNAIL_PREFIX}${pieceType}-${piece}.png`}
                         alt=''
                         layout='fill'
