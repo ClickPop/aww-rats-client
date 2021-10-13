@@ -53,6 +53,9 @@ export const CLOSET_PIECES = {
     'sash-big-cheese',
     'costume-cat',
     'costume-vampire',
+    'costume-candy-corn',
+    'costume-superhero',
+    'karate-white',
   ],
   hat: [
     'costume-pumpkin',
@@ -60,10 +63,13 @@ export const CLOSET_PIECES = {
     'costume-squid-game',
     'tiara',
     'costume-cat',
-    'costume-vampire',
+    'costume-vampire',    
+    'costume-candy-corn',
+    'karate-red',
   ],
   snout: ['costume-vampire'],
   accessory: ['costume-cat'],
+  glasses: ['costume-funny'],
   hand: [
     'pumpkin-spice-latte',
     'champagne'
