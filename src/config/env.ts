@@ -64,7 +64,10 @@ export const CLOSET_PIECES = {
   ],
   snout: ['costume-vampire'],
   accessory: ['costume-cat'],
-  hand: ['pumpkin-spice-latte', 'champagne'],
+  hand: [
+    'pumpkin-spice-latte',
+    'champagne'
+  ],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
