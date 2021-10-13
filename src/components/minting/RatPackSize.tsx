@@ -17,23 +17,23 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const { provider, signer, network, connected } = useEthers();
+  const { provider } = useEthers();
   
   useEffect(() => {
     (async () => {
-      if (CONTRACT_ADDRESS && connected && network?.chainId === CHAIN_ID) {
+      if (CONTRACT_ADDRESS) {
         try {
-          const c = new ethers.Contract(
+          const cro = new ethers.Contract(
             CONTRACT_ADDRESS,
             RatABI.abi,
-            signer,
+            provider,
           ) as Rat;
-          c.maxTokens().then((maxTokens: number) => {
+          cro.maxTokens().then((maxTokens: number) => {
             if (maxTokens) {
               setMaxRatPackSize(maxTokens);
             }
           });
-          c.numTokens().then((numTokens: BigNumber) => {
+          cro.numTokens().then((numTokens: BigNumber) => {
             if (numTokens) {
               setRatPackSize(numTokens.toNumber())
             }
@@ -43,7 +43,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
         }
       }
     })();
-  }, [connected, signer, provider, network]);
+  }, [provider]);
 
   if (ratPackSize > 0 && ratPackSize < maxRatPackSize) {
     return (<div><p className={className}>Currently {ratPackSize} rats in the sewer,<br />but there&apos;s room for {maxRatPackSize - ratPackSize} more...</p></div>)
