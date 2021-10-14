@@ -57,6 +57,9 @@ export const CLOSET_PIECES = {
     'costume-candy-corn',
     'costume-superhero',
     'karate-white',
+    'costume-ghost',
+    'costume-fairy',
+    'costume-witch',
   ],
   hat: [
     'costume-pumpkin',
@@ -66,12 +69,19 @@ export const CLOSET_PIECES = {
     'costume-cat',
     'costume-vampire',
     'costume-candy-corn',
-    'karate-red',
+    'costume-fairy',
+    'costume-witch',
   ],
   snout: ['costume-vampire'],
   accessory: ['costume-cat'],
   glasses: ['costume-funny'],
-  hand: ['pumpkin-spice-latte', 'champagne'],
+  hand: [
+    'pumpkin-spice-latte',
+    'champagne',
+    'costume-ghost',
+    'costume-fairy',
+    'costume-witch',
+  ],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
