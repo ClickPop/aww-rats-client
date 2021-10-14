@@ -5,6 +5,7 @@ import {
     Rat,
 } from '~/types';
 import {
+  RPC_URL,
   CHAIN_ID,
   CONTRACT_ADDRESS,
 } from '~/config/env';
@@ -17,16 +18,16 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const { provider } = useEthers();
+  const roProvider = new ethers.providers.JsonRpcProvider(RPC_URL, ethers.providers.getNetwork(CHAIN_ID));
   
   useEffect(() => {
     (async () => {
-      if (CONTRACT_ADDRESS) {
+      if (CONTRACT_ADDRESS && roProvider) {
         try {
           const cro = new ethers.Contract(
             CONTRACT_ADDRESS,
             RatABI.abi,
-            provider,
+            roProvider
           ) as Rat;
           cro.maxTokens().then((maxTokens: number) => {
             if (maxTokens) {
@@ -43,7 +44,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
         }
       }
     })();
-  }, [provider]);
+  }, [roProvider]);
 
   if (ratPackSize > 0 && ratPackSize < maxRatPackSize) {
     return (<div><p className={className}>Currently {ratPackSize} rats in the sewer,<br />but there&apos;s room for {maxRatPackSize - ratPackSize} more...</p></div>)
