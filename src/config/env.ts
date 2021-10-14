@@ -36,6 +36,7 @@ export const LAYER_ORDER = [
   'accessory',
   'hat',
   'pet',
+  'hand',
 ];
 export const LAYER_HAS_BASE = ['head', 'torso'];
 export const CLOSET_PIECES = {
@@ -53,6 +54,9 @@ export const CLOSET_PIECES = {
     'sash-big-cheese',
     'costume-cat',
     'costume-vampire',
+    'costume-candy-corn',
+    'costume-superhero',
+    'karate-white',
   ],
   hat: [
     'costume-pumpkin',
@@ -61,9 +65,12 @@ export const CLOSET_PIECES = {
     'tiara',
     'costume-cat',
     'costume-vampire',
+    'costume-candy-corn',
+    'karate-red',
   ],
   snout: ['costume-vampire'],
   accessory: ['costume-cat'],
+  glasses: ['costume-funny'],
   hand: ['pumpkin-spice-latte', 'champagne'],
 };
 export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
