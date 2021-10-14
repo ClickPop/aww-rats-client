@@ -19,7 +19,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
   const roProvider = new ethers.providers.JsonRpcProvider(RPC_URL, ethers.providers.getNetwork(CHAIN_ID));
-  
+
   useEffect(() => {
     (async () => {
       if (CONTRACT_ADDRESS && roProvider) {
@@ -36,7 +36,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
           });
           cro.numTokens().then((numTokens: BigNumber) => {
             if (numTokens) {
-              setRatPackSize(numTokens.toNumber())
+              setRatPackSize(numTokens.toNumber());
             }
           });
         } catch (err) {
@@ -47,9 +47,23 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   }, [roProvider]);
 
   if (ratPackSize > 0 && ratPackSize < maxRatPackSize) {
-    return (<div><p className={className}>Currently {ratPackSize} rats in the sewer,<br />but there&apos;s room for {maxRatPackSize - ratPackSize} more...</p></div>)
+    return (
+      <div>
+        <p className={className}>
+          Currently {ratPackSize} rats in the sewer,
+          <br />
+          but there&apos;s room for {maxRatPackSize - ratPackSize} more...
+        </p>
+      </div>
+    );
   } else if (ratPackSize > 0 && ratPackSize >= maxRatPackSize) {
-    return (<div><p className={className}>Looks like there&apos;s no more room in the sewer.</p></div>)
+    return (
+      <div>
+        <p className={className}>
+          Looks like there&apos;s no more room in the sewer.
+        </p>
+      </div>
+    );
   }
-  return <></>
-}
+  return <></>;
+};
