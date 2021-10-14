@@ -77,3 +77,4 @@ export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   (prev, curr) => prev + curr.length,
   0,
 );
+export const FULLSTORY_ORG_ID = '15X2Y3';
