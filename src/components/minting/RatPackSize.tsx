@@ -1,14 +1,8 @@
 import React, { useEffect, useState, FC } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber } from 'ethers';
-import {
-    Rat,
-} from '~/types';
-import {
-  RPC_URL,
-  CHAIN_ID,
-  CONTRACT_ADDRESS,
-} from '~/config/env';
+import { Rat } from '~/types';
+import { RPC_URL, CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 
 interface Props {
@@ -18,7 +12,10 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const roProvider = new ethers.providers.JsonRpcProvider(RPC_URL, ethers.providers.getNetwork(CHAIN_ID));
+  const roProvider = new ethers.providers.JsonRpcProvider(
+    RPC_URL,
+    ethers.providers.getNetwork(CHAIN_ID),
+  );
 
   useEffect(() => {
     (async () => {
@@ -27,7 +24,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
           const cro = new ethers.Contract(
             CONTRACT_ADDRESS,
             RatABI.abi,
-            roProvider
+            roProvider,
           ) as Rat;
           cro.maxTokens().then((maxTokens: number) => {
             if (maxTokens) {

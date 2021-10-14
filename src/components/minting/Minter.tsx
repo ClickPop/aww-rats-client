@@ -302,12 +302,12 @@ export const Minter = () => {
   if (!connected) {
     return (
       <>
-      <button
-        className='px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
-        onClick={connectToMetamask}>
-        Connect to MetaMask
-      </button>
-      <RatPackSize className="text-center text-sm italic text-purple-400 mt-2"/>
+        <button
+          className='px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
+          onClick={connectToMetamask}>
+          Connect to MetaMask
+        </button>
+        <RatPackSize className='text-center text-sm italic text-purple-400 mt-2' />
       </>
     );
   }
