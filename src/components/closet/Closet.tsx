@@ -149,13 +149,13 @@ const Closet = () => {
                   val.startsWith('data:')
                     ? val
                     : `${RAT_PIECES_PREFIX}${key}-${val
-                      .toLowerCase()
-                      .replace(/ /g, '-')}.png`,
+                        .toLowerCase()
+                        .replace(/ /g, '-')}.png`,
                   resolve,
-                )
+                );
               });
-              let aspect = (img.width && img.height) ? img.width / img.height : 1;
-              
+              let aspect = img.width && img.height ? img.width / img.height : 1;
+
               if (aspect >= 1) {
                 //@ts-ignore
                 img.scaleToHeight(canvas.height);
@@ -195,14 +195,14 @@ const Closet = () => {
     return perc;
   };
 
-  const getBase64Image = (file: Blob): Promise<any|Error> => {
+  const getBase64Image = (file: Blob): Promise<any | Error> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
-  }
+  };
 
   useEffect(() => {
     if (!currentRat) {
@@ -213,8 +213,11 @@ const Closet = () => {
 
   const tryOnClothes = (pieceType: string, piece: string) => {
     if (currentRat) {
-      if (piece === "##REMOVE##" || currentRat.properties.get(pieceType) === piece) {
-        if (!(piece === "##REMOVE##" && !oldClothes.get(pieceType))) {
+      if (
+        piece === '##REMOVE##' ||
+        currentRat.properties.get(pieceType) === piece
+      ) {
+        if (!(piece === '##REMOVE##' && !oldClothes.get(pieceType))) {
           currentRat.properties.set(
             pieceType,
             oldClothes.get(pieceType) ?? 'none',
@@ -222,7 +225,7 @@ const Closet = () => {
           handleChangeRat(currentRat);
         }
       } else {
-        if (piece.startsWith("data:")) {
+        if (piece.startsWith('data:')) {
           const old = new Map(oldClothes);
           old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
           setOldClothes(old);
@@ -305,32 +308,35 @@ const Closet = () => {
             <label htmlFor='background' className='text-white ml-2'>
               Remove Background
             </label>
-            
+
             <input
               type='file'
               id='upload-background'
               className='hidden'
               onChange={async (e) => {
-                if (e.target.files instanceof FileList && e.target.files.length > 0) {
+                if (
+                  e.target.files instanceof FileList &&
+                  e.target.files.length > 0
+                ) {
                   const file = e.target.files[0];
                   const data = await getBase64Image(file);
-                  tryOnClothes("background", data);
+                  tryOnClothes('background', data);
+                  setHideBackground(false);
                 }
               }}
             />
             <div>
-              <label 
-                htmlFor="upload-background"
-                className="py-2 px-3 mt-4 mx-auto w-60 inline-block rounded-l-md duration-300 bg-tan hover:bg-light"
-              >
+              <label
+                htmlFor='upload-background'
+                className='py-2 px-3 mt-4 mx-auto w-60 inline-block rounded-l-md duration-300 bg-tan hover:bg-light'>
                 Upload a Background
               </label>
-              <button 
-                type="button" 
-                className="py-2 px-3 mt-4 mx-auto w-20 inline-block rounded-r-md duration-300 bg-gray-200 hover:bg-gray-300"
+              <button
+                type='button'
+                className='py-2 px-3 mt-4 mx-auto w-20 inline-block rounded-r-md duration-300 bg-gray-200 hover:bg-gray-300'
                 onClick={() => {
-                  tryOnClothes("background", "##REMOVE##")
-              }}>
+                  tryOnClothes('background', '##REMOVE##');
+                }}>
                 🗑
               </button>
             </div>
