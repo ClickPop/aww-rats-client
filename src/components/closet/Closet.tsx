@@ -220,6 +220,7 @@ const Closet = () => {
       load = false;
     }
     setLoading((l) => ({ ...l, pieces: load }));
+
     setTokenProgress(
       calculatePercentage(loadedTokens.length, TOTAL_CLOSET_PIECES),
     );
