@@ -16,7 +16,6 @@ export const Header = () => {
       />
       <div className='flex px-4'>
         <div className='flex items-center text-white'>
-          
           <Link href='/#roadmap' className='mr-4'>
             Roadmap
           </Link>
