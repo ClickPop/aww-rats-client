@@ -200,6 +200,33 @@ task('update-cost', 'Update the cost of minting a token in ether')
     }
   });
 
+task('update-max-tokens', 'Update the max tokens to be minted')
+  .addPositionalParam(
+    'newTokens',
+    'The number of new tokens to add',
+    0,
+    types.int,
+  )
+  .setAction(async ({ newTokens }, hre) => {
+    const interval = ratLoader(
+      ` Adding ${newTokens} tokens to the max allowed`,
+    );
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const numTokens = await rat.maxTokens();
+      const tx = await rat
+        .setMaxTokens(numTokens + newTokens)
+        .then((t) => t.wait());
+      console.log(' Transaction Hash:', tx.transactionHash);
+      console.log(` New max tokens: ${numTokens + newTokens}`);
+    } catch (err) {
+      console.error(err);
+    }
+    clearInterval(interval);
+  });
+
 task('regenerate-rat', "Regenerate a Rat that doesn't have metadata")
   .addPositionalParam('id', 'Token ID to update', 0, types.int)
   .setAction(async ({ id }, hre) => {
@@ -351,6 +378,32 @@ task('migrate-rat', 'Migrate a rat from old contract to new one')
         if (uriTx) {
           console.log(' New token URI', await rat.tokenURI(tokenId));
         }
+      }
+      clearInterval(interval);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+task('set-token-uri', 'Set tokenURI for the specified token')
+  .addPositionalParam('tokenId', 'Token ID to update')
+  .addPositionalParam('tokenURI', 'The URI to set for that token')
+  .setAction(async ({ tokenId, tokenURI }, hre) => {
+    try {
+      const interval = ratLoader(
+        `Setting token URI for token ID: ${tokenId} to ${tokenURI}`,
+      );
+      const [signer] = await hre.ethers.getSigners();
+      const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const uriTx = await rat
+        .storeAsset(
+          typeof tokenId === 'string' ? parseInt(tokenId, 10) : tokenId,
+          tokenURI,
+        )
+        .then((t) => t.wait());
+      if (uriTx) {
+        console.log(' Tx Hash', uriTx.transactionHash);
       }
       clearInterval(interval);
     } catch (err) {
