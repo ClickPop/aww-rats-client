@@ -15,6 +15,7 @@ import {
 import { EthersContext } from '~/components/context/EthersContext';
 import { fabric } from 'fabric';
 import { Connect } from '~/components/shared/Connect';
+import { Link } from '~/components/shared/Link';
 import { Canvas, StaticCanvas } from 'fabric/fabric-impl';
 import { Image } from '~/components/shared/Image';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
@@ -259,162 +260,175 @@ const Closet = () => {
   }, [loadedTokens]);
 
   return (
-    <div className='max-w-7xl mx-auto py-16 flex flex-col md:flex-row md:h-screen'>
-      <div className='container max-w-sm mx-auto my-2 p-4'>
-        <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
+    <div className="max-w-7xl mx-auto pt-20 pb-4">
+      <div className="text-white text-center mb-4">
+        <p>
+          Welcome to the Aww, Rats closet. We're constantly adding new things to make your little critter look extra attRATctive.
+        </p>
+        <p>
+          Don't have a rat?{' '}
+          <Link href='/' className="underline">
+            mint one now
+          </Link>
+        </p>
+      </div>
+      <div className='flex flex-col md:flex-row md:h-screen'>
+        <div className='container max-w-sm mx-auto my-2 p-4'>
+          <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
 
-        {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
-        {!loading.tokens && rats && (
-          <Select
-            className='select-search mx-auto w-80 mb-4'
-            options={rats}
-            placeholder='Select your rat'
-            onChange={handleChangeRat}
-            isClearable
-            isSearchable
-          />
-        )}
+          {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
+          {!loading.tokens && rats && (
+            <Select
+              className='select-search mx-auto w-80 mb-4'
+              options={rats}
+              placeholder='Select your rat'
+              onChange={handleChangeRat}
+              isClearable
+              isSearchable
+            />
+          )}
 
-        <div
-          className='
-                mirror
-                rounded-xl
-                overflow-hidden
-                mx-auto
-                w-80
-                h-80
-                relative
-              '>
-          <canvas id='closet-canvas' className='w-full h-full' />
-          {loading.mirror && (
-            <div className='bg-black h-full w-full left-0 top-0 right-0 bottom-0 absolute'>
-              <CheeseLoader className='left-12 right-12 top-6 bottom-12 absolute' />
+          <div
+            className='
+                  mirror
+                  rounded-xl
+                  overflow-hidden
+                  mx-auto
+                  w-80
+                  h-80
+                  relative
+                '>
+            <canvas id='closet-canvas' className='w-full h-full' />
+            {loading.mirror && (
+              <div className='bg-black h-full w-full left-0 top-0 right-0 bottom-0 absolute'>
+                <CheeseLoader className='left-12 right-12 top-6 bottom-12 absolute' />
+              </div>
+            )}
+          </div>
+
+          {currentRat && (
+            <div className='my-2 mx-auto text-center'>
+              <input
+                type='checkbox'
+                id='background'
+                checked={hideBackground}
+                onChange={(e) => {
+                  if (e.target.type === 'checkbox') {
+                    setHideBackground(e.target.checked);
+                  }
+                }}
+              />
+              <label htmlFor='background' className='text-white ml-2'>
+                Remove Background
+              </label>
+
+              <input
+                type='file'
+                id='upload-background'
+                className='hidden'
+                onChange={async (e) => {
+                  if (
+                    e.target.files instanceof FileList &&
+                    e.target.files.length > 0
+                  ) {
+                    const file = e.target.files[0];
+                    const data = await getBase64Image(file);
+                    tryOnClothes('background', data);
+                    setHideBackground(false);
+                  }
+                }}
+              />
+              <div>
+                <label
+                  htmlFor='upload-background'
+                  className='py-2 px-3 mt-4 mx-auto w-60 inline-block rounded-l-md duration-300 bg-tan hover:bg-light'>
+                  Upload a Background
+                </label>
+                <button
+                  type='button'
+                  className='py-2 px-3 mt-4 mx-auto w-20 inline-block rounded-r-md duration-300 bg-gray-200 hover:bg-gray-300'
+                  onClick={() => {
+                    tryOnClothes('background', '##REMOVE##');
+                  }}>
+                  🗑
+                </button>
+              </div>
             </div>
+          )}
+
+          {currentRat && canvas && (
+            <button
+              className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+              onClick={(e) => {
+                const link = document.createElement('a');
+                link.download = `${currentRat.label}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+              }}>
+              Download it!
+            </button>
           )}
         </div>
 
-        {currentRat && (
-          <div className='my-2 mx-auto text-center'>
-            <input
-              type='checkbox'
-              id='background'
-              checked={hideBackground}
-              onChange={(e) => {
-                if (e.target.type === 'checkbox') {
-                  setHideBackground(e.target.checked);
-                }
-              }}
-            />
-            <label htmlFor='background' className='text-white ml-2'>
-              Remove Background
-            </label>
+        <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
+          {currentRat && loading.pieces && (
+            <div className='w-full mx-auto mt-40 h-3/4 items-center text-center'>
+              <CheeseLoader className='w-20 h-20' />
 
-            <input
-              type='file'
-              id='upload-background'
-              className='hidden'
-              onChange={async (e) => {
-                if (
-                  e.target.files instanceof FileList &&
-                  e.target.files.length > 0
-                ) {
-                  const file = e.target.files[0];
-                  const data = await getBase64Image(file);
-                  tryOnClothes('background', data);
-                  setHideBackground(false);
-                }
-              }}
-            />
-            <div>
-              <label
-                htmlFor='upload-background'
-                className='py-2 px-3 mt-4 mx-auto w-60 inline-block rounded-l-md duration-300 bg-tan hover:bg-light'>
-                Upload a Background
-              </label>
-              <button
-                type='button'
-                className='py-2 px-3 mt-4 mx-auto w-20 inline-block rounded-r-md duration-300 bg-gray-200 hover:bg-gray-300'
-                onClick={() => {
-                  tryOnClothes('background', '##REMOVE##');
-                }}>
-                🗑
-              </button>
-            </div>
-          </div>
-        )}
-
-        {currentRat && canvas && (
-          <button
-            className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-            onClick={(e) => {
-              const link = document.createElement('a');
-              link.download = `${currentRat.label}.png`;
-              link.href = canvas.toDataURL();
-              link.click();
-            }}>
-            Download it!
-          </button>
-        )}
-      </div>
-
-      <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
-        {currentRat && loading.pieces && (
-          <div className='w-full mx-auto mt-40 h-3/4 items-center text-center'>
-            <CheeseLoader className='w-20 h-20' />
-
-            <div className='mx-auto h-3 relative rounded-full overflow-hidden w-80'>
-              <div className='w-full h-full bg-gray-200 absolute'></div>
-              <div
-                className='h-full bg-purple-700 absolute transition-width duration-300'
-                style={{ width: `${tokenProgress}%` }}></div>
-            </div>
-          </div>
-        )}
-        {currentRat ? (
-          <div
-            className={`flex flex-col w-full ${
-              loading.pieces
-                ? 'opacity-0 pointer-events-none'
-                : 'opacity-1 pointer-events-auto'
-            }`}>
-            {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
-              <div key={pieceType}>
-                <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
-                  {pieceType}
-                </h3>
-
-                <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
-                  {pieces.map((piece) => (
-                    <div
-                      key={piece}
-                      className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
-                      <Image
-                        loading='eager'
-                        src={`${RAT_PIECES_THUMBNAIL_PREFIX}${pieceType}-${piece}.png`}
-                        alt=''
-                        layout='fill'
-                        className='w-full h-full'
-                        onClick={() => tryOnClothes(pieceType, piece)}
-                        onLoad={(e) => {
-                          // I'm ignoring here because I know this property exists, but TS disagrees...
-                          // @ts-ignore
-                          const src = e.target.src as string;
-
-                          if (src.includes('/_next/image')) {
-                            // @ts-ignore
-                            setLoadedTokens([...loadedTokens, e.target.src]);
-                          }
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
+              <div className='mx-auto h-3 relative rounded-full overflow-hidden w-80'>
+                <div className='w-full h-full bg-gray-200 absolute'></div>
+                <div
+                  className='h-full bg-purple-700 absolute transition-width duration-300'
+                  style={{ width: `${tokenProgress}%` }}></div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className='text-white'>Please select a rat</div>
-        )}
+            </div>
+          )}
+          {currentRat ? (
+            <div
+              className={`flex flex-col w-full ${
+                loading.pieces
+                  ? 'opacity-0 pointer-events-none'
+                  : 'opacity-1 pointer-events-auto'
+              }`}>
+              {Object.entries(CLOSET_PIECES).map(([pieceType, pieces]) => (
+                <div key={pieceType}>
+                  <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
+                    {pieceType}
+                  </h3>
+
+                  <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+                    {pieces.map((piece) => (
+                      <div
+                        key={piece}
+                        className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
+                        <Image
+                          loading='eager'
+                          src={`${RAT_PIECES_THUMBNAIL_PREFIX}${pieceType}-${piece}.png`}
+                          alt=''
+                          layout='fill'
+                          className='w-full h-full'
+                          onClick={() => tryOnClothes(pieceType, piece)}
+                          onLoad={(e) => {
+                            // I'm ignoring here because I know this property exists, but TS disagrees...
+                            // @ts-ignore
+                            const src = e.target.src as string;
+
+                            if (src.includes('/_next/image')) {
+                              // @ts-ignore
+                              setLoadedTokens([...loadedTokens, e.target.src]);
+                            }
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='text-white'>Please select a rat</div>
+          )}
+        </div>
       </div>
     </div>
   );
