@@ -7,13 +7,15 @@ import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
 
 export const Header = () => {
   return (
-    <div className='pt-4 flex flex-col md:flex-row justify-between items-center w-full'>
-      <Image
-        className='w-16 h-16 mx-4 hidden md:block'
-        src={logo}
-        alt='Aww, Rats! Logo'
-        placeholder='blur'
-      />
+    <div className='py-4 flex flex-col bg-dark md:flex-row justify-between fixed items-center w-full z-50 bg-opacity-50'>
+      <Link href='/' className='mr-4'>
+        <Image
+          className='w-12 h-12 mx-4 hidden md:block'
+          src={logo}
+          alt='Aww, Rats! Logo'
+          placeholder='blur'
+        />
+      </Link>
       <div className='flex px-4'>
         <div className='flex items-center text-white'>
           <Link href='/#roadmap' className='mr-4'>
