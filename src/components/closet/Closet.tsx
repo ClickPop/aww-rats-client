@@ -259,7 +259,7 @@ const Closet = () => {
   }, [loadedTokens]);
 
   return (
-    <div className='max-w-7xl mx-auto pb-16 flex flex-col md:flex-row md:h-screen'>
+    <div className='max-w-7xl mx-auto py-16 flex flex-col md:flex-row md:h-screen'>
       <div className='container max-w-sm mx-auto my-2 p-4'>
         <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
 
