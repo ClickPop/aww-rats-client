@@ -263,10 +263,10 @@ const Closet = () => {
     <div className="max-w-7xl mx-auto pt-20 pb-4">
       <div className="text-white text-center mb-4">
         <p>
-          Welcome to the Aww, Rats closet. We're constantly adding new things to make your little critter look extra attRATctive.
+          Welcome to the Aww, Rats closet. We&apos;re constantly adding new things to make your little critter look extra attRATctive.
         </p>
         <p>
-          Don't have a rat?{' '}
+          Don&apos;t have a rat?{' '}
           <Link href='/' className="underline">
             mint one now
           </Link>
