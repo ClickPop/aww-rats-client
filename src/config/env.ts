@@ -71,6 +71,7 @@ export const CLOSET_PIECES = {
     'costume-cat',
     'costume-vampire',
     'costume-candy-corn',
+    'karate-red',
     'costume-fairy',
     'costume-witch',
   ],
