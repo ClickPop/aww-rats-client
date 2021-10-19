@@ -61,6 +61,7 @@ export const CLOSET_PIECES = {
     'costume-ghost',
     'costume-fairy',
     'costume-witch',
+    'jacket-leather',
   ],
   hat: [
     'none',
@@ -74,6 +75,15 @@ export const CLOSET_PIECES = {
     'karate-red',
     'costume-fairy',
     'costume-witch',
+    'ballcap-baseball-one',
+    'ballcap-baseball-two',
+    'ballcap-baseball-three',
+    'ballcap-baseball-four',
+    'ballcap-sports',
+    'ballcap-books',
+    'ballcap-crafts',
+    'headphones-rats-by-rats',
+    'headphones-pods',
   ],
   snout: ['costume-vampire'],
   accessory: [
