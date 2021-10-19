@@ -12,7 +12,7 @@ import { Minter } from '~/components/minting/Minter';
 
 export const Hero = () => {
   return (
-    <div className='pb-24 pt-4 overflow-hidden text-white w-full'>
+    <div className='py-12 md:py-24 overflow-hidden text-white w-full'>
       <Image
         className='max-w-md mx-auto mb-8 p-4'
         src={logo}
