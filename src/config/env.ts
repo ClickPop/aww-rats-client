@@ -84,11 +84,13 @@ export const CLOSET_PIECES = {
     'ballcap-crafts',
     'headphones-rats-by-rats',
     'headphones-pods',
+    'helicopter',
   ],
   snout: ['costume-vampire'],
   accessory: [
     'none',
-    'costume-cat'
+    'costume-cat',
+    'chain-gold',
   ],
   glasses: [
     'none',
@@ -101,6 +103,7 @@ export const CLOSET_PIECES = {
     'costume-ghost',
     'costume-fairy',
     'costume-witch',
+    'super-cheezr',
   ],
   pet: [
     'none',
