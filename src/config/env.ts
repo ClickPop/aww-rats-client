@@ -50,6 +50,7 @@ export const CLOSET_PIECES = {
     'robe-red',
     'sweater-orange',
     'scarf',
+    'coat-cat-fur',
     'costume-pumpkin',
     'costume-squid-game',
     'sash-big-cheese',
