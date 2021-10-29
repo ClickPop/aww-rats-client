@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { BigNumber } from 'ethers';
 import Select, { SingleValue } from 'react-select';
 
@@ -16,10 +22,10 @@ import { EthersContext } from '~/components/context/EthersContext';
 import { fabric } from 'fabric';
 import { Connect } from '~/components/shared/Connect';
 import { Link } from '~/components/shared/Link';
-import { Canvas, StaticCanvas } from 'fabric/fabric-impl';
 import { Image } from '~/components/shared/Image';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { useRouter } from 'next/router';
+import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 interface SimplifiedMetadata {
   label: string;
   value: string;
@@ -35,7 +41,6 @@ const Closet = () => {
   );
   const [currentRat, setCurrentRat] = useState<SimplifiedMetadata | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
-  const [canvas, setCanvas] = useState<StaticCanvas | null>(null);
   const [hideBackground, setHideBackground] = useState(false);
   const [loading, setLoading] = useState({
     tokens: false,
@@ -45,22 +50,30 @@ const Closet = () => {
   });
   const [loadedTokens, setLoadedTokens] = useState<string[]>([]);
   const [tokenProgress, setTokenProgress] = useState<number>(0);
-  useEffect(() => {
-    const c = new fabric.StaticCanvas('closet-canvas', {
-      width: 2048,
-      height: 2048,
-      preserveObjectStacking: true,
-    });
-    const canv = document.getElementById('closet-canvas');
-    if (canv) {
-      canv.style.transformOrigin = '0 0';
-      canv.style.transform = 'scale(0.1565)';
-    }
-    fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-      c.add(img);
-    });
-    setCanvas(c);
+
+  const canvasOpts = useMemo(() => {
+    const opts: CanvasOpts = {
+      canvasType: 'StaticCanvas',
+      element: 'closet-canvas',
+      canvasOptions: {
+        width: 2048,
+        height: 2048,
+        preserveObjectStacking: true,
+      },
+      scaledSize: {
+        width: 320,
+        height: 320,
+      },
+      onMount: (canv) => {
+        fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
+          canv.add(img);
+        });
+      },
+    };
+    return opts;
   }, []);
+
+  const { canvas } = useCanvas(canvasOpts);
 
   // Get all the tokens for an address
   useEffect(() => {
@@ -182,7 +195,6 @@ const Closet = () => {
 
   const calculatePercentage = (n: number, d: number): number => {
     let perc: number = 0;
-    console.log(n, d);
     if (n >= 0 && d > 0) {
       if (n > d || n === d) {
         perc = 1;
@@ -260,14 +272,15 @@ const Closet = () => {
   }, [loadedTokens]);
 
   return (
-    <div className="max-w-7xl mx-auto pt-20 pb-4">
-      <div className="text-white text-center mb-4">
+    <div className='max-w-7xl mx-auto pt-20 pb-4'>
+      <div className='text-white text-center mb-4'>
         <p>
-          Welcome to the Aww, Rats closet. We&apos;re constantly adding new things to make your little critter look extra attRATctive.
+          Welcome to the Aww, Rats closet. We&apos;re constantly adding new
+          things to make your little critter look extra attRATctive.
         </p>
         <p>
           Don&apos;t have a rat?{' '}
-          <Link href='/' className="underline">
+          <Link href='/' className='underline'>
             mint one now
           </Link>
         </p>
