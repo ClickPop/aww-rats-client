@@ -7,6 +7,8 @@ export const API_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_PUBSUB_API_KEY;
 export const GENERATOR_URL = process.env.GENERATOR_URL;
 export const OPEN_MINTING = process.env.NEXT_PUBLIC_OPEN_MINTING;
+export const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
+export const MORALIS_API_ENDPOINT = 'https://deep-index.moralis.io/api/v2';
 export const ALLOWED_WALLETS = process.env.NEXT_PUBLIC_ALLOWED_WALLETS
   ? (JSON.parse(process.env.NEXT_PUBLIC_ALLOWED_WALLETS) as string[])?.map(
       (w) => w.toLowerCase(),
@@ -106,3 +108,24 @@ export const TOTAL_CLOSET_PIECES = Object.values(CLOSET_PIECES).reduce(
   0,
 );
 export const FULLSTORY_ORG_ID = '15X2Y3';
+
+/** Den Settings */
+export const DEN_BACKGROUND = '/images/den/sewerbg.png';
+export const DEN_FRAME_PREFIX = '/images/den/sewerframe-';
+export const DEN_POSTER_PREFIX = '/images/den/sewerposter-';
+
+export const IPFSGateways = [
+  'https://ipfs.io/ipfs/',
+  'https://gateway.ipfs.io/ipfs/',
+  'https://cloudflare-ipfs.com/ipfs/',
+  'https://gateway.pinata.cloud/ipfs/',
+  'https://ipfs.moralis.io:2053/ipfs/',
+  'https://ipfs.infura.io/ipfs/',
+  'https://ipfs.fleek.co/ipfs/',
+  'https://ipfs.yt/ipfs/',
+  'https://crustwebsites.net/ipfs/',
+  'https://ipfs.tubby.cloud/ipfs/',
+  'https://ipfs.eth.aragon.network/ipfs/',
+  'https://ravencoinipfs-gateway.com/ipfs/',
+  'https://ipfs.overpi.com/ipfs/',
+];
