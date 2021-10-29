@@ -2,11 +2,11 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
-const Closet = dynamic(() => import('~/components/closet/Closet'), {
+const Den = dynamic(() => import('~/components/den/Den'), {
   ssr: false,
 });
 
-const ClosetPage: NextPage = () => {
+const DenPage: NextPage = () => {
   return (
     <LayoutNoFooter className='bg-dark'>
       <Head>
@@ -29,9 +29,9 @@ const ClosetPage: NextPage = () => {
         />
         <meta property='og:image' content='/og-image.png' />
       </Head>
-      <Closet />
+      <Den />
     </LayoutNoFooter>
   );
 };
 
-export default ClosetPage;
+export default DenPage;
