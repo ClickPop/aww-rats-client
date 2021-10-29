@@ -19,6 +19,7 @@ import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 import { Metadata } from '~/types';
 import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
+import { Connect } from '~/components/shared/Connect';
 
 const NUM_FRAMES = 4;
 const NUM_POSTERS = 1;
@@ -90,7 +91,7 @@ const Den = () => {
     },
   });
   const [tokens, setTokens] = useState<Metadata[]>([]);
-  const { signerAddr } = useContext(EthersContext);
+  const { signerAddr, provider } = useContext(EthersContext);
   const deleteIcon = useRef(
     (() => {
       const img = document.createElement('img');
@@ -332,6 +333,10 @@ const Den = () => {
       }
     }
   }, [addToCanvas, canvas, frames]);
+
+  if (!signerAddr) {
+    return <Connect />;
+  }
 
   return (
     <div className='h-full'>
