@@ -91,7 +91,7 @@ const Den = () => {
     },
   });
   const [tokens, setTokens] = useState<Metadata[]>([]);
-  const { signerAddr, provider } = useContext(EthersContext);
+  const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
     (() => {
       const img = document.createElement('img');
@@ -334,12 +334,8 @@ const Den = () => {
     }
   }, [addToCanvas, canvas, frames]);
 
-  if (!signerAddr) {
-    return <Connect />;
-  }
-
   return (
-    <div className='h-full'>
+    <div className='h-full pt-24'>
       <div
         className='mx-auto mb-8'
         style={{ width: scaledWidth, height: scaledHeight }}>

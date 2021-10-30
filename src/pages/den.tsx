@@ -1,12 +1,17 @@
 import type { NextPage } from 'next';
+import React, { useContext } from 'react';
 import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
+import { EthersContext } from '~/components/context/EthersContext';
+import { Connect } from '~/components/shared/Connect';
 const Den = dynamic(() => import('~/components/den/Den'), {
   ssr: false,
 });
 
 const DenPage: NextPage = () => {
+  const { signerAddr } = useContext(EthersContext);
+
   return (
     <LayoutNoFooter className='bg-dark'>
       <Head>
@@ -29,7 +34,15 @@ const DenPage: NextPage = () => {
         />
         <meta property='og:image' content='/og-image.png' />
       </Head>
-      <Den />
+      {!signerAddr ? (
+        <div className='h-screen'>
+          <div className='w-fit mx-auto pt-24'>
+            <Connect />
+          </div>
+        </div>
+      ) : (
+        <Den />
+      )}
     </LayoutNoFooter>
   );
 };
