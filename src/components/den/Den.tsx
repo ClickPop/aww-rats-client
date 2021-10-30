@@ -20,7 +20,6 @@ import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 import { Metadata } from '~/types';
 import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
-import { Connect } from '~/components/shared/Connect';
 
 const NUM_FRAMES = 4;
 const NUM_POSTERS = 1;
