@@ -38,6 +38,10 @@ type DenStorageState = {
   sizing: {
     scaledWidth: number;
     scaledHeight: number;
+    horizontalRatio: number;
+    verticalRatio: number;
+    scaleX: number;
+    scaleY: number;
   };
 };
 
@@ -59,8 +63,6 @@ const Den = () => {
   ]);
   const [selectedFrame, setSelectedFrame] = useState<string>('');
 
-  const objectScale = useRef({ x: 1, y: 1 });
-  const ratio = useRef({ horizontalRatio: 1, verticalRatio: 1 });
   const denState = useRef<DenStorageState>(
     (() => {
       const [scaledWidth, scaledHeight] = getScaledSize(
@@ -68,6 +70,9 @@ const Den = () => {
         denBgHeight,
         1.1,
       );
+
+      const horizontalRatio = scaledWidth / denBgWidth;
+      const verticalRatio = scaledHeight / denBgHeight;
 
       const defaultDenState = JSON.stringify({
         objects: [],
@@ -84,12 +89,28 @@ const Den = () => {
       return {
         ...storedState,
         sizing: {
-          scaledHeight,
           scaledWidth,
+          scaledHeight,
+
+          horizontalRatio,
+          verticalRatio,
+          scaleX: storedState.sizing.scaledWidth / scaledWidth,
+          scaleY: storedState.sizing.scaledHeight / scaledHeight,
         },
       };
     })(),
   );
+
+  const sizing = useRef(
+    (() => {
+      const [scaledWidth, scaledHeight] = getScaledSize(
+        denBgWidth,
+        denBgHeight,
+        1.1,
+      );
+    })(),
+  );
+
   const [tokens, setTokens] = useState<Metadata[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
@@ -131,22 +152,7 @@ const Den = () => {
     return true;
   };
 
-  useEffect(() => {
-    const [scaledWidth, scaledHeight] = getScaledSize(
-      denBgWidth,
-      denBgHeight,
-      1.1,
-    );
-    const horizontalRatio = scaledWidth / denBgWidth;
-    const verticalRatio = scaledHeight / denBgHeight;
-
-    ratio.current = { horizontalRatio, verticalRatio };
-
-    objectScale.current = {
-      x: denState.current.sizing.scaledWidth / scaledWidth,
-      y: denState.current.sizing.scaledHeight / scaledHeight,
-    };
-  }, []);
+  useEffect(() => {}, []);
 
   const canvasOpts = useMemo(() => {
     const opts: CanvasOpts = {
@@ -159,8 +165,8 @@ const Den = () => {
       },
       onMount: (canv) => {
         canv.setBackgroundImage(DEN_BACKGROUND, canv.renderAll.bind(canv), {
-          scaleX: ratio.current.horizontalRatio,
-          scaleY: ratio.current.verticalRatio,
+          scaleX: denState.current.sizing.horizontalRatio,
+          scaleY: denState.current.sizing.verticalRatio,
         });
       },
     };
@@ -275,14 +281,14 @@ const Den = () => {
                 group[key as keyof fabric.Group] =
                   ((image.fabricOpts[
                     key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / objectScale.current.x;
+                  ] ?? 1) as number) / denState.current.sizing.scaleX;
                 break;
               case 'top':
               case 'scaleY':
                 group[key as keyof fabric.Group] =
                   ((image.fabricOpts[
                     key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / objectScale.current.y;
+                  ] ?? 1) as number) / denState.current.sizing.scaleY;
                 break;
               default:
                 group[key as keyof fabric.Group] =
@@ -349,8 +355,6 @@ const Den = () => {
       }
     }
   }, [addToCanvas, canvas, frames]);
-
-  console.log(frames, tokens);
 
   return (
     <div className='h-full pt-24'>
