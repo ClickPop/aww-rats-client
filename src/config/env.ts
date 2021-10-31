@@ -113,7 +113,12 @@ export const FULLSTORY_ORG_ID = '15X2Y3';
 export const DEN_BACKGROUND = '/images/den/sewerbg.png';
 export const DEN_FRAME_PREFIX = '/images/den/sewerframe-';
 export const DEN_POSTER_PREFIX = '/images/den/sewerposter-';
+export const NUM_FRAMES = 4;
+export const NUM_POSTERS = 1;
+export const denBgWidth = 2600;
+export const denBgHeight = 1400;
 
+/** IPFS Settings */
 export const IPFSGateways = [
   'https://ipfs.io/ipfs/',
   'https://gateway.ipfs.io/ipfs/',
