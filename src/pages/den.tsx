@@ -12,7 +12,7 @@ const Den = dynamic(() => import('~/components/den/Den'), {
 const DenPage: NextPage = () => {
   const { signerAddr } = useContext(EthersContext);
 
-  console.log(Den);
+  console.log(signerAddr, <Den />);
 
   return (
     <LayoutNoFooter className='bg-dark'>
