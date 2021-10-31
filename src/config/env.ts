@@ -125,12 +125,4 @@ export const IPFSGateways = [
   'https://cloudflare-ipfs.com/ipfs/',
   'https://gateway.pinata.cloud/ipfs/',
   'https://ipfs.moralis.io:2053/ipfs/',
-  'https://ipfs.infura.io/ipfs/',
-  'https://ipfs.fleek.co/ipfs/',
-  'https://ipfs.yt/ipfs/',
-  'https://crustwebsites.net/ipfs/',
-  'https://ipfs.tubby.cloud/ipfs/',
-  'https://ipfs.eth.aragon.network/ipfs/',
-  'https://ravencoinipfs-gateway.com/ipfs/',
-  'https://ipfs.overpi.com/ipfs/',
 ];
