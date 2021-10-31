@@ -14,7 +14,6 @@ import {
   DEN_FRAME_PREFIX,
   DEN_POSTER_PREFIX,
   IPFSGateways,
-  MORALIS_API_KEY,
 } from '~/config/env';
 import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 import { Metadata } from '~/types';
@@ -314,7 +313,6 @@ const Den = () => {
               newDenItem,
             ];
             localStorage.setItem('den-state', JSON.stringify(denState.current));
-            console.log(group);
           }
         });
       }
@@ -334,7 +332,7 @@ const Den = () => {
     }
   }, [addToCanvas, canvas, frames]);
 
-  console.log(canvas, MORALIS_API_KEY, frames, tokens, signerAddr);
+  console.log(frames, tokens);
 
   return (
     <div className='h-full pt-24'>
