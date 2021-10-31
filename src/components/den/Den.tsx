@@ -13,22 +13,16 @@ import {
   DEN_BACKGROUND,
   DEN_FRAME_PREFIX,
   DEN_POSTER_PREFIX,
+  NUM_FRAMES,
+  NUM_POSTERS,
+  denBgWidth,
+  denBgHeight,
   IPFSGateways,
 } from '~/config/env';
 import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 import { Metadata } from '~/types';
 import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
-
-const NUM_FRAMES = 4;
-const NUM_POSTERS = 1;
-
-const bgWidth = 2600;
-const bgHeight = 1400;
-
-const [scaledWidth, scaledHeight] = getScaledSize(bgWidth, bgHeight, 1.1);
-const horizontalRatio = scaledWidth / bgWidth;
-const verticalRatio = scaledHeight / bgHeight;
 
 type DenStorageObject = {
   image: string;
@@ -52,24 +46,6 @@ type FrameObject = { url: string; fabricObject: null | fabric.Image };
 const getIPFSGateway = () =>
   IPFSGateways[Math.floor(Math.random() * IPFSGateways.length)];
 
-const defaultDenState = `{
-  "objects":[], 
-  "sizing": 
-  {
-    "scaledWidth": ${scaledWidth},
-    "scaledHeight": ${scaledHeight},
-  }
-}`;
-
-const storedState: DenStorageState = JSON.parse(
-  localStorage.getItem('den-state') ?? defaultDenState,
-);
-
-const objectScale = {
-  x: storedState.sizing.scaledWidth / scaledWidth,
-  y: storedState.sizing.scaledHeight / scaledHeight,
-};
-
 const Den = () => {
   const [frames, setFrames] = useState<FrameObject[]>([
     ...new Array(NUM_FRAMES).fill(null).map((_, i) => ({
@@ -82,13 +58,38 @@ const Den = () => {
     })),
   ]);
   const [selectedFrame, setSelectedFrame] = useState<string>('');
-  const denState = useRef<DenStorageState>({
-    ...storedState,
-    sizing: {
-      scaledHeight,
-      scaledWidth,
-    },
-  });
+
+  const objectScale = useRef({ x: 1, y: 1 });
+  const ratio = useRef({ horizontalRatio: 1, verticalRatio: 1 });
+  const denState = useRef<DenStorageState>(
+    (() => {
+      const [scaledWidth, scaledHeight] = getScaledSize(
+        denBgWidth,
+        denBgHeight,
+        1.1,
+      );
+
+      const defaultDenState = JSON.stringify({
+        objects: [],
+        sizing: {
+          scaledWidth: scaledWidth,
+          scaledHeight: scaledHeight,
+        },
+      });
+
+      const storedState: DenStorageState = JSON.parse(
+        localStorage.getItem('den-state') ?? defaultDenState,
+      );
+
+      return {
+        ...storedState,
+        sizing: {
+          scaledHeight,
+          scaledWidth,
+        },
+      };
+    })(),
+  );
   const [tokens, setTokens] = useState<Metadata[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
@@ -130,19 +131,36 @@ const Den = () => {
     return true;
   };
 
+  useEffect(() => {
+    const [scaledWidth, scaledHeight] = getScaledSize(
+      denBgWidth,
+      denBgHeight,
+      1.1,
+    );
+    const horizontalRatio = scaledWidth / denBgWidth;
+    const verticalRatio = scaledHeight / denBgHeight;
+
+    ratio.current = { horizontalRatio, verticalRatio };
+
+    objectScale.current = {
+      x: denState.current.sizing.scaledWidth / scaledWidth,
+      y: denState.current.sizing.scaledHeight / scaledHeight,
+    };
+  }, []);
+
   const canvasOpts = useMemo(() => {
     const opts: CanvasOpts = {
       canvasType: 'Canvas',
       element: 'den-canvas',
       canvasOptions: {
-        width: scaledWidth,
-        height: scaledHeight,
+        width: denState.current.sizing.scaledWidth,
+        height: denState.current.sizing.scaledHeight,
         preserveObjectStacking: true,
       },
       onMount: (canv) => {
         canv.setBackgroundImage(DEN_BACKGROUND, canv.renderAll.bind(canv), {
-          scaleX: horizontalRatio,
-          scaleY: verticalRatio,
+          scaleX: ratio.current.horizontalRatio,
+          scaleY: ratio.current.verticalRatio,
         });
       },
     };
@@ -257,14 +275,14 @@ const Den = () => {
                 group[key as keyof fabric.Group] =
                   ((image.fabricOpts[
                     key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / objectScale.x;
+                  ] ?? 1) as number) / objectScale.current.x;
                 break;
               case 'top':
               case 'scaleY':
                 group[key as keyof fabric.Group] =
                   ((image.fabricOpts[
                     key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / objectScale.y;
+                  ] ?? 1) as number) / objectScale.current.y;
                 break;
               default:
                 group[key as keyof fabric.Group] =
@@ -338,7 +356,10 @@ const Den = () => {
     <div className='h-full pt-24'>
       <div
         className='mx-auto mb-8'
-        style={{ width: scaledWidth, height: scaledHeight }}>
+        style={{
+          width: denState.current.sizing.scaledWidth,
+          height: denState.current.sizing.scaledHeight,
+        }}>
         <canvas id='den-canvas' />
       </div>
       {canvas && (
