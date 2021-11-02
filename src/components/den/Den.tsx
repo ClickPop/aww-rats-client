@@ -255,6 +255,30 @@ const Den = () => {
           img.scale(140 / (img.height ?? 140));
           img.originX = 'center';
           img.originY = 'center';
+          switch (frame.url) {
+            case `${DEN_FRAME_PREFIX}-01.png`:
+            case `${DEN_FRAME_PREFIX}-02.png`:
+              img.cropX = 11.5
+              img.cropY = 11.5;
+              break;
+            case `${DEN_FRAME_PREFIX}-03.png`:
+              img.cropX = 7;
+              img.cropY = 7;
+              break;
+            case `${DEN_FRAME_PREFIX}-04.png`:
+              console.log("here");
+              img.cropX = 18.5;
+              img.cropY = 18.5;
+              break;
+            case `${DEN_POSTER_PREFIX}-01.png`:
+              img.cropX = 2.5;
+              img.cropY = 2.5
+              break;
+            default:
+              img.cropX = 10;
+              img.cropY = 10;
+              break;
+        }
           const group = new fabric.Group([img, frame.fabricObject], {
             left: 50,
             top: 50,
