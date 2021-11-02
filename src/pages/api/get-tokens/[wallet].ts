@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { MORALIS_API_ENDPOINT, MORALIS_API_KEY } from '~/config/env';
-import { MoralisTokensResponse } from '~/types';
+import { MoralisTokensResponse, ParsedMoralisTokenMeta } from '~/types';
+import { getIPFSGateway } from '~/utils/getIPFSGateway';
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,23 +12,62 @@ export default async function handler(
     return res.status(400).json({ status: 'error', error: 'Incorrect method' });
   }
   try {
-    const { wallet, chain } = req.query;
-    const URL = `${MORALIS_API_ENDPOINT}/${wallet}/nft?chain=${chain}&format=decimal`;
-    const tokens: MoralisTokensResponse = await fetch(URL, {
-      headers: {
-        'x-api-key': MORALIS_API_KEY ?? '',
-      },
-    }).then((r) => r.json());
-    const tokensWithMeta = tokens.result
-      .map((token) => {
-        if (token.metadata) {
-          const meta = JSON.parse(token.metadata);
-          return meta;
-        }
-        return false;
-      })
-      .filter((token) => typeof token?.image === 'string');
-    res.status(200).json({ status: 'success', data: tokensWithMeta });
+    const { wallet, chain, limit, offset } = req.query;
+    const queryLimit = limit ? parseInt(limit as string, 10) : 5;
+    let queryOffset = offset ? parseInt(offset as string, 10) : 0;
+    let tokenResult: ParsedMoralisTokenMeta[] = [];
+    const dupeTokens: string[] = [];
+
+    let i = queryLimit;
+    while (tokenResult.length < queryLimit) {
+      const URL = `${MORALIS_API_ENDPOINT}/${wallet}/nft?chain=${chain}&format=decimal&limit=${i}&offset=${queryOffset}`;
+      const tokens: MoralisTokensResponse = await fetch(URL, {
+        headers: {
+          'x-api-key': MORALIS_API_KEY ?? '',
+        },
+      }).then((r) => r.json());
+      if (tokens.result.length < 1) {
+        break;
+      }
+      const tokensWithMeta = tokens.result
+        .map((token) => {
+          if (token.metadata) {
+            const meta = JSON.parse(token.metadata);
+            return { ...token, metadata: meta };
+          }
+          return false;
+        })
+        .filter(
+          (token) =>
+            typeof token === 'object' &&
+            typeof token.metadata?.image === 'string',
+        )
+        .map(
+          (token, i) =>
+            ({
+              ...token,
+              metadata: {
+                ...(token as ParsedMoralisTokenMeta).metadata,
+                image: (token as ParsedMoralisTokenMeta).metadata.image.replace(
+                  'ipfs://',
+                  getIPFSGateway(i),
+                ),
+              },
+            } as ParsedMoralisTokenMeta),
+        )
+        .filter((t: ParsedMoralisTokenMeta) => {
+          if (dupeTokens.includes(t.metadata.image)) {
+            return false;
+          }
+          dupeTokens.push(t.metadata.image);
+          return true;
+        });
+      tokenResult = [...tokenResult, ...tokensWithMeta];
+      queryOffset += i;
+      i = queryLimit - tokenResult.length;
+    }
+
+    res.status(200).json({ status: 'success', data: tokenResult });
   } catch (err) {
     console.error(err);
     return res

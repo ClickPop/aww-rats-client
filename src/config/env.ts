@@ -120,9 +120,9 @@ export const denBgHeight = 1400;
 
 /** IPFS Settings */
 export const IPFSGateways = [
+  'https://gateway.pinata.cloud/ipfs/',
   'https://ipfs.io/ipfs/',
   'https://gateway.ipfs.io/ipfs/',
   'https://cloudflare-ipfs.com/ipfs/',
-  'https://gateway.pinata.cloud/ipfs/',
   'https://ipfs.moralis.io:2053/ipfs/',
 ];
