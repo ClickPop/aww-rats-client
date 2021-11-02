@@ -80,3 +80,10 @@ export type MoralisTokenMeta = {
   synced_at?: string;
   amount?: string;
 };
+
+export interface ParsedMoralisTokenMeta extends MoralisTokenMeta {
+  metadata: {
+    image: string;
+    [key: string]: unknown;
+  };
+}

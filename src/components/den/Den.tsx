@@ -17,12 +17,12 @@ import {
   NUM_POSTERS,
   denBgWidth,
   denBgHeight,
-  IPFSGateways,
 } from '~/config/env';
 import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
-import { Metadata } from '~/types';
+import { ParsedMoralisTokenMeta } from '~/types';
 import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
+import { v4 as uuidv4 } from 'uuid';
 
 type DenStorageObject = {
   image: string;
@@ -46,9 +46,6 @@ type DenStorageState = {
 };
 
 type FrameObject = { url: string; fabricObject: null | fabric.Image };
-
-const getIPFSGateway = () =>
-  IPFSGateways[Math.floor(Math.random() * IPFSGateways.length)];
 
 const Den = () => {
   const [frames, setFrames] = useState<FrameObject[]>([
@@ -91,7 +88,6 @@ const Den = () => {
         sizing: {
           scaledWidth,
           scaledHeight,
-
           horizontalRatio,
           verticalRatio,
           scaleX: storedState.sizing.scaledWidth / scaledWidth,
@@ -101,17 +97,11 @@ const Den = () => {
     })(),
   );
 
-  const sizing = useRef(
-    (() => {
-      const [scaledWidth, scaledHeight] = getScaledSize(
-        denBgWidth,
-        denBgHeight,
-        1.1,
-      );
-    })(),
+  const [numObjects, setNumObjects] = useState(
+    denState.current.objects.length ?? 0,
   );
 
-  const [tokens, setTokens] = useState<Metadata[]>([]);
+  const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
     (() => {
@@ -149,6 +139,7 @@ const Den = () => {
       (o) => o.fabricOpts.name !== target.name,
     );
     localStorage.setItem('den-state', JSON.stringify(denState.current));
+    setNumObjects(denState.current.objects.length ?? 0);
     return true;
   };
 
@@ -172,7 +163,22 @@ const Den = () => {
     };
     return opts;
   }, []);
+  const downloadCanvasOpts = useMemo(() => {
+    const opts: CanvasOpts = {
+      canvasType: 'StaticCanvas',
+      element: 'download-canvas',
+      canvasOptions: {
+        width: denBgWidth,
+        height: denBgHeight,
+        preserveObjectStacking: true,
+      },
+    };
+    return opts;
+  }, []);
   const { canvas } = useCanvas(canvasOpts) as { canvas: fabric.Canvas };
+  const { canvas: downloadCanvas } = useCanvas(downloadCanvasOpts) as {
+    canvas: fabric.StaticCanvas;
+  };
 
   useEffect(() => {
     if (canvas && !listenerSet.current) {
@@ -226,23 +232,9 @@ const Den = () => {
     const getTokens = async () => {
       if (signerAddr) {
         const res = await fetch(
-          `/api/get-tokens/${signerAddr}?chain=polygon`,
+          `/api/get-tokens/${signerAddr}?chain=polygon&limit=40`,
         ).then((r) => r.json());
-        setTokens(() => {
-          const dupeTokens: string[] = [];
-          return res.data
-            .map((token: Metadata) => ({
-              ...token,
-              image: token.image.replace('ipfs://', getIPFSGateway()),
-            }))
-            .filter((t: Metadata) => {
-              if (dupeTokens.includes(t.image)) {
-                return false;
-              }
-              dupeTokens.push(t.image);
-              return true;
-            });
-        });
+        setTokens(res.data);
       }
     };
     getTokens();
@@ -267,13 +259,14 @@ const Den = () => {
             left: 50,
             top: 50,
           });
-          group.name = denState.current.objects.length.toString();
           group.setControlsVisibility({
             ml: false,
             mr: false,
             mb: false,
             mt: false,
           });
+          group.name = uuidv4();
+
           for (const key in image.fabricOpts) {
             switch (key) {
               case 'left':
@@ -296,6 +289,7 @@ const Den = () => {
                 break;
             }
           }
+
           group.controls.deleteControl = new fabric.Control({
             x: 0.5,
             y: -0.5,
@@ -310,7 +304,10 @@ const Den = () => {
             cursorStyle: 'pointer',
           });
 
-          if (!canvas.getObjects().some((o) => o.name === group.name)) {
+          if (
+            canvas.getObjects().length < 10 &&
+            !canvas.getObjects().some((o) => o.name === group.name)
+          ) {
             canvas.add(group);
             canvas.setActiveObject(group);
             canvas.renderAll();
@@ -336,6 +333,7 @@ const Den = () => {
               ),
               newDenItem,
             ];
+            setNumObjects(denState.current.objects.length ?? 0);
             localStorage.setItem('den-state', JSON.stringify(denState.current));
           }
         });
@@ -358,6 +356,40 @@ const Den = () => {
 
   return (
     <div className='h-full pt-24'>
+      {canvas && (
+        <button
+          className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+          onClick={async () => {
+            downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
+            const link = document.createElement('a');
+            const scaledWidth =
+              denBgWidth / denState.current.sizing.scaledWidth;
+            const scaledHeight =
+              denBgHeight / denState.current.sizing.scaledHeight;
+            for (const o of canvas.getObjects()) {
+              const url = o.toDataURL({});
+              const image = await new Promise<fabric.Image>((res) => {
+                fabric.Image.fromURL(url, (img) => {
+                  img.left = o.left;
+                  img.top = o.top;
+                  res(img);
+                });
+              });
+              image.scaleX = (image.scaleX ?? 0) * scaledWidth;
+              image.scaleY = (image.scaleY ?? 0) * scaledHeight;
+              image.left = (image.left ?? 0) * scaledWidth;
+              image.top = (image.top ?? 0) * scaledHeight;
+              downloadCanvas.add(image);
+            }
+            downloadCanvas.renderAll();
+            link.download = 'den.png';
+            link.href = downloadCanvas.toDataURL();
+            link.click();
+            downloadCanvas.clear();
+          }}>
+          Download it!
+        </button>
+      )}
       <div
         className='mx-auto mb-8'
         style={{
@@ -365,25 +397,42 @@ const Den = () => {
           height: denState.current.sizing.scaledHeight,
         }}>
         <canvas id='den-canvas' />
+        <canvas hidden id='download-canvas' />
       </div>
-      {canvas && (
-        <button
-          className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-          onClick={() => {
-            const link = document.createElement('a');
-            link.download = 'den.png';
-            link.href = canvas.toDataURL();
-            link.click();
-          }}>
-          Download it!
-        </button>
-      )}
+
       <div className='flex space-x-4 w-fit mx-auto mb-8'>
-        {tokens.map((token, i) => (
+        {numObjects < 10 && (
+          <select
+            onChange={(e) =>
+              addToCanvas(
+                {
+                  image: e.currentTarget.value,
+                  frame: '',
+                  fabricOpts: {},
+                },
+                selectedFrame,
+              )
+            }>
+            <option>Please select a token</option>
+            {tokens.map((token, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <option
+                key={token.metadata.image + i}
+                value={`/api/image/proxy-image?imageURL=${encodeURI(
+                  token.metadata.image,
+                )}`}>
+                {token.name}: {token.metadata.name ?? token.token_id}
+              </option>
+            ))}
+          </select>
+        )}
+        {/* {tokens.map((token, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <Image
-            key={token.image + i}
-            src={`/api/image/proxy-image?imageURL=${encodeURI(token.image)}`}
+            key={token.metadata.image + i}
+            src={`/api/image/proxy-image?imageURL=${encodeURI(
+              token.metadata.image,
+            )}`}
             width={150}
             height={150}
             alt=''
@@ -398,8 +447,11 @@ const Den = () => {
               )
             }
           />
-        ))}
+        ))} */}
       </div>
+      <button onClick={() => console.log(canvas?.getObjects())}>
+        Get State
+      </button>
       <div className='flex space-x-4 w-fit mx-auto'>
         <>
           {frames.map((frame) => (
