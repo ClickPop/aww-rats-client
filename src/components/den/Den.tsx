@@ -445,7 +445,7 @@ const Den = () => {
           onSubmit={(e) => {
             e.preventDefault();
             addToCanvas({
-              image: url,
+              image: `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
               frame: selectedFrame ?? '',
               fabricOpts: {},
             });
