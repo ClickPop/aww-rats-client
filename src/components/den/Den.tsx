@@ -45,18 +45,20 @@ type DenStorageState = {
   };
 };
 
-type FrameObject = { url: string; fabricObject: null | fabric.Image };
-
 const Den = () => {
-  const [frames, setFrames] = useState<FrameObject[]>([
-    ...new Array(NUM_FRAMES).fill(null).map((_, i) => ({
-      url: `${DEN_FRAME_PREFIX}${(i + 1).toString().padStart(2, '0')}.png`,
-      fabricObject: null,
-    })),
-    ...new Array(NUM_POSTERS).fill(null).map((_, i) => ({
-      url: `${DEN_POSTER_PREFIX}${(i + 1).toString().padStart(2, '0')}.png`,
-      fabricObject: null,
-    })),
+  const [frames] = useState([
+    ...new Array(NUM_FRAMES)
+      .fill(null)
+      .map(
+        (_, i) =>
+          `${DEN_FRAME_PREFIX}${(i + 1).toString().padStart(2, '0')}.png`,
+      ),
+    ...new Array(NUM_POSTERS)
+      .fill(null)
+      .map(
+        (_, i) =>
+          `${DEN_POSTER_PREFIX}${(i + 1).toString().padStart(2, '0')}.png`,
+      ),
   ]);
   const [selectedFrame, setSelectedFrame] = useState<string>('');
 
@@ -143,8 +145,6 @@ const Den = () => {
     return true;
   };
 
-  useEffect(() => {}, []);
-
   const canvasOpts = useMemo(() => {
     const opts: CanvasOpts = {
       canvasType: 'Canvas',
@@ -211,24 +211,6 @@ const Den = () => {
   }, [canvas]);
 
   useEffect(() => {
-    frames.forEach((frame) => {
-      if (!frame.fabricObject) {
-        fabric.Image.fromURL(frame.url, (img) => {
-          img.selectable = true;
-          img.hasControls = true;
-          img.evented = true;
-          img.scale(150 / (img.height ?? 150));
-          setFrames([
-            ...frames.map((f) =>
-              f.url === frame.url ? { ...f, fabricObject: img } : f,
-            ),
-          ]);
-        });
-      }
-    });
-  }, [frames]);
-
-  useEffect(() => {
     const getTokens = async () => {
       if (signerAddr) {
         const res = await fetch(
@@ -245,124 +227,127 @@ const Den = () => {
       const getFrame = () => frames[Math.floor(Math.random() * frames.length)];
       if (canvas) {
         fabric.Image.fromURL(image.image, (img) => {
-          let frame: FrameObject | null =
-            frames.find((f) => f.url === frameURL) ?? null;
-          while (!frame?.fabricObject) {
-            frame = getFrame();
-          }
-          frame.fabricObject.originX = 'center';
-          frame.fabricObject.originY = 'center';
-          
-          let padX = 0;
-          let padY = 0;
-          switch (frame.url) {
-            case `${DEN_FRAME_PREFIX}01.png`:
-            case `${DEN_FRAME_PREFIX}02.png`:
-              padX = 11.5
-              padY = 11.5
-              break;
-            case `${DEN_FRAME_PREFIX}03.png`:
-              padX = 7;
-              padY = 7;
-              break;
-            case `${DEN_FRAME_PREFIX}04.png`:
-              padX = 18.5;
-              padY = 18.5;
-              break;
-            case `${DEN_POSTER_PREFIX}01.png`:
-              padX = 2.5;
-              padY = 2.5;
-              break;
-            default:
-              padX = 0;
-              padY = 0;              
-          }
-
-          img.scale((150 - (padX * 2)) / ((img.height ?? 150) - (padY * 2)));
-          img.originX = 'center';
-          img.originY = 'center';
-
-          const group = new fabric.Group([img, frame.fabricObject], {
-            left: 50,
-            top: 50,
-          });
-          group.setControlsVisibility({
-            ml: false,
-            mr: false,
-            mb: false,
-            mt: false,
-          });
-          group.name = uuidv4();
-
-          for (const key in image.fabricOpts) {
-            switch (key) {
-              case 'left':
-              case 'scaleX':
-                group[key as keyof fabric.Group] =
-                  ((image.fabricOpts[
-                    key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / denState.current.sizing.scaleX;
+          const frameUrl = frameURL ?? getFrame();
+          fabric.Image.fromURL(frameURL ?? getFrame(), (frame) => {
+            frame.scale(150 / (frame.height ?? 150));
+            frame.originX = 'center';
+            frame.originY = 'center';
+            let padX = 0;
+            let padY = 0;
+            switch (frameURL) {
+              case `${DEN_FRAME_PREFIX}01.png`:
+              case `${DEN_FRAME_PREFIX}02.png`:
+                padX = 11.5;
+                padY = 11.5;
                 break;
-              case 'top':
-              case 'scaleY':
-                group[key as keyof fabric.Group] =
-                  ((image.fabricOpts[
-                    key as keyof DenStorageObject['fabricOpts']
-                  ] ?? 1) as number) / denState.current.sizing.scaleY;
+              case `${DEN_FRAME_PREFIX}03.png`:
+                padX = 7;
+                padY = 7;
+                break;
+              case `${DEN_FRAME_PREFIX}04.png`:
+                padX = 18.5;
+                padY = 18.5;
+                break;
+              case `${DEN_POSTER_PREFIX}01.png`:
+                padX = 2.5;
+                padY = 2.5;
                 break;
               default:
-                group[key as keyof fabric.Group] =
-                  image.fabricOpts[key as keyof DenStorageObject['fabricOpts']];
-                break;
+                padX = 0;
+                padY = 0;
             }
-          }
 
-          group.controls.deleteControl = new fabric.Control({
-            x: 0.5,
-            y: -0.5,
-            offsetX: 16,
-            offsetY: -16,
-            sizeX: 32,
-            sizeY: 32,
-            touchSizeX: 32,
-            touchSizeY: 32,
-            actionHandler: deleteGroup,
-            render: renderDeleteButton,
-            cursorStyle: 'pointer',
+            img.scale((150 - padX * 2) / ((img.height ?? 150) - padY * 2));
+            img.originX = 'center';
+            img.originY = 'center';
+
+            const group = new fabric.Group([img, frame], {
+              left: 50,
+              top: 50,
+            });
+            group.setControlsVisibility({
+              ml: false,
+              mr: false,
+              mb: false,
+              mt: false,
+            });
+            group.name = uuidv4();
+
+            for (const key in image.fabricOpts) {
+              switch (key) {
+                case 'left':
+                case 'scaleX':
+                  group[key as keyof fabric.Group] =
+                    ((image.fabricOpts[
+                      key as keyof DenStorageObject['fabricOpts']
+                    ] ?? 1) as number) / denState.current.sizing.scaleX;
+                  break;
+                case 'top':
+                case 'scaleY':
+                  group[key as keyof fabric.Group] =
+                    ((image.fabricOpts[
+                      key as keyof DenStorageObject['fabricOpts']
+                    ] ?? 1) as number) / denState.current.sizing.scaleY;
+                  break;
+                default:
+                  group[key as keyof fabric.Group] =
+                    image.fabricOpts[
+                      key as keyof DenStorageObject['fabricOpts']
+                    ];
+                  break;
+              }
+            }
+
+            group.controls.deleteControl = new fabric.Control({
+              x: 0.5,
+              y: -0.5,
+              offsetX: 16,
+              offsetY: -16,
+              sizeX: 32,
+              sizeY: 32,
+              touchSizeX: 32,
+              touchSizeY: 32,
+              actionHandler: deleteGroup,
+              render: renderDeleteButton,
+              cursorStyle: 'pointer',
+            });
+
+            if (
+              canvas.getObjects().length < 10 &&
+              !canvas.getObjects().some((o) => o.name === group.name)
+            ) {
+              canvas.add(group);
+              canvas.setActiveObject(group);
+              canvas.renderAll();
+              const { top, left, scaleX, scaleY, width, height, angle, name } =
+                group;
+              const newDenItem = {
+                image: image.image,
+                frame: frameUrl,
+                fabricOpts: {
+                  top,
+                  left,
+                  scaleX,
+                  scaleY,
+                  width,
+                  height,
+                  angle,
+                  name,
+                },
+              };
+              denState.current.objects = [
+                ...denState.current.objects.filter(
+                  (o) => o.fabricOpts.name !== group.name,
+                ),
+                newDenItem,
+              ];
+              setNumObjects(denState.current.objects.length ?? 0);
+              localStorage.setItem(
+                'den-state',
+                JSON.stringify(denState.current),
+              );
+            }
           });
-
-          if (
-            canvas.getObjects().length < 10 &&
-            !canvas.getObjects().some((o) => o.name === group.name)
-          ) {
-            canvas.add(group);
-            canvas.setActiveObject(group);
-            canvas.renderAll();
-            const { top, left, scaleX, scaleY, width, height, angle, name } =
-              group;
-            const newDenItem = {
-              image: image.image,
-              frame: frame.url,
-              fabricOpts: {
-                top,
-                left,
-                scaleX,
-                scaleY,
-                width,
-                height,
-                angle,
-                name,
-              },
-            };
-            denState.current.objects = [
-              ...denState.current.objects.filter(
-                (o) => o.fabricOpts.name !== group.name,
-              ),
-              newDenItem,
-            ];
-            setNumObjects(denState.current.objects.length ?? 0);
-            localStorage.setItem('den-state', JSON.stringify(denState.current));
-          }
         });
       }
     },
@@ -370,11 +355,7 @@ const Den = () => {
   );
 
   useEffect(() => {
-    if (
-      canvas &&
-      frames.every((f) => f.fabricObject) &&
-      !!denState.current.objects.length
-    ) {
+    if (canvas && !!denState.current.objects.length) {
       for (const denObject of denState.current.objects) {
         addToCanvas(denObject, denObject.frame);
       }
@@ -483,16 +464,16 @@ const Den = () => {
         <>
           {frames.map((frame) => (
             <div
-              className={`${frame.url === selectedFrame && 'bg-gray-300'}`}
-              key={frame.url}>
+              className={`${frame === selectedFrame && 'bg-gray-300'}`}
+              key={frame}>
               <Image
-                src={frame.url}
+                src={frame}
                 width={150}
                 height={150}
                 objectFit='contain'
                 alt=''
                 onClick={() =>
-                  setSelectedFrame(frame.url === selectedFrame ? '' : frame.url)
+                  setSelectedFrame(frame === selectedFrame ? '' : frame)
                 }
               />
             </div>
