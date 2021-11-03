@@ -103,6 +103,8 @@ const Den = () => {
     denState.current.objects.length ?? 0,
   );
 
+  const [url, setURL] = useState('');
+
   const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
@@ -408,8 +410,8 @@ const Den = () => {
         <canvas hidden id='download-canvas' />
       </div>
 
-      <div className='flex space-x-4 w-fit mx-auto mb-8'>
-        {numObjects < 10 && (
+      <div className='w-fit mx-auto mb-8'>
+        {numObjects < 10 ? (
           <select
             onChange={(e) =>
               addToCanvas(
@@ -433,7 +435,32 @@ const Den = () => {
               </option>
             ))}
           </select>
+        ) : (
+          <p>
+            You have reached the max token number. Please delete one or more
+            tokens to add more.
+          </p>
         )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            addToCanvas({
+              image: url,
+              frame: selectedFrame ?? '',
+              fabricOpts: {},
+            });
+            setURL('');
+          }}>
+          <input
+            type='url'
+            placeholder='URL to external image'
+            value={url}
+            onChange={(e) => setURL(e.currentTarget.value)}
+          />
+          <button type='submit' disabled={!url}>
+            Add external image
+          </button>
+        </form>
         {/* {tokens.map((token, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <Image
