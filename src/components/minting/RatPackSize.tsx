@@ -47,9 +47,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
     return (
       <div>
         <p className={className}>
-          Currently {ratPackSize} rats in the sewer,
-          <br />
-          but there&apos;s room for {maxRatPackSize - ratPackSize} more...
+          {ratPackSize} of {maxRatPackSize} rats are already in the sewer,
         </p>
       </div>
     );

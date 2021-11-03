@@ -9,6 +9,7 @@ import rat05 from '~/assets/images/rats/rat-05.png';
 import rat06 from '~/assets/images/rats/rat-06.png';
 import rat07 from '~/assets/images/rats/rat-07.png';
 import { Minter } from '~/components/minting/Minter';
+import { Promo } from '~/components/index/promo/Promo';
 
 export const Hero = () => {
   return (
@@ -69,9 +70,10 @@ export const Hero = () => {
           all of our rat holders so more artists can make generative art and
           NFTs.
         </p>
-        <div className='text-light w-fit mx-auto'>
+        <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
           <Minter />
         </div>
+        <Promo />
       </div>
     </div>
   );
