@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState, useMemo, FC } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { ethers, BigNumber } from 'ethers';
 import { Rat } from '~/types';
@@ -12,10 +12,10 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const roProvider = new ethers.providers.JsonRpcProvider(
+  const roProvider = useMemo(() => new ethers.providers.JsonRpcProvider(
     RPC_URL,
     ethers.providers.getNetwork(CHAIN_ID),
-  );
+  ), []);
 
   useEffect(() => {
     (async () => {
