@@ -104,7 +104,7 @@ const Den = () => {
   );
 
   const [url, setURL] = useState('');
-
+  
   const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
@@ -224,6 +224,7 @@ const Den = () => {
         setTokens([...resPolygon.data, ...resEthereum.data]);
       }
     };
+    
     getTokens();
   }, [signerAddr]);
 
@@ -520,6 +521,7 @@ const Den = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Den;
