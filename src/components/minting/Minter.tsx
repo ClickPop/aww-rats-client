@@ -303,11 +303,11 @@ export const Minter = () => {
     return (
       <>
         <button
-          className='px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
+          className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
           onClick={connectToMetamask}>
           Connect to MetaMask
         </button>
-        <RatPackSize className='text-center text-sm italic text-purple-400 mt-2' />
+        <RatPackSize className='text-center text-sm mt-2' />
       </>
     );
   }
@@ -356,7 +356,7 @@ export const Minter = () => {
             Approving WETH transfer...
             <br />
           </p>
-          <p className='bg-light text-gray-700 rounded-md mt-4 p-3'>
+          <p className='bg-light text-gray-700 text-sm rounded-md p-3'>
             You&apos;ll need to confirm a transaction that gives our smart
             contract permission to transfer {ethCost} from your wallet.
           </p>
@@ -365,7 +365,7 @@ export const Minter = () => {
       {loading === 'TOKEN' && (
         <>
           <p className='px-4 py-2'>Minting Token...</p>
-          <p className='bg-light text-gray-700 rounded-md mt-4 p-3'>
+          <p className='bg-light text-gray-700 text-sm rounded-md p-3'>
             Now you confirm your actual rat mint. Once the mint is successful,
             we&apos;ll charge you {ethCost} for you rat.
           </p>
@@ -382,7 +382,7 @@ export const Minter = () => {
         <>
           <div>
             <button
-              className='rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
+              className='rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
               onClick={async () => {
                 await handleMintAndGenerate();
                 setLoading(null);
@@ -394,8 +394,8 @@ export const Minter = () => {
                 {ethCost === 0 ? 'FREE' : `${ethCost}weth`}
               </span>
             </button>
-            <RatPackSize className='text-center text-sm italic text-purple-400 mt-2' />
-            <p className='mt-4 max-w-md mx-auto'>
+            <RatPackSize className='text-center text-sm mt-2' />
+            <p className='mt-4 max-w-lg mx-auto text-sm'>
               You&apos;re going to need a very small amount of matic for your
               transactions. You can get some from{' '}
               <a href='https://matic.supply/' target='_blank' rel='noreferrer'>
@@ -404,7 +404,7 @@ export const Minter = () => {
               or ask in our discord.
             </p>
           </div>
-          <div className='mt-8'>
+          <div className={tokenMetadata ? 'mt-8' : ''}>
             {tokenMetadata && (
               <div className='rounded-md max-w-md mx-auto bg-white text-gray-800 text-left'>
                 <div className='p-4'>
