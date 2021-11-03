@@ -31,5 +31,6 @@ module.exports = {
   plugins: [
     require('@neupauer/tailwindcss-plugin-colors'),
     require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/forms'),
   ],
 };
