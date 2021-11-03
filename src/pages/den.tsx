@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
@@ -11,6 +11,20 @@ const Den = dynamic(() => import('~/components/den/Den'), {
 
 const DenPage: NextPage = () => {
   const { signerAddr } = useContext(EthersContext);
+  const [hodler, setHodler] = useState<Boolean|null>();
+
+  useEffect(() => {
+    const getHodlerStatus = async () => {
+      if (signerAddr) {
+        const resHodler = await fetch(
+          `/api/hodler/${signerAddr}`,
+        ).then((r) => r.json());
+        setHodler(resHodler.data.hodler ? true : false);
+      }
+    };
+    
+    getHodlerStatus();
+  }, [signerAddr]);
 
   return (
     <LayoutNoFooter className='bg-dark'>
@@ -40,9 +54,16 @@ const DenPage: NextPage = () => {
             <Connect />
           </div>
         </div>
-      ) : (
-        <Den />
-      )}
+      ) : hodler ? 
+        ( <Den /> ) : (
+          <div className='h-screen'>
+            <div className='w-fit mx-auto pt-60'>
+              <h3 className='text-center text-xl italic font-bold text-light p-10 border-4 border-color-tan rounded-lg'>The den is currently restricted to Aww, Rats hodlers.</h3>
+            </div>
+          </div>
+          
+        )
+     }
     </LayoutNoFooter>
   );
 };
