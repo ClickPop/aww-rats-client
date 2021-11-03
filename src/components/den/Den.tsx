@@ -215,10 +215,13 @@ const Den = () => {
   useEffect(() => {
     const getTokens = async () => {
       if (signerAddr) {
-        const res = await fetch(
+        const resPolygon = await fetch(
           `/api/get-tokens/${signerAddr}?chain=polygon&limit=40`,
         ).then((r) => r.json());
-        setTokens(res.data);
+        const resEthereum = await fetch(
+          `/api/get-tokens/${signerAddr}?chain=eth&limit=40`,
+        ).then((r) => r.json());
+        setTokens([...resPolygon.data, ...resEthereum.data]);
       }
     };
     getTokens();
@@ -426,38 +429,44 @@ const Den = () => {
               );
               setURL('');
             }}>
-            <select
-              onChange={(e) =>
-                addToCanvas(
-                  {
-                    image: e.currentTarget.value,
-                    frame: '',
-                    fabricOpts: {},
-                  },
-                  selectedFrame,
-                )
-              }>
-              <option>Please select a token</option>
-              {tokens.map((token, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <option
-                  key={token.metadata.image + i}
-                  value={`/api/image/proxy-image?imageURL=${encodeURI(
-                    token.metadata.image,
-                  )}`}>
-                  {token.name}: {token.metadata.name ?? token.token_id}
-                </option>
-              ))}
-            </select>
-            <input
-              type='url'
-              placeholder='URL to external image'
-              value={url}
-              onChange={(e) => setURL(e.currentTarget.value)}
-            />
-            <button type='submit' disabled={!url}>
-              Add external image
-            </button>
+            <div className="grid my-4">
+              <select
+                className="p-2 border-0"
+                onChange={(e) =>
+                  addToCanvas(
+                    {
+                      image: e.currentTarget.value,
+                      frame: '',
+                      fabricOpts: {},
+                    },
+                    selectedFrame,
+                  )
+                }>
+                <option>Please select a token</option>
+                {tokens.map((token, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <option
+                    key={token.metadata.image + i}
+                    value={`/api/image/proxy-image?imageURL=${encodeURI(
+                      token.metadata.image,
+                    )}`}>
+                    {token.name}: {token.metadata.name ?? token.token_id}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 my-4">
+              <input
+                type='url'
+                placeholder='URL to external image'
+                value={url}
+                onChange={(e) => setURL(e.currentTarget.value)}
+                className="p-2 border-0"
+              />
+              <button type='submit' disabled={!url} className="p-2 bg-tan text-slate hover:bg-light transition-colors duration-200">
+                Add external image
+              </button>
+            </div>
           </form>
         ) : (
           <p>
@@ -488,9 +497,7 @@ const Den = () => {
           />
         ))} */}
       </div>
-      <button onClick={() => console.log(canvas?.getObjects())}>
-        Get State
-      </button>
+
       <div className='flex space-x-4 w-fit mx-auto'>
         <>
           {frames.map((frame) => (
