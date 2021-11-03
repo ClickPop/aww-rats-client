@@ -54,15 +54,14 @@ const DenPage: NextPage = () => {
             <Connect />
           </div>
         </div>
-      ) : hodler ? 
-        ( <Den /> ) : (
+      ) : hodler === false ? 
+        ( 
           <div className='h-screen'>
             <div className='w-fit mx-auto pt-60'>
               <h3 className='text-center text-xl italic font-bold text-light p-10 border-4 border-color-tan rounded-lg'>The den is currently restricted to Aww, Rats hodlers.</h3>
             </div>
-          </div>
-          
-        )
+          </div> 
+        ) : ( <Den /> )
      }
     </LayoutNoFooter>
   );
