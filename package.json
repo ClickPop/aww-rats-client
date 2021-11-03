@@ -16,7 +16,6 @@
     "test-contract": "cd smart-contracts && yarn test"
   },
   "dependencies": {
-    "@tailwindcss/aspect-ratio": "^0.3.0",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.6",
     "fabric": "^4.6.0",
@@ -28,6 +27,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.3.0",
+    "@tailwindcss/forms": "^0.3.0",
     "@neupauer/tailwindcss-plugin-colors": "^1.0.0",
     "@types/fabric": "^4.5.3",
     "@types/react": "17.0.20",
