@@ -229,14 +229,14 @@ const Den = () => {
       const getFrame = () => frames[Math.floor(Math.random() * frames.length)];
       if (canvas) {
         fabric.Image.fromURL(image.image, (img) => {
-          const frameUrl = frameURL ?? getFrame();
-          fabric.Image.fromURL(frameURL ?? getFrame(), (frame) => {
+          const frameSrc = frameURL || getFrame();
+          fabric.Image.fromURL(frameSrc, (frame) => {
             frame.scale(150 / (frame.height ?? 150));
             frame.originX = 'center';
             frame.originY = 'center';
             let padX = 0;
             let padY = 0;
-            switch (frameURL) {
+            switch (frameSrc) {
               case `${DEN_FRAME_PREFIX}01.png`:
               case `${DEN_FRAME_PREFIX}02.png`:
                 padX = 11.5;
@@ -325,7 +325,7 @@ const Den = () => {
                 group;
               const newDenItem = {
                 image: image.image,
-                frame: frameUrl,
+                frame: frameSrc,
                 fabricOpts: {
                   top,
                   left,
@@ -412,55 +412,59 @@ const Den = () => {
 
       <div className='w-fit mx-auto mb-8'>
         {numObjects < 10 ? (
-          <select
-            onChange={(e) =>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log('selected', selectedFrame);
               addToCanvas(
                 {
-                  image: e.currentTarget.value,
+                  image: `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
                   frame: '',
                   fabricOpts: {},
                 },
                 selectedFrame,
-              )
-            }>
-            <option>Please select a token</option>
-            {tokens.map((token, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <option
-                key={token.metadata.image + i}
-                value={`/api/image/proxy-image?imageURL=${encodeURI(
-                  token.metadata.image,
-                )}`}>
-                {token.name}: {token.metadata.name ?? token.token_id}
-              </option>
-            ))}
-          </select>
+              );
+              setURL('');
+            }}>
+            <select
+              onChange={(e) =>
+                addToCanvas(
+                  {
+                    image: e.currentTarget.value,
+                    frame: '',
+                    fabricOpts: {},
+                  },
+                  selectedFrame,
+                )
+              }>
+              <option>Please select a token</option>
+              {tokens.map((token, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <option
+                  key={token.metadata.image + i}
+                  value={`/api/image/proxy-image?imageURL=${encodeURI(
+                    token.metadata.image,
+                  )}`}>
+                  {token.name}: {token.metadata.name ?? token.token_id}
+                </option>
+              ))}
+            </select>
+            <input
+              type='url'
+              placeholder='URL to external image'
+              value={url}
+              onChange={(e) => setURL(e.currentTarget.value)}
+            />
+            <button type='submit' disabled={!url}>
+              Add external image
+            </button>
+          </form>
         ) : (
           <p>
             You have reached the max token number. Please delete one or more
             tokens to add more.
           </p>
         )}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addToCanvas({
-              image: `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
-              frame: selectedFrame ?? '',
-              fabricOpts: {},
-            });
-            setURL('');
-          }}>
-          <input
-            type='url'
-            placeholder='URL to external image'
-            value={url}
-            onChange={(e) => setURL(e.currentTarget.value)}
-          />
-          <button type='submit' disabled={!url}>
-            Add external image
-          </button>
-        </form>
         {/* {tokens.map((token, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <Image
