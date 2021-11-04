@@ -369,43 +369,9 @@ const Den = () => {
   }, [addToCanvas, canvas, frames]);
 
   return (
-    <div className='h-full pt-24'>
-      {canvas && (
-        <button
-          className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-          onClick={async () => {
-            downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
-            const link = document.createElement('a');
-            const scaledWidth =
-              denBgWidth / denState.current.sizing.scaledWidth;
-            const scaledHeight =
-              denBgHeight / denState.current.sizing.scaledHeight;
-            for (const o of canvas.getObjects()) {
-              const url = o.toDataURL({});
-              const image = await new Promise<fabric.Image>((res) => {
-                fabric.Image.fromURL(url, (img) => {
-                  img.left = o.left;
-                  img.top = o.top;
-                  res(img);
-                });
-              });
-              image.scaleX = (image.scaleX ?? 0) * scaledWidth;
-              image.scaleY = (image.scaleY ?? 0) * scaledHeight;
-              image.left = (image.left ?? 0) * scaledWidth;
-              image.top = (image.top ?? 0) * scaledHeight;
-              downloadCanvas.add(image);
-            }
-            downloadCanvas.renderAll();
-            link.download = 'den.png';
-            link.href = downloadCanvas.toDataURL();
-            link.click();
-            downloadCanvas.clear();
-          }}>
-          Download it!
-        </button>
-      )}
+    <div className='h-full pt-24 pb-24'>
       <div
-        className='mx-auto mb-8'
+        className='mx-auto'
         style={{
           width: denState.current.sizing.scaledWidth,
           height: denState.current.sizing.scaledHeight,
@@ -414,9 +380,10 @@ const Den = () => {
         <canvas hidden id='download-canvas' />
       </div>
 
-      <div className='w-fit mx-auto mb-8'>
+      <div className="flex justify-center items-center fixed z-50 bottom-0 w-full mb-2">
         {numObjects < 10 ? (
           <form
+            className="flex items-center"
             onSubmit={(e) => {
               e.preventDefault();
               console.log('selected', selectedFrame);
@@ -430,9 +397,9 @@ const Den = () => {
               );
               setURL('');
             }}>
-            <div className='grid my-4'>
+            <div className='mx-2'>
               <select
-                className='p-2 border-0'
+                className='p-2 border-0 rounded-sm w-60'
                 onChange={(e) =>
                   addToCanvas(
                     {
@@ -443,7 +410,7 @@ const Den = () => {
                     selectedFrame,
                   )
                 }>
-                <option>Please select a token</option>
+                <option>Select a token</option>
                 {tokens.map((token, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <option
@@ -456,24 +423,25 @@ const Den = () => {
                 ))}
               </select>
             </div>
-            <div className='grid grid-cols-2 my-4'>
+            <p class='text-white'>Or</p>.
+            <div className='mx-2'>
               <input
                 type='url'
                 placeholder='URL to external image'
                 value={url}
                 onChange={(e) => setURL(e.currentTarget.value)}
-                className='p-2 border-0'
+                className='p-2 border-0 rounded-l-sm'
               />
               <button
                 type='submit'
                 disabled={!url}
-                className='p-2 bg-tan text-slate hover:bg-light transition-colors duration-200'>
-                Add external image
+                className='py-2 px-3 text-white rounded-r-sm duration-300 bg-purple-700 hover:bg-purple-800'>
+                + image
               </button>
             </div>
           </form>
         ) : (
-          <p>
+          <p class="text-white">
             You have reached the max token number. Please delete one or more
             tokens to add more.
           </p>
@@ -500,27 +468,62 @@ const Den = () => {
             }
           />
         ))} */}
-      </div>
 
-      <div className='flex space-x-4 w-fit mx-auto'>
-        <>
-          {frames.map((frame) => (
-            <div
-              className={`${frame === selectedFrame && 'bg-gray-300'}`}
-              key={frame}>
-              <Image
-                src={frame}
-                width={150}
-                height={150}
-                objectFit='contain'
-                alt=''
-                onClick={() =>
-                  setSelectedFrame(frame === selectedFrame ? '' : frame)
-                }
-              />
-            </div>
-          ))}
-        </>
+        <div className='flex space-x-2  mx-2 w-fit'>
+          <>
+            {frames.map((frame) => (
+              <div
+                className={`${frame === selectedFrame && 'bg-gray-300'}`}
+                key={frame}>
+                <Image
+                  src={frame}
+                  width={40}
+                  height={40}
+                  objectFit='contain'
+                  alt=''
+                  onClick={() =>
+                    setSelectedFrame(frame === selectedFrame ? '' : frame)
+                  }
+                />
+              </div>
+            ))}
+          </>
+        </div>
+
+        {canvas && (
+          <button
+            className='download py-2 px-3 m-4 text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+            onClick={async () => {
+              downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
+              const link = document.createElement('a');
+              const scaledWidth =
+                denBgWidth / denState.current.sizing.scaledWidth;
+              const scaledHeight =
+                denBgHeight / denState.current.sizing.scaledHeight;
+              for (const o of canvas.getObjects()) {
+                const url = o.toDataURL({});
+                const image = await new Promise<fabric.Image>((res) => {
+                  fabric.Image.fromURL(url, (img) => {
+                    img.left = o.left;
+                    img.top = o.top;
+                    res(img);
+                  });
+                });
+                image.scaleX = (image.scaleX ?? 0) * scaledWidth;
+                image.scaleY = (image.scaleY ?? 0) * scaledHeight;
+                image.left = (image.left ?? 0) * scaledWidth;
+                image.top = (image.top ?? 0) * scaledHeight;
+                downloadCanvas.add(image);
+              }
+              downloadCanvas.renderAll();
+              link.download = 'den.png';
+              link.href = downloadCanvas.toDataURL();
+              link.click();
+              downloadCanvas.clear();
+            }}>
+            Download
+          </button>
+        )}
       </div>
     </div>
   );
