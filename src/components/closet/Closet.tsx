@@ -34,7 +34,7 @@ interface SimplifiedMetadata {
 
 const Closet = () => {
   const router = useRouter();
-  const { signer, contract, signerAddr } = useContext(EthersContext);
+  const { signer, contract, signerAddr, connected } = useContext(EthersContext);
   const [signerTokens, setSignerTokens] = useState<BigNumber[] | null>(null);
   const [rats, setRats] = useState<Array<SimplifiedMetadata | null> | null>(
     null,
@@ -287,7 +287,11 @@ const Closet = () => {
       </div>
       <div className='flex flex-col md:flex-row md:h-screen'>
         <div className='container max-w-sm mx-auto my-2 p-4'>
-          <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
+          {router.route !== '/' && !connected && (
+            <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
+              <Connect />
+            </div>
+          )}
 
           {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
           {!loading.tokens && rats && (

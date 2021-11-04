@@ -1,5 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { MORALIS_API_ENDPOINT, MORALIS_API_KEY, CONTRACT_ADDRESS, CHAIN_ID} from '~/config/env';
+import {
+  MORALIS_API_ENDPOINT,
+  MORALIS_API_KEY,
+  CONTRACT_ADDRESS,
+  CHAIN_ID,
+} from '~/config/env';
 import { MoralisTokensResponse } from '~/types';
 
 export default async function handler(
@@ -19,20 +24,20 @@ export default async function handler(
         'x-api-key': MORALIS_API_KEY ?? '',
       },
     }).then((r) => r.json());
-      
+
     if (moralisResponse.total > 0) {
       isHodler = true;
     }
 
-    res.status(200).json({ 
-      status: 'success', 
+    res.status(200).json({
+      status: 'success',
       data: {
         wallet: wallet,
         hodler: isHodler,
         contract: CONTRACT_ADDRESS,
         chain: chain,
-        tokenCount: moralisResponse.total ?? 0
-      } 
+        tokenCount: moralisResponse.total ?? 0,
+      },
     });
   } catch (err) {
     console.error(err);

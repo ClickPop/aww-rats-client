@@ -11,18 +11,18 @@ const Den = dynamic(() => import('~/components/den/Den'), {
 
 const DenPage: NextPage = () => {
   const { signerAddr } = useContext(EthersContext);
-  const [hodler, setHodler] = useState<Boolean|null>();
+  const [hodler, setHodler] = useState<Boolean | null>();
 
   useEffect(() => {
     const getHodlerStatus = async () => {
       if (signerAddr) {
-        const resHodler = await fetch(
-          `/api/hodler/${signerAddr}`,
-        ).then((r) => r.json());
+        const resHodler = await fetch(`/api/hodler/${signerAddr}`).then((r) =>
+          r.json(),
+        );
         setHodler(resHodler.data.hodler ? true : false);
       }
     };
-    
+
     getHodlerStatus();
   }, [signerAddr]);
 
@@ -48,21 +48,24 @@ const DenPage: NextPage = () => {
         />
         <meta property='og:image' content='/og-image.png' />
       </Head>
+
       {!signerAddr ? (
-        <div className='h-screen'>
-          <div className='w-fit mx-auto pt-24'>
+        <div className='h-screen pt-60'>
+          <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
             <Connect />
           </div>
         </div>
-      ) : hodler === false ? 
-        ( 
-          <div className='h-screen'>
-            <div className='w-fit mx-auto pt-60'>
-              <h3 className='text-center text-xl italic font-bold text-light p-10 border-4 border-color-tan rounded-lg'>The den is currently restricted to Aww, Rats hodlers.</h3>
-            </div>
-          </div> 
-        ) : ( <Den /> )
-     }
+      ) : hodler === false ? (
+        <div className='h-screen pt-60'>
+          <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
+            <h3 className='text-center text-xl italic font-bold p-4'>
+              The den is currently restricted to Aww, Rats hodlers.
+            </h3>
+          </div>
+        </div>
+      ) : (
+        <Den />
+      )}
     </LayoutNoFooter>
   );
 };
