@@ -379,7 +379,7 @@ const Den = () => {
   }, [addToCanvas, canvas, frames]);
 
   return (
-    <div className='h-screen pt-24 pb-24'>
+    <div className='pt-24 pb-24'>
       <div
         className='mx-auto'
         style={{
@@ -390,7 +390,7 @@ const Den = () => {
         <canvas hidden id='download-canvas' />
       </div>
 
-      <div className="flex justify-center items-center fixed z-50 bottom-0 w-full mb-2">
+      <div className="flex justify-center items-center fixed z-50 bottom-0 w-full bg-opacity-10 bg-white py-1">
         {numObjects < 10 ? (
           <form
             className="flex items-center"
@@ -503,7 +503,7 @@ const Den = () => {
         {canvas && (
           <>
           <button
-            className='download py-2 px-3 m-4 mr-0 text-white rounded-l-sm duration-300 bg-purple-700 hover:bg-purple-800'
+            className='download py-2 px-3 m-2 text-white rounded-sm duration-300 bg-purple-700 hover:bg-purple-800'
             onClick={async () => {
               downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
               const link = document.createElement('a');
@@ -534,7 +534,7 @@ const Den = () => {
             }}>
             Download
           </button>
-          <button className="py-2 px-3 ml-0 m-4 rounded-r-sm duration-300 bg-tan hover:bg-light border-l border-0 border-slate" onClick={async () => { clearCanvas(); }}>Reset</button>
+          <button className="py-2 px-3 m-2 rounded-sm duration-300 bg-tan hover:bg-light border-l border-0 border-slate" onClick={async () => { clearCanvas(); }}>Reset</button>
           </>
         )}
       </div>
