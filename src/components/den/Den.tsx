@@ -104,7 +104,7 @@ const Den = () => {
   );
 
   const [url, setURL] = useState('');
-  
+
   const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
@@ -224,7 +224,7 @@ const Den = () => {
         setTokens([...resPolygon.data, ...resEthereum.data]);
       }
     };
-    
+
     getTokens();
   }, [signerAddr]);
 
@@ -430,9 +430,9 @@ const Den = () => {
               );
               setURL('');
             }}>
-            <div className="grid my-4">
+            <div className='grid my-4'>
               <select
-                className="p-2 border-0"
+                className='p-2 border-0'
                 onChange={(e) =>
                   addToCanvas(
                     {
@@ -456,15 +456,18 @@ const Den = () => {
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-2 my-4">
+            <div className='grid grid-cols-2 my-4'>
               <input
                 type='url'
                 placeholder='URL to external image'
                 value={url}
                 onChange={(e) => setURL(e.currentTarget.value)}
-                className="p-2 border-0"
+                className='p-2 border-0'
               />
-              <button type='submit' disabled={!url} className="p-2 bg-tan text-slate hover:bg-light transition-colors duration-200">
+              <button
+                type='submit'
+                disabled={!url}
+                className='p-2 bg-tan text-slate hover:bg-light transition-colors duration-200'>
                 Add external image
               </button>
             </div>
@@ -521,7 +524,6 @@ const Den = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Den;

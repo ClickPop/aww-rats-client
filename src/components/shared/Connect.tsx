@@ -17,7 +17,7 @@ export const Connect = () => {
   if (!connected) {
     return (
       <button
-        className='px-4 py-3 rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
+        className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
         onClick={connectToMetamask}>
         Connect to MetaMask
       </button>
@@ -26,16 +26,17 @@ export const Connect = () => {
 
   if (network?.chainId !== CHAIN_ID) {
     return (
-      <div className='px-4 py-3 text-xs leading-5'>
-        <span className='italic'>Switch to Polygon</span>
+      <div className='px-4 py-3'>
+        It looks like your wallet is on the wrong network. Make sure you&apos;re
+        on the Matic Network (
         <a
           href='https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb'
           target='_blank'
-          className='inline-block w-4 h-4 leading-4 text-xs text-center ml-1 rounded-full bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
-          rel='noreferrer'
-          title='Learn more'>
-          ?
+          className='underline'
+          rel='noreferrer'>
+          learn more
         </a>
+        ).
       </div>
     );
   }
