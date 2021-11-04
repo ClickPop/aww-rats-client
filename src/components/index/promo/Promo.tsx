@@ -22,7 +22,7 @@ export const Promo = () => {
         <p>
           <a
             className='px-4 py-3 inline-block rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold'
-            href='https://bridge.umbria.network/'
+            href='https://bridge.umbria.network/bridge/ethereum-polygon/eth'
             target='_blank'
             rel='noopener noreferrer'>
             Bridge ETH
