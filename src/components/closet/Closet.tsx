@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { BigNumber } from 'ethers';
 import Select, { SingleValue } from 'react-select';
 
@@ -16,10 +22,10 @@ import { EthersContext } from '~/components/context/EthersContext';
 import { fabric } from 'fabric';
 import { Connect } from '~/components/shared/Connect';
 import { Link } from '~/components/shared/Link';
-import { Canvas, StaticCanvas } from 'fabric/fabric-impl';
 import { Image } from '~/components/shared/Image';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { useRouter } from 'next/router';
+import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 interface SimplifiedMetadata {
   label: string;
   value: string;
@@ -28,14 +34,13 @@ interface SimplifiedMetadata {
 
 const Closet = () => {
   const router = useRouter();
-  const { signer, contract, signerAddr } = useContext(EthersContext);
+  const { signer, contract, signerAddr, connected } = useContext(EthersContext);
   const [signerTokens, setSignerTokens] = useState<BigNumber[] | null>(null);
   const [rats, setRats] = useState<Array<SimplifiedMetadata | null> | null>(
     null,
   );
   const [currentRat, setCurrentRat] = useState<SimplifiedMetadata | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
-  const [canvas, setCanvas] = useState<StaticCanvas | null>(null);
   const [hideBackground, setHideBackground] = useState(false);
   const [loading, setLoading] = useState({
     tokens: false,
@@ -45,22 +50,30 @@ const Closet = () => {
   });
   const [loadedTokens, setLoadedTokens] = useState<string[]>([]);
   const [tokenProgress, setTokenProgress] = useState<number>(0);
-  useEffect(() => {
-    const c = new fabric.StaticCanvas('closet-canvas', {
-      width: 2048,
-      height: 2048,
-      preserveObjectStacking: true,
-    });
-    const canv = document.getElementById('closet-canvas');
-    if (canv) {
-      canv.style.transformOrigin = '0 0';
-      canv.style.transform = 'scale(0.1565)';
-    }
-    fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
-      c.add(img);
-    });
-    setCanvas(c);
+
+  const canvasOpts = useMemo(() => {
+    const opts: CanvasOpts = {
+      canvasType: 'StaticCanvas',
+      element: 'closet-canvas',
+      canvasOptions: {
+        width: 2048,
+        height: 2048,
+        preserveObjectStacking: true,
+      },
+      scaledSize: {
+        width: 320,
+        height: 320,
+      },
+      onMount: (canv) => {
+        fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
+          canv.add(img);
+        });
+      },
+    };
+    return opts;
   }, []);
+
+  const { canvas } = useCanvas(canvasOpts);
 
   // Get all the tokens for an address
   useEffect(() => {
@@ -182,7 +195,6 @@ const Closet = () => {
 
   const calculatePercentage = (n: number, d: number): number => {
     let perc: number = 0;
-    console.log(n, d);
     if (n >= 0 && d > 0) {
       if (n > d || n === d) {
         perc = 1;
@@ -275,7 +287,11 @@ const Closet = () => {
       </div>
       <div className='flex flex-col md:flex-row md:h-screen'>
         <div className='container max-w-sm mx-auto my-2 p-4'>
-          <div className='mx-auto'>{router.route !== '/' && <Connect />}</div>
+          {router.route !== '/' && !connected && (
+            <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
+              <Connect />
+            </div>
+          )}
 
           {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
           {!loading.tokens && rats && (
