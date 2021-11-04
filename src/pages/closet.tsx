@@ -19,7 +19,10 @@ const Home: NextPage = () => {
         {/* Twitter */}
         <meta name='twitter:card' content='summary' key='twcard' />
         <meta name='twitter:creator' content='awwratspack' key='twhandle' />
-        <meta name='twitter:image' content='/og-image.png' />
+        <meta
+          name='twitter:image'
+          content='https://storage.googleapis.com/aww-rats-images/social/og-image.png'
+        />
 
         {/* Open Graph */}
         <meta property='og:title' content='Aww, Rats!' />
@@ -27,7 +30,10 @@ const Home: NextPage = () => {
           property='og:description'
           content='An NFT Project By Creators, for Creators.'
         />
-        <meta property='og:image' content='/og-image.png' />
+        <meta
+          property='og:image'
+          content='https://storage.googleapis.com/aww-rats-images/social/og-image.png'
+        />
       </Head>
       <Closet />
     </LayoutNoFooter>
