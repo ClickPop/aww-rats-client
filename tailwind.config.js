@@ -5,31 +5,32 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        light: "#FFF4CF",
-        dark: "#2A353C",
-        slate: "#3F505A",
-        tan: "#fffae8"
+        light: '#FFF4CF',
+        dark: '#2A353C',
+        slate: '#3F505A',
+        tan: '#fffae8',
       },
       spacing: {
         fit: 'fit-content',
         max: 'max-content',
         min: 'min-content',
-        128: '32rem'
+        128: '32rem',
       },
       listStyleType: {
-        circle: 'circle'
+        circle: 'circle',
       },
       maxHeight: {
         '1/2': '50%',
-        '2/3': '66%'        
-      }
+        '2/3': '66%',
+      },
     },
   },
   variants: {
     extend: {},
   },
   plugins: [
-    require("@neupauer/tailwindcss-plugin-colors"),
-    require('@tailwindcss/aspect-ratio')
-  ]
-}
+    require('@neupauer/tailwindcss-plugin-colors'),
+    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/forms'),
+  ],
+};
