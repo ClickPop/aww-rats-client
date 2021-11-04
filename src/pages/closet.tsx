@@ -6,7 +6,7 @@ const Closet = dynamic(() => import('~/components/closet/Closet'), {
   ssr: false,
 });
 
-const Home: NextPage = () => {
+const ClosetPage: NextPage = () => {
   return (
     <LayoutNoFooter className='bg-dark'>
       <Head>
@@ -40,4 +40,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default ClosetPage;

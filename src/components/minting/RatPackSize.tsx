@@ -12,10 +12,14 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const roProvider = useMemo(() => new ethers.providers.JsonRpcProvider(
-    RPC_URL,
-    ethers.providers.getNetwork(CHAIN_ID),
-  ), []);
+  const roProvider = useMemo(
+    () =>
+      new ethers.providers.JsonRpcProvider(
+        RPC_URL,
+        ethers.providers.getNetwork(CHAIN_ID),
+      ),
+    [],
+  );
 
   useEffect(() => {
     (async () => {
