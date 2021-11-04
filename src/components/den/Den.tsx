@@ -228,6 +228,16 @@ const Den = () => {
     getTokens();
   }, [signerAddr]);
 
+  const clearCanvas = useCallback(
+    () => {
+      canvas.remove(...canvas.getObjects());
+      denState.current.objects = [];
+      canvas?.requestRenderAll();
+      localStorage.setItem('den-state', JSON.stringify(denState.current));
+      setNumObjects(denState.current.objects.length ?? 0);
+    }, [canvas]
+  );
+
   const addToCanvas = useCallback(
     (image: DenStorageObject, frameURL?: string) => {
       const getFrame = () => frames[Math.floor(Math.random() * frames.length)];
@@ -369,7 +379,7 @@ const Den = () => {
   }, [addToCanvas, canvas, frames]);
 
   return (
-    <div className='h-full pt-24 pb-24'>
+    <div className='h-screen pt-24 pb-24'>
       <div
         className='mx-auto'
         style={{
@@ -423,7 +433,7 @@ const Den = () => {
                 ))}
               </select>
             </div>
-            <p class='text-white'>Or</p>.
+            <p className='text-white'>Or</p>.
             <div className='mx-2'>
               <input
                 type='url'
@@ -441,7 +451,7 @@ const Den = () => {
             </div>
           </form>
         ) : (
-          <p class="text-white">
+          <p className="text-white">
             You have reached the max token number. Please delete one or more
             tokens to add more.
           </p>
@@ -469,7 +479,7 @@ const Den = () => {
           />
         ))} */}
 
-        <div className='flex space-x-2  mx-2 w-fit'>
+        <div className='flex space-x-2  mt-1 mx-2 w-fit'>
           <>
             {frames.map((frame) => (
               <div
@@ -491,8 +501,9 @@ const Den = () => {
         </div>
 
         {canvas && (
+          <>
           <button
-            className='download py-2 px-3 m-4 text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
+            className='download py-2 px-3 m-4 mr-0 text-white rounded-l-sm duration-300 bg-purple-700 hover:bg-purple-800'
             onClick={async () => {
               downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
               const link = document.createElement('a');
@@ -523,6 +534,8 @@ const Den = () => {
             }}>
             Download
           </button>
+          <button className="py-2 px-3 ml-0 m-4 rounded-r-sm duration-300 bg-tan hover:bg-light border-l border-0 border-slate" onClick={async () => { clearCanvas(); }}>Reset</button>
+          </>
         )}
       </div>
     </div>
