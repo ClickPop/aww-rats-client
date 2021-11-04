@@ -60,3 +60,30 @@ export interface EthersContextType extends EthersState {
   connectToMetamask: () => void;
   signerAddr?: string;
 }
+
+export type MoralisTokensResponse = {
+  status: string;
+  total: number;
+  page: number;
+  page_size: number;
+  result: MoralisTokenMeta[];
+};
+
+export type MoralisTokenMeta = {
+  token_address: string;
+  token_id: string;
+  name: string;
+  symbol: string;
+  contract_type: string;
+  token_uri?: string;
+  metadata?: string;
+  synced_at?: string;
+  amount?: string;
+};
+
+export interface ParsedMoralisTokenMeta extends MoralisTokenMeta {
+  metadata: {
+    image: string;
+    [key: string]: unknown;
+  };
+}

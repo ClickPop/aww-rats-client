@@ -1,7 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwindcss/aspect-ratio
+@tailwindcss/aspect-ratio;
+@tailwindcss/forms;
 
 @import "includes/select_search";
 @import "includes/closet";
