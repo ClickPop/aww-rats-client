@@ -66,24 +66,26 @@ const StudyPage: NextPage = () => {
           content='https://storage.googleapis.com/aww-rats-images/social/og-image.png'
         />
       </Head>
-      <div className='h-screen w-full'>
-        <div className='w-full h-1/4 h-max-60 relative flex items-center justify-center'>
-          <h1 className='sr-only'>The Study</h1>
-          <Image 
-            alt='Study'
-            src={studyHeader}
-            layout='fill'
-            objectFit='cover'
-          />
+      <div className='container mx-auto max-w-xl h-screen w-full text-white'>
+        <div className='w-full pt-20'>
+          <h1 className='text-4xl mb-2 font-bold'>
+            The Study
+          </h1>
+          <p className='text-lg mb-8'>
+            A repository of all the stored wisdom of the sewer.
+          </p>
         </div>
-        <div className='pt-16'>
+        <div>
           {!signerAddr ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
+              <p class="text-lg mb-8">
+                The study is for rats only. Connect your wallet with a rat token to start learning.
+              </p>
               <Connect />
             </div>
           ) : (typeof signerTokenCount === 'number' && signerTokenCount <= 0) ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-              <h3 className='text-center text-xl italic font-bold p-4'>
+              <h3 className='text-center text-xl font-bold p-4'>
                 The den is currently restricted to Aww, Rats hodlers.
               </h3>
             </div>
