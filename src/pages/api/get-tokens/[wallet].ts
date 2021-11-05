@@ -26,7 +26,6 @@ export default async function handler(
           'x-api-key': MORALIS_API_KEY ?? '',
         },
       }).then((r) => r.json());
-
       if (tokens.result.length < 1) {
         break;
       }
