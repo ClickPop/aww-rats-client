@@ -13,7 +13,7 @@ export default async function handler(
   }
   try {
     const { wallet, chain, limit, offset } = req.query;
-    const queryLimit = limit ? parseInt(limit as string, 10) : 5;
+    const queryLimit = limit ? parseInt(limit as string, 10) : 500;
     let queryOffset = offset ? parseInt(offset as string, 10) : 0;
     let tokenResult: ParsedMoralisTokenMeta[] = [];
     const dupeTokens: string[] = [];
@@ -26,6 +26,7 @@ export default async function handler(
           'x-api-key': MORALIS_API_KEY ?? '',
         },
       }).then((r) => r.json());
+
       if (tokens.result.length < 1) {
         break;
       }
@@ -33,6 +34,7 @@ export default async function handler(
         .map((token) => {
           if (token.metadata) {
             const meta = JSON.parse(token.metadata);
+            meta.image = meta.image_url_cdn ?? meta.image_url ?? meta.image;
             return { ...token, metadata: meta };
           }
           return false;

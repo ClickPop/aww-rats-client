@@ -216,10 +216,10 @@ const Den = () => {
     const getTokens = async () => {
       if (signerAddr) {
         const resPolygon = await fetch(
-          `/api/get-tokens/${signerAddr}?chain=polygon&limit=40`,
+          `/api/get-tokens/${signerAddr}?chain=polygon`,
         ).then((r) => r.json());
         const resEthereum = await fetch(
-          `/api/get-tokens/${signerAddr}?chain=eth&limit=40`,
+          `/api/get-tokens/${signerAddr}?chain=eth`,
         ).then((r) => r.json());
         setTokens([...resPolygon.data, ...resEthereum.data]);
       }
