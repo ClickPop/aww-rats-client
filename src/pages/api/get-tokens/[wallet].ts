@@ -33,7 +33,7 @@ export default async function handler(
         .map((token) => {
           if (token.metadata) {
             const meta = JSON.parse(token.metadata);
-            meta.image = meta.image_url_cdn ?? meta.image_url ?? meta.image;
+            meta.image = meta.image ?? meta.image_url ?? meta.image_url_cdn;
             return { ...token, metadata: meta };
           }
           return false;
