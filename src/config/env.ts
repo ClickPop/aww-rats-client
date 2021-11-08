@@ -66,6 +66,10 @@ export const CLOSET_PIECES = {
     // 'costume-fairy',
     // 'costume-witch',
     'jacket-leather',
+    // 'robe-pink',
+    'winter-scarf-purple',
+    'winter-scarf-red',
+    'coat-santa',
   ],
   hat: [
     'none',
@@ -91,16 +95,22 @@ export const CLOSET_PIECES = {
     'helicopter',
     'cap-white-and-yellow',
     'cap-black',
+    'earmuffs-purple',
+    'earmuffs-red',
+    'cap-santa',
   ],
   // snout: ['costume-vampire'],
   accessory: [
     'none',
     // 'costume-cat',
-    'chain-gold'
+    'chain-gold',
+    'icecube',
+    'beard-santa',
   ],
   glasses: [
     'none',
-    // 'costume-funny'
+    // 'costume-funny',
+    // 'cucumber',
   ],
   hand: [
     'none',
@@ -112,6 +122,12 @@ export const CLOSET_PIECES = {
     'super-cheezr',
     'peace',
     'snowball',
+    'hot-chocolate',
+    'mustache',
+  ],
+  background: [
+    'winter-hills',
+    'winter-north-pole',
   ],
   pet: ['none'],
 };
