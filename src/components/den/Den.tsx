@@ -446,7 +446,7 @@ const Den = () => {
                     </option>
                   ))}
                 </select>
-              ) : (<span class="text-purple-800 italic font-bold">Loading tokens...</span>)}      
+              ) : (<span className="text-purple-800 italic font-bold">Loading tokens...</span>)}      
             </div>
             <p className='text-white'>Or</p>.
             <div className='mx-2'>
