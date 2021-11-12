@@ -27,9 +27,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@neupauer/tailwindcss-plugin-colors": "^1.0.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/forms": "^0.3.0",
-    "@neupauer/tailwindcss-plugin-colors": "^1.0.0",
     "@types/fabric": "^4.5.3",
     "@types/react": "^17.0.34",
     "@types/tailwindcss": "^2.2.1",
