@@ -123,4 +123,6 @@ export const IPFSGateways = [
   'https://gateway.pinata.cloud/ipfs/',
   'https://ipfs.moralis.io:2053/ipfs/',
   'https://cloudflare-ipfs.com/ipfs/',
+  'https://ipfs.infura.io/ipfs/',
+  'https://dweb.link/ipfs/',
 ];
