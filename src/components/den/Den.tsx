@@ -234,14 +234,10 @@ const Den = () => {
         const tempTokens = [...resPolygon.data, ...resEthereum.data];
         if (Array.isArray(tempTokens) && tempTokens.length) {
           let options = tempTokens.map((token) => ({
-            value: token.metadata.image.startsWith('data:image')
+            value: token.metadata.image.startsWith('data:image') 
               ? token.metadata.image
-              : `/api/image/proxy-image?imageURL=${encodeURI(
-                  token.metadata.image,
-                ).replace(/\//g, '%2F')}`,
-            label: `${token.name === 'AwwRat' ? 'Aww, Rats' : token.name}: ${
-              token.metadata.name ?? token.token_id
-            }`,
+              : `/api/image/proxy-image?imageURL=${encodeURI(token.metadata.image).replace(/\//g, '%2F')}`,
+            label: `${token.name === 'AwwRat' ? 'Aww, Rats': token.name}: ${token.metadata.name ?? token.token_id}`
           }));
           setTokensOptions(options);
         }
@@ -255,13 +251,15 @@ const Den = () => {
     }
   }, [signerAddr, tokensStatus]);
 
-  const clearCanvas = useCallback(() => {
-    canvas.remove(...canvas.getObjects());
-    denState.current.objects = [];
-    canvas?.requestRenderAll();
-    localStorage.setItem('den-state', JSON.stringify(denState.current));
-    setNumObjects(denState.current.objects.length ?? 0);
-  }, [canvas]);
+  const clearCanvas = useCallback(
+    () => {
+      canvas.remove(...canvas.getObjects());
+      denState.current.objects = [];
+      canvas?.requestRenderAll();
+      localStorage.setItem('den-state', JSON.stringify(denState.current));
+      setNumObjects(denState.current.objects.length ?? 0);
+    }, [canvas]
+  );
 
   const addToCanvas = useCallback(
     async (image: DenStorageObject, frameURL?: string) => {
