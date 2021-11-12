@@ -24,9 +24,9 @@ import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
 import { v4 as uuidv4 } from 'uuid';
 import { svgToPng } from '~/utils/svgToPng';
-import Select, { LoadingIndicatorProps, OptionsOrGroups, SingleValue } from 'react-select';
+import Select from 'react-select';
 
-type Option = {
+type SelectOption = {
   value: string;
   label: string;
 }
@@ -113,6 +113,8 @@ const Den = () => {
   const [url, setURL] = useState('');
 
   const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
+  const [tokensOptions, setTokensOptions] = useState<SelectOption[]>([]);
+  const [tokensStatus, setTokensStatus] = useState<string>('idle');
   const { signerAddr } = useContext(EthersContext);
   const deleteIcon = useRef(
     (() => {
@@ -221,6 +223,7 @@ const Den = () => {
 
   useEffect(() => {
     const getTokens = async () => {
+      setTokensStatus('loading');
       if (signerAddr) {
         const resPolygon = await fetch(
           `/api/get-tokens/${signerAddr}?chain=polygon`
@@ -228,12 +231,25 @@ const Den = () => {
         const resEthereum = await fetch(
           `/api/get-tokens/${signerAddr}?chain=eth`
         ).then((r) => r.json());
+        const tempTokens = [...resPolygon.data, ...resEthereum.data];
+        if (Array.isArray(tempTokens) && tempTokens.length) {
+          let options = tempTokens.map((token) => ({
+            value: token.metadata.image.startsWith('data:image') 
+              ? token.metadata.image
+              : `/api/image/proxy-image?imageURL=${encodeURI(token.metadata.image).replace(/\//g, '%2F')}`,
+            label: `${token.name === 'AwwRat' ? 'Aww, Rats': token.name}: ${token.metadata.name ?? token.token_id}`
+          }));
+          setTokensOptions(options);
+        }
         setTokens([...resPolygon.data, ...resEthereum.data]);
+        setTokensStatus('loaded');
       }
     };
 
-    getTokens();
-  }, [signerAddr]);
+    if (tokensStatus === 'idle') {
+      getTokens();
+    }
+  }, [signerAddr, tokensStatus]);
 
   const clearCanvas = useCallback(
     () => {
@@ -249,10 +265,17 @@ const Den = () => {
     async (image: DenStorageObject, frameURL?: string) => {
       const getFrame = () => frames[Math.floor(Math.random() * frames.length)];
       if (canvas) {
-        let tempImage = image.image;
+        let tempImage: string|Buffer = image.image;
         if (tempImage.startsWith('data:image/svg')) {
           tempImage = await svgToPng(tempImage);
+        } else {
+          let testRes = await fetch(tempImage);
+          let testResText = await testRes.text()
+          if (testResText.match(/<svg/i)) {
+            tempImage = `data:image/svg+xml;base64,${(window.btoa(testResText))}`;
+          }
         }
+       
         fabric.Image.fromURL(tempImage, (img) => {
           const frameSrc = frameURL || getFrame();
           fabric.Image.fromURL(frameSrc, (frame) => {
@@ -407,7 +430,6 @@ const Den = () => {
             className="flex items-center"
             onSubmit={(e) => {
               e.preventDefault();
-              // console.log('selected', selectedFrame);
               addToCanvas(
                 {
                   image: (url.startsWith('data:image')) ? url : `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
@@ -419,31 +441,23 @@ const Den = () => {
               setURL('');
             }}>
             <div className='mx-2'>      
-              {tokens.length > 0 ? (
-                <select
+              {(tokensStatus === 'loaded' && tokensOptions.length > 0) ? (
+                <Select
+                  options={tokensOptions}
+                  menuPlacement="top"
                   className='p-2 border-0 rounded-sm w-60'
-                  onChange={(e) =>
-                    addToCanvas(
+                  onChange={(option) => {
+                    if (!option) return false;
+                    return addToCanvas(
                       {
-                        image: e.currentTarget.value,
+                        image: option.value,
                         frame: '',
                         fabricOpts: {},
                       },
                       selectedFrame,
                     )
-                  }>
-                  <option>Select a token</option>
-                  {tokens.map((token, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <option
-                      key={token.metadata.image + i}
-                      value={token.metadata.image.startsWith('data:image') ? token.metadata.image : `/api/image/proxy-image?imageURL=${encodeURI(
-                        token.metadata.image
-                      )}`}>
-                      {token.name}: {token.metadata.name ?? token.token_id}
-                    </option>
-                  ))}
-                </select>
+                  }}
+                ></Select>
               ) : (<span className="text-purple-800 italic font-bold">Loading tokens...</span>)}      
             </div>
             <p className='text-white'>Or</p>.
