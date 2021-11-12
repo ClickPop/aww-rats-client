@@ -12,7 +12,7 @@ export default async function handler(
     const { imageURL } = req.query;
     const image = await fetch(imageURL as string)
       .then((res) => res.blob())
-      .then((data) => data.stream());
+      .then((data) => data.stream())
     image.pipe(res);
   } catch (err) {
     console.error(err);
