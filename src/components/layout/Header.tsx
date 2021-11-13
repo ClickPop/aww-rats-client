@@ -28,8 +28,8 @@ export const Header = () => {
           <MenuLink to='faqs' href='/' className='mr-4' offset={-25}>
             FAQs
           </MenuLink>
-          <MenuLink href='/closet' className='mr-4'>
-            Closet
+          <MenuLink href='/sewer' className='mr-4'>
+            Sewer (dApps)
           </MenuLink>
           <MenuLink
             href='https://www.twitter.com/awwratspack'
@@ -37,7 +37,7 @@ export const Header = () => {
             target='_blank'>
             <TwitterLogo width={24} height={24} />
           </MenuLink>
-          <MenuLink href='https://discord.gg/aww-rats' target='_blank'>
+          <MenuLink href='https://discord.gg/awwrats' target='_blank'>
             <DiscordLogo width={24} height={24} />
           </MenuLink>
         </div>
