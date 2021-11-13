@@ -308,8 +308,13 @@ export const Minter = () => {
     return (
       <p className='text-lg mb-8'>
         We&apos;re going to be minting soon. Join{' '}
-        <Link href='https://discord.gg/2cwxkBkgf5'>the Discord</Link> so you
-        know when we&apos;re going to launch!
+        <a
+          href='https://discord.gg/aww-rats'
+          target='_blank'
+          rel='noopener noreferrer nofollow'>
+          the Discord
+        </a>{' '}
+        so you know when we&apos;re going to launch!
       </p>
     );
   }

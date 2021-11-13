@@ -7,6 +7,7 @@ import { Generator } from '~/components/index/generator/Generator';
 import { FAQ } from '~/components/index/faq/FAQ';
 import { RatRace } from '~/components/index/rat-race/RatRace';
 import { Layout } from '~/components/layout/Layout';
+import { ScrollToTop } from '~/components/shared/ScrollToTop';
 
 const Home: NextPage = () => {
   return (
@@ -43,6 +44,7 @@ const Home: NextPage = () => {
       <Generator />
       <FAQ />
       <RatRace />
+      <ScrollToTop />
     </Layout>
   );
 };

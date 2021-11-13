@@ -5,7 +5,7 @@ import geneRATor from '~/assets/images/geneRATor.png';
 
 export const Generator = () => {
   return (
-    <div className='bg-light text-slate'>
+    <div id='generator' className='bg-light text-slate'>
       <div className='flex flex-col mx-auto max-w-xl py-20 px-4'>
         <Image
           className='imgfix overflow-hidden rounded-md mb-8'
@@ -13,9 +13,7 @@ export const Generator = () => {
           alt='The geneRATor machine.'
           placeholder='blur'
         />
-        <h2 id='generator' className='text-4xl mb-3 font-bold'>
-          The GeneRATor
-        </h2>
+        <h2 className='text-4xl mb-3 font-bold'>The GeneRATor</h2>
         <p className='mb-4'>
           The geneRATor is the tool that creates our rats. It designs a rat,
           assigns it rattributes, creates a backstory for it, and once it&apos;s

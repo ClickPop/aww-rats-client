@@ -5,7 +5,7 @@ import ratAlley from '~/assets/images/rat-alley.png';
 
 export const Roadmap = () => {
   return (
-    <div className='bg-white text-slate'>
+    <div id='roadmap' className='bg-white text-slate'>
       <div className='flex flex-col mx-auto max-w-xl py-20 px-4'>
         <Image
           className='imgfix overflow-hidden rounded-md mb-8'
@@ -13,9 +13,7 @@ export const Roadmap = () => {
           alt='Aww, Rats! Logo'
           placeholder='blur'
         />
-        <h2 id='roadmap' className='text-4xl mb-3 font-bold'>
-          Roadmap
-        </h2>
+        <h2 className='text-4xl mb-3 font-bold'>Roadmap</h2>
         <p className='mb-8'>
           The first generation of rats includes 1,037 programmatically generated
           rats.

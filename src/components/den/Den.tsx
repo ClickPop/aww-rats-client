@@ -29,7 +29,7 @@ import Select from 'react-select';
 type SelectOption = {
   value: string;
   label: string;
-}
+};
 
 type DenStorageObject = {
   image: string;
@@ -226,18 +226,22 @@ const Den = () => {
       setTokensStatus('loading');
       if (signerAddr) {
         const resPolygon = await fetch(
-          `/api/get-tokens/${signerAddr}?chain=polygon`
+          `/api/get-tokens/${signerAddr}?chain=polygon`,
         ).then((r) => r.json());
         const resEthereum = await fetch(
-          `/api/get-tokens/${signerAddr}?chain=eth`
+          `/api/get-tokens/${signerAddr}?chain=eth`,
         ).then((r) => r.json());
         const tempTokens = [...resPolygon.data, ...resEthereum.data];
         if (Array.isArray(tempTokens) && tempTokens.length) {
           let options = tempTokens.map((token) => ({
-            value: token.metadata.image.startsWith('data:image') 
+            value: token.metadata.image.startsWith('data:image')
               ? token.metadata.image
-              : `/api/image/proxy-image?imageURL=${encodeURI(token.metadata.image).replace(/\//g, '%2F')}`,
-            label: `${token.name === 'AwwRat' ? 'Aww, Rats': token.name}: ${token.metadata.name ?? token.token_id}`
+              : `/api/image/proxy-image?imageURL=${encodeURI(
+                  token.metadata.image,
+                ).replace(/\//g, '%2F')}`,
+            label: `${token.name === 'AwwRat' ? 'Aww, Rats' : token.name}: ${
+              token.metadata.name ?? token.token_id
+            }`,
           }));
           setTokensOptions(options);
         }
@@ -251,31 +255,29 @@ const Den = () => {
     }
   }, [signerAddr, tokensStatus]);
 
-  const clearCanvas = useCallback(
-    () => {
-      canvas.remove(...canvas.getObjects());
-      denState.current.objects = [];
-      canvas?.requestRenderAll();
-      localStorage.setItem('den-state', JSON.stringify(denState.current));
-      setNumObjects(denState.current.objects.length ?? 0);
-    }, [canvas]
-  );
+  const clearCanvas = useCallback(() => {
+    canvas.remove(...canvas.getObjects());
+    denState.current.objects = [];
+    canvas?.requestRenderAll();
+    localStorage.setItem('den-state', JSON.stringify(denState.current));
+    setNumObjects(denState.current.objects.length ?? 0);
+  }, [canvas]);
 
   const addToCanvas = useCallback(
     async (image: DenStorageObject, frameURL?: string) => {
       const getFrame = () => frames[Math.floor(Math.random() * frames.length)];
       if (canvas) {
-        let tempImage: string|Buffer = image.image;
+        let tempImage: string | Buffer = image.image;
         if (tempImage.startsWith('data:image/svg')) {
           tempImage = await svgToPng(tempImage);
         } else {
           let testRes = await fetch(tempImage);
-          let testResText = await testRes.text()
+          let testResText = await testRes.text();
           if (testResText.match(/<svg/i)) {
-            tempImage = `data:image/svg+xml;base64,${(window.btoa(testResText))}`;
+            tempImage = `data:image/svg+xml;base64,${window.btoa(testResText)}`;
           }
         }
-       
+
         fabric.Image.fromURL(tempImage, (img) => {
           const frameSrc = frameURL || getFrame();
           fabric.Image.fromURL(frameSrc, (frame) => {
@@ -424,15 +426,17 @@ const Den = () => {
         <canvas hidden id='download-canvas' />
       </div>
 
-      <div className="flex justify-center items-center fixed z-50 bottom-0 w-full bg-opacity-10 bg-white py-1">
+      <div className='flex justify-center items-center fixed z-50 bottom-0 w-full bg-opacity-10 bg-white py-1'>
         {numObjects < 10 ? (
           <form
-            className="flex items-center"
+            className='flex items-center'
             onSubmit={(e) => {
               e.preventDefault();
               addToCanvas(
                 {
-                  image: (url.startsWith('data:image')) ? url : `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
+                  image: url.startsWith('data:image')
+                    ? url
+                    : `/api/image/proxy-image?imageURL=${encodeURI(url)}`,
                   frame: '',
                   fabricOpts: {},
                 },
@@ -440,11 +444,11 @@ const Den = () => {
               );
               setURL('');
             }}>
-            <div className='mx-2'>      
-              {(tokensStatus === 'loaded' && tokensOptions.length > 0) ? (
+            <div className='mx-2'>
+              {tokensStatus === 'loaded' && tokensOptions.length > 0 ? (
                 <Select
                   options={tokensOptions}
-                  menuPlacement="top"
+                  menuPlacement='top'
                   className='p-2 border-0 rounded-sm w-60'
                   onChange={(option) => {
                     if (!option) return false;
@@ -455,10 +459,13 @@ const Den = () => {
                         fabricOpts: {},
                       },
                       selectedFrame,
-                    )
-                  }}
-                ></Select>
-              ) : (<span className="text-purple-800 italic font-bold">Loading tokens...</span>)}      
+                    );
+                  }}></Select>
+              ) : (
+                <span className='text-purple-800 italic font-bold'>
+                  Loading tokens...
+                </span>
+              )}
             </div>
             <p className='text-white'>Or</p>.
             <div className='mx-2'>
@@ -478,7 +485,7 @@ const Den = () => {
             </div>
           </form>
         ) : (
-          <p className="text-white">
+          <p className='text-white'>
             You have reached the max token number. Please delete one or more
             tokens to add more.
           </p>
@@ -529,39 +536,45 @@ const Den = () => {
 
         {canvas && (
           <>
-          <button
-            className='download py-2 px-3 m-2 text-white rounded-sm duration-300 bg-purple-700 hover:bg-purple-800'
-            onClick={async () => {
-              downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
-              const link = document.createElement('a');
-              const scaledWidth =
-                denBgWidth / denState.current.sizing.scaledWidth;
-              const scaledHeight =
-                denBgHeight / denState.current.sizing.scaledHeight;
-              for (const o of canvas.getObjects()) {
-                const url = o.toDataURL({});
-                const image = await new Promise<fabric.Image>((res) => {
-                  fabric.Image.fromURL(url, (img) => {
-                    img.left = o.left;
-                    img.top = o.top;
-                    res(img);
+            <button
+              className='download py-2 px-3 m-2 text-white rounded-sm duration-300 bg-purple-700 hover:bg-purple-800'
+              onClick={async () => {
+                downloadCanvas.setBackgroundImage(DEN_BACKGROUND, () => {});
+                const link = document.createElement('a');
+                const scaledWidth =
+                  denBgWidth / denState.current.sizing.scaledWidth;
+                const scaledHeight =
+                  denBgHeight / denState.current.sizing.scaledHeight;
+                for (const o of canvas.getObjects()) {
+                  const url = o.toDataURL({});
+                  const image = await new Promise<fabric.Image>((res) => {
+                    fabric.Image.fromURL(url, (img) => {
+                      img.left = o.left;
+                      img.top = o.top;
+                      res(img);
+                    });
                   });
-                });
-                image.scaleX = (image.scaleX ?? 0) * scaledWidth;
-                image.scaleY = (image.scaleY ?? 0) * scaledHeight;
-                image.left = (image.left ?? 0) * scaledWidth;
-                image.top = (image.top ?? 0) * scaledHeight;
-                downloadCanvas.add(image);
-              }
-              downloadCanvas.renderAll();
-              link.download = 'den.png';
-              link.href = downloadCanvas.toDataURL();
-              link.click();
-              downloadCanvas.clear();
-            }}>
-            Download
-          </button>
-          <button className="py-2 px-3 m-2 rounded-sm duration-300 bg-tan hover:bg-light border-l border-0 border-slate" onClick={async () => { clearCanvas(); }}>Reset</button>
+                  image.scaleX = (image.scaleX ?? 0) * scaledWidth;
+                  image.scaleY = (image.scaleY ?? 0) * scaledHeight;
+                  image.left = (image.left ?? 0) * scaledWidth;
+                  image.top = (image.top ?? 0) * scaledHeight;
+                  downloadCanvas.add(image);
+                }
+                downloadCanvas.renderAll();
+                link.download = 'den.png';
+                link.href = downloadCanvas.toDataURL();
+                link.click();
+                downloadCanvas.clear();
+              }}>
+              Download
+            </button>
+            <button
+              className='py-2 px-3 m-2 rounded-sm duration-300 bg-tan hover:bg-light border-l border-0 border-slate'
+              onClick={async () => {
+                clearCanvas();
+              }}>
+              Reset
+            </button>
           </>
         )}
       </div>

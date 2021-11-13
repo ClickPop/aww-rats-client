@@ -26,7 +26,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      accessibility: ['group-hover', 'hover', 'focus'],
+    }
   },
   plugins: [
     require('@neupauer/tailwindcss-plugin-colors'),
