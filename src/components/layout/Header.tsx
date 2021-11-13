@@ -27,8 +27,8 @@ export const Header = () => {
           <Link href='/#faqs' className='mr-4'>
             FAQs
           </Link>
-          <Link href='/closet' className='mr-4'>
-            Closet
+          <Link href='/sewer' className='mr-4'>
+            Sewer (dApps)
           </Link>
           <Link href='https://www.twitter.com/awwratspack' className='mr-4'>
             <TwitterLogo width={24} height={24} />
