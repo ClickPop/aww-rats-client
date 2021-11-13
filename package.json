@@ -23,6 +23,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-fullstory": "^1.4.0",
+    "react-scroll": "^1.8.4",
     "react-select": "^5.1.0",
     "uuid": "^8.3.2"
   },
@@ -32,6 +33,7 @@
     "@tailwindcss/forms": "^0.3.0",
     "@types/fabric": "^4.5.3",
     "@types/react": "^17.0.34",
+    "@types/react-scroll": "^1.8.3",
     "@types/tailwindcss": "^2.2.1",
     "@types/uuid": "^8.3.1",
     "autoprefixer": "^10.3.4",

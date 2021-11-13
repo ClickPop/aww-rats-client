@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import NextLink, { LinkProps } from 'next/link';
+import NextLink, { LinkProps as ImportedLinkProps } from 'next/link';
 
-interface Props extends LinkProps {
+export interface LinkProps extends ImportedLinkProps {
   className?: string;
 }
 
-export const Link: FC<Props> = ({ children, className, ...props }) => {
+export const Link: FC<LinkProps> = ({ children, className, ...props }) => {
   return (
     <NextLink {...props}>
       <a className={className}>{children}</a>

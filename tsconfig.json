@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
-      "smart-contracts/*": ["./smart-contracts/*"]
+      "smart-contracts/*": ["./smart-contracts/*"],
+      "*": ["./node_modules/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

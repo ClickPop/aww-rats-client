@@ -4,6 +4,7 @@ import { Link } from '~/components/shared/Link';
 import logo from '~/assets/images/aww-rats-avatar.png';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
+import { MenuLink } from '~/components/shared/MenuLink';
 
 export const Header = () => {
   return (
@@ -18,24 +19,27 @@ export const Header = () => {
       </Link>
       <div className='flex px-4'>
         <div className='flex items-center text-white'>
-          <Link href='/#roadmap' className='mr-4'>
+          <MenuLink to='roadmap' href='/' className='mr-4' offset={-25}>
             Roadmap
-          </Link>
-          <Link href='/#generator' className='mr-4'>
+          </MenuLink>
+          <MenuLink to='generator' href='/' className='mr-4' offset={-25}>
             GeneRATor
-          </Link>
-          <Link href='/#faqs' className='mr-4'>
+          </MenuLink>
+          <MenuLink to='faqs' href='/' className='mr-4' offset={-25}>
             FAQs
-          </Link>
-          <Link href='/closet' className='mr-4'>
+          </MenuLink>
+          <MenuLink href='/closet' className='mr-4'>
             Closet
-          </Link>
-          <Link href='https://www.twitter.com/awwratspack' className='mr-4'>
+          </MenuLink>
+          <MenuLink
+            href='https://www.twitter.com/awwratspack'
+            className='mr-4'
+            target='_blank'>
             <TwitterLogo width={24} height={24} />
-          </Link>
-          <Link href='https://discord.gg/2cwxkBkgf5'>
+          </MenuLink>
+          <MenuLink href='https://discord.gg/aww-rats' target='_blank'>
             <DiscordLogo width={24} height={24} />
-          </Link>
+          </MenuLink>
         </div>
       </div>
     </div>
