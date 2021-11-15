@@ -63,7 +63,7 @@ export const Connect = () => {
           symbol: 'MATIC',
           decimals: 18,
         };
-        chain_rpc = ['https://rpc-mumbai.matic.today/'];
+        chain_rpc = ['https://matic-mumbai.chainstacklabs.com'];
         chain_scan = ['https://mumbai.polygonscan.com/'];
         break;
       default:
