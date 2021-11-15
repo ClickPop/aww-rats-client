@@ -78,7 +78,7 @@ const StudyPage: NextPage = () => {
         <div>
           {!signerAddr ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-              <p class="text-lg mb-8">
+              <p className="text-lg mb-8">
                 The study is for rats only. Connect your wallet with a rat token to start learning.
               </p>
               <Connect />
