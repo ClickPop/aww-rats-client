@@ -27,6 +27,9 @@ const Study = () => {
       >
         Procreate Brushes
       </a>
+      <p>
+        More and more coming soon...
+      </p>
     </div>
   );
 };
