@@ -250,10 +250,10 @@ const Closet = () => {
           const old = new Map(oldClothes);
           old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
           setOldClothes(old);
-          console.log(oldClothes);
+          // console.log(oldClothes);
         }
         currentRat.properties.set(pieceType, piece);
-        console.log(currentRat);
+        // console.log(currentRat);
         handleChangeRat(currentRat);
       }
     }
