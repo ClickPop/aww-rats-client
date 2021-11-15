@@ -72,7 +72,7 @@ const StudyPage: NextPage = () => {
             The Study
           </h1>
           <p className='text-lg mb-8'>
-            A repository of all the stored wisdom of the sewer.
+            A repository of all the stored wisdom of the sewer, just for Aww, Rats token holders.
           </p>
         </div>
         <div>
