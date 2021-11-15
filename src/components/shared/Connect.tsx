@@ -84,10 +84,10 @@ export const Connect = () => {
       message: 'Switching to Polygon...',
     });
     if (addNetworkActive && chainName) {
-      const switchParams = [{ chainId: utils.hexlify(CHAIN_ID) }];
+      const switchParams = [{ chainId: utils.hexStripZeros(utils.hexlify(CHAIN_ID)) }];
       const addParams = [
         {
-          chainId: utils.hexlify(CHAIN_ID),
+          chainId: utils.hexStripZeros(utils.hexlify(CHAIN_ID)),
           chainName: chainName,
           nativeCurrency: {
             name: 'MATIC',
