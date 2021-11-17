@@ -12,6 +12,7 @@ import {
   BaseContract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -21,25 +22,51 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ClosetInterface extends ethers.utils.Interface {
   functions: {
+    "addNewTokenType(tuple)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
-    "burn(address,uint256,uint256)": FunctionFragment;
-    "burnBatch(address,uint256[],uint256[])": FunctionFragment;
+    "banWallet(address,string)": FunctionFragment;
+    "burn(uint256,uint256)": FunctionFragment;
+    "burnBatch(uint256[],uint256[])": FunctionFragment;
+    "changeERC20Contract(address)": FunctionFragment;
+    "changeToken(uint256,tuple)": FunctionFragment;
+    "erc20()": FunctionFragment;
+    "existingTokenIds(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
+    "getAllTokenIds()": FunctionFragment;
+    "getAllTokens()": FunctionFragment;
+    "getTokensByWallet(address)": FunctionFragment;
+    "idToToken(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "maxTokensPerWalletById(uint256,address)": FunctionFragment;
+    "mint(uint256,uint256)": FunctionFragment;
+    "mintBatch(uint256[],uint256[])": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setMaxTokensForWallet(address,uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "tokenStringToId(string)": FunctionFragment;
-    "tokenStrings(uint256)": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unbanWallet(address)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
+    "walletBans(address)": FunctionFragment;
+    "withdrawEth(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "addNewTokenType",
+    values: [
+      {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      }
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [string, BigNumberish]
@@ -49,20 +76,73 @@ interface ClosetInterface extends ethers.utils.Interface {
     values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "banWallet",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "burn",
-    values: [string, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "burnBatch",
-    values: [string, BigNumberish[], BigNumberish[]]
+    values: [BigNumberish[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changeERC20Contract",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changeToken",
+    values: [
+      BigNumberish,
+      {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      }
+    ]
+  ): string;
+  encodeFunctionData(functionFragment: "erc20", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "existingTokenIds",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "exists",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getAllTokenIds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAllTokens",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokensByWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "idToToken",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxTokensPerWalletById",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintBatch",
+    values: [BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -82,16 +162,12 @@ interface ClosetInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setMaxTokensForWallet",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenStringToId",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenStrings",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -101,20 +177,63 @@ interface ClosetInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "unbanWallet", values: [string]): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "walletBans", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawEth",
+    values: [BigNumberish]
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "addNewTokenType",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfBatch",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "banWallet", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnBatch", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "changeERC20Contract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "erc20", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "existingTokenIds",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAllTokenIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAllTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokensByWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "idToToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxTokensPerWalletById",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintBatch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -133,15 +252,11 @@ interface ClosetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setMaxTokensForWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenStringToId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenStrings",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -152,21 +267,50 @@ interface ClosetInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "unbanWallet",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "walletBans", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawEth",
+    data: BytesLike
+  ): Result;
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "BatchTokensBurned(uint256[],uint256[],address)": EventFragment;
+    "BatchTokensMinted(uint256[],uint256[],address)": EventFragment;
+    "ChangeERC20Contract(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "TokenTypeAdded(uint256,tuple)": EventFragment;
+    "TokenTypeChanged(uint256,tuple)": EventFragment;
+    "TokensBurned(uint256,uint256,address)": EventFragment;
+    "TokensMinted(uint256,uint256,address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
+    "WalletBanned(address,string)": EventFragment;
+    "WalletMaxChanged(address,uint256,uint256)": EventFragment;
+    "WalletUnbanned(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BatchTokensBurned"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BatchTokensMinted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ChangeERC20Contract"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenTypeAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenTypeChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokensBurned"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokensMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WalletBanned"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WalletMaxChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WalletUnbanned"): EventFragment;
 }
 
 export class Closet extends BaseContract {
@@ -213,6 +357,16 @@ export class Closet extends BaseContract {
   interface: ClosetInterface;
 
   functions: {
+    addNewTokenType(
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -225,27 +379,137 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    banWallet(
+      wallet: string,
+      reason: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     burn(
-      account: string,
-      id: BigNumberish,
-      value: BigNumberish,
+      tokenId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     burnBatch(
-      account: string,
       ids: BigNumberish[],
-      values: BigNumberish[],
+      amounts: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    changeERC20Contract(
+      erc20Addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    changeToken(
+      tokenId: BigNumberish,
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    erc20(overrides?: CallOverrides): Promise<[string]>;
+
+    existingTokenIds(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
+    getAllTokenIds(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
+    getAllTokens(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([
+          BigNumber,
+          [string, BigNumber, BigNumber, boolean] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            active: boolean;
+          }
+        ] & {
+          id: BigNumber;
+          token: [string, BigNumber, BigNumber, boolean] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            active: boolean;
+          };
+        })[]
+      ]
+    >;
+
+    getTokensByWallet(
+      wallet: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([
+          BigNumber,
+          BigNumber,
+          [string, BigNumber, BigNumber, boolean] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            active: boolean;
+          }
+        ] & {
+          id: BigNumber;
+          amount: BigNumber;
+          token: [string, BigNumber, BigNumber, boolean] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            active: boolean;
+          };
+        })[]
+      ]
+    >;
+
+    idToToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      }
+    >;
 
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    maxTokensPerWalletById(
+      arg0: BigNumberish,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    mint(
+      tokenId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    mintBatch(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -277,20 +541,17 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMaxTokensForWallet(
+      wallet: string,
+      tokenId: BigNumberish,
+      max: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    tokenStringToId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    tokenStrings(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     totalSupply(
       id: BigNumberish,
@@ -302,8 +563,33 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    unbanWallet(
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    walletBans(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string] & { banned: boolean; reason: string }>;
+
+    withdrawEth(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  addNewTokenType(
+    token: {
+      name: string;
+      cost: BigNumberish;
+      maxTokens: BigNumberish;
+      active: boolean;
+    },
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   balanceOf(
     account: string,
@@ -317,27 +603,133 @@ export class Closet extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  banWallet(
+    wallet: string,
+    reason: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   burn(
-    account: string,
-    id: BigNumberish,
-    value: BigNumberish,
+    tokenId: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   burnBatch(
-    account: string,
     ids: BigNumberish[],
-    values: BigNumberish[],
+    amounts: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  changeERC20Contract(
+    erc20Addr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  changeToken(
+    tokenId: BigNumberish,
+    token: {
+      name: string;
+      cost: BigNumberish;
+      maxTokens: BigNumberish;
+      active: boolean;
+    },
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  erc20(overrides?: CallOverrides): Promise<string>;
+
+  existingTokenIds(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+  getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+  getAllTokens(
+    overrides?: CallOverrides
+  ): Promise<
+    ([
+      BigNumber,
+      [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      }
+    ] & {
+      id: BigNumber;
+      token: [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      };
+    })[]
+  >;
+
+  getTokensByWallet(
+    wallet: string,
+    overrides?: CallOverrides
+  ): Promise<
+    ([
+      BigNumber,
+      BigNumber,
+      [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      }
+    ] & {
+      id: BigNumber;
+      amount: BigNumber;
+      token: [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      };
+    })[]
+  >;
+
+  idToToken(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, BigNumber, boolean] & {
+      name: string;
+      cost: BigNumber;
+      maxTokens: BigNumber;
+      active: boolean;
+    }
+  >;
 
   isApprovedForAll(
     account: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  maxTokensPerWalletById(
+    arg0: BigNumberish,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  mint(
+    tokenId: BigNumberish,
+    amount: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  mintBatch(
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -369,14 +761,17 @@ export class Closet extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMaxTokensForWallet(
+    wallet: string,
+    tokenId: BigNumberish,
+    max: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  tokenStringToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  tokenStrings(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -385,9 +780,34 @@ export class Closet extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  unbanWallet(
+    wallet: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  walletBans(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<[boolean, string] & { banned: boolean; reason: string }>;
+
+  withdrawEth(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    addNewTokenType(
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -400,27 +820,133 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    banWallet(
+      wallet: string,
+      reason: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     burn(
-      account: string,
-      id: BigNumberish,
-      value: BigNumberish,
+      tokenId: BigNumberish,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     burnBatch(
-      account: string,
       ids: BigNumberish[],
-      values: BigNumberish[],
+      amounts: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
+    changeERC20Contract(
+      erc20Addr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    changeToken(
+      tokenId: BigNumberish,
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    erc20(overrides?: CallOverrides): Promise<string>;
+
+    existingTokenIds(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+    getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    getAllTokens(
+      overrides?: CallOverrides
+    ): Promise<
+      ([
+        BigNumber,
+        [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        }
+      ] & {
+        id: BigNumber;
+        token: [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        };
+      })[]
+    >;
+
+    getTokensByWallet(
+      wallet: string,
+      overrides?: CallOverrides
+    ): Promise<
+      ([
+        BigNumber,
+        BigNumber,
+        [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        }
+      ] & {
+        id: BigNumber;
+        amount: BigNumber;
+        token: [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        };
+      })[]
+    >;
+
+    idToToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, BigNumber, boolean] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        active: boolean;
+      }
+    >;
 
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    maxTokensPerWalletById(
+      arg0: BigNumberish,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mint(
+      tokenId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    mintBatch(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -450,20 +976,17 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setMaxTokensForWallet(
+      wallet: string,
+      tokenId: BigNumberish,
+      max: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    tokenStringToId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenStrings(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     totalSupply(
       id: BigNumberish,
@@ -475,7 +998,16 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    unbanWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
+
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    walletBans(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string] & { banned: boolean; reason: string }>;
+
+    withdrawEth(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -488,12 +1020,100 @@ export class Closet extends BaseContract {
       { account: string; operator: string; approved: boolean }
     >;
 
+    BatchTokensBurned(
+      tokenIds?: null,
+      amounts?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber[], BigNumber[], string],
+      { tokenIds: BigNumber[]; amounts: BigNumber[]; wallet: string }
+    >;
+
+    BatchTokensMinted(
+      tokenIds?: null,
+      amounts?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber[], BigNumber[], string],
+      { tokenIds: BigNumber[]; amounts: BigNumber[]; wallet: string }
+    >;
+
+    ChangeERC20Contract(
+      erc20Addr?: null
+    ): TypedEventFilter<[string], { erc20Addr: string }>;
+
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
     ): TypedEventFilter<
       [string, string],
       { previousOwner: string; newOwner: string }
+    >;
+
+    TokenTypeAdded(
+      tokenId?: null,
+      token?: null
+    ): TypedEventFilter<
+      [
+        BigNumber,
+        [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        }
+      ],
+      {
+        tokenId: BigNumber;
+        token: [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        };
+      }
+    >;
+
+    TokenTypeChanged(
+      tokenId?: null,
+      token?: null
+    ): TypedEventFilter<
+      [
+        BigNumber,
+        [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        }
+      ],
+      {
+        tokenId: BigNumber;
+        token: [string, BigNumber, BigNumber, boolean] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          active: boolean;
+        };
+      }
+    >;
+
+    TokensBurned(
+      tokenId?: null,
+      amount?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; amount: BigNumber; wallet: string }
+    >;
+
+    TokensMinted(
+      tokenId?: null,
+      amount?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; amount: BigNumber; wallet: string }
     >;
 
     TransferBatch(
@@ -534,9 +1154,37 @@ export class Closet extends BaseContract {
       value?: null,
       id?: BigNumberish | null
     ): TypedEventFilter<[string, BigNumber], { value: string; id: BigNumber }>;
+
+    WalletBanned(
+      wallet?: null,
+      reason?: null
+    ): TypedEventFilter<[string, string], { wallet: string; reason: string }>;
+
+    WalletMaxChanged(
+      wallet?: null,
+      tokenId?: null,
+      max?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { wallet: string; tokenId: BigNumber; max: BigNumber }
+    >;
+
+    WalletUnbanned(
+      wallet?: null
+    ): TypedEventFilter<[string], { wallet: string }>;
   };
 
   estimateGas: {
+    addNewTokenType(
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -549,26 +1197,85 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    banWallet(
+      wallet: string,
+      reason: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     burn(
-      account: string,
-      id: BigNumberish,
-      value: BigNumberish,
+      tokenId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     burnBatch(
-      account: string,
       ids: BigNumberish[],
-      values: BigNumberish[],
+      amounts: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    changeERC20Contract(
+      erc20Addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    changeToken(
+      tokenId: BigNumberish,
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    erc20(overrides?: CallOverrides): Promise<BigNumber>;
+
+    existingTokenIds(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getAllTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTokensByWallet(
+      wallet: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    idToToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    maxTokensPerWalletById(
+      arg0: BigNumberish,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mint(
+      tokenId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    mintBatch(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -601,18 +1308,15 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setMaxTokensForWallet(
+      wallet: string,
+      tokenId: BigNumberish,
+      max: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenStringToId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenStrings(
-      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -626,10 +1330,32 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    unbanWallet(
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    walletBans(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawEth(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    addNewTokenType(
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -642,18 +1368,45 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    banWallet(
+      wallet: string,
+      reason: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     burn(
-      account: string,
-      id: BigNumberish,
-      value: BigNumberish,
+      tokenId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     burnBatch(
-      account: string,
       ids: BigNumberish[],
-      values: BigNumberish[],
+      amounts: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    changeERC20Contract(
+      erc20Addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    changeToken(
+      tokenId: BigNumberish,
+      token: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        active: boolean;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    erc20(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    existingTokenIds(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     exists(
@@ -661,10 +1414,42 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getAllTokenIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getAllTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTokensByWallet(
+      wallet: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    idToToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    maxTokensPerWalletById(
+      arg0: BigNumberish,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mint(
+      tokenId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintBatch(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -697,18 +1482,15 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setMaxTokensForWallet(
+      wallet: string,
+      tokenId: BigNumberish,
+      max: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenStringToId(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenStrings(
-      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -722,9 +1504,24 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    unbanWallet(
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     uri(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    walletBans(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawEth(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }
