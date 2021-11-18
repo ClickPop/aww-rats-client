@@ -5,12 +5,14 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-
 struct Token {
   string name;
   uint cost;
   uint maxTokens;
+  uint maxPerWallet;
   bool active;
+  address revShareAddress;
+  uint[2] revShareAmount;
 }
 
 struct TokenWithId {
@@ -33,7 +35,7 @@ contract Closet is ERC1155Supply, Ownable {
   using SafeERC20 for IERC20;
 
   uint[] public existingTokenIds;
-  mapping(uint => Token) public idToToken;
+  mapping(uint => Token) private idToToken;
   mapping(uint => mapping (address => uint)) public maxTokensPerWalletById;
   mapping(address => Ban) public walletBans;
   
@@ -50,7 +52,7 @@ contract Closet is ERC1155Supply, Ownable {
   event WalletMaxChanged(address wallet, uint tokenId, uint max);
   event ChangeERC20Contract(address erc20Addr);
 
-  constructor(Token[] memory tokens, address erc20Addr) ERC1155("https://awwrats.com/  {id}.json") {
+  constructor(Token[] memory tokens, address erc20Addr) ERC1155("https://awwrats.com/{id}.json") {
     erc20 = IERC20(erc20Addr);
     for (uint256 i = 0; i < tokens.length; i++) {
       _addNewTokenType(tokens[i]);
@@ -59,16 +61,39 @@ contract Closet is ERC1155Supply, Ownable {
 
   /** Token Handling */
   function mint(uint tokenId, uint amount) public payable mintingAllowed(tokenId, amount) {
-    erc20.safeTransferFrom(msg.sender, address(this), idToToken[tokenId].cost * amount);
+    if (idToToken[tokenId].revShareAddress != address(this)) {
+      uint total = idToToken[tokenId].cost * amount;
+      uint revShare = (total / idToToken[tokenId].revShareAmount[1]) * idToToken[tokenId].revShareAmount[0];
+      erc20.safeTransferFrom(msg.sender, idToToken[tokenId].revShareAddress, revShare);
+      erc20.safeTransferFrom(msg.sender, address(this), total - revShare);
+    } else {
+      erc20.safeTransferFrom(msg.sender, address(this), idToToken[tokenId].cost * amount);
+    }
     _mint(msg.sender, tokenId, amount, msg.data);
     emit TokensMinted(tokenId, amount, msg.sender);
   }
 
   function mintBatch(uint[] memory ids, uint[] memory amounts) public payable batchMintingAllowed(ids, amounts) {
     uint totalCost = 0;
+    uint[] memory revShareAmounts = new uint[](ids.length);
+    address[] memory revShareAddresses = new address[](ids.length);
+    uint revShareCount = 0;
     for (uint256 i = 0; i < ids.length; i++) {
-      totalCost += idToToken[ids[i]].cost * amounts[i];
-    } 
+      if (idToToken[ids[i]].revShareAddress != address(this)) {
+        uint total = idToToken[ids[i]].cost * amounts[i];
+        uint revShare = (total / idToToken[ids[i]].revShareAmount[1]) * idToToken[ids[i]].revShareAmount[0];
+        revShareAddresses[revShareCount] = idToToken[ids[i]].revShareAddress;
+        revShareAmounts[revShareCount] = revShare;
+        totalCost += total - revShare;
+        revShareCount++;
+      } else {
+        totalCost += idToToken[ids[i]].cost * amounts[i];
+      }
+    }
+
+    for (uint256 i = 0; i < revShareCount; i++) {
+      erc20.safeTransferFrom(msg.sender, revShareAddresses[i], revShareAmounts[i]);
+    }
     erc20.safeTransferFrom(msg.sender, address(this), totalCost);
     _mintBatch(msg.sender, ids, amounts, msg.data);
     emit BatchTokensMinted(ids, amounts, msg.sender);
@@ -107,6 +132,10 @@ contract Closet is ERC1155Supply, Ownable {
       }
     }
     return userTokens;
+  }
+
+  function getTokenById(uint id) public view returns(Token memory) {
+    return idToToken[id];
   }
 
   /** Admin */
@@ -185,7 +214,7 @@ contract Closet is ERC1155Supply, Ownable {
   function _checkMinting(uint tokenId, uint amount) internal view tokenExists(tokenId) {
     require(idToToken[tokenId].active, "Token is inactive");
     require(idToToken[tokenId].maxTokens == 0 || idToToken[tokenId].maxTokens >= totalSupply(tokenId) + amount, "Max tokens reached for type");
-    require(maxTokensPerWalletById[tokenId][msg.sender] == 0 || maxTokensPerWalletById[tokenId][msg.sender] >= balanceOf(msg.sender, tokenId) + amount, "Max tokens reached for wallet");
+    require((maxTokensPerWalletById[tokenId][msg.sender] == 0 || maxTokensPerWalletById[tokenId][msg.sender] >= balanceOf(msg.sender, tokenId) + amount) && (idToToken[tokenId].maxPerWallet == 0 || idToToken[tokenId].maxPerWallet >= balanceOf(msg.sender, tokenId) + amount), "Max tokens reached for wallet");
     require(erc20.balanceOf(msg.sender) >= idToToken[tokenId].cost, "Not enough currency");
     require(erc20.allowance(msg.sender, address(this)) >= idToToken[tokenId].cost, "ERC20 allowance not enough");
   } 
