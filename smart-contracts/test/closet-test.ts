@@ -573,6 +573,42 @@ describe('Closet', () => {
       expect(c.mintBatch([2], [1])).to.be.revertedWith('Token is inactive');
     });
 
+    it('should error if you try to mint ot transfer tokens beyond the maximum allowed', async () => {
+      await weth
+        .approve(contract.address, ethers.utils.parseEther('10'))
+        .then((r) => r.wait());
+      await weth
+        .connect(user2)
+        .approve(contract.address, ethers.utils.parseEther('10'))
+        .then((r) => r.wait());
+      expect(contract.mint(1, 105)).to.be.revertedWith(
+        'Max tokens reached for type',
+      );
+      expect(contract.mint(1, 3)).to.be.revertedWith(
+        'Max tokens reached for wallet',
+      );
+      expect(contract.mint(3, 2)).to.be.revertedWith(
+        'Max tokens reached for wallet',
+      );
+      await weth
+        .transfer(user2.address, ethers.utils.parseEther('5'))
+        .then((r) => r.wait());
+      await contract
+        .connect(user2)
+        .mint(1, 5)
+        .then((r) => r.wait());
+      expect(
+        contract
+          .connect(user2)
+          .safeTransferFrom(user2.address, user.address, 1, 5, []),
+      ).to.be.revertedWith('Max tokens reached for wallet');
+      expect(
+        contract
+          .connect(user2)
+          .safeTransferFrom(user2.address, user.address, 3, 1, []),
+      ).to.be.revertedWith('Max tokens reached for wallet');
+    });
+
     it('should error if you try to burn tokens you do not own', async () => {
       expect(contract.burn(1, 1)).to.be.revertedWith(
         'Cannot burn more than owned',
