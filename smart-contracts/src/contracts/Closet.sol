@@ -213,11 +213,15 @@ contract Closet is ERC1155Supply, Ownable {
   /** Internal */
   function _checkMinting(uint tokenId, uint amount) internal view tokenExists(tokenId) {
     require(idToToken[tokenId].active, "Token is inactive");
-    require(idToToken[tokenId].maxTokens == 0 || idToToken[tokenId].maxTokens >= totalSupply(tokenId) + amount, "Max tokens reached for type");
-    require((maxTokensPerWalletById[tokenId][msg.sender] == 0 || maxTokensPerWalletById[tokenId][msg.sender] >= balanceOf(msg.sender, tokenId) + amount) && (idToToken[tokenId].maxPerWallet == 0 || idToToken[tokenId].maxPerWallet >= balanceOf(msg.sender, tokenId) + amount), "Max tokens reached for wallet");
+    _checkMax(tokenId, amount, msg.sender);
     require(erc20.balanceOf(msg.sender) >= idToToken[tokenId].cost, "Not enough currency");
     require(erc20.allowance(msg.sender, address(this)) >= idToToken[tokenId].cost, "ERC20 allowance not enough");
-  } 
+  }
+
+  function _checkMax(uint tokenId, uint amount, address wallet) internal view tokenExists(tokenId) {
+    require(idToToken[tokenId].maxTokens == 0 || idToToken[tokenId].maxTokens >= totalSupply(tokenId) + amount, "Max tokens reached for type");
+    require((maxTokensPerWalletById[tokenId][wallet] == 0 || maxTokensPerWalletById[tokenId][wallet] >= balanceOf(wallet, tokenId) + amount) && (idToToken[tokenId].maxPerWallet == 0 || idToToken[tokenId].maxPerWallet >= balanceOf(wallet, tokenId) + amount), "Max tokens reached for wallet");
+  }
 
   function _checkBurning(uint tokenId, uint amount) internal view tokenExists(tokenId) {
     require(balanceOf(msg.sender, tokenId) >= amount, "Cannot burn more than owned");
@@ -236,14 +240,14 @@ contract Closet is ERC1155Supply, Ownable {
 
   /** Overrides */
   function _safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) internal override(ERC1155) {
-    require(maxTokensPerWalletById[id][msg.sender] == 0 || maxTokensPerWalletById[id][msg.sender] >= balanceOf(msg.sender, id) + amount, "Max tokens reached for wallet");
+    _checkMax(id, amount, to);
     super._safeTransferFrom(from, to, id, amount, data);
   }
   
   function _safeBatchTransferFrom(address from, address to, uint[] memory ids, uint[] memory amounts, bytes memory data) internal override(ERC1155) {
     require(ids.length == amounts.length, "Mismatched tokenIds and amounts");
     for (uint256 i = 0; i < ids.length; i++) {
-      require(maxTokensPerWalletById[ids[i]][msg.sender] == 0 || maxTokensPerWalletById[ids[i]][msg.sender] >= balanceOf(msg.sender, ids[i]) + amounts[i], "Max tokens reached for wallet");
+      _checkMax(ids[i], amounts[i], to);
     }
     super._safeBatchTransferFrom(from, to, ids, amounts, data);
   }
