@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import "hardhat/console.sol";
+
 struct Token {
   string name;
   uint cost;
@@ -120,6 +122,26 @@ contract Closet is ERC1155Supply, Ownable {
       tokens[i] = TokenWithId(existingTokenIds[i], idToToken[existingTokenIds[i]]);
     }
     return tokens;
+  }
+
+  function getActiveTokens() public view returns(TokenWithId[] memory) {
+    TokenWithId[] memory tokens = getAllTokens();
+    uint activeTokenCount = 0;
+
+    for (uint256 i = 0; i < tokens.length; i++) {
+      if (tokens[i].token.active) {
+        activeTokenCount++;
+      }
+    }
+    TokenWithId[] memory activeTokens = new TokenWithId[](activeTokenCount);
+    activeTokenCount = 0;
+    for (uint256 i = 0; i < tokens.length; i++) {
+      if (tokens[i].token.active) {
+        activeTokens[activeTokenCount] = tokens[i];
+        activeTokenCount++;
+      }
+    }
+    return activeTokens;
   }
 
   function getTokensByWallet(address wallet) public view returns(UserToken[] memory) {
