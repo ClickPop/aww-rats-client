@@ -33,6 +33,7 @@ interface ClosetInterface extends ethers.utils.Interface {
     "erc20()": FunctionFragment;
     "existingTokenIds(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
+    "getActiveTokens()": FunctionFragment;
     "getAllTokenIds()": FunctionFragment;
     "getAllTokens()": FunctionFragment;
     "getTokenById(uint256)": FunctionFragment;
@@ -117,6 +118,10 @@ interface ClosetInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "exists",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getActiveTokens",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getAllTokenIds",
@@ -217,6 +222,10 @@ interface ClosetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getActiveTokens",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getAllTokenIds",
     data: BytesLike
@@ -436,6 +445,52 @@ export class Closet extends BaseContract {
     ): Promise<[BigNumber]>;
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
+    getActiveTokens(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([
+          BigNumber,
+          [
+            string,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            boolean,
+            string,
+            [BigNumber, BigNumber]
+          ] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            maxPerWallet: BigNumber;
+            active: boolean;
+            revShareAddress: string;
+            revShareAmount: [BigNumber, BigNumber];
+          }
+        ] & {
+          id: BigNumber;
+          token: [
+            string,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            boolean,
+            string,
+            [BigNumber, BigNumber]
+          ] & {
+            name: string;
+            cost: BigNumber;
+            maxTokens: BigNumber;
+            maxPerWallet: BigNumber;
+            active: boolean;
+            revShareAddress: string;
+            revShareAmount: [BigNumber, BigNumber];
+          };
+        })[]
+      ]
+    >;
 
     getAllTokenIds(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
@@ -724,6 +779,50 @@ export class Closet extends BaseContract {
 
   exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
+  getActiveTokens(
+    overrides?: CallOverrides
+  ): Promise<
+    ([
+      BigNumber,
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string,
+        [BigNumber, BigNumber]
+      ] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        maxPerWallet: BigNumber;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumber, BigNumber];
+      }
+    ] & {
+      id: BigNumber;
+      token: [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string,
+        [BigNumber, BigNumber]
+      ] & {
+        name: string;
+        cost: BigNumber;
+        maxTokens: BigNumber;
+        maxPerWallet: BigNumber;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumber, BigNumber];
+      };
+    })[]
+  >;
+
   getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber[]>;
 
   getAllTokens(
@@ -1001,6 +1100,50 @@ export class Closet extends BaseContract {
     ): Promise<BigNumber>;
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+    getActiveTokens(
+      overrides?: CallOverrides
+    ): Promise<
+      ([
+        BigNumber,
+        [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        }
+      ] & {
+        id: BigNumber;
+        token: [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        };
+      })[]
+    >;
 
     getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -1484,6 +1627,8 @@ export class Closet extends BaseContract {
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getActiveTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
     getAllTokenIds(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAllTokens(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1663,6 +1808,8 @@ export class Closet extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getActiveTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getAllTokenIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

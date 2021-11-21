@@ -643,17 +643,49 @@ describe('Closet', () => {
     });
 
     it('should get all tokens', async () => {
-      const [sweater, hat] = await contract.getAllTokens();
+      const tokens = await contract.getAllTokens();
+      expect(tokens).to.have.length(3);
+      const [sweater, hat, revShare] = tokens;
       expect(sweater.id.toNumber()).to.eq(1);
       expect(sweater.token.name).to.eq('sweater');
       expect(sweater.token.cost).to.eq(parseEther('0.002'));
       expect(sweater.token.maxTokens).to.eq(BigNumber.from(100));
       expect(sweater.token.active).to.eq(true);
-      expect(sweater.id.toNumber()).to.eq(1);
+      expect(sweater.token.maxPerWallet.toNumber()).to.eq(0);
+      expect(sweater.token.revShareAddress).to.eq(contract.address);
+      expect(sweater.token.revShareAmount)
+        .to.have.length(2)
+        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
+      expect(sweater.token.active).to.eq(true);
+      expect(hat.id.toNumber()).to.eq(2);
       expect(hat.token.name).to.eq('hat');
       expect(hat.token.cost).to.eq(parseEther('0.001'));
       expect(hat.token.maxTokens).to.eq(BigNumber.from(100));
       expect(hat.token.active).to.eq(false);
+      expect(hat.token.maxPerWallet.toNumber()).to.eq(0);
+      expect(hat.token.revShareAddress).to.eq(contract.address);
+      expect(hat.token.revShareAmount)
+        .to.have.length(2)
+        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
+      expect(revShare.id.toNumber()).to.eq(3);
+      expect(revShare.token.name).to.eq('revShare');
+      expect(revShare.token.cost).to.eq(parseEther('0.005'));
+      expect(revShare.token.maxTokens).to.eq(BigNumber.from(10));
+      expect(revShare.token.active).to.eq(true);
+      expect(revShare.token.maxPerWallet.toNumber()).to.eq(1);
+      expect(revShare.token.revShareAddress).to.eq(user3.address);
+      expect(revShare.token.revShareAmount)
+        .to.have.length(2)
+        .and.to.deep.eq([BigNumber.from(4), BigNumber.from(5)]);
+    });
+
+    it('should get all active tokens', async () => {
+      const tokens = await contract.getActiveTokens();
+      expect(tokens).to.have.length(2);
+      expect(tokens.map((token) => token.token.name)).to.deep.eq([
+        'sweater',
+        'revShare',
+      ]);
     });
   });
 });
