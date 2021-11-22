@@ -299,6 +299,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   }
 }
 
+/** These are just used for the tests. Any upgrades to this contract should be written in a new file. */
 contract Closet2 is Closet {
   string public test;
 
@@ -322,6 +323,4 @@ contract Closet3 is Closet2 {
     anotherTest = _test;
     test = "changed";
   }
-
-
 }
