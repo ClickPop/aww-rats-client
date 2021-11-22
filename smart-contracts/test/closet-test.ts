@@ -638,6 +638,13 @@ describe('Closet', () => {
   });
 
   describe('Public methods', () => {
+    it('should allow getting the URI', async () => {
+      expect(await contract.contractURI()).to.be.eq(
+        'https://awwrats.com/closet-opensea-metadata.json',
+      );
+      expect(await contract.uri(10)).to.be.eq('https://awwrats.com/{id}.json');
+    });
+
     it('should get all token ids', async () => {
       const ids = await contract.getAllTokenIds();
       expect(ids.map((id) => id.toNumber()))
