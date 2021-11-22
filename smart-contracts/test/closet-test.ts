@@ -4,8 +4,8 @@ import { parseEther } from '@ethersproject/units';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import chai, { expect } from 'chai';
 import { solidity } from 'ethereum-waffle';
-import { ethers } from 'hardhat';
-import { Closet, MockERC20 } from '~/types';
+import { ethers, upgrades } from 'hardhat';
+import { Closet, Closet2, Closet3, MockERC20 } from '~/types';
 
 chai.use(solidity);
 
@@ -50,7 +50,10 @@ describe('Closet', () => {
     initialBalOwner = await weth.balanceOf(owner.address);
     initialBalUser = await weth.balanceOf(user.address);
     const Closet = await ethers.getContractFactory('Closet', owner);
-    contract = await Closet.deploy([], weth.address).then((r) => r.deployed());
+    contract = (await upgrades
+      .deployProxy(Closet, [], { kind: 'uups' })
+      .then((r) => r.deployed())) as Closet;
+    contract.changeERC20Contract(weth.address).then((t) => t.wait());
   });
 
   beforeEach(async () => {
@@ -686,6 +689,28 @@ describe('Closet', () => {
         'sweater',
         'revShare',
       ]);
+    });
+  });
+
+  describe('Upgrades', () => {
+    it('should upgrade the Closet contract', async () => {
+      const Closet2 = await ethers.getContractFactory('Closet2', owner);
+      const closet2 = (await upgrades
+        .upgradeProxy(contract.address, Closet2)
+        .then((c) => c.deployed())) as Closet2;
+      expect(await closet2.version()).to.be.eq('2.0');
+
+      const Closet3 = await ethers.getContractFactory('Closet3', owner);
+      const closet3 = (await upgrades
+        .upgradeProxy(closet2.address, Closet3)
+        .then((c) => c.deployed())) as Closet3;
+
+      expect(await closet3.version()).to.be.eq('3.0');
+      await closet3.setTest('test').then((t) => t.wait());
+      expect(await closet3.test()).to.be.eq('test');
+      await closet3.setAnotherTest('test').then((t) => t.wait());
+      expect(await closet3.anotherTest()).to.be.eq('test');
+      expect(await closet3.test()).to.be.eq('changed');
     });
   });
 });
