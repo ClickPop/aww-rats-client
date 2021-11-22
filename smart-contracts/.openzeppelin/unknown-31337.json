@@ -10,7 +10,7 @@
   "impls": {
     "42c357595ff63d231a534bb827f980def3e1c3546975927057e758085e0a6708": {
       "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0x0217f12f08040e368ccc8541a7d18101dfefa05ab9882047ab5cee09ebb1ef34",
+      "txHash": "0x848d06ce0417c1707512be858c7b5704c4988bb106b76beb664fe04be7570594",
       "layout": {
         "storage": [
           {
@@ -237,7 +237,7 @@
     },
     "c88b950154f197769b2e6c82a2cb623b23bd75a02c902d18219fa10c1c51f8d0": {
       "address": "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
-      "txHash": "0x91efe9abfb359af282a34f0190ada32523f20600e9794c51fe610e3da365c233",
+      "txHash": "0x48ab2208c9331f3950eed999c6a73a55b5884b9c94ff6ef481fdfa98130df752",
       "layout": {
         "storage": [
           {
@@ -364,7 +364,7 @@
             "contract": "Closet2",
             "label": "test",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:303"
+            "src": "src/contracts/Closet.sol:304"
           }
         ],
         "types": {
@@ -470,7 +470,7 @@
     },
     "e33c4abd8aac9d2ec5d2b939c72d2ac73ad996a0de1f82d40d2572934ca609cc": {
       "address": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
-      "txHash": "0x4823468c6bdef1da1e9c179960d69b44fdb8aea5e839399d9b99bc5a6e6f0473",
+      "txHash": "0x31e6fbb23ff77d775f1b89e309f276fc76d218c077abb6f85c2e28530cb7f68d",
       "layout": {
         "storage": [
           {
@@ -597,13 +597,13 @@
             "contract": "Closet2",
             "label": "test",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:303"
+            "src": "src/contracts/Closet.sol:304"
           },
           {
             "contract": "Closet3",
             "label": "anotherTest",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:315"
+            "src": "src/contracts/Closet.sol:316"
           }
         ],
         "types": {
