@@ -20,7 +20,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface ClosetInterface extends ethers.utils.Interface {
+interface BaseContractInterface extends ethers.utils.Interface {
   functions: {
     "addNewTokenType(tuple)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
@@ -376,7 +376,7 @@ interface ClosetInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "WalletUnbanned"): EventFragment;
 }
 
-export class Closet extends BaseContract {
+export class BaseContract extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -417,7 +417,7 @@ export class Closet extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: ClosetInterface;
+  interface: BaseContractInterface;
 
   functions: {
     addNewTokenType(

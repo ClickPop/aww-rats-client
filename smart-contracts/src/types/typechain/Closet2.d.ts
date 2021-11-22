@@ -20,7 +20,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface ClosetInterface extends ethers.utils.Interface {
+interface Closet2Interface extends ethers.utils.Interface {
   functions: {
     "addNewTokenType(tuple)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
@@ -51,7 +51,9 @@ interface ClosetInterface extends ethers.utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setContractURI(string)": FunctionFragment;
     "setMaxTokensForWallet(address,uint256,uint256)": FunctionFragment;
+    "setTest(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
+    "test()": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unbanWallet(address)": FunctionFragment;
@@ -194,10 +196,12 @@ interface ClosetInterface extends ethers.utils.Interface {
     functionFragment: "setMaxTokensForWallet",
     values: [string, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "setTest", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "test", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values: [BigNumberish]
@@ -306,10 +310,12 @@ interface ClosetInterface extends ethers.utils.Interface {
     functionFragment: "setMaxTokensForWallet",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setTest", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -376,7 +382,7 @@ interface ClosetInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "WalletUnbanned"): EventFragment;
 }
 
-export class Closet extends BaseContract {
+export class Closet2 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -417,7 +423,7 @@ export class Closet extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: ClosetInterface;
+  interface: Closet2Interface;
 
   functions: {
     addNewTokenType(
@@ -731,10 +737,17 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setTest(
+      _test: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    test(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(
       id: BigNumberish,
@@ -1080,10 +1093,17 @@ export class Closet extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setTest(
+    _test: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  test(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1422,10 +1442,14 @@ export class Closet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTest(_test: string, overrides?: CallOverrides): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    test(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(
       id: BigNumberish,
@@ -1846,10 +1870,17 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setTest(
+      _test: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    test(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(
       id: BigNumberish,
@@ -2052,10 +2083,17 @@ export class Closet extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTest(
+      _test: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    test(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(
       id: BigNumberish,
