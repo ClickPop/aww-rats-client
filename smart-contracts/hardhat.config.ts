@@ -7,7 +7,9 @@ import '@typechain/hardhat';
 import '@nomiclabs/hardhat-ethers';
 import 'tsconfig-paths/register';
 import 'hardhat-watcher';
+import '@openzeppelin/hardhat-upgrades';
 
+import { readFile } from 'fs/promises';
 import { HardhatUserConfig, task, types } from 'hardhat/config';
 import {
   MUMBAI_TESTNET,
@@ -18,11 +20,14 @@ import {
   WETH_CONTRACT_ADDRESS,
   ETHERSCAN_API_KEY,
   DEFAULT_TOKEN_URI,
+  CLOSET_ADDRESS,
 } from './src/config/env';
 import { ContractFactory } from '@ethersproject/contracts';
 import { parseEther } from '@ethersproject/units';
 import axios from 'axios';
 import { cursorTo } from 'readline';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import path from 'path';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -50,13 +55,7 @@ const ratLoader = (msg: string, interval?: number) => {
   }, interval ?? 250);
 };
 
-task('deploy', 'Deploy contract to the blockchain')
-  .addPositionalParam(
-    'contractName',
-    'Contract to deploy (This is case sensitive, use the same name of the contract)',
-    'Rat',
-    types.string,
-  )
+task('deploy-rat', 'Deploy contract to the blockchain')
   .addPositionalParam(
     'name',
     'Name to pass to the contract constructor',
@@ -117,7 +116,7 @@ task('deploy', 'Deploy contract to the blockchain')
         }
         const [owner] = await ethers.getSigners();
         const Rat = (await ethers.getContractFactory(
-          contractName,
+          'Rat',
           owner,
         )) as ContractFactory;
         const rat = await Rat.deploy(
@@ -137,6 +136,48 @@ task('deploy', 'Deploy contract to the blockchain')
       }
     },
   );
+
+task('deploy-closet', 'Deploy closet contract')
+  .addPositionalParam(
+    'tokensFile',
+    'Array of tokens to seed the contract with',
+    './closet-tokens.json',
+    types.inputFile,
+  )
+  .addOptionalParam(
+    'tokenAddress',
+    'Address of the ERC-20 contract we are using for accepting payments',
+  )
+  .setAction(async ({ tokenAddress, tokensFile }, hre) => {
+    const interval = ratLoader('Deploying Closet Contract');
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const tokens = JSON.parse(
+        (await readFile(path.join(tokensFile))).toString(),
+      );
+      if (!(tokenAddress ?? WETH_CONTRACT_ADDRESS)) {
+        throw new Error(
+          'Either supply an ERC20 token address, or set the WETH_CONTRACT_ADDRESS value in your env',
+        );
+      }
+      if (
+        !Array.isArray(tokens) ||
+        !tokens.every((token) => isClosetToken(token))
+      ) {
+        throw new Error('Supplied tokens are not valid');
+      }
+      const closet = await hre.upgrades
+        .deployProxy(Closet, [tokens, tokenAddress ?? WETH_CONTRACT_ADDRESS])
+        .then((c) => c.deployed());
+      clearInterval(interval);
+      console.log();
+      console.log(`Deployed closet! Closet address: ${closet.address}`);
+    } catch (err) {
+      console.error(err);
+      clearInterval(interval);
+    }
+  });
 
 task(
   'update-contract-uri',
@@ -260,6 +301,57 @@ task(
     console.error(err);
   }
 });
+
+task('add-closet-token', 'Add new closet token')
+  .addPositionalParam(
+    'token',
+    'JSON representation of the token to add',
+    {},
+    types.json,
+  )
+  .setAction(async ({ token }, hre) => {
+    const interval = ratLoader(
+      'Loading stuck rats from contract (This can take a while)',
+    );
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+      if (!isClosetToken(token)) {
+        throw new Error('Supplied token is not valid');
+      }
+      const tx = await closet.addNewTokenType(token).then((r) => r.wait());
+      clearInterval(interval);
+      console.log();
+      console.log(`Added new closet token! TX hash: ${tx.transactionHash}`);
+    } catch (err) {
+      console.error(err);
+      clearInterval(interval);
+    }
+  });
+
+type Token = {
+  name: string;
+  cost: BigNumberish;
+  maxTokens: BigNumberish;
+  maxPerWallet: BigNumberish;
+  active: boolean;
+  revShareAddress: string;
+  revShareAmount: [BigNumberish, BigNumberish];
+};
+
+const isClosetToken = (token: any): token is Token =>
+  token instanceof Object &&
+  typeof token.name == 'string' &&
+  BigNumber.isBigNumber(token.cost) &&
+  BigNumber.isBigNumber(token.maxTokens) &&
+  BigNumber.isBigNumber(token.maxPerWallet) &&
+  typeof token.active == 'boolean' &&
+  typeof token.revShareAddress == 'string' &&
+  Array.isArray(token.revShareAmount) &&
+  token.revShareAmount.length == 2 &&
+  BigNumber.isBigNumber(token.revShareAmount[0]) &&
+  BigNumber.isBigNumber(token.revShareAmount[1]);
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
