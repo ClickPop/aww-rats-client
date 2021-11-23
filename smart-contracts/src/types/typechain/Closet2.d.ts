@@ -26,6 +26,7 @@ interface Closet2Interface extends ethers.utils.Interface {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "banWallet(address,string)": FunctionFragment;
+    "batchAddNewTokenType(tuple[])": FunctionFragment;
     "burn(uint256,uint256)": FunctionFragment;
     "burnBatch(uint256[],uint256[])": FunctionFragment;
     "changeERC20Contract(address)": FunctionFragment;
@@ -91,6 +92,20 @@ interface Closet2Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "banWallet",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchAddNewTokenType",
+    values: [
+      {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        maxPerWallet: BigNumberish;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumberish, BigNumberish];
+      }[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "burn",
@@ -239,6 +254,10 @@ interface Closet2Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "banWallet", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "batchAddNewTokenType",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnBatch", data: BytesLike): Result;
   decodeFunctionResult(
@@ -460,6 +479,19 @@ export class Closet2 extends BaseContract {
     banWallet(
       wallet: string,
       reason: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    batchAddNewTokenType(
+      tokens: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        maxPerWallet: BigNumberish;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumberish, BigNumberish];
+      }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -834,6 +866,19 @@ export class Closet2 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  batchAddNewTokenType(
+    tokens: {
+      name: string;
+      cost: BigNumberish;
+      maxTokens: BigNumberish;
+      maxPerWallet: BigNumberish;
+      active: boolean;
+      revShareAddress: string;
+      revShareAmount: [BigNumberish, BigNumberish];
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   burn(
     tokenId: BigNumberish,
     amount: BigNumberish,
@@ -1191,6 +1236,19 @@ export class Closet2 extends BaseContract {
     banWallet(
       wallet: string,
       reason: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    batchAddNewTokenType(
+      tokens: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        maxPerWallet: BigNumberish;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumberish, BigNumberish];
+      }[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1769,6 +1827,19 @@ export class Closet2 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    batchAddNewTokenType(
+      tokens: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        maxPerWallet: BigNumberish;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     burn(
       tokenId: BigNumberish,
       amount: BigNumberish,
@@ -1983,6 +2054,19 @@ export class Closet2 extends BaseContract {
     banWallet(
       wallet: string,
       reason: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    batchAddNewTokenType(
+      tokens: {
+        name: string;
+        cost: BigNumberish;
+        maxTokens: BigNumberish;
+        maxPerWallet: BigNumberish;
+        active: boolean;
+        revShareAddress: string;
+        revShareAmount: [BigNumberish, BigNumberish];
+      }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
