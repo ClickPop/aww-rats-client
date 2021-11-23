@@ -259,10 +259,27 @@ describe('Closet', () => {
         }
       });
     });
+
+    it('should allow the contract owner to mint and transfer to a wallet', async () => {
+      await weth
+        .connect(owner)
+        .increaseAllowance(contract.address, ethers.utils.parseEther('1'));
+      await contract
+        .connect(owner)
+        .promoMint([1, 2], [1, 1], user3.address)
+        .then((t) => t.wait());
+
+      expect(await contract.balanceOf(user3.address, 1)).to.be.deep.eq(
+        BigNumber.from(1),
+      );
+      expect(await contract.balanceOf(user3.address, 2)).to.be.deep.eq(
+        BigNumber.from(1),
+      );
+    });
   });
 
   describe('Minting, Burning, and Transfer', () => {
-    afterEach(async () => {
+    beforeEach(async () => {
       initialBalUser = await weth.balanceOf(user.address);
       initialBalUser2 = await weth.balanceOf(user2.address);
       initialBalUser3 = await weth.balanceOf(user3.address);
@@ -536,6 +553,9 @@ describe('Closet', () => {
       expect(c.unbanWallet(user.address)).to.be.revertedWith(
         'Ownable: caller is not the owner',
       );
+      expect(c.promoMint([1], [1], user.address)).to.be.revertedWith(
+        'Ownable: caller is not the owner',
+      );
     });
 
     it('should error if you try to mint tokens without enough weth or approval or if they are inactive', async () => {
@@ -610,6 +630,27 @@ describe('Closet', () => {
           .connect(user2)
           .safeTransferFrom(user2.address, user.address, 3, 1, []),
       ).to.be.revertedWith('Max tokens reached for wallet');
+    });
+
+    it('should throw and error if you try a batch transaction with mismatched ids and amounts', async () => {
+      expect(contract.mintBatch([1], [1, 2])).to.be.revertedWith(
+        'Mismatched tokenIds and amounts',
+      );
+      expect(contract.burnBatch([1], [1, 2])).to.be.revertedWith(
+        'Mismatched tokenIds and amounts',
+      );
+      expect(
+        contract.balanceOfBatch([user.address], [1, 2]),
+      ).to.be.revertedWith('ERC1155: accounts and ids length mismatch');
+      expect(
+        contract.safeBatchTransferFrom(
+          user.address,
+          owner.address,
+          [1],
+          [1, 2],
+          [],
+        ),
+      ).to.be.revertedWith('Mismatched tokenIds and amounts');
     });
 
     it('should error if you try to burn tokens you do not own', async () => {

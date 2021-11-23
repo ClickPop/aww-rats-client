@@ -210,6 +210,11 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     erc20.safeTransfer(owner(), amount);
   }
 
+  function promoMint(uint[] memory ids, uint[] memory amounts, address wallet) virtual public onlyOwner {
+    mintBatch(ids, amounts);
+    safeBatchTransferFrom(owner(), wallet, ids, amounts, msg.data);
+  }
+
   /** Modifiers */
   modifier mintingAllowed(uint tokenId, uint amount) virtual {
     _checkMinting(tokenId, amount);
