@@ -372,7 +372,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       initialBaseFeePerGas: 0, // workaround from https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136 . Remove when that issue is closed.
     },
-    polygonTest: {
+    mumbai: {
       url: MUMBAI_TESTNET,
       chainId: MUMBAI_TESTNET_CHAIN_ID,
       accounts: [PRIVATE_KEY].filter((k) => k !== undefined) as string[],
