@@ -46,6 +46,7 @@ interface Closet3Interface extends ethers.utils.Interface {
     "mint(uint256,uint256)": FunctionFragment;
     "mintBatch(uint256[],uint256[])": FunctionFragment;
     "owner()": FunctionFragment;
+    "promoMint(uint256[],uint256[],address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
@@ -179,6 +180,10 @@ interface Closet3Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "promoMint",
+    values: [BigNumberish[], BigNumberish[], string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -300,6 +305,7 @@ interface Closet3Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintBatch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "promoMint", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -717,6 +723,13 @@ export class Closet3 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    promoMint(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1080,6 +1093,13 @@ export class Closet3 extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  promoMint(
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    wallet: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1437,6 +1457,13 @@ export class Closet3 extends BaseContract {
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    promoMint(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      wallet: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -1868,6 +1895,13 @@ export class Closet3 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    promoMint(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -2087,6 +2121,13 @@ export class Closet3 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    promoMint(
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      wallet: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
