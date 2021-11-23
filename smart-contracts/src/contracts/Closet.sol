@@ -178,6 +178,15 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     _addNewTokenType(token);
   }
 
+  function batchAddNewTokenType(Token[] memory tokens) virtual public onlyOwner {
+    for (uint256 j = 0; j < tokens.length; j++) {
+      for(uint i = 0; i < existingTokenIds.length; i++) {
+        require(!_compareStrings(idToToken[existingTokenIds[i]].name, tokens[j].name), "Token already exists");
+      }
+      _addNewTokenType(tokens[j]);
+    }
+  }
+
   function changeToken(uint tokenId, Token memory token) virtual public onlyOwner tokenExists(tokenId) {
     idToToken[tokenId] = token;
     emit TokenTypeChanged(tokenId, token);
