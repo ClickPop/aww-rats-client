@@ -28,6 +28,7 @@ import axios from 'axios';
 import { cursorTo } from 'readline';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import path from 'path';
+import { Closet } from '~/types';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -138,12 +139,7 @@ task('deploy-rat', 'Deploy contract to the blockchain')
   );
 
 task('deploy-closet', 'Deploy closet contract')
-  .addPositionalParam(
-    'tokensFile',
-    'Array of tokens to seed the contract with',
-    './closet-tokens.json',
-    types.inputFile,
-  )
+  .addOptionalParam('tokensFile', 'Array of tokens to seed the contract with')
   .addOptionalParam(
     'tokenAddress',
     'Address of the ERC-20 contract we are using for accepting payments',
@@ -153,9 +149,9 @@ task('deploy-closet', 'Deploy closet contract')
     try {
       const [signer] = await hre.ethers.getSigners();
       const Closet = await hre.ethers.getContractFactory('Closet', signer);
-      const tokens = JSON.parse(
-        (await readFile(path.join(tokensFile))).toString(),
-      );
+      const tokens = tokensFile
+        ? JSON.parse((await readFile(path.join(tokensFile))).toString())
+        : [];
       if (!(tokenAddress ?? WETH_CONTRACT_ADDRESS)) {
         throw new Error(
           'Either supply an ERC20 token address, or set the WETH_CONTRACT_ADDRESS value in your env',
@@ -167,9 +163,13 @@ task('deploy-closet', 'Deploy closet contract')
       ) {
         throw new Error('Supplied tokens are not valid');
       }
-      const closet = await hre.upgrades
-        .deployProxy(Closet, [tokens, tokenAddress ?? WETH_CONTRACT_ADDRESS])
-        .then((c) => c.deployed());
+      const closet = (await hre.upgrades
+        .deployProxy(Closet)
+        .then((c) => c.deployed())) as Closet;
+      await closet
+        .changeERC20Contract(tokenAddress ?? WETH_CONTRACT_ADDRESS)
+        .then((t) => t.wait());
+      await closet.batchAddNewTokenType(tokens).then((t) => t.wait());
       clearInterval(interval);
       console.log();
       console.log(`Deployed closet! Closet address: ${closet.address}`);
