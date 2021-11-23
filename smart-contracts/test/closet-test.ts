@@ -116,51 +116,44 @@ describe('Closet', () => {
       const tokens = await contract.getAllTokenIds();
       expect(tokens).to.have.length(1);
       const tx2 = await contract
-        .addNewTokenType({ ...token2, revShareAddress: contract.address })
+        .batchAddNewTokenType([
+          { ...token2, revShareAddress: contract.address },
+          { ...token3, revShareAddress: user3.address },
+        ])
         .then((r) => r.wait());
       checkEvents(tx2, 'TokenTypeAdded', ([k, v]) => {
         switch (k) {
           case 'tokenId':
-            expect(v.toString()).to.equal('2');
+            expect(v.toString()).to.be.oneOf(['2', '3']);
             break;
           case 'token':
-            expect(v.name).to.eq('hat');
-            expect(ethers.utils.formatEther(v.cost)).to.eq('0.001');
-            expect(v.maxTokens.toNumber()).to.eq(100);
-            expect(v.active).to.eq(true);
-            expect(v.maxPerWallet).to.eq(0);
-            expect(v.revShareAddress).to.eq(contract.address);
-            expect(v.revShareAmount).to.deep.eq([
-              BigNumber.from(1),
-              BigNumber.from(1),
-            ]);
+            if (v.name === 'hat') {
+              expect(v.name).to.eq('hat');
+              expect(ethers.utils.formatEther(v.cost)).to.eq('0.001');
+              expect(v.maxTokens.toNumber()).to.eq(100);
+              expect(v.active).to.eq(true);
+              expect(v.maxPerWallet).to.eq(0);
+              expect(v.revShareAddress).to.eq(contract.address);
+              expect(v.revShareAmount).to.deep.eq([
+                BigNumber.from(1),
+                BigNumber.from(1),
+              ]);
+            } else {
+              expect(v.name).to.eq('revShare');
+              expect(ethers.utils.formatEther(v.cost)).to.eq('0.005');
+              expect(v.maxTokens.toNumber()).to.eq(10);
+              expect(v.active).to.eq(true);
+              expect(v.maxPerWallet).to.eq(1);
+              expect(v.revShareAddress).to.eq(user3.address);
+              expect(v.revShareAmount).to.deep.eq([
+                BigNumber.from(4),
+                BigNumber.from(5),
+              ]);
+            }
         }
       });
       const tokens2 = await contract.getAllTokenIds();
-      expect(tokens2).to.have.length(2);
-      const tx3 = await contract
-        .addNewTokenType({ ...token3, revShareAddress: user3.address })
-        .then((r) => r.wait());
-      checkEvents(tx3, 'TokenTypeAdded', ([k, v]) => {
-        switch (k) {
-          case 'tokenId':
-            expect(v.toString()).to.equal('3');
-            break;
-          case 'token':
-            expect(v.name).to.eq('revShare');
-            expect(ethers.utils.formatEther(v.cost)).to.eq('0.005');
-            expect(v.maxTokens.toNumber()).to.eq(10);
-            expect(v.active).to.eq(true);
-            expect(v.maxPerWallet).to.eq(1);
-            expect(v.revShareAddress).to.eq(user3.address);
-            expect(v.revShareAmount).to.deep.eq([
-              BigNumber.from(4),
-              BigNumber.from(5),
-            ]);
-        }
-      });
-      const tokens3 = await contract.getAllTokenIds();
-      expect(tokens3).to.have.length(3);
+      expect(tokens2).to.have.length(3);
     });
 
     it('should change an existing token when called by owner', async () => {
