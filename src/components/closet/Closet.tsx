@@ -24,6 +24,7 @@ import { Connect } from '~/components/shared/Connect';
 import { Link } from '~/components/shared/Link';
 import { Image } from '~/components/shared/Image';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
+import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { useRouter } from 'next/router';
 import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
 interface SimplifiedMetadata {
@@ -50,6 +51,16 @@ const Closet = () => {
   });
   const [loadedTokens, setLoadedTokens] = useState<string[]>([]);
   const [tokenProgress, setTokenProgress] = useState<number>(0);
+  const [cart, setCart] = useState<string[]>([]); // TODO: Correct type of array for tokens
+
+  const addToCart = (tokenId: string): void => {
+    // TODO: Correct type for token
+    if (!cart.includes(tokenId)) {
+      setCart([...cart, tokenId]);
+    } else {
+      console.log('already in the cart...');
+    }
+  };
 
   const canvasOpts = useMemo(() => {
     const opts: CanvasOpts = {
@@ -413,11 +424,11 @@ const Closet = () => {
                     {pieceType}
                   </h3>
 
-                  <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+                  <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     {pieces.map((piece) => (
                       <div
                         key={piece}
-                        className='aspect-w-1 aspect-h-1 rounded-md border-slate border-4'>
+                        className='overflow-hidden aspect-w-1 aspect-h-1 rounded-md border-slate border-4 group'>
                         <Image
                           loading='eager'
                           src={`${RAT_PIECES_THUMBNAIL_PREFIX}${pieceType}-${piece}.png`}
@@ -436,6 +447,38 @@ const Closet = () => {
                             }
                           }}
                         />
+                        {/* Logic for minting tokens */}
+                        {true && (
+                          <div className='text-center token-purchase-overlay absolute bg-light -bottom-full left-0 right-0 top-auto h-auto group-hover:bottom-0 duration-300'>
+                            <h5 className='bold'>{`Item Name`}</h5>
+                            <p className='price text-sm'>
+                              <Image
+                                src={PolyEthIcon}
+                                className='w-2 mr-1 inline-block'
+                              />
+                              {0.01}
+                            </p>
+                            <div>
+                              <button
+                                className='mint-now bg-purple-700 text-white hover:bg-purple-800 px-2 py-1 m-1 mt-0 rounded transition-color duration-300'
+                                onClick={() => {
+                                  console.log('minting...');
+                                }}>
+                                Mint!
+                              </button>
+                              <button
+                                className='add-to-cart bg-slate text-white hover:bg-dark px-2 py-1 m-1 mt-0 rounded transition-color duration-300'
+                                onClick={() => {
+                                  addToCart(`${pieceType}-${piece}`);
+                                }}>
+                                + Cart
+                              </button>
+                            </div>
+                            <p className='supply block text-sm italic'>
+                              {5} of {10} left
+                            </p>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
