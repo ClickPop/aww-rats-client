@@ -8,73 +8,108 @@ import rat04 from '~/assets/images/rats/rat-04.png';
 import rat05 from '~/assets/images/rats/rat-05.png';
 import rat06 from '~/assets/images/rats/rat-06.png';
 import rat07 from '~/assets/images/rats/rat-07.png';
+import promoImg from '~/assets/images/promo-image.png';
 import { Minter } from '~/components/minting/Minter';
 import { Promo } from '~/components/index/promo/Promo';
 
 export const Hero = () => {
   return (
-    <div className='py-12 md:py-24 overflow-hidden text-white w-full'>
-      <Image
-        className='max-w-md mx-auto mb-8 p-4'
-        src={logo}
-        alt='Aww, Rats! Logo'
-        placeholder='blur'
-      />
-      <div className='text-center justify-center items-center max-w-4xl mx-auto px-4'>
-        <h1 className='text-4xl mb-2 font-bold'>
-          An NFT Project By Creators, for Creators.
-        </h1>
-      </div>
-      <div className='w-screen my-12 overflow-hidden'>
-        <div className='flex flex-row items-center justify-center overflow-hidden'>
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat01}
-            alt=''
-          />
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat02}
-            alt=''
-          />
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat03}
-            alt=''
-          />
-          <Image
-            className='ratvatar ratvatar-lg imgfix overflow-hidden rounded-full mx-8'
-            src={rat04}
-            alt=''
-          />
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat05}
-            alt=''
-          />
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat06}
-            alt=''
-          />
-          <Image
-            className='ratvatar imgfix overflow-hidden rounded-full mx-8'
-            src={rat07}
-            alt=''
-          />
+    <>
+      <div className="bg-red-400">
+        <div
+          className="pb-12 pt-24 md:pb-24 md:pt-32 max-w-4xl mx-auto grid grid-cols-5 items-center"
+        >
+          <div className="col-span-5 md:col-span-3 text-xl p-4">
+            <h1 className="text-4xl font-black mb-2">
+              Black Friday &amp; Cyber Monday in&nbsp;the&nbsp;Sewer!
+            </h1>
+            <p className="italic mb-6">
+              November 26th - 29th Eastern
+            </p>
+            <p className="mb-2">
+              All rats are only 0.015 <span className="font-black">50% off!</span>
+            </p>
+            <p className="mb-2">
+              You get <span className="font-black">FIVE free winter items</span> to dress up your rat.
+            </p>
+            <p className="text-left mt-8">
+              <Minter />
+            </p>
+          </div>
+          <div className="col-span-5 md:col-span-2 p-4">
+            <Image
+              className='max-w-md mx-auto filter drop-shadow-2xl'
+              src={promoImg}
+              alt='A rat with winting goodies'
+              placeholder='blur'
+            />
+          </div>
         </div>
       </div>
-      <div className='text-center justify-center items-center max-w-2xl mx-auto px-4'>
-        <p className='text-lg mb-8'>
-          We&apos;re sharing the tools we built and the skills we learned with
-          all of our rat holders so more artists can make generative art and
-          NFTs.
-        </p>
-        <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-          <Minter />
+
+      <div className='py-12 md:pb-24 overflow-hidden text-white w-full'>
+        <Image
+          className='max-w-md mx-auto mb-8 p-4'
+          src={logo}
+          alt='Aww, Rats! Logo'
+          placeholder='blur'
+        />
+        <div className='text-center justify-center items-center max-w-4xl mx-auto px-4'>
+          <h1 className='text-4xl mb-2 font-bold'>
+            An NFT Project By Creators, for Creators.
+          </h1>
         </div>
-        <Promo />
+        <div className='w-screen my-12 overflow-hidden'>
+          <div className='flex flex-row items-center justify-center overflow-hidden'>
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat01}
+              alt=''
+            />
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat02}
+              alt=''
+            />
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat03}
+              alt=''
+            />
+            <Image
+              className='ratvatar ratvatar-lg imgfix overflow-hidden rounded-full mx-8'
+              src={rat04}
+              alt=''
+            />
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat05}
+              alt=''
+            />
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat06}
+              alt=''
+            />
+            <Image
+              className='ratvatar imgfix overflow-hidden rounded-full mx-8'
+              src={rat07}
+              alt=''
+            />
+          </div>
+        </div>
+        <div className='text-center justify-center items-center max-w-2xl mx-auto px-4'>
+          <p className='text-lg mb-8'>
+            We&apos;re sharing the tools we built and the skills we learned with
+            all of our rat holders so more artists can make generative art and
+            NFTs.
+          </p>
+          <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
+            <Minter />
+          </div>
+          <Promo />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
