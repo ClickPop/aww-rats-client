@@ -65,30 +65,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
-      name: "ERC1155",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC1155__factory>;
-    getContractFactory(
-      name: "ERC1155Burnable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC1155Burnable__factory>;
-    getContractFactory(
-      name: "ERC1155Supply",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC1155Supply__factory>;
-    getContractFactory(
-      name: "IERC1155MetadataURI",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC1155MetadataURI__factory>;
-    getContractFactory(
-      name: "IERC1155",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC1155__factory>;
-    getContractFactory(
-      name: "IERC1155Receiver",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC1155Receiver__factory>;
-    getContractFactory(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;

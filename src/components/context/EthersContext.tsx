@@ -1,8 +1,9 @@
 import { createContext, FC, useEffect, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
-import { EthersContextType, Rat } from '~/types';
+import { Closet, EthersContextType, Rat } from '~/types';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
-import { CONTRACT_ADDRESS, CHAIN_ID } from '~/config/env';
+import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
+import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers } from 'ethers';
 
 const defaultEthersContext: EthersContextType = {
@@ -13,19 +14,31 @@ export const EthersContext = createContext(defaultEthersContext);
 
 export const EthersContextProvider: FC = ({ children }) => {
   const [contract, setContract] = useState<Rat | undefined>();
+  const [closet, setCloset] = useState<Closet | undefined>();
   const [signerAddr, setSignerAddr] = useState('');
   const etherState = useEthers();
   const { provider, signer, connected, network } = etherState;
   useEffect(() => {
     (async () => {
-      if (CONTRACT_ADDRESS && connected && network?.chainId === CHAIN_ID) {
+      if (connected && network?.chainId === CHAIN_ID) {
         try {
-          const c = new ethers.Contract(
-            CONTRACT_ADDRESS,
-            RatABI.abi,
-            signer,
-          ) as Rat;
-          setContract(c);
+          if (CONTRACT_ADDRESS) {
+            const r = new ethers.Contract(
+              CONTRACT_ADDRESS,
+              RatABI.abi,
+              signer,
+            ) as Rat;
+            setContract(r);
+          }
+
+          if (CLOSET_ADDRESS) {
+            const c = new ethers.Contract(
+              CLOSET_ADDRESS,
+              ClosetABI.abi,
+              signer,
+            ) as Closet;
+            setCloset(c);
+          }
         } catch (err) {
           console.error(err);
         }
@@ -48,7 +61,13 @@ export const EthersContextProvider: FC = ({ children }) => {
 
   return (
     <EthersContext.Provider
-      value={{ ...etherState, contract, connectToMetamask, signerAddr }}>
+      value={{
+        ...etherState,
+        contract,
+        connectToMetamask,
+        signerAddr,
+        closet,
+      }}>
       {children}
     </EthersContext.Provider>
   );

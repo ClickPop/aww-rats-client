@@ -63,17 +63,18 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     __ERC1155Supply_init();
     _setURI("https://awwrats.com/{id}.json");
     _contractURI = "https://awwrats.com/closet-opensea-metadata.json";
+    erc20 = IERC20Upgradeable(address(0));
   }
 
   /** Token Handling */
   function mint(uint tokenId, uint amount) virtual public payable mintingAllowed(tokenId, amount) {
-    if (idToToken[tokenId].revShareAddress != address(this)) {
+    if (idToToken[tokenId].revShareAddress != owner()) {
       uint total = idToToken[tokenId].cost * amount;
       uint revShare = (total / idToToken[tokenId].revShareAmount[1]) * idToToken[tokenId].revShareAmount[0];
       erc20.safeTransferFrom(msg.sender, idToToken[tokenId].revShareAddress, revShare);
-      erc20.safeTransferFrom(msg.sender, address(this), total - revShare);
+      erc20.safeTransferFrom(msg.sender, owner(), total - revShare);
     } else {
-      erc20.safeTransferFrom(msg.sender, address(this), idToToken[tokenId].cost * amount);
+      erc20.safeTransferFrom(msg.sender, owner(), idToToken[tokenId].cost * amount);
     }
     _mint(msg.sender, tokenId, amount, msg.data);
     emit TokensMinted(tokenId, amount, msg.sender);
@@ -85,7 +86,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     address[] memory revShareAddresses = new address[](ids.length);
     uint revShareCount = 0;
     for (uint256 i = 0; i < ids.length; i++) {
-      if (idToToken[ids[i]].revShareAddress != address(this)) {
+      if (idToToken[ids[i]].revShareAddress != owner()) {
         uint total = idToToken[ids[i]].cost * amounts[i];
         uint revShare = (total / idToToken[ids[i]].revShareAmount[1]) * idToToken[ids[i]].revShareAmount[0];
         revShareAddresses[revShareCount] = idToToken[ids[i]].revShareAddress;
@@ -100,7 +101,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     for (uint256 i = 0; i < revShareCount; i++) {
       erc20.safeTransferFrom(msg.sender, revShareAddresses[i], revShareAmounts[i]);
     }
-    erc20.safeTransferFrom(msg.sender, address(this), totalCost);
+    erc20.safeTransferFrom(msg.sender, owner(), totalCost);
     _mintBatch(msg.sender, ids, amounts, msg.data);
     emit BatchTokensMinted(ids, amounts, msg.sender);
   }
@@ -185,9 +186,23 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     }
   }
 
-  function changeToken(uint tokenId, Token memory token) virtual public onlyOwner tokenExists(tokenId) {
-    idToToken[tokenId] = token;
-    emit TokenTypeChanged(tokenId, token);
+  function changeToken(TokenWithId memory token) virtual public onlyOwner tokenExists(token.id) {
+    idToToken[token.id] = token.token;
+    emit TokenTypeChanged(token.id, token.token);
+  }
+
+  function batchChangeToken(TokenWithId[] memory tokens) virtual public onlyOwner {
+    for (uint256 i = 0; i < tokens.length; i++) {
+      changeToken(tokens[i]);
+    }
+  }
+
+  function setTokensStatus(uint[] memory ids, bool status) virtual public onlyOwner {
+    for (uint256 i = 0; i < ids.length; i++) {
+      idToToken[ids[i]].active = status;
+      TokenWithId memory tokenWithId = TokenWithId(ids[i], idToToken[ids[i]]);
+      changeToken(tokenWithId);
+    }
   }
 
   function setMaxTokensForWallet(address wallet, uint tokenId, uint max) virtual public onlyOwner tokenExists(tokenId) {
@@ -211,15 +226,13 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     emit ChangeERC20Contract(erc20Addr);
   }
 
-  function withdrawEth(uint amount) virtual public onlyOwner {
-    require(erc20.balanceOf(owner()) >= amount, "Cannot withdraw more than owned");
-    erc20.approve(owner(), amount);
-    erc20.safeTransfer(owner(), amount);
-  }
-
   function promoMint(uint[] memory ids, uint[] memory amounts, address wallet) virtual public onlyOwner {
     mintBatch(ids, amounts);
     safeBatchTransferFrom(owner(), wallet, ids, amounts, msg.data);
+  }
+
+  function setUri(string memory uri) virtual public onlyOwner {
+    _setURI(uri);
   }
 
   /** Modifiers */
@@ -308,31 +321,5 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   
   function setContractURI(string memory newContractURI) virtual public onlyOwner {
     _contractURI = newContractURI;
-  }
-}
-
-/** These are just used for the tests. Any upgrades to this contract should be written in a new file. */
-contract Closet2 is Closet {
-  string public test;
-
-  function version() virtual override public pure returns(string memory) {
-    return "2.0";
-  }
-
-  function setTest(string memory _test) public onlyOwner {
-    test = _test;
-  }
-}
-
-contract Closet3 is Closet2 {
-  string public anotherTest;
-
-  function version() virtual override public pure returns(string memory) {
-    return "3.0";
-  }
-  
-  function setAnotherTest(string memory _test) public onlyOwner {
-    anotherTest = _test;
-    test = "changed";
   }
 }

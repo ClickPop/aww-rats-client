@@ -2,15 +2,20 @@
   "manifestVersion": "3.2",
   "proxies": [
     {
-      "address": "0xE8CC4F1b75927478ACc5715B577312E6c233E426",
-      "txHash": "0x3937e044b967f0241957bf0b0ccefab672b832c81c0f9019555ffc204ccc7036",
+      "address": "0x38330484d74e49849ce6F9D753FEa7f94fEfb541",
+      "txHash": "0x8439e929171046a94115e32c756db83340e55e7a5be35b5b1b9e07ac1352de18",
+      "kind": "uups"
+    },
+    {
+      "address": "0x2d26d23b03EB9927DcA60A2F478b3DcdBe935754",
+      "txHash": "0x19200d591478c05d003e85f4ef537fa139395610d737f9ececd686c87f351c10",
       "kind": "uups"
     }
   ],
   "impls": {
-    "88b63187dead3d46bd119844e2f5967cd7bc2bee514ba3d0a46a0162be60b196": {
-      "address": "0x195Afe780aC2f28f75154793d4a0681dcF358Cf1",
-      "txHash": "0x9feae072d7a7e5cab04abaaad6f8bc133a0c473ea23fb638d768e87cc1a4f4ed",
+    "d8cfc2d2a734ccee42396922b6a23f8303fb03ec36b84b66ca43a9c178d7176e": {
+      "address": "0x35F58065Bdc743A610aAcde7bfEBFc844018b2F9",
+      "txHash": "0xf8d091dd1b8f65d06ef99ac59431c93533d47e521867d616728ef7ee4cb2a1fd",
       "layout": {
         "storage": [
           {
@@ -101,37 +106,37 @@
             "contract": "Closet",
             "label": "existingTokenIds",
             "type": "t_array(t_uint256)dyn_storage",
-            "src": "src/contracts/Closet.sol:41"
+            "src": "src/contracts/Closet.sol:39"
           },
           {
             "contract": "Closet",
             "label": "idToToken",
-            "type": "t_mapping(t_uint256,t_struct(Token)10934_storage)",
-            "src": "src/contracts/Closet.sol:42"
+            "type": "t_mapping(t_uint256,t_struct(Token)2869_storage)",
+            "src": "src/contracts/Closet.sol:40"
           },
           {
             "contract": "Closet",
             "label": "maxTokensPerWalletById",
             "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
-            "src": "src/contracts/Closet.sol:43"
+            "src": "src/contracts/Closet.sol:41"
           },
           {
             "contract": "Closet",
             "label": "walletBans",
-            "type": "t_mapping(t_address,t_struct(Ban)10953_storage)",
-            "src": "src/contracts/Closet.sol:44"
+            "type": "t_mapping(t_address,t_struct(Ban)2888_storage)",
+            "src": "src/contracts/Closet.sol:42"
           },
           {
             "contract": "Closet",
             "label": "erc20",
             "type": "t_contract(IERC20Upgradeable)2214",
-            "src": "src/contracts/Closet.sol:46"
+            "src": "src/contracts/Closet.sol:44"
           },
           {
             "contract": "Closet",
             "label": "_contractURI",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:296"
+            "src": "src/contracts/Closet.sol:322"
           }
         ],
         "types": {
@@ -141,10 +146,10 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_uint256,t_struct(Token)10934_storage)": {
+          "t_mapping(t_uint256,t_struct(Token)2869_storage)": {
             "label": "mapping(uint256 => struct Token)"
           },
-          "t_struct(Token)10934_storage": {
+          "t_struct(Token)2869_storage": {
             "label": "struct Token",
             "members": [
               {
@@ -195,10 +200,10 @@
           "t_mapping(t_address,t_uint256)": {
             "label": "mapping(address => uint256)"
           },
-          "t_mapping(t_address,t_struct(Ban)10953_storage)": {
+          "t_mapping(t_address,t_struct(Ban)2888_storage)": {
             "label": "mapping(address => struct Ban)"
           },
-          "t_struct(Ban)10953_storage": {
+          "t_struct(Ban)2888_storage": {
             "label": "struct Ban",
             "members": [
               {
@@ -235,9 +240,9 @@
         }
       }
     },
-    "272023de1930d240551d2cff19538e60d3b5df89cf4d1466c6edbd86aff1ca4e": {
-      "address": "0x6af3a2a38c4bB581439bD9BDf1bB88EbE16DFC25",
-      "txHash": "0xbd33a2c09e0c5223890de41963abc1edd338bd716b56e89f654aefa67e3858c9",
+    "5eb5516d848dd57a4fd5be954d5512f0e87c9cc30f2e4a24b033a83fa61a8ac5": {
+      "address": "0x14bA19b9DA4F1964620B65E50c42b5244c9fD4D9",
+      "txHash": "0x9843f60bf5f872f78ebe16040f06153ae3a04a9cb8f82feb54658a37db7312d2",
       "layout": {
         "storage": [
           {
@@ -328,37 +333,37 @@
             "contract": "Closet",
             "label": "existingTokenIds",
             "type": "t_array(t_uint256)dyn_storage",
-            "src": "src/contracts/Closet.sol:41"
+            "src": "src/contracts/Closet.sol:39"
           },
           {
             "contract": "Closet",
             "label": "idToToken",
-            "type": "t_mapping(t_uint256,t_struct(Token)10934_storage)",
-            "src": "src/contracts/Closet.sol:42"
+            "type": "t_mapping(t_uint256,t_struct(Token)2869_storage)",
+            "src": "src/contracts/Closet.sol:40"
           },
           {
             "contract": "Closet",
             "label": "maxTokensPerWalletById",
             "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
-            "src": "src/contracts/Closet.sol:43"
+            "src": "src/contracts/Closet.sol:41"
           },
           {
             "contract": "Closet",
             "label": "walletBans",
-            "type": "t_mapping(t_address,t_struct(Ban)10953_storage)",
-            "src": "src/contracts/Closet.sol:44"
+            "type": "t_mapping(t_address,t_struct(Ban)2888_storage)",
+            "src": "src/contracts/Closet.sol:42"
           },
           {
             "contract": "Closet",
             "label": "erc20",
             "type": "t_contract(IERC20Upgradeable)2214",
-            "src": "src/contracts/Closet.sol:46"
+            "src": "src/contracts/Closet.sol:44"
           },
           {
             "contract": "Closet",
             "label": "_contractURI",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:305"
+            "src": "src/contracts/Closet.sol:316"
           }
         ],
         "types": {
@@ -368,10 +373,10 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_uint256,t_struct(Token)10934_storage)": {
+          "t_mapping(t_uint256,t_struct(Token)2869_storage)": {
             "label": "mapping(uint256 => struct Token)"
           },
-          "t_struct(Token)10934_storage": {
+          "t_struct(Token)2869_storage": {
             "label": "struct Token",
             "members": [
               {
@@ -422,10 +427,10 @@
           "t_mapping(t_address,t_uint256)": {
             "label": "mapping(address => uint256)"
           },
-          "t_mapping(t_address,t_struct(Ban)10953_storage)": {
+          "t_mapping(t_address,t_struct(Ban)2888_storage)": {
             "label": "mapping(address => struct Ban)"
           },
-          "t_struct(Ban)10953_storage": {
+          "t_struct(Ban)2888_storage": {
             "label": "struct Ban",
             "members": [
               {
