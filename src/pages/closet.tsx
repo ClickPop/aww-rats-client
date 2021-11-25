@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
+import { ClosetContextProvider } from '~/components/context/ClosetContext';
 const Closet = dynamic(() => import('~/components/closet/Closet'), {
   ssr: false,
 });
@@ -35,7 +36,9 @@ const ClosetPage: NextPage = () => {
           content='https://storage.googleapis.com/aww-rats-images/social/og-image.png'
         />
       </Head>
-      <Closet />
+      <ClosetContextProvider>
+        <Closet />
+      </ClosetContextProvider>
     </LayoutNoFooter>
   );
 };

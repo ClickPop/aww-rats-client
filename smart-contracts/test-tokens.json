@@ -1,0 +1,14 @@
+[
+  {
+    "name": "test12",
+    "cost": "0.001",
+    "maxTokens": 0,
+    "maxPerWallet": 0,
+    "active": true,
+    "revShareAddress": "0x2d26d23b03EB9927DcA60A2F478b3DcdBe935754",
+    "revShareAmount": [
+      1,
+      1
+    ]
+  }
+]

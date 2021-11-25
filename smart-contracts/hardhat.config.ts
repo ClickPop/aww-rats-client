@@ -169,7 +169,9 @@ task('deploy-closet', 'Deploy closet contract')
       await closet
         .changeERC20Contract(tokenAddress ?? WETH_CONTRACT_ADDRESS)
         .then((t) => t.wait());
-      await closet.batchAddNewTokenType(tokens).then((t) => t.wait());
+      if (tokens.length) {
+        await closet.batchAddNewTokenType(tokens).then((t) => t.wait());
+      }
       clearInterval(interval);
       console.log();
       console.log(`Deployed closet! Closet address: ${closet.address}`);
@@ -302,31 +304,71 @@ task(
   }
 });
 
-task('add-closet-token', 'Add new closet token')
-  .addPositionalParam(
-    'token',
-    'JSON representation of the token to add',
-    {},
-    types.json,
-  )
-  .setAction(async ({ token }, hre) => {
-    const interval = ratLoader(
-      'Loading stuck rats from contract (This can take a while)',
-    );
+task('add-closet-item', 'Add new closet token')
+  .addPositionalParam('tokensFile', 'Array of tokens to seed the contract with')
+  .setAction(async ({ tokensFile }, hre) => {
+    const interval = ratLoader('Adding new tokens');
     try {
       const [signer] = await hre.ethers.getSigners();
       const Closet = await hre.ethers.getContractFactory('Closet', signer);
       const closet = Closet.attach(CLOSET_ADDRESS ?? '');
-      if (!isClosetToken(token)) {
-        throw new Error('Supplied token is not valid');
+      const tokens = tokensFile
+        ? JSON.parse((await readFile(path.join(tokensFile))).toString())
+        : [];
+      if (
+        !Array.isArray(tokens) ||
+        !tokens.length ||
+        !tokens.every((token) => isClosetToken(token))
+      ) {
+        throw new Error('Supplied tokens are not valid');
       }
-      const tx = await closet.addNewTokenType(token).then((r) => r.wait());
+      const tx = await closet
+        .batchAddNewTokenType(
+          tokens.map((token) => ({
+            ...token,
+            cost: hre.ethers.utils.parseEther(token.cost),
+          })),
+        )
+        .then((r) => r.wait());
+      const tokenIds = tx.events
+        ?.map((e) =>
+          e.event === 'TokenTypeAdded' && e.args?.tokenId && e.args?.token
+            ? { [e.args.token.name]: e.args.tokenId.toString() }
+            : null,
+        )
+        .filter((id) => id !== null);
       clearInterval(interval);
       console.log();
-      console.log(`Added new closet token! TX hash: ${tx.transactionHash}`);
+      console.log(
+        `Added new closet token! TX hash: ${
+          tx.transactionHash
+        }. Token ID's: ${JSON.stringify(tokenIds)}`,
+      );
     } catch (err) {
       console.error(err);
       clearInterval(interval);
+    }
+  });
+
+task(
+  'update-closet-erc20-address',
+  'Update the address for the ERC-20 contract we use for payments',
+)
+  .addPositionalParam(
+    'address',
+    'The address of the ERC-20 token to use for accepting payment',
+  )
+  .setAction(async ({ address }, hre) => {
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+      const tx = await closet
+        .changeERC20Contract(address)
+        .then((t) => t.wait());
+      console.log('Transaction Hash:', tx.transactionHash);
+    } catch (err) {
+      console.error(err);
     }
   });
 
@@ -341,16 +383,25 @@ type Token = {
 };
 
 const isClosetToken = (token: any): token is Token =>
-  token instanceof Object &&
-  typeof token.name == 'string' &&
-  BigNumber.isBigNumber(token.cost) &&
-  BigNumber.isBigNumber(token.maxTokens) &&
-  BigNumber.isBigNumber(token.maxPerWallet) &&
-  typeof token.active == 'boolean' &&
-  typeof token.revShareAddress == 'string' &&
-  Array.isArray(token.revShareAmount) &&
-  token.revShareAmount.length == 2 &&
-  BigNumber.isBigNumber(token.revShareAmount[0]) &&
+  (token instanceof Object &&
+    typeof token.name == 'string' &&
+    typeof token.cost === 'number') ||
+  typeof token.cost === 'string' ||
+  (BigNumber.isBigNumber(token.cost) && typeof token.maxTokens === 'number') ||
+  typeof token.maxTokens === 'string' ||
+  (BigNumber.isBigNumber(token.maxTokens) &&
+    typeof token.maxPerWallet === 'number') ||
+  typeof token.maxPerWallet === 'string' ||
+  (BigNumber.isBigNumber(token.maxPerWallet) &&
+    typeof token.active == 'boolean' &&
+    typeof token.revShareAddress == 'string' &&
+    Array.isArray(token.revShareAmount) &&
+    token.revShareAmount.length == 2 &&
+    typeof token.revShareAmount[0] === 'number') ||
+  typeof token.revShareAmount[0] === 'string' ||
+  (BigNumber.isBigNumber(token.revShareAmount[0]) &&
+    typeof token.revShareAmount[1] === 'number') ||
+  typeof token.revShareAmount[1] === 'string' ||
   BigNumber.isBigNumber(token.revShareAmount[1]);
 
 // You need to export an object to set up your config
@@ -365,6 +416,7 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
+        runs: 100,
       },
     },
   },
