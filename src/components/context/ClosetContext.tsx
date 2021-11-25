@@ -9,7 +9,6 @@ import {
   useState,
 } from 'react';
 import {
-  CanvasOpts,
   ClosetContextType,
   ClosetLoading,
   ClosetTokenWithMeta,
