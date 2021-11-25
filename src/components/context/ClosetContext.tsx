@@ -93,8 +93,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
         try {
           setLoading((l) => ({ ...l, tokens: true }));
           if (contract) {
-            const rats = await contract.getTokensByOwner(signerAddr);
-            setSignerTokens(rats);
+            const tokens = await contract.getTokensByOwner(signerAddr);
+            setSignerTokens(tokens);
           }
           if (closet) {
             const tokens = await closet.getActiveTokens();
@@ -108,7 +108,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
               )?.value;
               tokenObject[token.id.toString()] = { ...token, tokenMeta: meta };
             }
-            console.log(tokenObject);
             setClosetPieces(tokenObject);
 
             const ownedTokens = await closet.getTokensByWallet(signerAddr);
@@ -133,26 +132,34 @@ export const ClosetContextProvider: FC = ({ children }) => {
 
   // Get the metadata for those tokens and store them in state
   useEffect(() => {
+    const getToken = async (token: BigNumber) => {
+      const uri = await contract?.tokenURI(token);
+      if (!uri?.includes('ipfs')) return null;
+      const hash = uri?.split('//')[1];
+      if (hash) {
+        const meta: Metadata = await fetch(
+          `https://gateway.pinata.cloud/ipfs/${hash}`,
+        ).then((res) => res.json());
+
+        if (meta) {
+          return meta;
+        }
+      }
+      return null;
+    };
+
     (async () => {
       // Get token URI from contract then fetch token metadata from IFPS
       if (Array.isArray(signerTokens)) {
         setLoading((l) => ({ ...l, metadata: true }));
-        const tempMetas = [];
+        const promises = [];
         for (const token of signerTokens) {
-          const uri = await contract?.tokenURI(token);
-          if (!uri?.includes('ipfs')) break;
-          const hash = uri?.split('//')[1];
-          if (hash) {
-            const meta: Metadata = await fetch(
-              `https://gateway.pinata.cloud/ipfs/${hash}`,
-            ).then((res) => res.json());
-
-            if (meta) {
-              tempMetas.push(meta);
-            }
-          }
+          promises.push(getToken(token));
         }
 
+        const tempMetas = (await Promise.all(promises)).filter(
+          (p) => !!p,
+        ) as Metadata[];
         // Set state with slightly simplified metadata
         setRats(
           tempMetas.map((rat) => ({
