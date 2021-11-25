@@ -12,6 +12,7 @@ import { EthersContext } from '~/components/context/EthersContext';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
+import { CheeseLoader } from '~/components/shared/CheeseLoader';
 
 type Props = {
   piece: ClosetTokenWithMeta;
@@ -19,7 +20,7 @@ type Props = {
 };
 
 export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
-  const { closet, signer, provider } = useContext(EthersContext);
+  const { closet, signer, provider, signerAddr } = useContext(EthersContext);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
 
   const {
@@ -40,14 +41,13 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     (!tokenMaxReached || noMaxTokens) &&
     (!walletMaxReached || noWalletMax) &&
     piece.token.active;
-  const [mintedCount, setMintedCount] = useState(BigNumber.from(0));
 
-  console.log(piece.token.name, piece.token.maxTokens.lte(0));
+  const [mintedCount, setMintedCount] = useState(BigNumber.from(0));
+  const [ownedCount, setOwnedCount] = useState(BigNumber.from(0));
 
   const approveWeth = async () => {
-    if (closet && signer && provider) {
+    if (closet && signer && signerAddr && provider) {
       setLoading('INITIAL');
-      const signerAddr = await signer.getAddress();
       const wethAddr = await closet.erc20();
       console.log(wethAddr);
       const weth = new ethers.Contract(wethAddr, ERC20ABI.abi, signer) as ERC20;
@@ -69,18 +69,20 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
 
   useEffect(() => {
     const getTokenAmount = async () => {
-      if (closet) {
+      if (closet && signerAddr) {
         setMintedCount(await closet.totalSupply(piece.id));
+        setOwnedCount(await closet.balanceOf(signerAddr, piece.id));
       }
     };
 
     getTokenAmount();
-  }, [closet, piece.id]);
+  }, [closet, signerAddr, piece.id]);
 
   const handleMint = async () => {
     if (closet) {
       try {
         await approveWeth();
+        setLoading('TOKEN');
         await closet.mint(piece.id, 1).then((t) => t.wait());
         const t: Record<string, ClosetUserTokenWithMeta> = {
           ...ownedItems,
@@ -92,6 +94,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       } catch (err) {
         console.error(err);
       }
+      setLoading(null);
     }
   };
 
@@ -120,32 +123,46 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }
         }}
       />
-      {/* Logic for minting tokens */}
-      {canMint && (
-        <div className='text-center token-purchase-overlay absolute bg-light -bottom-full left-0 right-0 top-auto h-auto group-hover:bottom-0 duration-300'>
-          <h5 className='bold'>{`Item Name`}</h5>
-          <p className='price text-sm'>
-            <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
-            {ethers.utils.formatEther(piece.token.cost)}
-          </p>
+      <div
+        className={`text-center token-purchase-overlay absolute bg-light ${
+          !loading && '-bottom-full'
+        } left-0 right-0 top-auto h-auto group-hover:bottom-0 duration-300`}>
+        <h5 className='bold'>{`Item Name`}</h5>
+        <p className='price text-sm'>
+          <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
+          {ethers.utils.formatEther(piece.token.cost)}
+        </p>
+        {canMint ? (
           <div>
-            <button
-              className='mint-now bg-purple-700 text-white hover:bg-purple-800 px-2 py-1 m-1 mt-0 rounded transition-color duration-300'
-              onClick={handleMint}>
-              Mint!
-            </button>
+            {!loading ? (
+              <button
+                className='mint-now bg-purple-700 text-white hover:bg-purple-800 px-2 py-1 m-1 mt-0 rounded transition-color duration-300'
+                onClick={handleMint}>
+                Mint!
+              </button>
+            ) : (
+              <CheeseLoader className='h-6 w-6 relative' />
+            )}
             {/* <button className='add-to-cart bg-slate text-white hover:bg-dark px-2 py-1 m-1 mt-0 rounded transition-color duration-300'>
                         + Cart
                       </button> */}
           </div>
-          {piece.token.maxTokens.gt(0) && (
-            <p className='supply block text-sm italic'>
-              {mintedCount.toString()} of {piece.token.maxTokens.toString()}{' '}
-              left
-            </p>
-          )}
-        </div>
-      )}
+        ) : (
+          <div>Cannot mint</div>
+        )}
+        {piece.token.maxTokens.gt(0) && (
+          <p className='supply block text-sm italic'>
+            {piece.token.maxTokens.sub(mintedCount).toString()} of{' '}
+            {piece.token.maxTokens.toString()} left
+          </p>
+        )}
+        {piece.token.maxPerWallet.gt(0) && (
+          <p className='supply block text-sm italic'>
+            {ownedCount.toString()} minted of{' '}
+            {piece.token.maxPerWallet.toString()}
+          </p>
+        )}
+      </div>
     </div>
   );
 };
