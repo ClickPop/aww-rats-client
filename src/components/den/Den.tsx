@@ -18,8 +18,8 @@ import {
   denBgWidth,
   denBgHeight,
 } from '~/config/env';
-import { CanvasOpts, useCanvas } from '~/hooks/useCanvas';
-import { ParsedMoralisTokenMeta } from '~/types';
+import { useCanvas } from '~/hooks/useCanvas';
+import { ParsedMoralisTokenMeta, CanvasOpts } from '~/types';
 import { getScaledSize } from '~/utils/getScaledSize';
 import DeleteIcon from '~/assets/svg/delete-icon.svg';
 import { v4 as uuidv4 } from 'uuid';

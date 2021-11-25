@@ -31,7 +31,6 @@ describe('Closet', () => {
   let user3: SignerWithAddress;
   let owner: SignerWithAddress;
   let initialBalOwner: BigNumber;
-  let initialBalContract: BigNumber;
   let initialBalUser: BigNumber;
   let initialBalUser2: BigNumber;
   let initialBalUser3: BigNumber;
@@ -93,7 +92,7 @@ describe('Closet', () => {
 
     it('should create a new token type when called by the owner', async () => {
       const tx = await contract
-        .addNewTokenType({ ...token, revShareAddress: contract.address })
+        .addNewTokenType({ ...token, revShareAddress: owner.address })
         .then((r) => r.wait());
       checkEvents(tx, 'TokenTypeAdded', ([k, v]) => {
         switch (k) {
@@ -106,7 +105,7 @@ describe('Closet', () => {
             expect(v.maxTokens.toNumber()).to.eq(100);
             expect(v.active).to.eq(true);
             expect(v.maxPerWallet).to.eq(0);
-            expect(v.revShareAddress).to.eq(contract.address);
+            expect(v.revShareAddress).to.eq(owner.address);
             expect(v.revShareAmount).to.deep.eq([
               BigNumber.from(1),
               BigNumber.from(1),
@@ -117,7 +116,7 @@ describe('Closet', () => {
       expect(tokens).to.have.length(1);
       const tx2 = await contract
         .batchAddNewTokenType([
-          { ...token2, revShareAddress: contract.address },
+          { ...token2, revShareAddress: owner.address },
           { ...token3, revShareAddress: user3.address },
         ])
         .then((r) => r.wait());
@@ -133,7 +132,7 @@ describe('Closet', () => {
               expect(v.maxTokens.toNumber()).to.eq(100);
               expect(v.active).to.eq(true);
               expect(v.maxPerWallet).to.eq(0);
-              expect(v.revShareAddress).to.eq(contract.address);
+              expect(v.revShareAddress).to.eq(owner.address);
               expect(v.revShareAmount).to.deep.eq([
                 BigNumber.from(1),
                 BigNumber.from(1),
@@ -158,10 +157,13 @@ describe('Closet', () => {
 
     it('should change an existing token when called by owner', async () => {
       const tx = await contract
-        .changeToken(1, {
-          ...token,
-          revShareAddress: contract.address,
-          cost: ethers.utils.parseEther('0.002'),
+        .changeToken({
+          id: 1,
+          token: {
+            ...token,
+            revShareAddress: owner.address,
+            cost: ethers.utils.parseEther('0.002'),
+          },
         })
         .then((r) => r.wait());
       checkEvents(tx, 'TokenTypeChanged', ([k, v]) => {
@@ -240,7 +242,6 @@ describe('Closet', () => {
         .transfer(user2.address, ethers.utils.parseEther('10'))
         .then((t) => t.wait());
       initialBalOwner = await weth.balanceOf(owner.address);
-      initialBalContract = await weth.balanceOf(contract.address);
       initialBalUser = await weth.balanceOf(user.address);
       const tx = await contract
         .changeERC20Contract(weth.address)
@@ -277,13 +278,13 @@ describe('Closet', () => {
       initialBalUser2 = await weth.balanceOf(user2.address);
       initialBalUser3 = await weth.balanceOf(user3.address);
       initialBalOwner = await weth.balanceOf(owner.address);
-      initialBalContract = await weth.balanceOf(contract.address);
     });
 
     it('should allow a wallet to mint a token of an existing type', async () => {
       const token = await contract.getTokenById(1);
-
-      await weth.approve(contract.address, token.cost).then((r) => r.wait());
+      await weth
+        .increaseAllowance(contract.address, token.cost)
+        .then((r) => r.wait());
       const tx = await contract.mint(1, 1).then((r) => r.wait());
       checkEvents(tx, 'TokensMinted', ([k, v]) => {
         switch (k) {
@@ -298,8 +299,8 @@ describe('Closet', () => {
             break;
         }
       });
-      expect((await weth.balanceOf(contract.address)).toString()).to.eq(
-        initialBalContract.add(token.cost).toString(),
+      expect(await weth.balanceOf(owner.address)).to.deep.eq(
+        initialBalOwner.add(token.cost),
       );
       expect((await weth.balanceOf(user.address)).toString()).to.eq(
         initialBalUser.sub(token.cost).toString(),
@@ -308,7 +309,9 @@ describe('Closet', () => {
 
     it('should allow minting with revenue sharing', async () => {
       const token = await contract.getTokenById(3);
-      await weth.approve(contract.address, token.cost).then((r) => r.wait());
+      await weth
+        .increaseAllowance(contract.address, token.cost)
+        .then((r) => r.wait());
       const tx = await contract.mint(3, 1).then((r) => r.wait());
       checkEvents(tx, 'TokensMinted', ([k, v]) => {
         switch (k) {
@@ -326,9 +329,10 @@ describe('Closet', () => {
       const revShare = token.revShareAmount[0].mul(
         token.cost.div(token.revShareAmount[1]),
       );
-      expect((await weth.balanceOf(contract.address)).toString()).to.eq(
-        initialBalContract.add(token.cost.sub(revShare)).toString(),
+      expect(await weth.balanceOf(owner.address)).to.deep.eq(
+        initialBalOwner.add(token.cost.sub(revShare)),
       );
+
       expect((await weth.balanceOf(user3.address)).toString()).to.eq(revShare);
       expect((await weth.balanceOf(user.address)).toString()).to.eq(
         initialBalUser.sub(token.cost).toString(),
@@ -339,7 +343,7 @@ describe('Closet', () => {
       const token = await contract.getTokenById(1);
       const token2 = await contract.getTokenById(2);
       await weth
-        .approve(contract.address, token.cost.add(token2.cost.mul(2)))
+        .increaseAllowance(contract.address, token.cost.add(token2.cost.mul(2)))
         .then((r) => r.wait());
       const tx = await contract.mintBatch([1, 2], [1, 2]).then((r) => r.wait());
       checkEvents(tx, 'BatchTokensMinted', ([k, v]) => {
@@ -359,8 +363,8 @@ describe('Closet', () => {
             break;
         }
       });
-      expect((await weth.balanceOf(contract.address)).toString()).to.eq(
-        initialBalContract.add(token.cost.add(token2.cost.mul(2))).toString(),
+      expect(await weth.balanceOf(owner.address)).to.deep.eq(
+        initialBalOwner.add(token.cost).add(token2.cost.mul(2)),
       );
       expect((await weth.balanceOf(user.address)).toString()).to.eq(
         initialBalUser.sub(token.cost.add(token2.cost.mul(2))).toString(),
@@ -371,7 +375,7 @@ describe('Closet', () => {
       const token = await contract.getTokenById(3);
       await weth
         .connect(user2)
-        .approve(contract.address, token.cost)
+        .increaseAllowance(contract.address, token.cost)
         .then((r) => r.wait());
       const tx = await contract
         .connect(user2)
@@ -397,8 +401,8 @@ describe('Closet', () => {
       const revShare = token.revShareAmount[0].mul(
         token.cost.div(token.revShareAmount[1]),
       );
-      expect((await weth.balanceOf(contract.address)).toString()).to.eq(
-        initialBalContract.add(token.cost.sub(revShare)).toString(),
+      expect((await weth.balanceOf(owner.address)).toString()).to.eq(
+        initialBalOwner.add(token.cost.sub(revShare)).toString(),
       );
       expect((await weth.balanceOf(user3.address)).toString()).to.eq(
         initialBalUser3.add(revShare),
@@ -528,13 +532,13 @@ describe('Closet', () => {
         maxTokens: 0,
         active: false,
         maxPerWallet: 0,
-        revShareAddress: contract.address,
+        revShareAddress: owner.address,
         revShareAmount: [0, 0] as [BigNumberish, BigNumberish],
       };
       expect(c.addNewTokenType(token)).to.be.revertedWith(
         'Ownable: caller is not the owner',
       );
-      expect(c.changeToken(1, token)).to.be.revertedWith(
+      expect(c.changeToken({ id: 1, token })).to.be.revertedWith(
         'Ownable: caller is not the owner',
       );
       expect(c.setMaxTokensForWallet(user.address, 1, 0)).to.be.revertedWith(
@@ -559,7 +563,10 @@ describe('Closet', () => {
       );
       await weth
         .connect(user2)
-        .approve(c.address, await c.getTokenById(2).then((t) => t.cost))
+        .increaseAllowance(
+          c.address,
+          await c.getTokenById(2).then((t) => t.cost),
+        )
         .then((r) => r.wait());
       await weth
         .connect(user2)
@@ -576,14 +583,17 @@ describe('Closet', () => {
         revShareAddress,
         revShareAmount,
       } = await contract.getTokenById(2);
-      await contract.connect(owner).changeToken(2, {
-        name,
-        cost,
-        maxTokens,
-        maxPerWallet,
-        revShareAddress,
-        revShareAmount,
-        active: false,
+      await contract.connect(owner).changeToken({
+        id: 2,
+        token: {
+          name,
+          cost,
+          maxTokens,
+          maxPerWallet,
+          revShareAddress,
+          revShareAmount,
+          active: false,
+        },
       });
       expect(c.mint(2, 1)).to.be.revertedWith('Token is inactive');
       expect(c.mintBatch([2], [1])).to.be.revertedWith('Token is inactive');
@@ -591,11 +601,11 @@ describe('Closet', () => {
 
     it('should error if you try to mint ot transfer tokens beyond the maximum allowed', async () => {
       await weth
-        .approve(contract.address, ethers.utils.parseEther('10'))
+        .increaseAllowance(contract.address, ethers.utils.parseEther('10'))
         .then((r) => r.wait());
       await weth
         .connect(user2)
-        .approve(contract.address, ethers.utils.parseEther('10'))
+        .increaseAllowance(contract.address, ethers.utils.parseEther('10'))
         .then((r) => r.wait());
       expect(contract.mint(1, 105)).to.be.revertedWith(
         'Max tokens reached for type',
@@ -696,7 +706,7 @@ describe('Closet', () => {
       expect(sweater.token.maxTokens).to.eq(BigNumber.from(100));
       expect(sweater.token.active).to.eq(true);
       expect(sweater.token.maxPerWallet.toNumber()).to.eq(0);
-      expect(sweater.token.revShareAddress).to.eq(contract.address);
+      expect(sweater.token.revShareAddress).to.eq(owner.address);
       expect(sweater.token.revShareAmount)
         .to.have.length(2)
         .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
@@ -707,7 +717,7 @@ describe('Closet', () => {
       expect(hat.token.maxTokens).to.eq(BigNumber.from(100));
       expect(hat.token.active).to.eq(false);
       expect(hat.token.maxPerWallet.toNumber()).to.eq(0);
-      expect(hat.token.revShareAddress).to.eq(contract.address);
+      expect(hat.token.revShareAddress).to.eq(owner.address);
       expect(hat.token.revShareAmount)
         .to.have.length(2)
         .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
