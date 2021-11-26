@@ -374,11 +374,24 @@ export const Minter = () => {
                 {ethCost === 0 ? 'FREE' : `${ethCost}weth`}
               </span>
             </button>
-            <RatPackSize className='text-center text-sm mt-2' />
-            <p className='mt-4 max-w-lg mx-auto text-sm'>
+            <RatPackSize className='text-sm mt-2' />
+            <p className='my-4 max-w-lg text-sm'>
+              <a
+                href='https://go.awwrats.com/how-to-buy'
+                className='underline'
+                target='_blank'
+                rel='noreferrer'>
+                Need help getting wETH into your wallet?
+              </a>
+            </p>
+            <p className='mt-4 max-w-lg text-sm'>
               You&apos;re going to need a very small amount of matic for your
               transactions. You can get some from{' '}
-              <a href='https://matic.supply/' target='_blank' rel='noreferrer'>
+              <a
+                href='https://matic.supply/'
+                target='_blank'
+                rel='noreferrer'
+                className='underline'>
                 a faucet
               </a>{' '}
               or ask in our discord.

@@ -27,10 +27,8 @@ export const Connect = () => {
   const { provider, network, connected } = useEthers();
   const [addNetworkActive, setAddNetworkActive] = useState<boolean>(false);
   const [chainData, setChainData] = useState<ChainData | null>(null);
-  const [
-    switchChainError,
-    setSwitchChainError,
-  ] = useState<NetworkSwitchError | null>(null);
+  const [switchChainError, setSwitchChainError] =
+    useState<NetworkSwitchError | null>(null);
 
   useEffect(() => {
     let chain_data: ChainData | null = null;
@@ -177,8 +175,7 @@ export const Connect = () => {
     return (
       <button
         className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
-        onClick={connectToMetamask}
-      >
+        onClick={connectToMetamask}>
         Connect to MetaMask
       </button>
     );
@@ -193,8 +190,7 @@ export const Connect = () => {
             <div className='mt-2 text-sm'>
               <button
                 className='px-3 py-2 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light text-sm font-bold'
-                onClick={switchAddPolygonNetwork}
-              >
+                onClick={switchAddPolygonNetwork}>
                 Switch to Polygon
               </button>
               {switchChainError ? (
@@ -214,8 +210,7 @@ export const Connect = () => {
                 href='https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb'
                 target='_blank'
                 className='underline'
-                rel='noreferrer'
-              >
+                rel='noreferrer'>
                 Learn how here.
               </a>
             </p>
@@ -229,8 +224,7 @@ export const Connect = () => {
                 href='https://quickswap-layer2.medium.com/guide-how-to-set-up-custom-matic-mainnet-rpc-for-metamask-transfer-assets-from-l1-to-l2-to-use-3b1e55ccb5cb'
                 target='_blank'
                 className='underline'
-                rel='noreferrer'
-              >
+                rel='noreferrer'>
                 learn more
               </a>
               ).

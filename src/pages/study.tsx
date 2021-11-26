@@ -5,11 +5,7 @@ import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import Study from '~/components/study/Study';
 import studyHeader from '~/assets/images/headers/header-study.jpg';
 
-import React, {
-  useContext,
-  useEffect,
-  useState
-} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import router from 'next/router';
 import { BigNumber } from 'ethers';
 import { EthersContext } from '~/components/context/EthersContext';
@@ -19,7 +15,7 @@ const StudyPage: NextPage = () => {
   const { signer, contract, signerAddr, connected } = useContext(EthersContext);
   const [signerTokenCount, setSignerTokenCount] = useState<number | null>(0);
   const [loading, setLoading] = useState({
-    tokenCount: false
+    tokenCount: false,
   });
 
   // Get all the tokens for an address
@@ -68,22 +64,22 @@ const StudyPage: NextPage = () => {
       </Head>
       <div className='container mx-auto max-w-xl h-screen w-full text-white'>
         <div className='w-full pt-20'>
-          <h1 className='text-4xl mb-2 font-bold'>
-            The Study
-          </h1>
+          <h1 className='text-4xl mb-2 font-bold'>The Study</h1>
           <p className='text-lg mb-8'>
-            A repository of all the stored wisdom of the sewer, just for Aww, Rats token holders.
+            A repository of all the stored wisdom of the sewer, just for Aww,
+            Rats token holders.
           </p>
         </div>
         <div>
           {!signerAddr ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-              <p className="text-lg mb-8">
-                The study is for rats only. Connect your wallet with a rat token to start learning.
+              <p className='text-lg mb-8'>
+                The study is for rats only. Connect your wallet with a rat token
+                to start learning.
               </p>
               <Connect />
             </div>
-          ) : (typeof signerTokenCount === 'number' && signerTokenCount <= 0) ? (
+          ) : typeof signerTokenCount === 'number' && signerTokenCount <= 0 ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
               <h3 className='text-center text-xl font-bold p-4'>
                 The den is currently restricted to Aww, Rats hodlers.
