@@ -9,7 +9,7 @@ import 'tsconfig-paths/register';
 import 'hardhat-watcher';
 import '@openzeppelin/hardhat-upgrades';
 
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { HardhatUserConfig, task, types } from 'hardhat/config';
 import {
   MUMBAI_TESTNET,
@@ -29,6 +29,7 @@ import { cursorTo } from 'readline';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import path from 'path';
 import { Closet } from '~/types';
+import inquirer from 'inquirer';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -305,40 +306,205 @@ task(
 });
 
 task('add-closet-item', 'Add new closet token')
-  .addPositionalParam('tokensFile', 'Array of tokens to seed the contract with')
-  .setAction(async ({ tokensFile }, hre) => {
-    const interval = ratLoader('Adding new tokens');
+  .addOptionalParam('numTokens', 'Number of tokens to generate', 0, types.int)
+  .addOptionalParam(
+    'tokensFile',
+    'Path to local JSON file with an array of Token Objects',
+  )
+  .setAction(async ({ numTokens, tokensFile }, hre) => {
     try {
+      if (!(numTokens || tokensFile)) {
+        throw new Error(
+          'Please supply either a num-tokens or tokens-path array',
+        );
+      }
       const [signer] = await hre.ethers.getSigners();
       const Closet = await hre.ethers.getContractFactory('Closet', signer);
       const closet = Closet.attach(CLOSET_ADDRESS ?? '');
-      const tokens = tokensFile
-        ? JSON.parse((await readFile(path.join(tokensFile))).toString())
-        : [];
-      if (
-        !Array.isArray(tokens) ||
-        !tokens.length ||
-        !tokens.every((token) => isClosetToken(token))
-      ) {
-        throw new Error('Supplied tokens are not valid');
+      let tokens: Token[] = [];
+      let tokenMeta: any[] = [];
+      if (numTokens) {
+        for (let i = 0; i < numTokens; i++) {
+          console.log(`Token #${i + 1}`);
+          const token = await inquirer.prompt([
+            {
+              name: 'name',
+              message: 'What is the token name?',
+            },
+            {
+              name: 'cost',
+              message: 'What is the token cost in eth?',
+              validate: (input: BigNumber) => BigNumber.isBigNumber(input),
+              filter: (input: string) => hre.ethers.utils.parseEther(input),
+            },
+            {
+              name: 'maxTokens',
+              message: 'What is the max tokens?',
+              default: 0,
+            },
+            {
+              name: 'maxPerWallet',
+              message: 'What is the maxPerWallet?',
+              default: 0,
+            },
+            {
+              name: 'active',
+              message: 'Is this token active?',
+              default: false,
+              type: 'confirm',
+            },
+            {
+              name: 'revShareAddress',
+              message: 'What is the rev share address?',
+              default: signer.address,
+            },
+            {
+              name: 'revShareAmount',
+              message: 'What is the rev share amount?',
+              validate: (input: number[]) => {
+                try {
+                  return !!(
+                    input.length == 2 &&
+                    input.every((num) => typeof num === 'number')
+                  );
+                } catch (error) {
+                  return false;
+                }
+              },
+              filter: (input: string) =>
+                input.split(',').map((num) => parseInt(num, 10)),
+              default: '1,1',
+            },
+          ]);
+          tokens.push(token);
+        }
+      }
+
+      if (tokensFile) {
+        const file = JSON.parse(
+          (await readFile(path.join(tokensFile))).toString(),
+        );
+        tokens = file.tokens;
+        tokenMeta = file.meta;
+        if (
+          !Array.isArray(tokens) ||
+          !tokens.length ||
+          !tokens.every((token) => isClosetToken(token))
+        ) {
+          throw new Error('Supplied tokens are not valid');
+        }
       }
       const tx = await closet
         .batchAddNewTokenType(
           tokens.map((token) => ({
             ...token,
-            cost: hre.ethers.utils.parseEther(token.cost),
+            cost: BigNumber.isBigNumber(token.cost)
+              ? token.cost
+              : hre.ethers.utils.parseEther(token.cost as string),
           })),
         )
         .then((r) => r.wait());
       const tokenIds = tx.events
         ?.map((e) =>
           e.event === 'TokenTypeAdded' && e.args?.tokenId && e.args?.token
-            ? { [e.args.token.name]: e.args.tokenId.toString() }
+            ? {
+                [e.args.token.name as string]:
+                  e.args.tokenId.toString() as string,
+              }
             : null,
         )
         .filter((id) => id !== null);
-      clearInterval(interval);
-      console.log();
+
+      if (tokenIds) {
+        if (numTokens) {
+          for (const token of tokenIds) {
+            if (token) {
+              const [[k, v]] = Object.entries(token);
+              console.log(`Token ID: ${v}`);
+              const meta = await inquirer.prompt([
+                {
+                  name: 'image',
+                  message: 'What is the image filename',
+                  filter: (input: string) =>
+                    `https://awwrats.com/images/closet/${
+                      input.includes('.png') ? input : input + '.png'
+                    }`,
+                },
+                {
+                  name: 'description',
+                  message: 'Please enter a description',
+                },
+              ]);
+
+              const attr = await inquirer.prompt([
+                {
+                  name: 'Piece Type',
+                  message: 'What piece type is this?',
+                },
+                {
+                  name: 'Collection',
+                  message: 'What Collection is this?',
+                },
+              ]);
+
+              let sponsored = await inquirer.prompt([
+                {
+                  name: 'isSponsored',
+                  message: 'Is this piece sponsored?',
+                  type: 'confirm',
+                  default: false,
+                },
+              ]);
+
+              if (sponsored.isSponsored) {
+                sponsored = await inquirer.prompt([
+                  {
+                    name: 'Sponsor',
+                    message: 'What is the sponsors name?',
+                  },
+                  {
+                    name: 'Sponsor URL',
+                    message: 'What is the sponsor url',
+                  },
+                ]);
+              }
+
+              await writeFile(
+                path.join(__dirname, '..', 'public', `${v}.json`),
+                JSON.stringify({
+                  name: k,
+                  ...meta,
+                  attributes: [
+                    ...Object.entries(attr).map(([key, val]) => ({
+                      trait_type: key,
+                      value: val,
+                    })),
+                    ...Object.entries(sponsored.Sponsor ? sponsored : {}).map(
+                      ([key, val]) => ({ trait_type: key, value: val }),
+                    ),
+                  ],
+                }),
+              );
+            }
+          }
+        }
+
+        if (tokensFile) {
+          for (const token of tokenIds) {
+            if (token) {
+              const [[k, v]] = Object.entries(token);
+              const meta = tokenMeta.find((m) => m.name === 'k');
+              if (meta) {
+                await writeFile(
+                  path.join(__dirname, '..', 'public', `${v}.json`),
+                  JSON.stringify(meta),
+                );
+              }
+            }
+          }
+        }
+      }
+
       console.log(
         `Added new closet token! TX hash: ${
           tx.transactionHash
@@ -346,7 +512,6 @@ task('add-closet-item', 'Add new closet token')
       );
     } catch (err) {
       console.error(err);
-      clearInterval(interval);
     }
   });
 
