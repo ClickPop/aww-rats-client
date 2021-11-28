@@ -622,6 +622,115 @@ task(
   }
 });
 
+task('change-closet-token', 'Change a closet token')
+  .addPositionalParam('tokenId', 'The token ID to change')
+  .setAction(async ({ tokenId }, hre) => {
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    const token = await closet.getTokenById(tokenId);
+    const newToken = await inquirer.prompt([
+      {
+        name: 'name',
+        message: 'What is the token name?',
+        default: token.name,
+      },
+      {
+        name: 'cost',
+        message: 'What is the token cost in eth?',
+        validate: (input: BigNumber) => BigNumber.isBigNumber(input),
+        filter: (input: string) => hre.ethers.utils.parseEther(input),
+        default: hre.ethers.utils.formatEther(token.cost.toString()),
+      },
+      {
+        name: 'maxTokens',
+        message: 'What is the max tokens?',
+        default: token.maxTokens.toString(),
+      },
+      {
+        name: 'maxPerWallet',
+        message: 'What is the maxPerWallet?',
+        default: token.maxPerWallet.toString(),
+      },
+      {
+        name: 'active',
+        message: 'Is this token active?',
+        default: token.active,
+        type: 'confirm',
+      },
+      {
+        name: 'revShareAddress',
+        message: 'What is the rev share address?',
+        default: token.revShareAddress,
+      },
+      {
+        name: 'revShareAmount',
+        message: 'What is the rev share amount?',
+        validate: (input: number[]) => {
+          try {
+            return !!(
+              input.length == 2 && input.every((num) => typeof num === 'number')
+            );
+          } catch (error) {
+            return false;
+          }
+        },
+        filter: (input: string) =>
+          input.split(',').map((num) => parseInt(num, 10)),
+        default: token.revShareAmount.join(','),
+      },
+    ]);
+
+    const tx = await closet.changeToken({ id: tokenId, token: newToken });
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
+task('closet-promo-mint', 'Mint and transfer tokens')
+  .addPositionalParam(
+    'wallet',
+    'The wallet to transfer the tokens to after minting',
+  )
+  .addPositionalParam(
+    'tokenIds',
+    'The tokens to mint, comma separated with no spaces',
+  )
+  .addPositionalParam(
+    'amounts',
+    'The amounts of each token, comma separated with no spaces (If you are using the same amount for all just provide one amount)',
+  )
+  .setAction(async ({ wallet, tokenIds, amounts }, hre) => {
+    const ids = tokenIds.split(',');
+    const amnts = amounts.split(',');
+    console.log('Setting up env');
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const Weth = await hre.ethers.getContractFactory('ERC20', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    const weth = Weth.attach(await closet.erc20());
+    console.log('Checking ERC20 allowance');
+    const totalCost = (await closet.getAllTokens())
+      .filter((t) => ids.includes(t.id.toString()))
+      .map((t) => t.token.cost)
+      .reduce((acc, curr) => acc.add(curr));
+    const allowance = await weth.allowance(signer.address, closet.address);
+    if (allowance.lt(totalCost)) {
+      await weth
+        .increaseAllowance(closet.address, totalCost.sub(allowance))
+        .then((t) => t.wait());
+    }
+    console.log('Handle minting');
+
+    if (ids.length !== amnts.length && amnts.length !== 1) {
+      throw new Error('Mismatched tokenIds and amounts length');
+    }
+    const tx = await closet.promoMint(
+      ids,
+      amnts.length === 1 ? ids.map(() => amnts[0]) : amnts,
+      wallet,
+    );
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
 const formatToken = (token: Token, hre: HardhatRuntimeEnvironment) => ({
   name: token.name,
   active: token.active,
