@@ -30,6 +30,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import path from 'path';
 import { Closet } from '~/types';
 import inquirer from 'inquirer';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -536,6 +537,100 @@ task(
       console.error(err);
     }
   });
+
+task(
+  'closet-public-call',
+  'Call a public method on the closet contract',
+).setAction(async (_, hre) => {
+  const [signer] = await hre.ethers.getSigners();
+  const Closet = await hre.ethers.getContractFactory('Closet', signer);
+  const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+  const { methods }: { methods: string[] } = await inquirer.prompt([
+    {
+      name: 'methods',
+      type: 'checkbox',
+      choices: [
+        'getAllTokenIds',
+        'getAllTokens',
+        'getActiveTokens',
+        'getTokensByWallet',
+        'getTokenById',
+      ],
+      message: 'Please select the methods to run:',
+    },
+  ]);
+  for (const method of methods) {
+    switch (method) {
+      case 'getAllTokenIds':
+        const ids = await closet.getAllTokenIds();
+        console.log(
+          `${method}:`,
+          ids.map((id) => id.toString()),
+        );
+        break;
+      case 'getAllTokens':
+        const tokens = await closet.getAllTokens();
+        console.log(
+          `${method}:`,
+          tokens.map(({ id, token }) => ({
+            id: id.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getActiveTokens':
+        const activeTokens = await closet.getActiveTokens();
+        console.log(
+          `${method}:`,
+          activeTokens.map(({ id, token }) => ({
+            id: id.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getTokensByWallet':
+        const { wallet }: { wallet: string } = await inquirer.prompt([
+          {
+            name: 'wallet',
+            message: 'What is the wallet you want to check?',
+            validate: (input: string) => hre.ethers.utils.isAddress(input),
+          },
+        ]);
+        const walletTokens = await closet.getTokensByWallet(wallet);
+        console.log(
+          `${method}:`,
+          walletTokens.map(({ id, token, amount }) => ({
+            id: id.toString(),
+            amount: amount.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getTokenById':
+        const { id }: { id: string } = await inquirer.prompt([
+          {
+            name: 'id',
+            message: 'What is the id you want to check?',
+          },
+        ]);
+        const token = await closet.getTokenById(id);
+        console.log(`${method}:`, formatToken(token, hre));
+        break;
+      default:
+        break;
+    }
+  }
+});
+
+const formatToken = (token: Token, hre: HardhatRuntimeEnvironment) => ({
+  name: token.name,
+  active: token.active,
+  maxTokens: token.maxTokens.toString(),
+  maxPerWallet: token.maxPerWallet.toString(),
+  cost: hre.ethers.utils.formatEther(token.cost),
+  revShareAddress: token.revShareAddress,
+  revShareAmount: token.revShareAmount.map((a) => a.toString()),
+});
 
 type Token = {
   name: string;
