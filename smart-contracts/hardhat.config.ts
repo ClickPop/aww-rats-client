@@ -622,6 +622,41 @@ task(
   }
 });
 
+task('closet-update-token-uri', 'Update the closet token URI')
+  .addOptionalPositionalParam(
+    'newUri',
+    'New Token URI (Must include {id} to substitute the token id)',
+  )
+  .setAction(async ({ newUri }, hre) => {
+    if (newUri && !newUri.includes('{id}')) {
+      throw new Error('New URI must include {id} to be used for substitution');
+    }
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    let answer: { uri: string } = { uri: '' };
+    if (!newUri) {
+      answer = await inquirer.prompt([
+        {
+          name: 'uri',
+          message: 'What is the new URI?',
+          validate: (input: string) =>
+            input.includes('{id}') ||
+            'New URI must include {id} to be used for substitution',
+        },
+      ]);
+    }
+
+    if (!answer.uri && !newUri) {
+      throw new Error(
+        'Must either supply the newUri cli arg or fill in the prompt',
+      );
+    }
+
+    const tx = await closet.setUri(newUri || answer.uri);
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
 task('change-closet-token', 'Change a closet token')
   .addPositionalParam('tokenId', 'The token ID to change')
   .setAction(async ({ tokenId }, hre) => {
