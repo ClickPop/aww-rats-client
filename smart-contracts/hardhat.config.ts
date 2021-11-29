@@ -7,7 +7,9 @@ import '@typechain/hardhat';
 import '@nomiclabs/hardhat-ethers';
 import 'tsconfig-paths/register';
 import 'hardhat-watcher';
+import '@openzeppelin/hardhat-upgrades';
 
+import { readFile, writeFile } from 'fs/promises';
 import { HardhatUserConfig, task, types } from 'hardhat/config';
 import {
   MUMBAI_TESTNET,
@@ -18,11 +20,17 @@ import {
   WETH_CONTRACT_ADDRESS,
   ETHERSCAN_API_KEY,
   DEFAULT_TOKEN_URI,
+  CLOSET_ADDRESS,
 } from './src/config/env';
 import { ContractFactory } from '@ethersproject/contracts';
 import { parseEther } from '@ethersproject/units';
 import axios from 'axios';
 import { cursorTo } from 'readline';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import path from 'path';
+import { Closet } from '~/types';
+import inquirer from 'inquirer';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -50,13 +58,7 @@ const ratLoader = (msg: string, interval?: number) => {
   }, interval ?? 250);
 };
 
-task('deploy', 'Deploy contract to the blockchain')
-  .addPositionalParam(
-    'contractName',
-    'Contract to deploy (This is case sensitive, use the same name of the contract)',
-    'Rat',
-    types.string,
-  )
+task('deploy-rat', 'Deploy contract to the blockchain')
   .addPositionalParam(
     'name',
     'Name to pass to the contract constructor',
@@ -117,7 +119,7 @@ task('deploy', 'Deploy contract to the blockchain')
         }
         const [owner] = await ethers.getSigners();
         const Rat = (await ethers.getContractFactory(
-          contractName,
+          'Rat',
           owner,
         )) as ContractFactory;
         const rat = await Rat.deploy(
@@ -137,6 +139,49 @@ task('deploy', 'Deploy contract to the blockchain')
       }
     },
   );
+
+task('deploy-closet', 'Deploy closet contract')
+  .addOptionalParam('tokensFile', 'Array of tokens to seed the contract with')
+  .addOptionalParam(
+    'tokenAddress',
+    'Address of the ERC-20 contract we are using for accepting payments',
+  )
+  .setAction(async ({ tokenAddress, tokensFile }, hre) => {
+    const interval = ratLoader('Deploying Closet Contract');
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const tokens = tokensFile
+        ? JSON.parse((await readFile(path.join(tokensFile))).toString())
+        : [];
+      if (!(tokenAddress ?? WETH_CONTRACT_ADDRESS)) {
+        throw new Error(
+          'Either supply an ERC20 token address, or set the WETH_CONTRACT_ADDRESS value in your env',
+        );
+      }
+      if (
+        !Array.isArray(tokens) ||
+        !tokens.every((token) => isClosetToken(token))
+      ) {
+        throw new Error('Supplied tokens are not valid');
+      }
+      const closet = (await hre.upgrades
+        .deployProxy(Closet)
+        .then((c) => c.deployed())) as Closet;
+      await closet
+        .changeERC20Contract(tokenAddress ?? WETH_CONTRACT_ADDRESS)
+        .then((t) => t.wait());
+      if (tokens.length) {
+        await closet.batchAddNewTokenType(tokens).then((t) => t.wait());
+      }
+      clearInterval(interval);
+      console.log();
+      console.log(`Deployed closet! Closet address: ${closet.address}`);
+    } catch (err) {
+      console.error(err);
+      clearInterval(interval);
+    }
+  });
 
 task(
   'update-contract-uri',
@@ -261,6 +306,534 @@ task(
   }
 });
 
+task('add-closet-item', 'Add new closet token')
+  .addOptionalParam('numTokens', 'Number of tokens to generate', 0, types.int)
+  .addOptionalParam(
+    'tokensFile',
+    'Path to local JSON file with an array of Token Objects',
+  )
+  .setAction(async ({ numTokens, tokensFile }, hre) => {
+    try {
+      if (!(numTokens || tokensFile)) {
+        throw new Error(
+          'Please supply either a num-tokens or tokens-path array',
+        );
+      }
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+      let tokens: Token[] = [];
+      let tokenMeta: any[] = [];
+      if (numTokens) {
+        for (let i = 0; i < numTokens; i++) {
+          console.log(`Token #${i + 1}`);
+          const token = await inquirer.prompt([
+            {
+              name: 'name',
+              message: 'What is the token name?',
+            },
+            {
+              name: 'cost',
+              message: 'What is the token cost in eth?',
+              validate: (input: BigNumber) => BigNumber.isBigNumber(input),
+              filter: (input: string) => hre.ethers.utils.parseEther(input),
+            },
+            {
+              name: 'maxTokens',
+              message: 'What is the max tokens?',
+              default: 0,
+            },
+            {
+              name: 'maxPerWallet',
+              message: 'What is the maxPerWallet?',
+              default: 0,
+            },
+            {
+              name: 'active',
+              message: 'Is this token active?',
+              default: false,
+              type: 'confirm',
+            },
+            {
+              name: 'revShareAddress',
+              message: 'What is the rev share address?',
+              default: signer.address,
+            },
+            {
+              name: 'revShareAmount',
+              message: 'What is the rev share amount?',
+              validate: (input: number[]) => {
+                try {
+                  return !!(
+                    input.length == 2 &&
+                    input.every((num) => typeof num === 'number')
+                  );
+                } catch (error) {
+                  return false;
+                }
+              },
+              filter: (input: string) =>
+                input.split(',').map((num) => parseInt(num, 10)),
+              default: '1,1',
+            },
+          ]);
+          tokens.push(token);
+        }
+      }
+
+      if (tokensFile) {
+        const file = JSON.parse(
+          (await readFile(path.join(tokensFile))).toString(),
+        );
+        tokens = file.tokens;
+        tokenMeta = file.meta;
+        if (
+          !Array.isArray(tokens) ||
+          !tokens.length ||
+          !tokens.every((token) => isClosetToken(token))
+        ) {
+          throw new Error('Supplied tokens are not valid');
+        }
+      }
+      const tx = await closet
+        .batchAddNewTokenType(
+          tokens.map((token) => ({
+            ...token,
+            cost: BigNumber.isBigNumber(token.cost)
+              ? token.cost
+              : hre.ethers.utils.parseEther(token.cost as string),
+          })),
+        )
+        .then((r) => r.wait());
+      const tokenIds = tx.events
+        ?.map((e) =>
+          e.event === 'TokenTypeAdded' && e.args?.tokenId && e.args?.token
+            ? {
+                [e.args.token.name as string]:
+                  e.args.tokenId.toString() as string,
+              }
+            : null,
+        )
+        .filter((id) => id !== null);
+
+      if (tokenIds) {
+        if (numTokens) {
+          for (const token of tokenIds) {
+            if (token) {
+              const [[k, v]] = Object.entries(token);
+              console.log(`Token ID: ${v}`);
+              const meta = await inquirer.prompt([
+                {
+                  name: 'image',
+                  message: 'What is the image filename',
+                  filter: (input: string) =>
+                    `https://awwrats.com/images/closet/${
+                      input.includes('.png') ? input : input + '.png'
+                    }`,
+                },
+                {
+                  name: 'description',
+                  message: 'Please enter a description',
+                },
+              ]);
+
+              const attr = await inquirer.prompt([
+                {
+                  name: 'Piece Type',
+                  message: 'What piece type is this?',
+                },
+                {
+                  name: 'Collection',
+                  message: 'What Collection is this?',
+                },
+              ]);
+
+              let sponsored = await inquirer.prompt([
+                {
+                  name: 'isSponsored',
+                  message: 'Is this piece sponsored?',
+                  type: 'confirm',
+                  default: false,
+                },
+              ]);
+
+              if (sponsored.isSponsored) {
+                sponsored = await inquirer.prompt([
+                  {
+                    name: 'Sponsor',
+                    message: 'What is the sponsors name?',
+                  },
+                  {
+                    name: 'Sponsor URL',
+                    message: 'What is the sponsor url',
+                  },
+                ]);
+              }
+
+              await writeFile(
+                path.join(__dirname, '..', 'public', `${v}.json`),
+                JSON.stringify({
+                  name: k,
+                  ...meta,
+                  attributes: [
+                    ...Object.entries(attr).map(([key, val]) => ({
+                      trait_type: key,
+                      value: val,
+                    })),
+                    ...Object.entries(sponsored.Sponsor ? sponsored : {}).map(
+                      ([key, val]) => ({ trait_type: key, value: val }),
+                    ),
+                  ],
+                }),
+              );
+            }
+          }
+        }
+
+        if (tokensFile) {
+          for (const token of tokenIds) {
+            if (token) {
+              const [[k, v]] = Object.entries(token);
+              const meta = tokenMeta.find((m) => m.name === 'k');
+              if (meta) {
+                await writeFile(
+                  path.join(__dirname, '..', 'public', `${v}.json`),
+                  JSON.stringify(meta),
+                );
+              }
+            }
+          }
+        }
+      }
+
+      console.log(
+        `Added new closet token! TX hash: ${
+          tx.transactionHash
+        }. Token ID's: ${JSON.stringify(tokenIds)}`,
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+task(
+  'update-closet-erc20-address',
+  'Update the address for the ERC-20 contract we use for payments',
+)
+  .addPositionalParam(
+    'address',
+    'The address of the ERC-20 token to use for accepting payment',
+  )
+  .setAction(async ({ address }, hre) => {
+    try {
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+      const tx = await closet
+        .changeERC20Contract(address)
+        .then((t) => t.wait());
+      console.log('Transaction Hash:', tx.transactionHash);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+task(
+  'closet-public-call',
+  'Call a public method on the closet contract',
+).setAction(async (_, hre) => {
+  const [signer] = await hre.ethers.getSigners();
+  const Closet = await hre.ethers.getContractFactory('Closet', signer);
+  const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+  const { methods }: { methods: string[] } = await inquirer.prompt([
+    {
+      name: 'methods',
+      type: 'checkbox',
+      choices: [
+        'getAllTokenIds',
+        'getAllTokens',
+        'getActiveTokens',
+        'getTokensByWallet',
+        'getTokenById',
+      ],
+      message: 'Please select the methods to run:',
+    },
+  ]);
+  for (const method of methods) {
+    switch (method) {
+      case 'getAllTokenIds':
+        const ids = await closet.getAllTokenIds();
+        console.log(
+          `${method}:`,
+          ids.map((id) => id.toString()),
+        );
+        break;
+      case 'getAllTokens':
+        const tokens = await closet.getAllTokens();
+        console.log(
+          `${method}:`,
+          tokens.map(({ id, token }) => ({
+            id: id.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getActiveTokens':
+        const activeTokens = await closet.getActiveTokens();
+        console.log(
+          `${method}:`,
+          activeTokens.map(({ id, token }) => ({
+            id: id.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getTokensByWallet':
+        const { wallet }: { wallet: string } = await inquirer.prompt([
+          {
+            name: 'wallet',
+            message: 'What is the wallet you want to check?',
+            validate: (input: string) => hre.ethers.utils.isAddress(input),
+          },
+        ]);
+        const walletTokens = await closet.getTokensByWallet(wallet);
+        console.log(
+          `${method}:`,
+          walletTokens.map(({ id, token, amount }) => ({
+            id: id.toString(),
+            amount: amount.toString(),
+            token: formatToken(token, hre),
+          })),
+        );
+        break;
+      case 'getTokenById':
+        const { id }: { id: string } = await inquirer.prompt([
+          {
+            name: 'id',
+            message: 'What is the id you want to check?',
+          },
+        ]);
+        const token = await closet.getTokenById(id);
+        console.log(`${method}:`, formatToken(token, hre));
+        break;
+      default:
+        break;
+    }
+  }
+});
+
+task('closet-update-token-uri', 'Update the closet token URI')
+  .addOptionalPositionalParam(
+    'newUri',
+    'New Token URI (Must include {id} to substitute the token id)',
+  )
+  .setAction(async ({ newUri }, hre) => {
+    if (newUri && !newUri.includes('{id}')) {
+      throw new Error('New URI must include {id} to be used for substitution');
+    }
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    let answer: { uri: string } = { uri: '' };
+    if (!newUri) {
+      answer = await inquirer.prompt([
+        {
+          name: 'uri',
+          message: 'What is the new URI?',
+          validate: (input: string) =>
+            input.includes('{id}') ||
+            'New URI must include {id} to be used for substitution',
+        },
+      ]);
+    }
+
+    if (!answer.uri && !newUri) {
+      throw new Error(
+        'Must either supply the newUri cli arg or fill in the prompt',
+      );
+    }
+
+    const tx = await closet.setUri(newUri || answer.uri);
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
+task('change-closet-token', 'Change a closet token')
+  .addPositionalParam('tokenId', 'The token ID to change')
+  .setAction(async ({ tokenId }, hre) => {
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    const token = await closet.getTokenById(tokenId);
+    const newToken = await inquirer.prompt([
+      {
+        name: 'name',
+        message: 'What is the token name?',
+        default: token.name,
+      },
+      {
+        name: 'cost',
+        message: 'What is the token cost in eth?',
+        validate: (input: BigNumber) => BigNumber.isBigNumber(input),
+        filter: (input: string) => hre.ethers.utils.parseEther(input),
+        default: hre.ethers.utils.formatEther(token.cost.toString()),
+      },
+      {
+        name: 'maxTokens',
+        message: 'What is the max tokens?',
+        default: token.maxTokens.toString(),
+      },
+      {
+        name: 'maxPerWallet',
+        message: 'What is the maxPerWallet?',
+        default: token.maxPerWallet.toString(),
+      },
+      {
+        name: 'active',
+        message: 'Is this token active?',
+        default: token.active,
+        type: 'confirm',
+      },
+      {
+        name: 'revShareAddress',
+        message: 'What is the rev share address?',
+        default: token.revShareAddress,
+      },
+      {
+        name: 'revShareAmount',
+        message: 'What is the rev share amount?',
+        validate: (input: number[]) => {
+          try {
+            return !!(
+              input.length == 2 && input.every((num) => typeof num === 'number')
+            );
+          } catch (error) {
+            return false;
+          }
+        },
+        filter: (input: string) =>
+          input.split(',').map((num) => parseInt(num, 10)),
+        default: token.revShareAmount.join(','),
+      },
+    ]);
+
+    const tx = await closet.changeToken({ id: tokenId, token: newToken });
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+task(
+  'change-closet-tokens-status',
+  'Change the closet tokens status to either active or inactive',
+)
+  .addOptionalPositionalParam(
+    'tokenIds',
+    'A JSON array of token ids to change',
+    [],
+    types.json,
+  )
+  .addOptionalPositionalParam(
+    'status',
+    'The status to set for those tokens',
+    false,
+    types.boolean,
+  )
+  .setAction(async ({ tokenIds, status }, hre) => {
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    if (!Array.isArray(tokenIds)) {
+      throw new Error('tokenIds must be an array');
+    }
+    const tx = await closet.setTokensStatus(tokenIds, status);
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
+task('closet-promo-mint', 'Mint and transfer tokens')
+  .addPositionalParam(
+    'wallet',
+    'The wallet to transfer the tokens to after minting',
+  )
+  .addPositionalParam(
+    'tokenIds',
+    'The tokens to mint, comma separated with no spaces',
+  )
+  .addPositionalParam(
+    'amounts',
+    'The amounts of each token, comma separated with no spaces (If you are using the same amount for all just provide one amount)',
+  )
+  .setAction(async ({ wallet, tokenIds, amounts }, hre) => {
+    const ids = tokenIds.split(',');
+    const amnts = amounts.split(',');
+    console.log('Setting up env');
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const Weth = await hre.ethers.getContractFactory('ERC20', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    const weth = Weth.attach(await closet.erc20());
+    console.log('Checking ERC20 allowance');
+    const totalCost = (await closet.getAllTokens())
+      .filter((t) => ids.includes(t.id.toString()))
+      .map((t) => t.token.cost)
+      .reduce((acc, curr) => acc.add(curr));
+    const allowance = await weth.allowance(signer.address, closet.address);
+    if (allowance.lt(totalCost)) {
+      await weth
+        .increaseAllowance(closet.address, totalCost.sub(allowance))
+        .then((t) => t.wait());
+    }
+    console.log('Handle minting');
+
+    if (ids.length !== amnts.length && amnts.length !== 1) {
+      throw new Error('Mismatched tokenIds and amounts length');
+    }
+    const tx = await closet.promoMint(
+      ids,
+      amnts.length === 1 ? ids.map(() => amnts[0]) : amnts,
+      wallet,
+    );
+    console.log(`Tx hash: ${tx.hash}`);
+  });
+
+const formatToken = (token: Token, hre: HardhatRuntimeEnvironment) => ({
+  name: token.name,
+  active: token.active,
+  maxTokens: token.maxTokens.toString(),
+  maxPerWallet: token.maxPerWallet.toString(),
+  cost: hre.ethers.utils.formatEther(token.cost),
+  revShareAddress: token.revShareAddress,
+  revShareAmount: token.revShareAmount.map((a) => a.toString()),
+});
+
+type Token = {
+  name: string;
+  cost: BigNumberish;
+  maxTokens: BigNumberish;
+  maxPerWallet: BigNumberish;
+  active: boolean;
+  revShareAddress: string;
+  revShareAmount: [BigNumberish, BigNumberish];
+};
+
+const isClosetToken = (token: any): token is Token =>
+  (token instanceof Object &&
+    typeof token.name == 'string' &&
+    typeof token.cost === 'number') ||
+  typeof token.cost === 'string' ||
+  (BigNumber.isBigNumber(token.cost) && typeof token.maxTokens === 'number') ||
+  typeof token.maxTokens === 'string' ||
+  (BigNumber.isBigNumber(token.maxTokens) &&
+    typeof token.maxPerWallet === 'number') ||
+  typeof token.maxPerWallet === 'string' ||
+  (BigNumber.isBigNumber(token.maxPerWallet) &&
+    typeof token.active == 'boolean' &&
+    typeof token.revShareAddress == 'string' &&
+    Array.isArray(token.revShareAmount) &&
+    token.revShareAmount.length == 2 &&
+    typeof token.revShareAmount[0] === 'number') ||
+  typeof token.revShareAmount[0] === 'string' ||
+  (BigNumber.isBigNumber(token.revShareAmount[0]) &&
+    typeof token.revShareAmount[1] === 'number') ||
+  typeof token.revShareAmount[1] === 'string' ||
+  BigNumber.isBigNumber(token.revShareAmount[1]);
+
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -273,6 +846,7 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
+        runs: 100,
       },
     },
   },
@@ -280,7 +854,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       initialBaseFeePerGas: 0, // workaround from https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136 . Remove when that issue is closed.
     },
-    polygonTest: {
+    mumbai: {
       url: MUMBAI_TESTNET,
       chainId: MUMBAI_TESTNET_CHAIN_ID,
       accounts: [PRIVATE_KEY].filter((k) => k !== undefined) as string[],

@@ -1,21 +1,6 @@
 import { fabric } from 'fabric';
-import { Canvas, ICanvasOptions, StaticCanvas } from 'fabric/fabric-impl';
 import { useState, useEffect } from 'react';
-
-type CombinedCanvas = fabric.StaticCanvas | fabric.Canvas;
-
-type CombinedCanvasNullable = CombinedCanvas | null;
-
-export type CanvasOpts = {
-  canvasType: 'Canvas' | 'StaticCanvas';
-  element: string | HTMLCanvasElement | null;
-  canvasOptions?: ICanvasOptions;
-  scaledSize?: {
-    height?: number;
-    width?: number;
-  };
-  onMount?: (canvas: CombinedCanvas) => void;
-};
+import { CanvasOpts, CombinedCanvasNullable } from '~/types';
 
 export const useCanvas = ({
   canvasType,
