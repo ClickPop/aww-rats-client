@@ -54,8 +54,8 @@ const defaultClosetContext: ClosetContextType = {
   getBase64Image: async () => {},
   loadedTokens: [],
   setLoadedTokens: () => {},
-  mintedCount: {},
-  ownedCount: {},
+  tokenCounts: { minted: {}, owned: {} },
+  setTokenCounts: () => {},
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
@@ -89,8 +89,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
     [closetPieces],
   );
 
-  const [mintedCount, setMintedCount] = useState<Record<string, BigNumber>>({});
-  const [ownedCount, setOwnedCount] = useState<Record<string, BigNumber>>({});
+  const [tokenCounts, setTokenCounts] = useState<{
+    minted: Record<string, BigNumber>;
+    owned: Record<string, BigNumber>;
+  }>({ minted: {}, owned: {} });
 
   useEffect(() => {
     (async () => {
@@ -108,8 +110,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
             for (const token of closetTokens) {
               const total = await closet.totalSupply(token.id);
               const bal = await closet.balanceOf(signerAddr, token.id);
-              setMintedCount((m) => ({ ...m, [token.id.toString()]: total }));
-              setOwnedCount((o) => ({ ...o, [token.id.toString()]: bal }));
+              setTokenCounts((c) => ({
+                minted: { ...c.minted, [token.id.toString()]: total },
+                owned: { ...c.owned, [token.id.toString()]: bal },
+              }));
               const meta = (await fetch(
                 uri.replace('{id}', token.id.toString()),
               ).then((r) => r.json())) as Metadata;
@@ -350,8 +354,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
         getBase64Image,
         loadedTokens,
         setLoadedTokens,
-        ownedCount,
-        mintedCount,
+        tokenCounts,
+        setTokenCounts,
       }}>
       {children}
     </ClosetContext.Provider>
