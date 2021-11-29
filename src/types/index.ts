@@ -90,6 +90,8 @@ export interface ClosetContextType {
   getBase64Image: (file: Blob) => Promise<any | Error>;
   loadedTokens: string[];
   setLoadedTokens: Dispatch<SetStateAction<string[]>>;
+  mintedCount: Record<string, BigNumber>;
+  ownedCount: Record<string, BigNumber>;
 }
 
 export type CombinedCanvas = fabric.StaticCanvas | fabric.Canvas;

@@ -29,6 +29,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     loadedTokens,
     setLoadedTokens,
     setOwnedItems,
+    mintedCount,
+    ownedCount,
   } = useContext(ClosetContext);
 
   const ownedItem = ownedItems[piece.id.toString()];
@@ -41,9 +43,6 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     (!tokenMaxReached || noMaxTokens) &&
     (!walletMaxReached || noWalletMax) &&
     piece.token.active;
-
-  const [mintedCount, setMintedCount] = useState(BigNumber.from(0));
-  const [ownedCount, setOwnedCount] = useState(BigNumber.from(0));
 
   const approveWeth = async () => {
     if (closet && signer && signerAddr && provider) {
@@ -66,17 +65,6 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       }
     }
   };
-
-  useEffect(() => {
-    const getTokenAmount = async () => {
-      if (closet && signerAddr) {
-        setMintedCount(await closet.totalSupply(piece.id));
-        setOwnedCount(await closet.balanceOf(signerAddr, piece.id));
-      }
-    };
-
-    getTokenAmount();
-  }, [closet, signerAddr, piece.id]);
 
   const handleMint = async () => {
     if (closet) {
@@ -152,13 +140,15 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         )}
         {piece.token.maxTokens.gt(0) && (
           <p className='supply block text-sm italic'>
-            {piece.token.maxTokens.sub(mintedCount).toString()} of{' '}
-            {piece.token.maxTokens.toString()} left
+            {piece.token.maxTokens
+              .sub(mintedCount[piece.id.toString()])
+              .toString()}{' '}
+            of {piece.token.maxTokens.toString()} left
           </p>
         )}
         {piece.token.maxPerWallet.gt(0) && (
           <p className='supply block text-sm italic'>
-            {ownedCount.toString()} minted of{' '}
+            {ownedCount[piece.id.toString()].toString()} minted of{' '}
             {piece.token.maxPerWallet.toString()}
           </p>
         )}

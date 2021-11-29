@@ -11,7 +11,7 @@ import { ClosetMirror } from '~/components/closet/ClosetMirror';
 const Closet = () => {
   const router = useRouter();
   const { connected } = useContext(EthersContext);
-  const { currentRat, loading, canvas, tryOnClothes, tokenProgress } =
+  const { currentRat, loading, canvas, tokenProgress } =
     useContext(ClosetContext);
   return (
     <div className='max-w-7xl mx-auto pt-20 pb-4'>
