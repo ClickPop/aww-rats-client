@@ -719,6 +719,32 @@ task('change-closet-token', 'Change a closet token')
     const tx = await closet.changeToken({ id: tokenId, token: newToken });
     console.log(`Tx hash: ${tx.hash}`);
   });
+task(
+  'change-closet-tokens-status',
+  'Change the closet tokens status to either active or inactive',
+)
+  .addOptionalPositionalParam(
+    'tokenIds',
+    'A JSON array of token ids to change',
+    [],
+    types.json,
+  )
+  .addOptionalPositionalParam(
+    'status',
+    'The status to set for those tokens',
+    false,
+    types.boolean,
+  )
+  .setAction(async ({ tokenIds, status }, hre) => {
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+    if (!Array.isArray(tokenIds)) {
+      throw new Error('tokenIds must be an array');
+    }
+    const tx = await closet.setTokensStatus(tokenIds, status);
+    console.log(`Tx hash: ${tx.hash}`);
+  });
 
 task('closet-promo-mint', 'Mint and transfer tokens')
   .addPositionalParam(
