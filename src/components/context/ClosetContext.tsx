@@ -99,11 +99,12 @@ export const ClosetContextProvider: FC = ({ children }) => {
           }
           if (closet) {
             const tokens = await closet.getActiveTokens();
+            const uri = await closet.uri(1);
             const tokenObject: Record<string, ClosetTokenWithMeta> = {};
             for (const token of tokens) {
-              const meta = (await fetch(`/closet/${token.id}.json`).then((r) =>
-                r.json(),
-              )) as Metadata;
+              const meta = (await fetch(
+                uri.replace('{id}', token.id.toString()),
+              ).then((r) => r.json())) as Metadata;
               const pieceType = meta.attributes.find(
                 (a) => a.trait_type === 'Piece Type',
               )?.value;
