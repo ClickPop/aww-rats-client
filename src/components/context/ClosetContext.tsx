@@ -94,6 +94,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
           setLoading((l) => ({ ...l, tokens: true }));
           if (contract) {
             const tokens = await contract.getTokensByOwner(signerAddr);
+            console.log(tokens.map((t) => t.toString()));
             setSignerTokens(tokens);
           }
           if (closet) {

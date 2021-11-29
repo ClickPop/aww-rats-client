@@ -382,6 +382,7 @@ task('add-closet-item', 'Add new closet token')
       }
 
       if (tokensFile) {
+        console.log('Reading json file');
         const file = JSON.parse(
           (await readFile(path.join(tokensFile))).toString(),
         );
@@ -395,6 +396,7 @@ task('add-closet-item', 'Add new closet token')
           throw new Error('Supplied tokens are not valid');
         }
       }
+      console.log('Sending tokens to contract');
       const tx = await closet
         .batchAddNewTokenType(
           tokens.map((token) => ({
@@ -415,7 +417,11 @@ task('add-closet-item', 'Add new closet token')
             : null,
         )
         .filter((id) => id !== null);
-
+      console.log(
+        `Added new closet token! TX hash: ${
+          tx.transactionHash
+        }. Token ID's: ${JSON.stringify(tokenIds)}`,
+      );
       if (tokenIds) {
         if (numTokens) {
           for (const token of tokenIds) {
@@ -469,9 +475,25 @@ task('add-closet-item', 'Add new closet token')
                   },
                 ]);
               }
-
+              console.log(
+                `Writing file to ${path.join(
+                  __dirname,
+                  '..',
+                  'public',
+                  'closet',
+                  hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
+                  `${v}.json`,
+                )}`,
+              );
               await writeFile(
-                path.join(__dirname, '..', 'public', `${v}.json`),
+                path.join(
+                  __dirname,
+                  '..',
+                  'public',
+                  'closet',
+                  hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
+                  `${v}.json`,
+                ),
                 JSON.stringify({
                   name: k,
                   ...meta,
@@ -496,8 +518,25 @@ task('add-closet-item', 'Add new closet token')
               const [[k, v]] = Object.entries(token);
               const meta = tokenMeta.find((m) => m.name === 'k');
               if (meta) {
+                console.log(
+                  `Writing file to ${path.join(
+                    __dirname,
+                    '..',
+                    'public',
+                    'closet',
+                    hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
+                    `${v}.json`,
+                  )}`,
+                );
                 await writeFile(
-                  path.join(__dirname, '..', 'public', `${v}.json`),
+                  path.join(
+                    __dirname,
+                    '..',
+                    'public',
+                    'closet',
+                    hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
+                    `${v}.json`,
+                  ),
                   JSON.stringify(meta),
                 );
               }
@@ -505,12 +544,6 @@ task('add-closet-item', 'Add new closet token')
           }
         }
       }
-
-      console.log(
-        `Added new closet token! TX hash: ${
-          tx.transactionHash
-        }. Token ID's: ${JSON.stringify(tokenIds)}`,
-      );
     } catch (err) {
       console.error(err);
     }
@@ -536,6 +569,17 @@ task(
     } catch (err) {
       console.error(err);
     }
+  });
+
+task('set-token-uri', '')
+  .addPositionalParam('id', '')
+  .addPositionalParam('uri', '')
+  .setAction(async ({ id, uri }, hre) => {
+    const [signer] = await hre.ethers.getSigners();
+    const Rat = await hre.ethers.getContractFactory('Rat', signer);
+    const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+    const tx = await rat.storeAsset(id, uri);
+    console.log(tx.hash);
   });
 
 task(
