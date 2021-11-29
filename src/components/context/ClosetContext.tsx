@@ -54,6 +54,8 @@ const defaultClosetContext: ClosetContextType = {
   getBase64Image: async () => {},
   loadedTokens: [],
   setLoadedTokens: () => {},
+  mintedCount: {},
+  ownedCount: {},
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
@@ -87,27 +89,30 @@ export const ClosetContextProvider: FC = ({ children }) => {
     [closetPieces],
   );
 
+  const [mintedCount, setMintedCount] = useState<Record<string, BigNumber>>({});
+  const [ownedCount, setOwnedCount] = useState<Record<string, BigNumber>>({});
+
   useEffect(() => {
     (async () => {
       if (signerAddr) {
         try {
           setLoading((l) => ({ ...l, tokens: true }));
           if (contract) {
-            const tokens = await contract.getTokensByOwner(signerAddr);
-            console.log(tokens.map((t) => t.toString()));
-            setSignerTokens(tokens);
+            const ratTokens = await contract.getTokensByOwner(signerAddr);
+            setSignerTokens(ratTokens);
           }
           if (closet) {
-            const tokens = await closet.getActiveTokens();
+            const closetTokens = await closet.getActiveTokens();
             const uri = await closet.uri(1);
             const tokenObject: Record<string, ClosetTokenWithMeta> = {};
-            for (const token of tokens) {
+            for (const token of closetTokens) {
+              const total = await closet.totalSupply(token.id);
+              const bal = await closet.balanceOf(signerAddr, token.id);
+              setMintedCount((m) => ({ ...m, [token.id.toString()]: total }));
+              setOwnedCount((o) => ({ ...o, [token.id.toString()]: bal }));
               const meta = (await fetch(
                 uri.replace('{id}', token.id.toString()),
               ).then((r) => r.json())) as Metadata;
-              const pieceType = meta.attributes.find(
-                (a) => a.trait_type === 'Piece Type',
-              )?.value;
               tokenObject[token.id.toString()] = { ...token, tokenMeta: meta };
             }
             setClosetPieces(tokenObject);
@@ -154,15 +159,14 @@ export const ClosetContextProvider: FC = ({ children }) => {
       // Get token URI from contract then fetch token metadata from IFPS
       if (Array.isArray(signerTokens)) {
         setLoading((l) => ({ ...l, metadata: true }));
-        const promises = [];
+        const tempMetas = [];
         for (const token of signerTokens) {
-          promises.push(getToken(token));
+          const t = await getToken(token);
+          if (t) {
+            tempMetas.push(t);
+          }
         }
 
-        const tempMetas = (await Promise.all(promises)).filter(
-          (p) => !!p,
-        ) as Metadata[];
-        // Set state with slightly simplified metadata
         setRats(
           tempMetas.map((rat) => ({
             label: rat.name,
@@ -196,6 +200,16 @@ export const ClosetContextProvider: FC = ({ children }) => {
     async (rat: SingleValue<SimplifiedMetadata | null>) => {
       setLoading((l) => ({ ...l, mirror: true }));
       setCurrentRat(rat);
+      const getImageURL = (key: string, val: string): string => {
+        if (val.startsWith('data:')) {
+          return val;
+        }
+
+        if (ownedItems[val]) {
+          return ownedItems[val].tokenMeta.image;
+        }
+        return `${RAT_PIECES_PREFIX}${key}-${val}.png`;
+      };
       if (canvas) {
         canvas.clear();
         if (rat) {
@@ -208,14 +222,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
           for (const [key, val] of layers) {
             if (key !== 'background' || !hideBackground) {
               const img = await new Promise<fabric.Image>((resolve) => {
-                fabric.Image.fromURL(
-                  val.startsWith('data:')
-                    ? val
-                    : `${RAT_PIECES_PREFIX}${key}-${val
-                        .toLowerCase()
-                        .replace(/ /g, '-')}.png`,
-                  resolve,
-                );
+                fabric.Image.fromURL(getImageURL(key, val), resolve);
               });
               let aspect = img.width && img.height ? img.width / img.height : 1;
 
@@ -239,7 +246,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
       setTimeout(() => setLoading((l) => ({ ...l, mirror: false })), 300);
       canvas?.renderAll();
     },
-    [canvas, hideBackground],
+    [canvas, hideBackground, ownedItems],
   );
 
   const calculatePercentage = (n: number, d: number): number => {
@@ -299,6 +306,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
           const old = new Map(oldClothes);
           old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
           setOldClothes(old);
+        } else {
+          const old = new Map(oldClothes);
+          old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
+          setOldClothes(old);
         }
         currentRat.properties.set(pieceType, piece);
         handleChangeRat(currentRat);
@@ -307,11 +318,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
   };
 
   useEffect(() => {
-    let load = true;
-    if (loadedTokens.length >= totalClosetPieces) {
-      load = false;
-    }
-    setLoading((l) => ({ ...l, pieces: load }));
+    setLoading((l) => ({
+      ...l,
+      pieces: loadedTokens.length >= totalClosetPieces,
+    }));
 
     setTokenProgress(
       calculatePercentage(loadedTokens.length, totalClosetPieces),
@@ -340,6 +350,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
         getBase64Image,
         loadedTokens,
         setLoadedTokens,
+        ownedCount,
+        mintedCount,
       }}>
       {children}
     </ClosetContext.Provider>
