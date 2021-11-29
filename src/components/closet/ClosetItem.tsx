@@ -29,8 +29,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     loadedTokens,
     setLoadedTokens,
     setOwnedItems,
-    mintedCount,
-    ownedCount,
+    tokenCounts: { minted, owned },
+    setTokenCounts,
   } = useContext(ClosetContext);
 
   const ownedItem = ownedItems[piece.id.toString()];
@@ -79,6 +79,16 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
             : { ...piece, amount: BigNumber.from(1) },
         };
         setOwnedItems(t);
+        setTokenCounts((c) => ({
+          minted: {
+            ...c.minted,
+            [piece.id.toString()]: c.minted[piece.id.toString()].add(1),
+          },
+          owned: {
+            ...c.owned,
+            [piece.id.toString()]: c.owned[piece.id.toString()].add(1),
+          },
+        }));
       } catch (err) {
         console.error(err);
       }
@@ -111,6 +121,11 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }
         }}
       />
+      <div className='w-full h-full relative'>
+        <span className='absolute inline top-1 right-2 w-fit h-fit text-white'>
+          {owned[piece.id.toString()].toString()} Owned
+        </span>
+      </div>
       <div
         className={`text-center token-purchase-overlay absolute bg-light ${
           !loading && '-bottom-full'
@@ -140,15 +155,13 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         )}
         {piece.token.maxTokens.gt(0) && (
           <p className='supply block text-sm italic'>
-            {piece.token.maxTokens
-              .sub(mintedCount[piece.id.toString()])
-              .toString()}{' '}
+            {piece.token.maxTokens.sub(minted[piece.id.toString()]).toString()}{' '}
             of {piece.token.maxTokens.toString()} left
           </p>
         )}
         {piece.token.maxPerWallet.gt(0) && (
           <p className='supply block text-sm italic'>
-            {ownedCount[piece.id.toString()].toString()} minted of{' '}
+            {owned[piece.id.toString()].toString()} minted of{' '}
             {piece.token.maxPerWallet.toString()}
           </p>
         )}
