@@ -15,37 +15,7 @@ import { Promo } from '~/components/index/promo/Promo';
 export const Hero = () => {
   return (
     <>
-      <div className='bg-red-400'>
-        <div className='pb-12 pt-24 md:pb-24 md:pt-32 max-w-4xl mx-auto grid grid-cols-5 items-center'>
-          <div className='col-span-5 md:col-span-3 text-xl p-4'>
-            <h1 className='text-4xl font-black mb-2'>
-              Black Friday &amp; Cyber Monday in&nbsp;the&nbsp;Sewer!
-            </h1>
-            <p className='italic mb-6'>November 26th - 29th Eastern</p>
-            <p className='mb-2'>
-              All rats are only 0.015{' '}
-              <span className='font-black'>50% off!</span>
-            </p>
-            <p className='mb-2'>
-              You get <span className='font-black'>FIVE free winter items</span>{' '}
-              to dress up your rat.
-            </p>
-            <p className='text-left mt-8'>
-              <Minter />
-            </p>
-          </div>
-          <div className='col-span-5 md:col-span-2 p-4'>
-            <Image
-              className='max-w-md mx-auto filter drop-shadow-2xl'
-              src={promoImg}
-              alt='A rat with winting goodies'
-              placeholder='blur'
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className='py-12 md:pb-24 overflow-hidden text-white w-full'>
+      <div className='py-12 md:py-24 overflow-hidden text-white w-full'>
         <Image
           className='max-w-md mx-auto mb-8 p-4'
           src={logo}
