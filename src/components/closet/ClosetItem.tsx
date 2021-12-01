@@ -130,13 +130,13 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       </div>
 
       <div
-        className={`text-left text-sm text-white`}>
-        <h5 className="p-2 ">{piece.token.name}</h5>
+        className={`text-left text-sm text-white p-2`}>
+        <h5 className="mb-2">{piece.token.name}</h5>
         {canMint ? (
           <>
             {!loading ? (
               <button
-                className='text-gray-800 bg-light hover:bg-yellow-300 p-2 rounded-b-md block w-full duration-300'
+                className='text-gray-800 bg-light hover:bg-yellow-300 px-2 py-1 rounded block w-full duration-300'
                 onClick={handleMint}>
                 {piece.token.cost.gt(0)
                   ? <>Mint <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />{ethers.utils.formatEther(piece.token.cost)}</>
@@ -152,7 +152,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           </>
         ) : (
           <button
-            className='text-gray-400 bg-gray-800 p-2 rounded-b-md block w-full cursor-not-allowed'
+            className='text-gray-400 bg-gray-800 px-2 py-1 rounded block w-full cursor-not-allowed'
             disabled
           >
             Sold Out
