@@ -32,8 +32,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   )?.value;
 
   return (
-    <div className='rounded-md border-slate border-2'>
-      <div className='overflow-hidden aspect-w-1 aspect-h-1'>
+    <div className='rounded-md border-slate border-2 flex flex-col justify-between'>
+      <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
           loading='eager'
           src={piece.tokenMeta.image}
@@ -60,8 +60,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         </div>
       </div>
 
-      <div className={`text-left text-sm text-white p-2`}>
-        <h5 className='mb-2'>
+      <div className={`text-center text-sm text-white`}>
+        <h5 className='p-2'>
           {piece.token.name}{' '}
           {sponsorName && sponsorURL && (
             <a href={sponsorURL as string}>{sponsorName}</a>
