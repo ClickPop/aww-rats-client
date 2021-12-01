@@ -101,70 +101,75 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   }
 
   return (
-    <div className='overflow-hidden aspect-w-1 aspect-h-1 rounded-md border-slate border-4 group'>
-      <Image
-        loading='eager'
-        src={piece.tokenMeta.image}
-        alt=''
-        layout='fill'
-        className={`w-full h-full ${ownedItem ? 'cursor-pointer' : ''}`}
-        onClick={() => {
-          if (ownedItem) {
-            tryOnClothes(pieceType, piece.id.toString());
-          }
-        }}
-        onLoad={(e) => {
-          const src = e.currentTarget.src;
+    <div className="rounded-md border-slate border-2">
+      <div className='overflow-hidden aspect-w-1 aspect-h-1'>
+        <Image
+          loading='eager'
+          src={piece.tokenMeta.image}
+          alt=''
+          layout='fill'
+          className={`w-full h-full ${ownedItem ? 'cursor-pointer' : ''}`}
+          onClick={() => {
+            if (ownedItem) {
+              tryOnClothes(pieceType, piece.id.toString());
+            }
+          }}
+          onLoad={(e) => {
+            const src = e.currentTarget.src;
 
-          if (src.includes('/_next/image')) {
-            setLoadedTokens([...loadedTokens, e.currentTarget.src]);
-          }
-        }}
-      />
-      <div className='w-full h-full relative'>
-        <span className='absolute inline top-1 right-2 w-fit h-fit text-white'>
-          {owned[piece.id.toString()].toString()} Owned
-        </span>
+            if (src.includes('/_next/image')) {
+              setLoadedTokens([...loadedTokens, e.currentTarget.src]);
+            }
+          }}
+        />
+        <div className='w-full h-full relative'>
+          <span className='text-sm absolute inline top-1 right-2 w-fit h-fit text-white'>
+            {owned[piece.id.toString()].toString()} Owned
+          </span>
+        </div>
       </div>
+
       <div
-        className={`text-center token-purchase-overlay absolute bg-light ${
-          !loading && '-bottom-full'
-        } left-0 right-0 top-auto h-auto group-hover:bottom-0 duration-300`}>
-        <h5 className='bold'>{`Item Name`}</h5>
-        <p className='price text-sm'>
-          <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
-          {ethers.utils.formatEther(piece.token.cost)}
-        </p>
+        className={`text-left text-sm text-white p-2`}>
+        <h5 className="mb-2">{piece.token.name}</h5>
         {canMint ? (
-          <div>
+          <>
             {!loading ? (
               <button
-                className='mint-now bg-purple-700 text-white hover:bg-purple-800 px-2 py-1 m-1 mt-0 rounded transition-color duration-300'
+                className='text-gray-800 bg-light hover:bg-yellow-300 px-2 py-1 rounded block w-full duration-300'
                 onClick={handleMint}>
-                Mint!
+                {piece.token.cost.gt(0)
+                  ? <>Mint <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />{ethers.utils.formatEther(piece.token.cost)}</>
+                  : <>Free</>
+                }
               </button>
             ) : (
               <CheeseLoader className='h-6 w-6 relative' />
             )}
             {/* <button className='add-to-cart bg-slate text-white hover:bg-dark px-2 py-1 m-1 mt-0 rounded transition-color duration-300'>
-                        + Cart
-                      </button> */}
-          </div>
+              + Cart
+            </button> */}
+          </>
         ) : (
-          <div>Cannot mint</div>
+          <button
+            className='text-gray-400 bg-gray-800 px-2 py-1 rounded block w-full cursor-not-allowed'
+            disabled
+          >
+            Sold Out
+          </button>
         )}
         {piece.token.maxTokens.gt(0) && (
           <p className='supply block text-sm italic'>
             {piece.token.maxTokens.sub(minted[piece.id.toString()]).toString()}{' '}
-            of {piece.token.maxTokens.toString()} left
+            of {piece.token.maxTokens.toString()}
           </p>
         )}
-        {piece.token.maxPerWallet.gt(0) && (
+        {/* {piece.token.maxPerWallet.gt(0) && (
           <p className='supply block text-sm italic'>
             {owned[piece.id.toString()].toString()} minted of{' '}
             {piece.token.maxPerWallet.toString()}
           </p>
-        )}
+        )} */}
       </div>
     </div>
   );
