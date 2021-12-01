@@ -79,6 +79,7 @@ describe('Closet', () => {
       revShareAddress: '',
       revShareAmount: [1, 1] as [BigNumberish, BigNumberish],
     };
+
     const token3 = {
       name: 'revShare',
       cost: ethers.utils.parseEther('0.005'),
@@ -88,11 +89,20 @@ describe('Closet', () => {
       revShareAddress: '',
       revShareAmount: [4, 5] as [BigNumberish, BigNumberish],
     };
+    const token4 = {
+      name: 'shirt',
+      cost: ethers.utils.parseEther('0.001'),
+      maxTokens: 0,
+      active: false,
+      maxPerWallet: 0,
+      revShareAddress: '',
+      revShareAmount: [1, 1] as [BigNumberish, BigNumberish],
+    };
     beforeEach(async () => (contract = contract.connect(owner)));
 
     it('should create a new token type when called by the owner', async () => {
       const tx = await contract
-        .addNewTokenType({ ...token, revShareAddress: owner.address })
+        .addNewTokenTypes([{ ...token, revShareAddress: owner.address }])
         .then((r) => r.wait());
       checkEvents(tx, 'TokenTypeAdded', ([k, v]) => {
         switch (k) {
@@ -115,7 +125,7 @@ describe('Closet', () => {
       const tokens = await contract.getAllTokenIds();
       expect(tokens).to.have.length(1);
       const tx2 = await contract
-        .batchAddNewTokenType([
+        .addNewTokenTypes([
           { ...token2, revShareAddress: owner.address },
           { ...token3, revShareAddress: user3.address },
         ])
@@ -153,18 +163,43 @@ describe('Closet', () => {
       });
       const tokens2 = await contract.getAllTokenIds();
       expect(tokens2).to.have.length(3);
+      const tx3 = await contract
+        .addNewTokenTypes([{ ...token4, revShareAddress: owner.address }])
+        .then((r) => r.wait());
+      checkEvents(tx3, 'TokenTypeAdded', ([k, v]) => {
+        switch (k) {
+          case 'tokenId':
+            expect(v.toString()).to.eq('4');
+            break;
+          case 'token':
+            expect(v.name).to.eq('shirt');
+            expect(ethers.utils.formatEther(v.cost)).to.eq('0.001');
+            expect(v.maxTokens.toNumber()).to.eq(0);
+            expect(v.active).to.eq(false);
+            expect(v.maxPerWallet).to.eq(0);
+            expect(v.revShareAddress).to.eq(owner.address);
+            expect(v.revShareAmount).to.deep.eq([
+              BigNumber.from(1),
+              BigNumber.from(1),
+            ]);
+        }
+      });
+      const tokens3 = await contract.getAllTokenIds();
+      expect(tokens3).to.have.length(4);
     });
 
     it('should change an existing token when called by owner', async () => {
       const tx = await contract
-        .changeToken({
-          id: 1,
-          token: {
-            ...token,
-            revShareAddress: owner.address,
-            cost: ethers.utils.parseEther('0.002'),
+        .changeTokens([
+          {
+            id: 1,
+            token: {
+              ...token,
+              revShareAddress: owner.address,
+              cost: ethers.utils.parseEther('0.002'),
+            },
           },
-        })
+        ])
         .then((r) => r.wait());
       checkEvents(tx, 'TokenTypeChanged', ([k, v]) => {
         switch (k) {
@@ -179,7 +214,7 @@ describe('Closet', () => {
         }
       });
       const tokens = await contract.getAllTokenIds();
-      expect(tokens).to.have.length(3);
+      expect(tokens).to.have.length(4);
     });
 
     it('should set max tokens for a wallet if called by owner', async () => {
@@ -260,13 +295,13 @@ describe('Closet', () => {
         .increaseAllowance(contract.address, ethers.utils.parseEther('1'));
       await contract
         .connect(owner)
-        .promoMint([1, 2], [1, 1], user3.address)
+        .promoMint([1, 4], [1, 1], user3.address)
         .then((t) => t.wait());
 
       expect(await contract.balanceOf(user3.address, 1)).to.be.deep.eq(
         BigNumber.from(1),
       );
-      expect(await contract.balanceOf(user3.address, 2)).to.be.deep.eq(
+      expect(await contract.balanceOf(user3.address, 4)).to.be.deep.eq(
         BigNumber.from(1),
       );
     });
@@ -535,10 +570,10 @@ describe('Closet', () => {
         revShareAddress: owner.address,
         revShareAmount: [0, 0] as [BigNumberish, BigNumberish],
       };
-      expect(c.addNewTokenType(token)).to.be.revertedWith(
+      expect(c.addNewTokenTypes([token])).to.be.revertedWith(
         'Ownable: caller is not the owner',
       );
-      expect(c.changeToken({ id: 1, token })).to.be.revertedWith(
+      expect(c.changeTokens([{ id: 1, token }])).to.be.revertedWith(
         'Ownable: caller is not the owner',
       );
       expect(c.setMaxTokensForWallet(user.address, 1, 0)).to.be.revertedWith(
@@ -575,28 +610,8 @@ describe('Closet', () => {
 
       expect(c.mint(1, 1)).to.be.revertedWith('Not enough currency');
       expect(c.mintBatch([1], [1])).to.be.revertedWith('Not enough currency');
-      const {
-        name,
-        cost,
-        maxTokens,
-        maxPerWallet,
-        revShareAddress,
-        revShareAmount,
-      } = await contract.getTokenById(2);
-      await contract.connect(owner).changeToken({
-        id: 2,
-        token: {
-          name,
-          cost,
-          maxTokens,
-          maxPerWallet,
-          revShareAddress,
-          revShareAmount,
-          active: false,
-        },
-      });
-      expect(c.mint(2, 1)).to.be.revertedWith('Token is inactive');
-      expect(c.mintBatch([2], [1])).to.be.revertedWith('Token is inactive');
+      expect(c.mint(4, 1)).to.be.revertedWith('Token is inactive');
+      expect(c.mintBatch([4], [1])).to.be.revertedWith('Token is inactive');
     });
 
     it('should error if you try to mint ot transfer tokens beyond the maximum allowed', async () => {
@@ -698,8 +713,8 @@ describe('Closet', () => {
 
     it('should get all tokens', async () => {
       const tokens = await contract.getAllTokens();
-      expect(tokens).to.have.length(3);
-      const [sweater, hat, revShare] = tokens;
+      expect(tokens).to.have.length(4);
+      const [sweater, hat, revShare, shirt] = tokens;
       expect(sweater.id.toNumber()).to.eq(1);
       expect(sweater.token.name).to.eq('sweater');
       expect(sweater.token.cost).to.eq(parseEther('0.002'));
@@ -710,12 +725,11 @@ describe('Closet', () => {
       expect(sweater.token.revShareAmount)
         .to.have.length(2)
         .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
-      expect(sweater.token.active).to.eq(true);
       expect(hat.id.toNumber()).to.eq(2);
       expect(hat.token.name).to.eq('hat');
       expect(hat.token.cost).to.eq(parseEther('0.001'));
       expect(hat.token.maxTokens).to.eq(BigNumber.from(100));
-      expect(hat.token.active).to.eq(false);
+      expect(hat.token.active).to.eq(true);
       expect(hat.token.maxPerWallet.toNumber()).to.eq(0);
       expect(hat.token.revShareAddress).to.eq(owner.address);
       expect(hat.token.revShareAmount)
@@ -731,13 +745,24 @@ describe('Closet', () => {
       expect(revShare.token.revShareAmount)
         .to.have.length(2)
         .and.to.deep.eq([BigNumber.from(4), BigNumber.from(5)]);
+      expect(shirt.id.toNumber()).to.eq(4);
+      expect(shirt.token.name).to.eq('shirt');
+      expect(shirt.token.cost).to.eq(parseEther('0.001'));
+      expect(shirt.token.maxTokens).to.eq(BigNumber.from(0));
+      expect(shirt.token.active).to.eq(false);
+      expect(shirt.token.maxPerWallet.toNumber()).to.eq(0);
+      expect(shirt.token.revShareAddress).to.eq(owner.address);
+      expect(shirt.token.revShareAmount)
+        .to.have.length(2)
+        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
     });
 
     it('should get all active tokens', async () => {
       const tokens = await contract.getActiveTokens();
-      expect(tokens).to.have.length(2);
+      expect(tokens).to.have.length(3);
       expect(tokens.map((token) => token.token.name)).to.deep.eq([
         'sweater',
+        'hat',
         'revShare',
       ]);
     });

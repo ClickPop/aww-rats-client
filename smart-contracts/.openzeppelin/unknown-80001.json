@@ -2,20 +2,20 @@
   "manifestVersion": "3.2",
   "proxies": [
     {
-      "address": "0x38330484d74e49849ce6F9D753FEa7f94fEfb541",
-      "txHash": "0x8439e929171046a94115e32c756db83340e55e7a5be35b5b1b9e07ac1352de18",
+      "address": "0x344D5837b140A101E16830EB738F84f046cd9326",
+      "txHash": "0x02692542c337c2523e67d1f10c0fc7c22994053c911ee56d737961b831ec888b",
       "kind": "uups"
     },
     {
-      "address": "0x2d26d23b03EB9927DcA60A2F478b3DcdBe935754",
-      "txHash": "0x19200d591478c05d003e85f4ef537fa139395610d737f9ececd686c87f351c10",
+      "address": "0x9d34fDfcbE129e82cBEcEfdba7085c8a7C8b650b",
+      "txHash": "0x0006cf7864c13e2257c27257c568e18f96483da73afed28f76cf9645433ab203",
       "kind": "uups"
     }
   ],
   "impls": {
-    "d8cfc2d2a734ccee42396922b6a23f8303fb03ec36b84b66ca43a9c178d7176e": {
-      "address": "0x35F58065Bdc743A610aAcde7bfEBFc844018b2F9",
-      "txHash": "0xf8d091dd1b8f65d06ef99ac59431c93533d47e521867d616728ef7ee4cb2a1fd",
+    "fd01a223718f57859879a698f082390b5fee8bef3cd549bbc7c7bfd903a971cd": {
+      "address": "0xe0dfED11d7d72Afdf85Fdbde5FFE2d8B26a48492",
+      "txHash": "0xf338eb31afa24fce927052874930bf2ba6ea1dbb3fa46486f1aca75b4e6f1116",
       "layout": {
         "storage": [
           {
@@ -136,7 +136,7 @@
             "contract": "Closet",
             "label": "_contractURI",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:322"
+            "src": "src/contracts/Closet.sol:325"
           }
         ],
         "types": {
@@ -240,9 +240,9 @@
         }
       }
     },
-    "5eb5516d848dd57a4fd5be954d5512f0e87c9cc30f2e4a24b033a83fa61a8ac5": {
-      "address": "0x14bA19b9DA4F1964620B65E50c42b5244c9fD4D9",
-      "txHash": "0x9843f60bf5f872f78ebe16040f06153ae3a04a9cb8f82feb54658a37db7312d2",
+    "472793cf844454c5848fb873aa3275b97aaa2f1c2a8ffa270b19e9151d6530e6": {
+      "address": "0xe93212C39e1Efda840144980dD166C6f98553899",
+      "txHash": "0xe45be2335daafac96ceb6366edf6ca0ecdf7ed152b9aef2ea0736a1526d4de8c",
       "layout": {
         "storage": [
           {
@@ -363,7 +363,7 @@
             "contract": "Closet",
             "label": "_contractURI",
             "type": "t_string_storage",
-            "src": "src/contracts/Closet.sol:316"
+            "src": "src/contracts/Closet.sol:325"
           }
         ],
         "types": {
