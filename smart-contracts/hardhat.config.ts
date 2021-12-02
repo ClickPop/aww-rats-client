@@ -836,10 +836,6 @@ task(
 
 task('closet-promo-mint', 'Mint and transfer tokens')
   .addPositionalParam(
-    'wallet',
-    'The wallet to transfer the tokens to after minting',
-  )
-  .addPositionalParam(
     'tokenIds',
     'The tokens to mint, comma separated with no spaces',
   )
@@ -847,38 +843,77 @@ task('closet-promo-mint', 'Mint and transfer tokens')
     'amounts',
     'The amounts of each token, comma separated with no spaces (If you are using the same amount for all just provide one amount)',
   )
-  .setAction(async ({ wallet, tokenIds, amounts }, hre) => {
-    const ids = tokenIds.split(',');
-    const amnts = amounts.split(',');
-    console.log('Setting up env');
-    const [signer] = await hre.ethers.getSigners();
-    const Closet = await hre.ethers.getContractFactory('Closet', signer);
-    const Weth = await hre.ethers.getContractFactory('ERC20', signer);
-    const closet = Closet.attach(CLOSET_ADDRESS ?? '');
-    const weth = Weth.attach(await closet.erc20());
-    console.log('Checking ERC20 allowance');
-    const totalCost = (await closet.getAllTokens())
-      .filter((t) => ids.includes(t.id.toString()))
-      .map((t) => t.token.cost)
-      .reduce((acc, curr) => acc.add(curr), BigNumber.from(0));
-    const allowance = await weth.allowance(signer.address, closet.address);
-    if (allowance.lt(totalCost)) {
-      await weth
-        .increaseAllowance(closet.address, totalCost.sub(allowance))
-        .then((t) => t.wait());
-    }
-    console.log('Handle minting');
+  .addOptionalPositionalParam(
+    'wallets',
+    'A comma separated list of wallets to transfer the tokens to after minting',
+  )
+  .addFlag('ratHolders', 'Promo mints for all Rat holders')
+  .setAction(
+    async (
+      {
+        wallets,
+        tokenIds,
+        amounts,
+        ratHolders,
+      }: {
+        wallets?: string;
+        tokenIds: string;
+        amounts: string;
+        ratHolders?: boolean;
+      },
+      hre,
+    ) => {
+      const ids = tokenIds.split(',');
+      const amnts = amounts.split(',');
+      console.log('Setting up env');
+      const [signer] = await hre.ethers.getSigners();
+      const Closet = await hre.ethers.getContractFactory('Closet', signer);
+      const Weth = await hre.ethers.getContractFactory('ERC20', signer);
+      const closet = Closet.attach(CLOSET_ADDRESS ?? '');
+      const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const addresses = (
+        ratHolders ? await rat.getTokenOwners() : wallets?.split(',')
+      )?.filter((a) => a !== signer.address);
+      if (!addresses) {
+        throw new Error(
+          'Must specify either a list of wallets or the --rat-holders flag',
+        );
+      }
+      const weth = Weth.attach(await closet.erc20());
+      console.log('Checking ERC20 allowance');
+      const totalCost = (await closet.getAllTokens())
+        .filter((t) => ids.includes(t.id.toString()))
+        .map((t) =>
+          t.token.cost.mul(
+            amnts.length > 1 ? ids.find((id) => t.id.eq(id)) ?? 0 : 1,
+          ),
+        )
+        .reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
+        .mul(ids.length);
+      const allowance = await weth.allowance(signer.address, closet.address);
+      if (allowance.lt(totalCost)) {
+        await weth
+          .increaseAllowance(closet.address, totalCost.sub(allowance))
+          .then((t) => t.wait());
+      }
+      console.log('Handle minting');
 
-    if (ids.length !== amnts.length && amnts.length !== 1) {
-      throw new Error('Mismatched tokenIds and amounts length');
-    }
-    const tx = await closet.promoMint(
-      ids,
-      amnts.length === 1 ? ids.map(() => amnts[0]) : amnts,
-      wallet,
-    );
-    console.log(`Tx hash: ${tx.hash}`);
-  });
+      if (ids.length !== amnts.length && amnts.length !== 1) {
+        throw new Error('Mismatched tokenIds and amounts length');
+      }
+      for (const wallet of addresses) {
+        const tx = await closet
+          .promoMint(
+            ids,
+            amnts.length === 1 ? ids.map(() => amnts[0]) : amnts,
+            wallet,
+          )
+          .then((t) => t.wait());
+        console.log(`Tx hash: ${tx.transactionHash} for wallet: ${wallet}`);
+      }
+    },
+  );
 
 const formatToken = (token: Token, hre: HardhatRuntimeEnvironment) => ({
   name: token.name,
