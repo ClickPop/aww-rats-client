@@ -336,7 +336,8 @@ task('add-closet-items', 'Add new closet token')
     'Path to local JSON file with an array of Token Objects',
   )
   .addFlag('includeMeta', 'Generate meta files')
-  .setAction(async ({ numTokens, tokensFile, includeMeta }, hre) => {
+  .addFlag('onlyMeta', 'Only generate meta files')
+  .setAction(async ({ numTokens, tokensFile, includeMeta, onlyMeta }, hre) => {
     try {
       if (!(numTokens || tokensFile)) {
         throw new Error(
@@ -420,33 +421,43 @@ task('add-closet-items', 'Add new closet token')
           throw new Error('Supplied tokens are not valid');
         }
       }
-      console.log('Sending tokens to contract');
-      const tx = await closet
-        .addNewTokenTypes(
-          tokens.map((token) => ({
-            ...token,
-            cost: BigNumber.isBigNumber(token.cost)
-              ? token.cost
-              : hre.ethers.utils.parseEther(token.cost as string),
-          })),
-        )
-        .then((r) => r.wait());
-      const tokenIds = tx.events
-        ?.map((e) =>
-          e.event === 'TokenTypeAdded' && e.args?.tokenId && e.args?.token
-            ? {
-                [e.args.token.name as string]:
-                  e.args.tokenId.toString() as string,
-              }
-            : null,
-        )
-        .filter((id) => id !== null);
-      console.log(
-        `Added new closet token! TX hash: ${
-          tx.transactionHash
-        }. Token ID's: ${JSON.stringify(tokenIds)}`,
-      );
-      if (tokenIds && includeMeta) {
+      let tokenIds:
+        | ({
+            [x: string]: string;
+          } | null)[]
+        | undefined;
+      if (!onlyMeta) {
+        console.log('Sending tokens to contract');
+        const tx = await closet
+          .addNewTokenTypes(
+            tokens.map((token) => ({
+              ...token,
+              cost: BigNumber.isBigNumber(token.cost)
+                ? token.cost
+                : hre.ethers.utils.parseEther(token.cost as string),
+            })),
+          )
+          .then((r) => r.wait());
+        tokenIds = tx.events
+          ?.map((e) =>
+            e.event === 'TokenTypeAdded' && e.args?.tokenId && e.args?.token
+              ? {
+                  [e.args.token.name as string]:
+                    e.args.tokenId.toString() as string,
+                }
+              : null,
+          )
+          .filter((id) => id !== null);
+        console.log(
+          `Added new closet token! TX hash: ${
+            tx.transactionHash
+          }. Token ID's: ${JSON.stringify(tokenIds)}`,
+        );
+      } else {
+        const tokens = await closet.getAllTokens();
+        tokenIds = tokens.map((t) => ({ [t.token.name]: t.id.toString() }));
+      }
+      if (tokenIds && (includeMeta || onlyMeta)) {
         console.log('Generating meta files');
         if (numTokens) {
           for (const token of tokenIds) {
