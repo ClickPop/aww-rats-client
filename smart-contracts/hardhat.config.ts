@@ -172,7 +172,7 @@ task('deploy-closet', 'Deploy closet contract')
         .changeERC20Contract(tokenAddress ?? WETH_CONTRACT_ADDRESS)
         .then((t) => t.wait());
       if (tokens.length) {
-        await closet.batchAddNewTokenType(tokens).then((t) => t.wait());
+        await closet.addNewTokenTypes(tokens).then((t) => t.wait());
       }
       clearInterval(interval);
       console.log();
@@ -182,6 +182,29 @@ task('deploy-closet', 'Deploy closet contract')
       clearInterval(interval);
     }
   });
+
+task('upgrade-closet', 'Upgrade closet contract').setAction(async (_, hre) => {
+  const interval = ratLoader('Deploying Closet Contract');
+  try {
+    const [signer] = await hre.ethers.getSigners();
+    const Closet = await hre.ethers.getContractFactory('Closet', signer);
+    if (!CLOSET_ADDRESS) {
+      throw new Error('CLOSET_ADDRESS env var not set');
+    }
+    const oldCloset = Closet.attach(CLOSET_ADDRESS);
+    console.log(oldCloset.address);
+    console.log(await oldCloset.version());
+    const closet = (await hre.upgrades
+      .upgradeProxy(oldCloset, Closet)
+      .then((c) => c.deployed())) as Closet;
+    clearInterval(interval);
+    console.log();
+    console.log(`Deployed closet! Closet address: ${closet.address}`);
+  } catch (err) {
+    console.error(err);
+    clearInterval(interval);
+  }
+});
 
 task(
   'update-contract-uri',
@@ -306,13 +329,14 @@ task(
   }
 });
 
-task('add-closet-item', 'Add new closet token')
+task('add-closet-items', 'Add new closet token')
   .addOptionalParam('numTokens', 'Number of tokens to generate', 0, types.int)
   .addOptionalParam(
     'tokensFile',
     'Path to local JSON file with an array of Token Objects',
   )
-  .setAction(async ({ numTokens, tokensFile }, hre) => {
+  .addFlag('includeMeta', 'Generate meta files')
+  .setAction(async ({ numTokens, tokensFile, includeMeta }, hre) => {
     try {
       if (!(numTokens || tokensFile)) {
         throw new Error(
@@ -398,7 +422,7 @@ task('add-closet-item', 'Add new closet token')
       }
       console.log('Sending tokens to contract');
       const tx = await closet
-        .batchAddNewTokenType(
+        .addNewTokenTypes(
           tokens.map((token) => ({
             ...token,
             cost: BigNumber.isBigNumber(token.cost)
@@ -422,7 +446,8 @@ task('add-closet-item', 'Add new closet token')
           tx.transactionHash
         }. Token ID's: ${JSON.stringify(tokenIds)}`,
       );
-      if (tokenIds) {
+      if (tokenIds && includeMeta) {
+        console.log('Generating meta files');
         if (numTokens) {
           for (const token of tokenIds) {
             if (token) {
@@ -516,7 +541,7 @@ task('add-closet-item', 'Add new closet token')
           for (const token of tokenIds) {
             if (token) {
               const [[k, v]] = Object.entries(token);
-              const meta = tokenMeta.find((m) => m.name === 'k');
+              const meta = tokenMeta.find((m) => m.name === k);
               if (meta) {
                 console.log(
                   `Writing file to ${path.join(
@@ -527,6 +552,14 @@ task('add-closet-item', 'Add new closet token')
                     hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
                     `${v}.json`,
                   )}`,
+                );
+                const filepath = path.join(
+                  __dirname,
+                  '..',
+                  'public',
+                  'closet',
+                  hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
+                  `${v}.json`,
                 );
                 await writeFile(
                   path.join(
@@ -760,7 +793,7 @@ task('change-closet-token', 'Change a closet token')
       },
     ]);
 
-    const tx = await closet.changeToken({ id: tokenId, token: newToken });
+    const tx = await closet.changeTokens([{ id: tokenId, token: newToken }]);
     console.log(`Tx hash: ${tx.hash}`);
   });
 task(
@@ -816,7 +849,7 @@ task('closet-promo-mint', 'Mint and transfer tokens')
     const totalCost = (await closet.getAllTokens())
       .filter((t) => ids.includes(t.id.toString()))
       .map((t) => t.token.cost)
-      .reduce((acc, curr) => acc.add(curr));
+      .reduce((acc, curr) => acc.add(curr), BigNumber.from(0));
     const allowance = await weth.allowance(signer.address, closet.address);
     if (allowance.lt(totalCost)) {
       await weth
@@ -897,6 +930,9 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       initialBaseFeePerGas: 0, // workaround from https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136 . Remove when that issue is closed.
+    },
+    local: {
+      url: 'http://127.0.0.1:8545/',
     },
     mumbai: {
       url: MUMBAI_TESTNET,
