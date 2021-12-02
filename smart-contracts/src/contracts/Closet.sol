@@ -81,29 +81,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   }
 
   function mintBatch(uint[] memory ids, uint[] memory amounts) virtual public payable batchMintingAllowed(ids, amounts) {
-    uint totalCost = 0;
-    uint[] memory revShareAmounts = new uint[](ids.length);
-    address[] memory revShareAddresses = new address[](ids.length);
-    uint revShareCount = 0;
-    for (uint256 i = 0; i < ids.length; i++) {
-      if (idToToken[ids[i]].revShareAddress != owner()) {
-        uint total = idToToken[ids[i]].cost * amounts[i];
-        uint revShare = (total / idToToken[ids[i]].revShareAmount[1]) * idToToken[ids[i]].revShareAmount[0];
-        revShareAddresses[revShareCount] = idToToken[ids[i]].revShareAddress;
-        revShareAmounts[revShareCount] = revShare;
-        totalCost += total - revShare;
-        revShareCount++;
-      } else {
-        totalCost += idToToken[ids[i]].cost * amounts[i];
-      }
-    }
-
-    for (uint256 i = 0; i < revShareCount; i++) {
-      erc20.safeTransferFrom(msg.sender, revShareAddresses[i], revShareAmounts[i]);
-    }
-    erc20.safeTransferFrom(msg.sender, owner(), totalCost);
-    _mintBatch(msg.sender, ids, amounts, msg.data);
-    emit BatchTokensMinted(ids, amounts, msg.sender);
+    _batchMint(ids, amounts);
   }
 
   function burn(uint tokenId, uint amount) virtual public burningAllowed(tokenId, amount) {
@@ -170,14 +148,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   }
 
   /** Admin */
-  function addNewTokenType(Token memory token) virtual public onlyOwner {
-    for(uint i = 0; i < existingTokenIds.length; i++) {
-      require(!_compareStrings(idToToken[existingTokenIds[i]].name, token.name), "Token already exists");
-    }
-    _addNewTokenType(token);
-  }
-
-  function batchAddNewTokenType(Token[] memory tokens) virtual public onlyOwner {
+  function addNewTokenTypes(Token[] memory tokens) virtual public onlyOwner {
     for (uint256 j = 0; j < tokens.length; j++) {
       for(uint i = 0; i < existingTokenIds.length; i++) {
         require(!_compareStrings(idToToken[existingTokenIds[i]].name, tokens[j].name), "Token already exists");
@@ -186,14 +157,9 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     }
   }
 
-  function changeToken(TokenWithId memory token) virtual public onlyOwner tokenExists(token.id) {
-    idToToken[token.id] = token.token;
-    emit TokenTypeChanged(token.id, token.token);
-  }
-
-  function batchChangeToken(TokenWithId[] memory tokens) virtual public onlyOwner {
+  function changeTokens(TokenWithId[] memory tokens) virtual public onlyOwner {
     for (uint256 i = 0; i < tokens.length; i++) {
-      changeToken(tokens[i]);
+      _changeToken(tokens[i]);
     }
   }
 
@@ -201,7 +167,7 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     for (uint256 i = 0; i < ids.length; i++) {
       idToToken[ids[i]].active = status;
       TokenWithId memory tokenWithId = TokenWithId(ids[i], idToToken[ids[i]]);
-      changeToken(tokenWithId);
+      _changeToken(tokenWithId);
     }
   }
 
@@ -226,8 +192,8 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     emit ChangeERC20Contract(erc20Addr);
   }
 
-  function promoMint(uint[] memory ids, uint[] memory amounts, address wallet) virtual public onlyOwner {
-    mintBatch(ids, amounts);
+  function promoMint(uint[] memory ids, uint[] memory amounts, address wallet) virtual public onlyOwner promoMintingAllowed(ids, amounts) {
+    _batchMint(ids, amounts);
     safeBatchTransferFrom(owner(), wallet, ids, amounts, msg.data);
   }
 
@@ -237,11 +203,19 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
 
   /** Modifiers */
   modifier mintingAllowed(uint tokenId, uint amount) virtual {
-    _checkMinting(tokenId, amount);
+    _checkPublicMinting(tokenId, amount);
     _;
   }
 
   modifier batchMintingAllowed(uint[] memory ids, uint[] memory amounts) virtual {
+    require(ids.length == amounts.length, "Mismatched tokenIds and amounts");
+    for (uint i = 0; i < ids.length; i++) {
+      _checkPublicMinting(ids[i], amounts[i]);
+    }
+    _;
+  }
+
+  modifier promoMintingAllowed(uint[] memory ids, uint[] memory amounts) virtual {
     require(ids.length == amounts.length, "Mismatched tokenIds and amounts");
     for (uint i = 0; i < ids.length; i++) {
       _checkMinting(ids[i], amounts[i]);
@@ -268,11 +242,41 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   }
 
   /** Internal */
-  function _checkMinting(uint tokenId, uint amount) virtual internal view tokenExists(tokenId) {
+  function _checkPublicMinting(uint tokenId, uint amount) virtual internal view {
     require(idToToken[tokenId].active, "Token is inactive");
+    _checkMinting(tokenId, amount);
+  }
+  
+  function _checkMinting(uint tokenId, uint amount) virtual internal view tokenExists(tokenId) {
     _checkMax(tokenId, amount, msg.sender);
     require(erc20.balanceOf(msg.sender) >= idToToken[tokenId].cost, "Not enough currency");
     require(erc20.allowance(msg.sender, address(this)) >= idToToken[tokenId].cost, "ERC20 allowance not enough");
+  }
+
+  function _batchMint(uint[] memory ids, uint[] memory amounts) virtual internal {
+    uint totalCost = 0;
+    uint[] memory revShareAmounts = new uint[](ids.length);
+    address[] memory revShareAddresses = new address[](ids.length);
+    uint revShareCount = 0;
+    for (uint256 i = 0; i < ids.length; i++) {
+      if (idToToken[ids[i]].revShareAddress != owner()) {
+        uint total = idToToken[ids[i]].cost * amounts[i];
+        uint revShare = (total / idToToken[ids[i]].revShareAmount[1]) * idToToken[ids[i]].revShareAmount[0];
+        revShareAddresses[revShareCount] = idToToken[ids[i]].revShareAddress;
+        revShareAmounts[revShareCount] = revShare;
+        totalCost += total - revShare;
+        revShareCount++;
+      } else {
+        totalCost += idToToken[ids[i]].cost * amounts[i];
+      }
+    }
+
+    for (uint256 i = 0; i < revShareCount; i++) {
+      erc20.safeTransferFrom(msg.sender, revShareAddresses[i], revShareAmounts[i]);
+    }
+    erc20.safeTransferFrom(msg.sender, owner(), totalCost);
+    _mintBatch(msg.sender, ids, amounts, msg.data);
+    emit BatchTokensMinted(ids, amounts, msg.sender);
   }
 
   function _checkMax(uint tokenId, uint amount, address wallet) virtual internal view tokenExists(tokenId) {
@@ -289,6 +293,11 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     idToToken[tokenId] = token;
     existingTokenIds.push(tokenId);
     emit TokenTypeAdded(tokenId, token);
+  }
+
+  function _changeToken(TokenWithId memory token) virtual internal tokenExists(token.id) {
+    idToToken[token.id] = token.token;
+    emit TokenTypeChanged(token.id, token.token);
   }
 
   function _compareStrings(string memory str1, string memory str2) virtual internal pure returns (bool) {
