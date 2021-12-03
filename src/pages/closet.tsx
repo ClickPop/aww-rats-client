@@ -2,9 +2,12 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
-const Closet = dynamic(() => import('~/components/closet/Closet'), {
-  ssr: false,
-});
+const ClosetWrapper = dynamic(
+  () => import('~/components/closet/ClosetWrapper'),
+  {
+    ssr: false,
+  },
+);
 
 const ClosetPage: NextPage = () => {
   return (
@@ -35,7 +38,7 @@ const ClosetPage: NextPage = () => {
           content='https://storage.googleapis.com/aww-rats-images/social/og-image.png'
         />
       </Head>
-      <Closet />
+      <ClosetWrapper />
     </LayoutNoFooter>
   );
 };

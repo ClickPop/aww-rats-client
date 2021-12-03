@@ -28,6 +28,7 @@ module.exports = {
   variants: {
     extend: {
       accessibility: ['group-hover', 'hover', 'focus'],
+      inset: ['group-hover', 'hover', 'focus'],
     }
   },
   plugins: [
