@@ -20,6 +20,6 @@ module.exports = {
     ];
   },
   images: {
-    domains: ['development.awwrats.com', 'awwrats.com'],
+    domains: ['development.awwrats.com', 'www.awwrats.com'],
   },
 };
