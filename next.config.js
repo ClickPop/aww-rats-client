@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  webpack: (config) => {
+    return {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: { ...config.resolve.alias, fabric: 'fabric-pure-browser' },
+      },
+    };
+  },
   reactStrictMode: true,
   async redirects() {
     return [
@@ -9,5 +18,8 @@ module.exports = {
         permanent: true,
       },
     ];
+  },
+  images: {
+    domains: ['development.awwrats.com', 'awwrats.com'],
   },
 };

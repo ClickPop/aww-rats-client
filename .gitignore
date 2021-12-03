@@ -33,3 +33,9 @@ yarn-error.log*
 # vercel
 .vercel
 pubsub-keyfile.json
+
+# Local Files
+smart-contracts/rat.json
+smart-contracts/rat.png
+smart-contracts/testnet-tokens.json
+smart-contracts/tokens.json
