@@ -53,18 +53,20 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
             }
           }}
         />
-        <div className='w-full h-full relative'>
-          <span className='text-sm absolute inline top-1 right-2 w-fit h-fit text-white'>
-            {owned[piece.id.toString()].toString()} Owned
-          </span>
-        </div>
+        {owned[piece.id.toString()].gt(0) && (
+          <div className='w-full h-full relative'>
+            <span className='text-xs font-bold absolute inline top-1 right-1 w-fit h-fit text-white bg-purple-700 px-2 py-1 rounded-xl bg-opacity-80'>
+              <>You own {owned[piece.id.toString()].toString()}</>
+            </span>
+          </div>
+        )}
       </div>
 
       <div className={`text-center text-sm text-white`}>
         <h5 className='p-2'>
           {piece.token.name}{' '}
           {sponsorName && sponsorURL && (
-            <a href={sponsorURL as string}>{sponsorName}</a>
+            <>by <a className="underline" href={sponsorURL as string}>{sponsorName}</a></>
           )}
         </h5>
         <ClosetMintButton piece={piece} />
