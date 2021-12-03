@@ -890,7 +890,8 @@ task('closet-promo-mint', 'Mint and transfer tokens')
           ),
         )
         .reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
-        .mul(ids.length);
+        .mul(ids.length)
+        .mul(addresses.length);
       const allowance = await weth.allowance(signer.address, closet.address);
       if (allowance.lt(totalCost)) {
         await weth
@@ -902,7 +903,8 @@ task('closet-promo-mint', 'Mint and transfer tokens')
       if (ids.length !== amnts.length && amnts.length !== 1) {
         throw new Error('Mismatched tokenIds and amounts length');
       }
-      for (const wallet of addresses) {
+
+      for (const wallet of addresses.slice(1)) {
         const tx = await closet
           .promoMint(
             ids,
