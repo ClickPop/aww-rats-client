@@ -4,7 +4,7 @@ import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta } from '~/types';
 
 export const ClosetItemList = () => {
-  const { loading, closetPieces } = useContext(ClosetContext);
+  const { loading, closetPieces, currentRat } = useContext(ClosetContext);
 
   const piecesByType = useMemo(
     () =>
@@ -21,29 +21,34 @@ export const ClosetItemList = () => {
   );
 
   return (
-    <div
-      className={`flex flex-col w-full ${
-        loading.pieces
-          ? 'opacity-0 pointer-events-none'
-          : 'opacity-1 pointer-events-auto'
-      }`}>
-      {Object.entries(piecesByType).map(([pieceType, pieces]) => (
-        <div key={pieceType}>
-          <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
-            {pieceType}
-          </h3>
+    <div>
+      {!currentRat && (
+        <div className='text-white w-fit mx-auto'>Please select a rat</div>
+      )}
+      <div
+        className={`flex flex-col w-full ${
+          loading.pieces || !currentRat
+            ? 'opacity-0 pointer-events-none overflow-hidden'
+            : 'opacity-1 pointer-events-auto'
+        }`}>
+        {Object.entries(piecesByType).map(([pieceType, pieces]) => (
+          <div key={pieceType}>
+            <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
+              {pieceType}
+            </h3>
 
-          <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-            {pieces.map((piece) => (
-              <ClosetItem
-                key={piece.id.toString()}
-                piece={piece}
-                pieceType={pieceType}
-              />
-            ))}
+            <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+              {pieces.map((piece) => (
+                <ClosetItem
+                  key={piece.id.toString()}
+                  piece={piece}
+                  pieceType={pieceType}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

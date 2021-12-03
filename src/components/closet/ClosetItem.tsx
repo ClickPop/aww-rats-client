@@ -13,8 +13,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const {
     ownedItems,
     tryOnClothes,
-    loadedTokens,
-    setLoadedTokens,
+    loadedTokenImages,
+    setLoadedTokenImages,
     tokenCounts: { owned },
   } = useContext(ClosetContext);
 
@@ -49,7 +49,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
             const src = e.currentTarget.src;
 
             if (src.includes('/_next/image')) {
-              setLoadedTokens([...loadedTokens, e.currentTarget.src]);
+              setLoadedTokenImages([...loadedTokenImages, e.currentTarget.src]);
             }
           }}
         />
@@ -66,7 +66,12 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         <h5 className='p-2'>
           {piece.token.name}{' '}
           {sponsorName && sponsorURL && (
-            <>by <a className="underline" href={sponsorURL as string}>{sponsorName}</a></>
+            <>
+              by{' '}
+              <a className='underline' href={sponsorURL as string}>
+                {sponsorName}
+              </a>
+            </>
           )}
         </h5>
         <ClosetMintButton piece={piece} />
