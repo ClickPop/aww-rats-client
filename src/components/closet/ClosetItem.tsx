@@ -64,7 +64,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         <h5 className='p-2'>
           {piece.token.name}{' '}
           {sponsorName && sponsorURL && (
-            <a href={sponsorURL as string}>{sponsorName}</a>
+            <>by <a className="underline" href={sponsorURL as string}>{sponsorName}</a></>
           )}
         </h5>
         <ClosetMintButton piece={piece} />
