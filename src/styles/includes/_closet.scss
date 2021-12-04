@@ -1,29 +1,49 @@
 /* Set position of image layers in Rat mirror. */
 .rat--piece {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.closet--pieces {
+  list-style-type: none;
+}
+
+.closet--pieces li {
+  background: #777799;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+
+.closet--pieces li {
+  background: #77779933;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+
+.piece--title {
+  text-transform: capitalize;
+}
+
+/* Checkboxes for removing items in the closet */
+.checkboxmoji {
+  label {
+
+    &:before {
+      color: '#16C60C';
+      content: '✔';
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
   }
-  
-  .closet--pieces {
-    list-style-type: none;
+
+  input:checked ~ label {
+    background: rgb(255,220,230);
+
+    &:before {
+      content: '❌';
+    }
   }
-  
-  .closet--pieces li {
-    background: #777799;
-    border-radius: 0.35rem;
-    overflow: hidden;
-  }
-  
-  .closet--pieces li {
-    background: #77779933;
-    border-radius: 0.35rem;
-    overflow: hidden;
-  }
-  
-  .piece--title {
-    text-transform: capitalize;
-  }
-  
+}

@@ -42,8 +42,8 @@ const defaultClosetContext: ClosetContextType = {
   signerTokens: [],
   rats: [],
   currentRat: null,
-  hideBackground: false,
-  setHideBackground: () => {},
+  hidePiece: {},
+  setHidePiece: () => {},
   cart: {},
   cartDispatch: () => {},
   tryOnClothes: () => {},
@@ -56,6 +56,7 @@ const defaultClosetContext: ClosetContextType = {
   setLoadedTokenImages: () => {},
   tokenCounts: { minted: {}, owned: {} },
   setTokenCounts: () => {},
+  sponsoredPieces: {},
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
@@ -70,7 +71,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
   const [rats, setRats] = useState<Array<SimplifiedMetadata | null>>([]);
   const [currentRat, setCurrentRat] = useState<SimplifiedMetadata | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
-  const [hideBackground, setHideBackground] = useState(false);
+  const [hidePiece, setHidePiece] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState<ClosetLoading>({
     tokens: false,
     metadata: false,
@@ -82,6 +83,9 @@ export const ClosetContextProvider: FC = ({ children }) => {
   const [tokenProgress, setTokenProgress] = useState(0);
   const [cart, cartDispatch] = useReducer(closetCartReducer, {});
   const [closetPieces, setClosetPieces] = useState<
+    Record<string, ClosetTokenWithMeta>
+  >({});
+  const [sponsoredPieces, setSponsoredPieces] = useState<
     Record<string, ClosetTokenWithMeta>
   >({});
   const [totalClosetPieces, setTotalClosetPieces] = useState(0);
@@ -129,6 +133,12 @@ export const ClosetContextProvider: FC = ({ children }) => {
               ).then((r) => r.json())) as Metadata;
               tokenObject[token.id.toString()] = { ...token, tokenMeta: meta };
               setLoadedTokens((l) => [...l, token.id.toString()]);
+              if (meta.attributes.find((a) => a.trait_type === 'Sponsor')) {
+                setSponsoredPieces((p) => ({
+                  ...p,
+                  [token.id.toString()]: { ...token, tokenMeta: meta },
+                }));
+              }
             } catch (err) {
               console.error(err);
             }
@@ -236,27 +246,25 @@ export const ClosetContextProvider: FC = ({ children }) => {
         if (rat) {
           const layers: [string, string][] = [];
           rat.properties.forEach((val, key) => {
-            if (val !== 'none') {
+            if (val !== 'none' && !hidePiece[key]) {
               layers.push([key, val]);
             }
           });
           for (const [key, val] of layers) {
-            if (key !== 'background' || !hideBackground) {
-              const img = await new Promise<fabric.Image>((resolve) => {
-                fabric.Image.fromURL(getImageURL(key, val), resolve);
-              });
-              let aspect = img.width && img.height ? img.width / img.height : 1;
+            const img = await new Promise<fabric.Image>((resolve) => {
+              fabric.Image.fromURL(getImageURL(key, val), resolve);
+            });
+            let aspect = img.width && img.height ? img.width / img.height : 1;
 
-              if (aspect >= 1) {
-                //@ts-ignore
-                img.scaleToHeight(canvas.height);
-              } else {
-                //@ts-ignore
-                img.scaleToWidth(canvas.width);
-              }
-              canvas.add(img);
-              canvas.centerObject(img);
+            if (aspect >= 1) {
+              //@ts-ignore
+              img.scaleToHeight(canvas.height);
+            } else {
+              //@ts-ignore
+              img.scaleToWidth(canvas.width);
             }
+            canvas.add(img);
+            canvas.centerObject(img);
           }
         } else {
           fabric.Image.fromURL(RAT_CLOSET_PLACEHOLDER, (img) => {
@@ -267,7 +275,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
       setTimeout(() => setLoading((l) => ({ ...l, mirror: false })), 300);
       canvas?.renderAll();
     },
-    [canvas, hideBackground, ownedItems],
+    [canvas, hidePiece, ownedItems],
   );
 
   const getBase64Image = (file: Blob): Promise<any | Error> => {
@@ -281,7 +289,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
 
   useEffect(() => {
     handleChangeRat(currentRat);
-  }, [hideBackground, currentRat, handleChangeRat]);
+  }, [currentRat, handleChangeRat, hidePiece]);
 
   const tryOnClothes = (pieceType: string, piece: string) => {
     if (currentRat) {
@@ -343,8 +351,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
         loading,
         rats,
         signerTokens,
-        hideBackground,
-        setHideBackground,
+        hidePiece,
+        setHidePiece,
         currentRat,
         tokenProgress,
         cart,
@@ -359,6 +367,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
         setTokenCounts,
         loadedTokenImages,
         setLoadedTokenImages,
+        sponsoredPieces,
       }}>
       {children}
     </ClosetContext.Provider>
