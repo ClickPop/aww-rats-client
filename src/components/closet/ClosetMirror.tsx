@@ -96,7 +96,7 @@ export const ClosetMirror = () => {
                     }
                   }}
                 />
-                <label htmlFor={p} className='text-white'>
+                <label htmlFor={p} className='bg-white duration-200 cursor-pointer block px-1 mb-1 rounded'>
                   {p}
                 </label>
               </div>
