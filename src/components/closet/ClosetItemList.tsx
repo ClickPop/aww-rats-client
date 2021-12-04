@@ -37,6 +37,12 @@ export const ClosetItemList = () => {
             <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
               Sponsored
             </h3>
+            <p className="text-white text-sm">
+              These pieces are from some of our best friends around the internet.
+            </p>
+            <p className="text-white text-sm mb-4">
+              Want to <a href="https://docs.google.com/forms/d/e/1FAIpQLSf7Sya6kD5V-qGE9R7GIlZ6VC9_xR2EwsGo3VouvHcpCULCRg/viewform" target="_blank" className="underline">add a branded piece</a> to the closet?
+            </p>
 
             <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
               {Object.values(sponsoredPieces).map((piece) => (
