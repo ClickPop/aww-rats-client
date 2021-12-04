@@ -88,8 +88,8 @@ export interface ClosetContextType {
     rat: SingleValue<SimplifiedMetadata | null>,
   ) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
-  loadedTokens: string[];
-  setLoadedTokens: Dispatch<SetStateAction<string[]>>;
+  loadedTokenImages: string[];
+  setLoadedTokenImages: Dispatch<SetStateAction<string[]>>;
   tokenCounts: {
     minted: Record<string, BigNumber>;
     owned: Record<string, BigNumber>;
