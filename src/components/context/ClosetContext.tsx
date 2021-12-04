@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useReducer,
   useState,
 } from 'react';
@@ -28,6 +27,7 @@ import { fabric } from 'fabric';
 import { SingleValue } from 'react-select';
 import { EthersContext } from '~/components/context/EthersContext';
 import { closetCartReducer } from '~/reducers/closetCart';
+import { calculatePercentage } from '~/utils/calculatePercentage';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -52,8 +52,8 @@ const defaultClosetContext: ClosetContextType = {
   setOwnedItems: () => {},
   handleChangeRat: async () => {},
   getBase64Image: async () => {},
-  loadedTokens: [],
-  setLoadedTokens: () => {},
+  loadedTokenImages: [],
+  setLoadedTokenImages: () => {},
   tokenCounts: { minted: {}, owned: {} },
   setTokenCounts: () => {},
 };
@@ -62,7 +62,7 @@ export const ClosetContext = createContext(defaultClosetContext);
 
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
-  const { signer, contract, signerAddr, closet } = useContext(EthersContext);
+  const { contract, signerAddr, closet } = useContext(EthersContext);
   const [signerTokens, setSignerTokens] = useState<BigNumber[]>([]);
   const [ownedItems, setOwnedItems] = useState<
     Record<string, ClosetUserTokenWithMeta>
@@ -77,18 +77,14 @@ export const ClosetContextProvider: FC = ({ children }) => {
     mirror: false,
     pieces: false,
   });
+  const [loadedTokenImages, setLoadedTokenImages] = useState<string[]>([]);
   const [loadedTokens, setLoadedTokens] = useState<string[]>([]);
   const [tokenProgress, setTokenProgress] = useState(0);
   const [cart, cartDispatch] = useReducer(closetCartReducer, {});
   const [closetPieces, setClosetPieces] = useState<
     Record<string, ClosetTokenWithMeta>
   >({});
-
-  const totalClosetPieces = useMemo(
-    () => Object.keys(closetPieces).length,
-    [closetPieces],
-  );
-
+  const [totalClosetPieces, setTotalClosetPieces] = useState(0);
   const [tokenCounts, setTokenCounts] = useState<{
     minted: Record<string, BigNumber>;
     owned: Record<string, BigNumber>;
@@ -103,11 +99,25 @@ export const ClosetContextProvider: FC = ({ children }) => {
             const ratTokens = await contract.getTokensByOwner(signerAddr);
             setSignerTokens(ratTokens);
           }
-          if (closet) {
-            const closetTokens = await closet.getActiveTokens();
-            const uri = await closet.uri(1);
-            const tokenObject: Record<string, ClosetTokenWithMeta> = {};
-            for (const token of closetTokens) {
+          setLoading((l) => ({ ...l, tokens: false }));
+        } catch (err) {
+          console.error(err);
+          setLoading((l) => ({ ...l, tokens: false }));
+        }
+      }
+    })();
+  }, [contract, signerAddr]);
+
+  useEffect(() => {
+    (async () => {
+      if (closet && signerAddr) {
+        try {
+          const closetTokens = await closet.getActiveTokens();
+          setTotalClosetPieces(closetTokens.length);
+          const uri = await closet.uri(1);
+          const tokenObject: Record<string, ClosetTokenWithMeta> = {};
+          for (const token of closetTokens) {
+            try {
               const total = await closet.totalSupply(token.id);
               const bal = await closet.balanceOf(signerAddr, token.id);
               setTokenCounts((c) => ({
@@ -118,11 +128,17 @@ export const ClosetContextProvider: FC = ({ children }) => {
                 uri.replace('{id}', token.id.toString()),
               ).then((r) => r.json())) as Metadata;
               tokenObject[token.id.toString()] = { ...token, tokenMeta: meta };
+              setLoadedTokens((l) => [...l, token.id.toString()]);
+            } catch (err) {
+              console.error(err);
             }
-            setClosetPieces(tokenObject);
+          }
 
-            const ownedTokens = await closet.getTokensByWallet(signerAddr);
-            for (const token of ownedTokens) {
+          setClosetPieces(tokenObject);
+
+          const ownedTokens = await closet.getTokensByWallet(signerAddr);
+          for (const token of ownedTokens) {
+            try {
               const id = token.id.toString();
               token.id.toString();
               if (tokenObject[id]) {
@@ -131,15 +147,16 @@ export const ClosetContextProvider: FC = ({ children }) => {
                   [id]: { ...token, tokenMeta: tokenObject[id].tokenMeta },
                 }));
               }
+            } catch (err) {
+              console.error(err);
             }
           }
         } catch (err) {
           console.error(err);
         }
-        setLoading((l) => ({ ...l, tokens: false }));
       }
     })();
-  }, [signer, contract, signerAddr, closet]);
+  }, [closet, signerAddr]);
 
   // Get the metadata for those tokens and store them in state
   useEffect(() => {
@@ -253,21 +270,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
     [canvas, hideBackground, ownedItems],
   );
 
-  const calculatePercentage = (n: number, d: number): number => {
-    let perc: number = 0;
-    if (n >= 0 && d > 0) {
-      if (n > d || n === d) {
-        perc = 1;
-      } else {
-        perc = n / d;
-      }
-    }
-
-    perc = perc >= 0 && perc < 1 ? Math.round(perc * 10000) / 100 : 100;
-
-    return perc;
-  };
-
   const getBase64Image = (file: Blob): Promise<any | Error> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -278,9 +280,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!currentRat) {
-      setLoadedTokens([]);
-    }
     handleChangeRat(currentRat);
   }, [hideBackground, currentRat, handleChangeRat]);
 
@@ -324,13 +323,17 @@ export const ClosetContextProvider: FC = ({ children }) => {
   useEffect(() => {
     setLoading((l) => ({
       ...l,
-      pieces: loadedTokens.length >= totalClosetPieces,
+      pieces:
+        loadedTokens.length + loadedTokenImages.length < totalClosetPieces * 2,
     }));
 
     setTokenProgress(
-      calculatePercentage(loadedTokens.length, totalClosetPieces),
+      calculatePercentage(
+        loadedTokens.length + loadedTokenImages.length,
+        totalClosetPieces * 2,
+      ),
     );
-  }, [loadedTokens, totalClosetPieces]);
+  }, [loadedTokenImages.length, loadedTokens.length, totalClosetPieces]);
 
   return (
     <ClosetContext.Provider
@@ -352,10 +355,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
         setOwnedItems,
         handleChangeRat,
         getBase64Image,
-        loadedTokens,
-        setLoadedTokens,
         tokenCounts,
         setTokenCounts,
+        loadedTokenImages,
+        setLoadedTokenImages,
       }}>
       {children}
     </ClosetContext.Provider>

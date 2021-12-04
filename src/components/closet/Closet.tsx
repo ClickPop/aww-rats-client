@@ -49,9 +49,9 @@ const Closet = () => {
           )}
         </div>
 
-        <div className='container mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
-          {currentRat && loading.pieces && (
-            <div className='w-full mx-auto mt-40 h-3/4 items-center text-center'>
+        <div className='container relative mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
+          {loading.pieces && (
+            <div className='w-full mx-auto mt-40 h-3/4 items-center text-center absolute'>
               <CheeseLoader className='w-20 h-20' />
 
               <div className='mx-auto h-3 relative rounded-full overflow-hidden w-80'>
@@ -62,11 +62,7 @@ const Closet = () => {
               </div>
             </div>
           )}
-          {currentRat ? (
-            <ClosetItemList />
-          ) : (
-            <div className='text-white'>Please select a rat</div>
-          )}
+          <ClosetItemList />
         </div>
       </div>
     </div>
