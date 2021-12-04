@@ -11,6 +11,7 @@ type Props = {
 
 export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const {
+    currentRat,
     ownedItems,
     tryOnClothes,
     loadedTokenImages,
@@ -19,6 +20,9 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   } = useContext(ClosetContext);
 
   const ownedItem = ownedItems[piece.id.toString()];
+
+  const selected =
+    currentRat?.properties.get(pieceType) === piece.id.toString();
 
   if (!ownedItem && !piece.token.active) {
     return null;
@@ -32,7 +36,10 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   )?.value;
 
   return (
-    <div className='rounded-md border-slate border-2 flex flex-col justify-between'>
+    <div
+      className={`rounded-md border-${
+        selected ? 'white' : 'slate'
+      } border-2 flex flex-col justify-between`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
           loading='eager'
