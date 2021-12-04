@@ -3,7 +3,7 @@ import React, { useContext, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { RAT_CLOSET_PLACEHOLDER } from '~/config/env';
+import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
 
@@ -14,8 +14,8 @@ export const ClosetMirror = () => {
     rats,
     tryOnClothes,
     handleChangeRat,
-    setHideBackground,
-    hideBackground,
+    setHidePiece,
+    hidePiece,
     getBase64Image,
     setCanvas,
   } = useContext(ClosetContext);
@@ -81,19 +81,25 @@ export const ClosetMirror = () => {
 
       {currentRat && (
         <div className='my-2 mx-auto text-center'>
-          <input
-            type='checkbox'
-            id='background'
-            checked={hideBackground}
-            onChange={(e) => {
-              if (e.target.type === 'checkbox') {
-                setHideBackground(e.target.checked);
-              }
-            }}
-          />
-          <label htmlFor='background' className='text-white ml-2'>
-            Remove Background
-          </label>
+          <div className='flex flex-col'>
+            {REMOVABLE_CLOSET_PIECES.map((p) => (
+              <div key={p}>
+                <input
+                  type='checkbox'
+                  id={p}
+                  checked={hidePiece[p] ?? false}
+                  onChange={(e) => {
+                    if (e.target.type === 'checkbox') {
+                      setHidePiece((c) => ({ ...c, [p]: !hidePiece[p] }));
+                    }
+                  }}
+                />
+                <label htmlFor={p} className='text-white ml-2'>
+                  Remove {p}
+                </label>
+              </div>
+            ))}
+          </div>
 
           <input
             type='file'
@@ -107,7 +113,10 @@ export const ClosetMirror = () => {
                 const file = e.target.files[0];
                 const data = await getBase64Image(file);
                 tryOnClothes('background', data);
-                setHideBackground(false);
+                setHidePiece((c) => ({
+                  ...c,
+                  background: false,
+                }));
               }
             }}
           />
