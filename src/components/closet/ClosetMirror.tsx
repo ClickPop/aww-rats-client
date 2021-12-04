@@ -81,12 +81,14 @@ export const ClosetMirror = () => {
 
       {currentRat && (
         <div className='my-2 mx-auto text-center'>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-left px-4'>
+            <p className="font-bold text-white">Include</p>
             {REMOVABLE_CLOSET_PIECES.map((p) => (
-              <div key={p}>
+              <div key={p} className='checkboxmoji'>
                 <input
                   type='checkbox'
                   id={p}
+                  className='hidden'
                   checked={hidePiece[p] ?? false}
                   onChange={(e) => {
                     if (e.target.type === 'checkbox') {
@@ -94,8 +96,8 @@ export const ClosetMirror = () => {
                     }
                   }}
                 />
-                <label htmlFor={p} className='text-white ml-2'>
-                  Remove {p}
+                <label htmlFor={p} className='text-white'>
+                  {p}
                 </label>
               </div>
             ))}
