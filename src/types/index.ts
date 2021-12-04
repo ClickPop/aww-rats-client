@@ -74,12 +74,13 @@ export interface ClosetContextType {
   signerTokens: BigNumber[];
   rats: Array<SimplifiedMetadata | null>;
   currentRat: SimplifiedMetadata | null;
-  hideBackground: boolean;
-  setHideBackground: Dispatch<SetStateAction<boolean>>;
+  hidePiece: Record<string, boolean>;
+  setHidePiece: Dispatch<SetStateAction<Record<string, boolean>>>;
   cart: ClosetCartState;
   cartDispatch: Dispatch<ClosetCartAction>;
   tryOnClothes: (pieceType: string, piece: string) => void;
   closetPieces: Record<string, ClosetTokenWithMeta>;
+  sponsoredPieces: Record<string, ClosetTokenWithMeta>;
   ownedItems: Record<string, ClosetUserTokenWithMeta>;
   setOwnedItems: Dispatch<
     SetStateAction<Record<string, ClosetUserTokenWithMeta>>
