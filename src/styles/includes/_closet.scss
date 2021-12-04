@@ -30,26 +30,20 @@
 /* Checkboxes for removing items in the closet */
 .checkboxmoji {
   label {
-    cursor: pointer;
 
     &:before {
-      background: rgba(200,255,225,0.8);
-      border: 1px solid #222222;
-      border-radius: 0.5rem;
       color: '#16C60C';
       content: '✔';
       display: inline-block;
-      font-size: 10px;
-      height: 18px;
       margin-right: 0.25rem;
-      padding: 1px;
-      text-align: center;
-      width: 18px;
     }
   }
 
-  input:checked ~ label:before {
-    background: rgba(255,210,210,0.8);
-    content: '❌';
+  input:checked ~ label {
+    background: rgb(255,220,230);
+
+    &:before {
+      content: '❌';
+    }
   }
 }
