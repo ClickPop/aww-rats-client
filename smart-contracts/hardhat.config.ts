@@ -554,16 +554,6 @@ task('add-closet-items', 'Add new closet token')
               const [[k, v]] = Object.entries(token);
               const meta = tokenMeta.find((m) => m.name === k);
               if (meta) {
-                console.log(
-                  `Writing file to ${path.join(
-                    __dirname,
-                    '..',
-                    'public',
-                    'closet',
-                    hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
-                    `${v}.json`,
-                  )}`,
-                );
                 const filepath = path.join(
                   __dirname,
                   '..',
@@ -572,17 +562,8 @@ task('add-closet-items', 'Add new closet token')
                   hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
                   `${v}.json`,
                 );
-                await writeFile(
-                  path.join(
-                    __dirname,
-                    '..',
-                    'public',
-                    'closet',
-                    hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
-                    `${v}.json`,
-                  ),
-                  JSON.stringify(meta),
-                );
+                console.log(`Writing file to ${filepath}`);
+                await writeFile(filepath, JSON.stringify(meta));
               }
             }
           }
@@ -847,6 +828,12 @@ task('closet-promo-mint', 'Mint and transfer tokens')
     'wallets',
     'A comma separated list of wallets to transfer the tokens to after minting',
   )
+  .addOptionalParam(
+    'gasMultiple',
+    'The amount to multiply the gas limit by to increase tx speed',
+    1,
+    types.int,
+  )
   .addFlag('ratHolders', 'Promo mints for all Rat holders')
   .setAction(
     async (
@@ -855,16 +842,21 @@ task('closet-promo-mint', 'Mint and transfer tokens')
         tokenIds,
         amounts,
         ratHolders,
+        gasMultiple,
       }: {
         wallets?: string;
         tokenIds: string;
         amounts: string;
         ratHolders?: boolean;
+        gasMultiple: number;
       },
       hre,
     ) => {
       const ids = tokenIds.split(',');
       const amnts = amounts.split(',');
+      if (gasMultiple < 1) {
+        throw new Error('Gas multiple must be a positive integer');
+      }
       console.log('Setting up env');
       const [signer] = await hre.ethers.getSigners();
       const Closet = await hre.ethers.getContractFactory('Closet', signer);
@@ -904,15 +896,60 @@ task('closet-promo-mint', 'Mint and transfer tokens')
         throw new Error('Mismatched tokenIds and amounts length');
       }
 
-      for (const wallet of addresses.slice(1)) {
-        const tx = await closet
-          .promoMint(
-            ids,
-            amnts.length === 1 ? ids.map(() => amnts[0]) : amnts,
+      for (const wallet of addresses) {
+        const mintable: { id: string; amount: string }[] = [];
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          const amount = amnts.length > 1 ? amnts[i] : amnts[0];
+          const token = await closet.getTokenById(id);
+          const bal = await closet.balanceOf(wallet, id);
+          const total = await closet.totalSupply(id);
+          const walletTotal = await closet.maxTokensPerWalletById(id, wallet);
+          const balAfterMint = bal.add(amount);
+          const totalAfterMint = total.add(
+            amnts.length > 1 ? amnts[i] : amnts[0],
+          );
+          const maxTokensExceeded =
+            !token.maxTokens.eq(0) && totalAfterMint.gt(token.maxTokens);
+          const maxWalletExceeded =
+            (!token.maxPerWallet.eq(0) &&
+              balAfterMint.gt(token.maxPerWallet)) ||
+            (!walletTotal.eq(0) && balAfterMint.gt(walletTotal));
+
+          if (!maxTokensExceeded && !maxWalletExceeded) {
+            mintable.push({ id, amount });
+          } else {
+            console.log(
+              `TokenId: ${id} in not mintable for wallet ${wallet}. Reason(s): ${
+                maxTokensExceeded ? 'Total supply would exceed max tokens' : ''
+              } ${
+                maxWalletExceeded
+                  ? 'Token balance for this wallet would exceed maximum'
+                  : ''
+              }`,
+            );
+          }
+        }
+
+        if (mintable.length > 0) {
+          const gasLimit = await closet.estimateGas.promoMint(
+            mintable.map((m) => m.id),
+            mintable.map((m) => m.amount),
             wallet,
-          )
-          .then((t) => t.wait());
-        console.log(`Tx hash: ${tx.transactionHash} for wallet: ${wallet}`);
+          );
+          const tx = await closet.promoMint(
+            mintable.map((m) => m.id),
+            mintable.map((m) => m.amount),
+            wallet,
+            {
+              gasLimit: gasLimit.mul(gasMultiple),
+            },
+          );
+          console.log(`Waiting on tx: ${tx.hash} for wallet: ${wallet}`);
+          await tx.wait();
+        } else {
+          console.log('No items to mint');
+        }
       }
     },
   );
