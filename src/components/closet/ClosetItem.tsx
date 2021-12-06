@@ -46,7 +46,9 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           src={piece.tokenMeta.image}
           alt=''
           layout='fill'
-          className={`w-full h-full ${ownedItem ? 'cursor-pointer' : ''}`}
+          className={`w-full h-full ${
+            currentRat && ownedItem ? 'cursor-pointer' : ''
+          }`}
           onClick={() => {
             if (ownedItem) {
               tryOnClothes(pieceType, piece.id.toString());
@@ -75,7 +77,11 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           {sponsorName && sponsorURL && (
             <>
               by{' '}
-              <a className='underline' href={sponsorURL as string}>
+              <a
+                className='underline'
+                href={sponsorURL as string}
+                target='_blank'
+                rel='noreferrer'>
                 {sponsorName}
               </a>
             </>
