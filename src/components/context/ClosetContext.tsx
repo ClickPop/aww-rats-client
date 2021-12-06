@@ -231,6 +231,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
     async (rat: SingleValue<SimplifiedMetadata | null>) => {
       setLoading((l) => ({ ...l, mirror: true }));
       setCurrentRat(rat);
+
       const getImageURL = (key: string, val: string): string => {
         if (val.startsWith('data:')) {
           return val;
@@ -293,17 +294,13 @@ export const ClosetContextProvider: FC = ({ children }) => {
 
   const tryOnClothes = (pieceType: string, piece: string) => {
     if (currentRat) {
-      if (
-        piece === '##REMOVE##' ||
-        currentRat.properties.get(pieceType) === piece
-      ) {
-        if (!(piece === '##REMOVE##' && !oldClothes.get(pieceType))) {
-          currentRat.properties.set(
-            pieceType,
-            oldClothes.get(pieceType) ?? 'none',
-          );
-          handleChangeRat(currentRat);
-        }
+      if (currentRat.properties.get(pieceType) === piece) {
+        const rat = rats.find((r) => r?.value === currentRat.value);
+        currentRat.properties.set(
+          pieceType,
+          rat?.properties.get(pieceType) ?? 'none',
+        );
+        handleChangeRat(currentRat);
       } else {
         if (piece.startsWith('data:')) {
           const old = new Map(oldClothes);
@@ -322,8 +319,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
           old.set(pieceType, currentRat.properties.get(pieceType) ?? 'none');
           setOldClothes(old);
         }
-        currentRat.properties.set(pieceType, piece);
-        handleChangeRat(currentRat);
+        const newClothes = new Map(currentRat.properties).set(pieceType, piece);
+        handleChangeRat({ ...currentRat, properties: newClothes });
       }
     }
   };
