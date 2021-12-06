@@ -23,12 +23,9 @@ export const ClosetItemList = () => {
 
   return (
     <div>
-      {!currentRat && (
-        <div className='text-white w-fit mx-auto'>Please select a rat</div>
-      )}
       <div
         className={`flex flex-col w-full ${
-          loading.pieces || !currentRat
+          loading.pieces
             ? 'opacity-0 pointer-events-none overflow-hidden'
             : 'opacity-1 pointer-events-auto'
         }`}>
@@ -37,11 +34,20 @@ export const ClosetItemList = () => {
             <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
               Sponsored
             </h3>
-            <p className="text-white text-sm">
-              These pieces are from some of our best friends around the internet.
+            <p className='text-white text-sm'>
+              These pieces are from some of our best friends around the
+              internet.
             </p>
-            <p className="text-white text-sm mb-4">
-              Want to <a href="https://docs.google.com/forms/d/e/1FAIpQLSf7Sya6kD5V-qGE9R7GIlZ6VC9_xR2EwsGo3VouvHcpCULCRg/viewform" target="_blank" className="underline" rel="noreferrer">add a branded piece</a> to the closet?
+            <p className='text-white text-sm mb-4'>
+              Want to{' '}
+              <a
+                href='https://docs.google.com/forms/d/e/1FAIpQLSf7Sya6kD5V-qGE9R7GIlZ6VC9_xR2EwsGo3VouvHcpCULCRg/viewform'
+                target='_blank'
+                className='underline'
+                rel='noreferrer'>
+                add a branded piece
+              </a>{' '}
+              to the closet?
             </p>
 
             <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
