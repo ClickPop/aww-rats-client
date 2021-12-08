@@ -4,7 +4,7 @@ import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta } from '~/types';
 
 export const ClosetItemList = () => {
-  const { loading, closetPieces, currentRat, sponsoredPieces } =
+  const { loading, closetPieces, currentRat, sponsoredPieces, ownedItems } =
     useContext(ClosetContext);
 
   const piecesByType = useMemo(
@@ -14,11 +14,16 @@ export const ClosetItemList = () => {
           (a) => a.trait_type === 'Piece Type',
         )?.value;
         if (pieceType) {
-          return { ...acc, [pieceType]: [...(acc[pieceType] ?? []), curr] };
+          return {
+            ...acc,
+            [pieceType]: [...(acc[pieceType] ?? []), curr].sort((a) =>
+              ownedItems[a.id.toString()] ? -1 : 0,
+            ),
+          };
         }
         return acc;
       }, {} as Record<string, ClosetTokenWithMeta[]>),
-    [closetPieces],
+    [closetPieces, ownedItems],
   );
 
   return (
@@ -51,17 +56,19 @@ export const ClosetItemList = () => {
             </p>
 
             <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-              {Object.values(sponsoredPieces).map((piece) => (
-                <ClosetItem
-                  key={piece.id.toString()}
-                  piece={piece}
-                  pieceType={
-                    (piece.tokenMeta.attributes.find(
-                      (a) => a.trait_type === 'Piece Type',
-                    )?.value as string) ?? ''
-                  }
-                />
-              ))}
+              {Object.values(sponsoredPieces)
+                .sort((a) => (ownedItems[a.id.toString()] ? -1 : 0))
+                .map((piece) => (
+                  <ClosetItem
+                    key={piece.id.toString()}
+                    piece={piece}
+                    pieceType={
+                      (piece.tokenMeta.attributes.find(
+                        (a) => a.trait_type === 'Piece Type',
+                      )?.value as string) ?? ''
+                    }
+                  />
+                ))}
             </div>
           </div>
         )}
