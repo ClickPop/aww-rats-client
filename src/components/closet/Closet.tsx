@@ -38,7 +38,7 @@ const Closet = () => {
           {currentRat && canvas && (
             <button
               className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-              onClick={(e) => {
+              onClick={() => {
                 const link = document.createElement('a');
                 link.download = `${currentRat.label}.png`;
                 link.href = canvas.toDataURL();
