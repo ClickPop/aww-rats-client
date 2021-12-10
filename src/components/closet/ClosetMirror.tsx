@@ -3,6 +3,7 @@ import React, { useContext, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
+import { Connect } from '~/components/shared/Connect';
 import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
@@ -49,10 +50,11 @@ export const ClosetMirror = () => {
 
   return (
     <>
+      <Connect />
       {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
       {!loading.tokens && rats && (
         <Select
-          className='select-search mx-auto w-80 mb-4'
+          className='select-search mx-auto w-80 my-4'
           options={rats}
           placeholder='Select your rat'
           onChange={handleChangeRat}
