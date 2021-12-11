@@ -8,7 +8,7 @@ import { MenuLink } from '~/components/shared/MenuLink';
 
 export const Header = () => {
   return (
-    <div className='py-4 flex flex-col bg-dark md:flex-row justify-between fixed items-center w-full z-50 bg-opacity-30'>
+    <div className='py-4 flex flex-col bg-gray-800 md:flex-row justify-between fixed items-center w-full z-50 bg-opacity-30'>
       <Link href='/' className='mr-4'>
         <Image
           className='w-12 h-12 mx-4 hidden md:block'
