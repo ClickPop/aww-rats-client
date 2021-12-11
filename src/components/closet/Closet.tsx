@@ -1,16 +1,11 @@
 import React, { useContext } from 'react';
-import { EthersContext } from '~/components/context/EthersContext';
-import { Connect } from '~/components/shared/Connect';
 import { Link } from '~/components/shared/Link';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { useRouter } from 'next/router';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetItemList } from '~/components/closet/ClosetItemList';
 import { ClosetMirror } from '~/components/closet/ClosetMirror';
 
 const Closet = () => {
-  const router = useRouter();
-  const { connected } = useContext(EthersContext);
   const { currentRat, loading, canvas, tokenProgress } =
     useContext(ClosetContext);
   return (
@@ -29,11 +24,6 @@ const Closet = () => {
       </div>
       <div className='flex flex-col md:flex-row md:h-screen'>
         <div className='container max-w-sm mx-auto my-2 p-4'>
-          {router.route !== '/' && !connected && (
-            <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-              <Connect />
-            </div>
-          )}
           <ClosetMirror />
           {currentRat && canvas && (
             <button

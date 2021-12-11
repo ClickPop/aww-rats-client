@@ -11,7 +11,7 @@ const ClosetWrapper = dynamic(
 
 const ClosetPage: NextPage = () => {
   return (
-    <LayoutNoFooter className='bg-dark'>
+    <LayoutNoFooter className='bg-gray-800'>
       <Head>
         <title>Aww, Rats! NFTs</title>
         <meta
