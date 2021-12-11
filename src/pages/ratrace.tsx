@@ -5,7 +5,7 @@ import { Layout } from '~/components/layout/Layout';
 
 const RatRacePage: NextPage = () => {
   return (
-    <Layout className='bg-dark'>
+    <Layout className='bg-gray-800'>
       <RatRace />
     </Layout>
   );

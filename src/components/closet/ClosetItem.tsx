@@ -38,8 +38,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   return (
     <div
       className={`rounded-md border-${
-        selected ? 'white' : 'slate'
-      } border-2 flex flex-col justify-between`}>
+        selected ? 'white' : 'none'
+      } border-2 flex flex-col justify-between bg-gray-700`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
           loading='eager'

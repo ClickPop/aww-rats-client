@@ -11,7 +11,7 @@ import { ScrollToTop } from '~/components/shared/ScrollToTop';
 
 const Home: NextPage = () => {
   return (
-    <Layout className='bg-dark'>
+    <Layout className='bg-gray-800'>
       <Head>
         <title>Aww, Rats! NFTs</title>
         <meta
