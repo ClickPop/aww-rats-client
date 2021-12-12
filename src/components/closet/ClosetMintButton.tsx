@@ -10,7 +10,6 @@ import {
 } from '~/types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { Image } from '~/components/shared/Image';
 
 type Props = {
@@ -106,9 +105,7 @@ export const ClosetMintButton: FC<Props> = ({ piece }) => {
       case piece.token.cost.gt(0):
         return (
           <>
-            Mint{' '}
-            <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
-            {ethers.utils.formatEther(piece.token.cost)}
+            Buy Now
           </>
         );
       case piece.token.cost.eq(0):
