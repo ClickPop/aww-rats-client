@@ -1,16 +1,11 @@
 import React, { useContext } from 'react';
-import { EthersContext } from '~/components/context/EthersContext';
-import { Connect } from '~/components/shared/Connect';
 import { Link } from '~/components/shared/Link';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { useRouter } from 'next/router';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetItemList } from '~/components/closet/ClosetItemList';
 import { ClosetMirror } from '~/components/closet/ClosetMirror';
 
 const Closet = () => {
-  const router = useRouter();
-  const { connected } = useContext(EthersContext);
   const { currentRat, loading, canvas, tokenProgress } =
     useContext(ClosetContext);
   return (
@@ -29,16 +24,11 @@ const Closet = () => {
       </div>
       <div className='flex flex-col md:flex-row md:h-screen'>
         <div className='container max-w-sm mx-auto my-2 p-4'>
-          {router.route !== '/' && !connected && (
-            <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-              <Connect />
-            </div>
-          )}
           <ClosetMirror />
           {currentRat && canvas && (
             <button
               className='download py-2 px-3 w-80 block mt-4 mx-auto text-white rounded-md duration-300 bg-purple-700 hover:bg-purple-800'
-              onClick={(e) => {
+              onClick={() => {
                 const link = document.createElement('a');
                 link.download = `${currentRat.label}.png`;
                 link.href = canvas.toDataURL();

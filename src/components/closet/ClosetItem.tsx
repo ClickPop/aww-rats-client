@@ -1,7 +1,9 @@
+import { ethers, BigNumber } from 'ethers';
 import React, { useContext, FC, useEffect, useState } from 'react';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta, ClosetUserTokenWithMeta, ERC20 } from '~/types';
 import { Image } from '~/components/shared/Image';
+import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
 
 type Props = {
@@ -16,7 +18,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     tryOnClothes,
     loadedTokenImages,
     setLoadedTokenImages,
-    tokenCounts: { owned },
+    tokenCounts: { owned, minted },
   } = useContext(ClosetContext);
 
   const ownedItem = ownedItems[piece.id.toString()];
@@ -38,15 +40,15 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   return (
     <div
       className={`rounded-md border-${
-        selected ? 'white' : 'slate'
-      } border-2 flex flex-col justify-between`}>
+        selected ? 'white' : 'none'
+      } border-2 flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
           loading='eager'
           src={piece.tokenMeta.image}
           alt=''
           layout='fill'
-          className={`w-full h-full ${
+          className={`w-full h-full border-b border-gray-800 ${
             currentRat && ownedItem ? 'cursor-pointer' : ''
           }`}
           onClick={() => {
@@ -71,22 +73,47 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         )}
       </div>
 
-      <div className={`text-center text-sm text-white`}>
-        <h5 className='p-2'>
-          {piece.token.name}{' '}
-          {sponsorName && sponsorURL && (
-            <>
-              by{' '}
-              <a
-                className='underline'
-                href={sponsorURL as string}
-                target='_blank'
-                rel='noreferrer'>
-                {sponsorName}
-              </a>
-            </>
-          )}
-        </h5>
+      <div className={`text-left flex-auto flex justify-between py-3`}>
+        <div className='px-2'>
+          <div className="text-gray-400">
+            Name
+          </div>
+          <h5>
+            {piece.token.name}{' '}
+            {sponsorName && sponsorURL && (
+              <div>
+                by{' '}
+                <a
+                  className='underline'
+                  href={sponsorURL as string}
+                  target='_blank'
+                  rel='noreferrer'>
+                  {sponsorName}
+                </a>
+              </div>
+            )}
+          </h5>
+        </div>
+        <div className='px-2 text-right'>
+          <div className="text-gray-400">
+            Price
+          </div>
+          <div className="font-bold">
+            <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
+            {ethers.utils.formatEther(piece.token.cost)}
+          </div>
+        </div>
+      </div>
+
+      {piece.token.maxTokens.gt(0) && (              
+        <div className="px-2 py-2 border-t border-gray-800">
+            {piece.token.maxTokens.toNumber() - minted[piece.id.toString()].toNumber()} /{' '}
+            {piece.token.maxTokens.toString()}{' '}
+            left
+        </div>
+      )}      
+
+      <div>
         <ClosetMintButton piece={piece} />
       </div>
     </div>
