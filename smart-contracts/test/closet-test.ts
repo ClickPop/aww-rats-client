@@ -73,7 +73,7 @@ describe('Closet', () => {
     const token2 = {
       name: 'hat',
       cost: ethers.utils.parseEther('0.001'),
-      maxTokens: 100,
+      maxTokens: 2,
       active: true,
       maxPerWallet: 0,
       revShareAddress: '',
@@ -139,7 +139,7 @@ describe('Closet', () => {
             if (v.name === 'hat') {
               expect(v.name).to.eq('hat');
               expect(ethers.utils.formatEther(v.cost)).to.eq('0.001');
-              expect(v.maxTokens.toNumber()).to.eq(100);
+              expect(v.maxTokens.toNumber()).to.eq(2);
               expect(v.active).to.eq(true);
               expect(v.maxPerWallet).to.eq(0);
               expect(v.revShareAddress).to.eq(owner.address);
@@ -495,6 +495,31 @@ describe('Closet', () => {
     });
 
     it('should allow a wallet to transfer a token to another wallet', async () => {
+      const {
+        name,
+        cost,
+        maxPerWallet,
+        revShareAddress,
+        revShareAmount,
+        active,
+      } = await contract.getTokenById(2);
+      await contract
+        .connect(owner)
+        .changeTokens([
+          {
+            id: 2,
+            token: {
+              name,
+              cost,
+              maxPerWallet,
+              revShareAddress,
+              revShareAmount,
+              active,
+              maxTokens: 1,
+            },
+          },
+        ])
+        .then((t) => t.wait());
       const tx = await contract
         .safeTransferFrom(user.address, user2.address, 2, 1, [])
         .then((r) => r.wait());
@@ -728,7 +753,7 @@ describe('Closet', () => {
       expect(hat.id.toNumber()).to.eq(2);
       expect(hat.token.name).to.eq('hat');
       expect(hat.token.cost).to.eq(parseEther('0.001'));
-      expect(hat.token.maxTokens).to.eq(BigNumber.from(100));
+      expect(hat.token.maxTokens).to.eq(BigNumber.from(1));
       expect(hat.token.active).to.eq(true);
       expect(hat.token.maxPerWallet.toNumber()).to.eq(0);
       expect(hat.token.revShareAddress).to.eq(owner.address);
