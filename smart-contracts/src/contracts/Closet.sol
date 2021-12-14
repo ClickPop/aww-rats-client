@@ -248,7 +248,8 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
   }
   
   function _checkMinting(uint tokenId, uint amount) virtual internal view tokenExists(tokenId) {
-    _checkMax(tokenId, amount, msg.sender);
+    _checkTokenMax(tokenId, amount);
+    _checkWalletMax(tokenId, amount, msg.sender);
     require(erc20.balanceOf(msg.sender) >= idToToken[tokenId].cost, "Not enough currency");
     require(erc20.allowance(msg.sender, address(this)) >= idToToken[tokenId].cost, "ERC20 allowance not enough");
   }
@@ -279,8 +280,11 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
     emit BatchTokensMinted(ids, amounts, msg.sender);
   }
 
-  function _checkMax(uint tokenId, uint amount, address wallet) virtual internal view tokenExists(tokenId) {
+  function _checkTokenMax(uint tokenId, uint amount) virtual internal view tokenExists(tokenId) {
     require(idToToken[tokenId].maxTokens == 0 || idToToken[tokenId].maxTokens >= totalSupply(tokenId) + amount, "Max tokens reached for type");
+  }
+
+  function _checkWalletMax(uint tokenId, uint amount, address wallet) virtual internal view tokenExists(tokenId) {
     require((maxTokensPerWalletById[tokenId][wallet] == 0 || maxTokensPerWalletById[tokenId][wallet] >= balanceOf(wallet, tokenId) + amount) && (idToToken[tokenId].maxPerWallet == 0 || idToToken[tokenId].maxPerWallet >= balanceOf(wallet, tokenId) + amount), "Max tokens reached for wallet");
   }
 
@@ -306,14 +310,14 @@ contract Closet is Initializable, ERC1155SupplyUpgradeable, UUPSUpgradeable, Own
 
   /** Overrides */
   function _safeTransferFrom(address from, address to, uint id, uint amount, bytes memory data) virtual internal override(ERC1155Upgradeable) {
-    _checkMax(id, amount, to);
+    _checkWalletMax(id, amount, to);
     super._safeTransferFrom(from, to, id, amount, data);
   }
   
   function _safeBatchTransferFrom(address from, address to, uint[] memory ids, uint[] memory amounts, bytes memory data) virtual internal override(ERC1155Upgradeable) {
     require(ids.length == amounts.length, "Mismatched tokenIds and amounts");
     for (uint256 i = 0; i < ids.length; i++) {
-      _checkMax(ids[i], amounts[i], to);
+      _checkWalletMax(ids[i], amounts[i], to);
     }
     super._safeBatchTransferFrom(from, to, ids, amounts, data);
   }
