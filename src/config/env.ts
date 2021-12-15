@@ -52,7 +52,6 @@ export const REMOVABLE_CLOSET_PIECES = [
   'pet',
   'background',
 ];
-export const FULLSTORY_ORG_ID = '15X2Y3';
 
 /** Den Settings */
 export const DEN_BACKGROUND = '/images/den/sewerbg.png';
