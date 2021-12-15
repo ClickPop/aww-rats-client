@@ -151,7 +151,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
               token: typeof closetTokens[0]['token'];
             }[],
           );
-          console.log(tokens);
+          // console.log(tokens);
           setTotalClosetPieces(tokens.length);
           const uri = await closet.uri(1);
           const tokenObject: Record<string, ClosetTokenWithMeta> = {};
