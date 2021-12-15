@@ -74,7 +74,7 @@ export const ClosetMirror = () => {
                   relative
                 '>
         <canvas id='closet-canvas' className='w-full h-full' />
-        {loading.mirror && (
+        {loading.mirror && currentRat && (
           <div className='bg-black h-full w-full left-0 top-0 right-0 bottom-0 absolute'>
             <CheeseLoader className='left-12 right-12 top-6 bottom-12 absolute' />
           </div>
