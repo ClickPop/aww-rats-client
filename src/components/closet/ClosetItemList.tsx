@@ -7,18 +7,20 @@ import type { MouseEvent } from 'react';
 export const ClosetItemList = () => {
   const { loading, closetPieces, currentRat, sponsoredPieces, ownedItems } =
     useContext(ClosetContext);
-  const [filterShow, setFilterShow] = useState('all')
+  const [filterShow, setFilterShow] = useState('all');
 
-  const activeButton = 'text-white bg-purple-700 border-purple-900 hover:bg-purple-800 hover:text-white';
-  const inactiveButton = 'text-purple-700 bg-white border-gray-400 hover:bg-purple-800 hover:text-white hover:border-purple-900';
+  const activeButton =
+    'text-white bg-purple-700 border-purple-900 hover:bg-purple-800 hover:text-white';
+  const inactiveButton =
+    'text-purple-700 bg-white border-gray-400 hover:bg-purple-800 hover:text-white hover:border-purple-900';
 
   const clickFilterShow = (event: MouseEvent) => {
     let target = event.target as HTMLButtonElement;
     let newFilterShow = target.dataset.filterShow?.toString() || 'all';
     if (filterShow !== newFilterShow) {
       setFilterShow(newFilterShow);
-    } 
-  }
+    }
+  };
 
   const filterShowMethod = (piece: ClosetTokenWithMeta, state: string) => {
     console.log(piece);
@@ -52,12 +54,26 @@ export const ClosetItemList = () => {
 
   return (
     <div>
-      <div className="filters">
-        <div className="inline-flex rounded-md shadow-sm" role="group">
-          <button onClick={clickFilterShow} data-filter-show="all" type="button" className={'px-4 py-2 text-sm font-medium border rounded-l-lg ' + (filterShow === 'all' ? activeButton : inactiveButton)}>
+      <div className='filters'>
+        <div className='inline-flex rounded-md shadow-sm' role='group'>
+          <button
+            onClick={clickFilterShow}
+            data-filter-show='all'
+            type='button'
+            className={
+              'px-4 py-2 text-sm font-medium border rounded-l-lg ' +
+              (filterShow === 'all' ? activeButton : inactiveButton)
+            }>
             Show All
           </button>
-          <button onClick={clickFilterShow} data-filter-show="owned" type="button" className={'px-4 py-2 text-sm font-medium border rounded-r-lg ' + (filterShow === 'owned' ? activeButton : inactiveButton)}>
+          <button
+            onClick={clickFilterShow}
+            data-filter-show='owned'
+            type='button'
+            className={
+              'px-4 py-2 text-sm font-medium border rounded-r-lg ' +
+              (filterShow === 'owned' ? activeButton : inactiveButton)
+            }>
             Show Owned
           </button>
         </div>
@@ -118,12 +134,12 @@ export const ClosetItemList = () => {
               {pieces
                 .filter((a) => filterShowMethod(a, filterShow))
                 .map((piece) => (
-                <ClosetItem
-                  key={piece.id.toString()}
-                  piece={piece}
-                  pieceType={pieceType}
-                />
-              ))}
+                  <ClosetItem
+                    key={piece.id.toString()}
+                    piece={piece}
+                    pieceType={pieceType}
+                  />
+                ))}
             </div>
           </div>
         ))}
