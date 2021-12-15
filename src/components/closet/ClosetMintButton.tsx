@@ -103,11 +103,7 @@ export const ClosetMintButton: FC<Props> = ({ piece }) => {
       case !piece.token.active:
         return 'Unavailable';
       case piece.token.cost.gt(0):
-        return (
-          <>
-            Buy Now
-          </>
-        );
+        return <>Buy Now</>;
       case piece.token.cost.eq(0):
         return 'Free';
       default:
