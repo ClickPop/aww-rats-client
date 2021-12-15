@@ -11,7 +11,7 @@ type Props = {
   pieceType: string;
 };
 
-export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
+export const ClosetItem: FC<Props> = ({ piece, pieceType}) => {
   const {
     currentRat,
     ownedItems,
@@ -39,8 +39,8 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
 
   return (
     <div
-      className={`rounded-md border-${
-        selected ? 'white' : 'none'
+      className={`rounded-md ${
+        selected ? 'border-white' : 'border-none'
       } border-2 flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
@@ -75,7 +75,9 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
 
       <div className={`text-left flex-auto flex justify-between py-3`}>
         <div className='px-2'>
-          <div className='text-gray-400'>Name</div>
+          <div className="text-gray-400">
+            Name
+          </div>
           <h5>
             {piece.token.name}{' '}
             {sponsorName && sponsorURL && (
@@ -93,21 +95,23 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           </h5>
         </div>
         <div className='px-2 text-right'>
-          <div className='text-gray-400'>Price</div>
-          <div className='font-bold'>
+          <div className="text-gray-400">
+            Price
+          </div>
+          <div className="font-bold">
             <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
             {ethers.utils.formatEther(piece.token.cost)}
           </div>
         </div>
       </div>
 
-      {piece.token.maxTokens.gt(0) && (
-        <div className='px-2 py-2 border-t border-gray-800'>
-          {piece.token.maxTokens.toNumber() -
-            minted[piece.id.toString()].toNumber()}{' '}
-          / {piece.token.maxTokens.toString()} left
+      {piece.token.maxTokens.gt(0) && (              
+        <div className="px-2 py-2 border-t border-gray-800">
+            {piece.token.maxTokens.toNumber() - minted[piece.id.toString()].toNumber()} /{' '}
+            {piece.token.maxTokens.toString()}{' '}
+            left
         </div>
-      )}
+      )}      
 
       <div>
         <ClosetMintButton piece={piece} />
