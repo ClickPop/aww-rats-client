@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from 'react';
 import { UAuth } from '@uauth/js';
 
-function ConnectUNS() {
+const ConnectUNS = () => {
   const uauth = new UAuth({
     // These can be copied from the bottom of your app's configuration page on unstoppabledomains.com.
     clientID: process.env.REACT_APP_CLIENT_ID,
@@ -14,7 +14,7 @@ function ConnectUNS() {
     redirectUri: process.env.REACT_APP_REDIRECT_URI,
   });
 
-  window.login = async () => {
+  login = async () => {
     try {
       const authorization = await uauth.loginWithPopup()
  
@@ -23,7 +23,6 @@ function ConnectUNS() {
       console.error(error)
     }
   }
-
   return (
         <button
           className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
