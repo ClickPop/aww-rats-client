@@ -4,8 +4,7 @@ import { useEthers } from '~/hooks/useEthers';
 
 import { CHAIN_ID } from '~/config/env';
 import { utils } from 'ethers/lib/ethers';
-import { UAuth } from '@uauth/js';
-import { ConnectViaUNS } from '~/components/shared/UnstoppableWrapper';
+import { dynamic } from 'next/dynamic';
 
 interface NetworkSwitchError {
   state: string;
@@ -125,6 +124,13 @@ export const Connect = () => {
       console.error(err);
     }
   };
+
+  const ConnectViaUNS = dynamic(
+  () => {
+    return import("~/components/shared/UnstoppableWrapper");
+  },
+  { ssr: false }
+);
 
   const switchAddPolygonNetwork = async () => {
     setSwitchChainError({
