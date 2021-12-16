@@ -3,6 +3,9 @@ import { useEthers } from '~/hooks/useEthers';
 
 import { CHAIN_ID } from '~/config/env';
 import { utils } from 'ethers/lib/ethers';
+import { UAuth } from '@uauth/js';
+import { dynamic } from 'next/dynamic';
+
 interface NetworkSwitchError {
   state: string;
   message: string;
@@ -28,6 +31,12 @@ export const Connect = () => {
   const [chainData, setChainData] = useState<ChainData | null>(null);
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
+
+  const connectUNS = dynamic(() => import('~/components/shared/UnstoppableWrapper'),
+  {
+    ssr: false,
+  },
+  );
 
   useEffect(() => {
     let chain_data: ChainData | null = null;
@@ -172,11 +181,14 @@ export const Connect = () => {
 
   if (!connected) {
     return (
-      <button
-        className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
-        onClick={connectToMetamask}>
-        Connect to MetaMask
-      </button>
+      <>
+        <button
+          className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
+          onClick={connectToMetamask}>
+          Connect to MetaMask
+        </button>
+        <connectUNS></connectUNS>
+      </>
     );
   }
 

@@ -16,6 +16,7 @@
     "test-contract": "cd smart-contracts && yarn test"
   },
   "dependencies": {
+    "@uauth/js": "^0.7.5",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",
@@ -43,6 +44,7 @@
     "eslint-config-next": "11.1.2",
     "husky": "^7.0.2",
     "lint-staged": "^11.2.0",
+    "parcel": "^2.0.1",
     "postcss": "^8.3.6",
     "prettier": "^2.4.1",
     "sass": "^1.42.0",
