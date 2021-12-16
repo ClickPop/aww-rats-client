@@ -1,34 +1,28 @@
-import { React, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { UAuth } from '@uauth/js';
 
-const ConnectUNS = () => {
-  const uauth = new UAuth({
-    // These can be copied from the bottom of your app's configuration page on unstoppabledomains.com.
-    clientID: process.env.REACT_APP_CLIENT_ID,
-    clientSecret: process.env.REACT_APP_CLIENT_SECRET,
+export default function ConnectViaUNS() {
+  useEffect(function onFirstMount() {
+    function onConnect() {
+      console.log("connecting via uns!");
+      window.login = async () => {
+        try {
+          const authorization = await uauth.loginWithPopup()
 
-    // These are the scopes your app is requesting from the ud server.
-    scope: 'openid email wallet',
-
-    // This is the url that the auth server will redirect back to after every authorization attempt.
-    redirectUri: process.env.REACT_APP_REDIRECT_URI,
-  });
-
-  login = async () => {
-    try {
-      const authorization = await uauth.loginWithPopup()
- 
-      console.log(authorization)
-    } catch (error) {
-      console.error(error)
+          console.log(authorization)
+        } catch (error) {
+          console.error(error)
+        }
+      }
     }
-  }
+    window.addEventListener("loginUNS", onConnect);
+  }, []); // empty dependencies array means "run this once on first mount"
+
   return (
         <button
           className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
-          onClick={initConnection}>
+          onClick={onConnect}>
           Login with Unstoppable
         </button>
-  )
+  );
 };
-export default ConnectUNS;

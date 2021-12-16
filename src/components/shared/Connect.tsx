@@ -5,6 +5,7 @@ import { useEthers } from '~/hooks/useEthers';
 import { CHAIN_ID } from '~/config/env';
 import { utils } from 'ethers/lib/ethers';
 import { UAuth } from '@uauth/js';
+import { ConnectViaUNS } from '~/components/shared/UnstoppableWrapper';
 
 interface NetworkSwitchError {
   state: string;
@@ -31,16 +32,6 @@ export const Connect = () => {
   const [chainData, setChainData] = useState<ChainData | null>(null);
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
-
-  async function getUAuth(window: Window): Promise<UAuth> {
-    return new (await import('@uauth/js'))({
-      clientID: process.env.REACT_APP_CLIENT_ID,
-      clientSecret: process.env.REACT_APP_CLIENT_SECRET,
-      redirectUri: process.env.REACT_APP_REDIRECT_URI,
-      scope: 'openid email wallet',
-      window
-    });
-  }
 
   useEffect(() => {
     let chain_data: ChainData | null = null;
@@ -134,13 +125,6 @@ export const Connect = () => {
       console.error(err);
     }
   };
-  const connectViaUNS = async () => {
-    try {
-      const authorization = await getUAuth.loginWithPopup()
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const switchAddPolygonNetwork = async () => {
     setSwitchChainError({
@@ -199,12 +183,7 @@ export const Connect = () => {
           Connect to MetaMask
         </button>
         <br></br>
-        <button
-          className='px-4 py-3 rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
-          onClick={connectViaUNS}>
-          Connect via UNS
-        </button>
-
+        <ConnectViaUNS />
       </>
     );
   }
