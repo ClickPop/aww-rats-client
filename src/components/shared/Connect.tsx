@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useEthers } from '~/hooks/useEthers';
 
 import { CHAIN_ID } from '~/config/env';
 import { utils } from 'ethers/lib/ethers';
 import { UAuth } from '@uauth/js';
 import { dynamic } from 'next/dynamic';
+// import { ConnectUNS } from '~/components/shared/UnstoppableWrapper';
 
 interface NetworkSwitchError {
   state: string;
@@ -32,11 +34,10 @@ export const Connect = () => {
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
 
-  const connectUNS = dynamic(() => import('~/components/shared/UnstoppableWrapper'),
-  {
-    ssr: false,
-  },
-  );
+  const ConnectUNS = dynamic(
+  () => import('~/components/shared/UnstoppableWrapper'),
+  { ssr: false }
+  )
 
   useEffect(() => {
     let chain_data: ChainData | null = null;
@@ -187,7 +188,7 @@ export const Connect = () => {
           onClick={connectToMetamask}>
           Connect to MetaMask
         </button>
-        <connectUNS></connectUNS>
+        <ConnectUNS />
       </>
     );
   }
