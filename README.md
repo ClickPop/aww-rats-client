@@ -1,3 +1,13 @@
+# Gitcoin: Integrating “Login with Unstoppable” as a Dapp login option
+
+Project Name: Aww, Rats!
+[PR to a public repo](https://github.com/ClickPop/aww-rats-client/pull/147)
+Recorded video demo of integration: N/A (couldn't get it to work)
+Person of contact in case there are any questions:
+  * discord ID: brighttux#0661
+  * UnstoppableDomain registered account email address: clarence_han@hotmail.com
+
+# Original Repo README:
 # Aww, Rats! web-client and smart-contract mono repo
 
 This is a mono repo housing both the web-client and smart-contracts used by Aww, Rats!
