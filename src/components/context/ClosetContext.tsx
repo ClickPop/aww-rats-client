@@ -319,7 +319,9 @@ export const ClosetContextProvider: FC = ({ children }) => {
 
   useEffect(() => {
     handleChangeRat(currentRat);
-  }, [currentRat, handleChangeRat, hidePiece]);
+    // In this case the handleChangeRat method is causing needless re-renders, but the linter warns if it's not there
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRat, hidePiece]);
 
   const tryOnClothes = (pieceType: string, piece: string) => {
     if (currentRat) {
