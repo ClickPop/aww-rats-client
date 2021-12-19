@@ -28,6 +28,7 @@ export const LAYER_ORDER = [
   'background',
   'tail',
   'ears',
+  'pet',
   'hand',
   'color',
   'markings',
@@ -40,8 +41,6 @@ export const LAYER_ORDER = [
   'glasses',
   'accessory',
   'hat',
-  'pet',
-  'hand',
 ];
 export const LAYER_HAS_BASE = ['head', 'torso'];
 export const REMOVABLE_CLOSET_PIECES = [
