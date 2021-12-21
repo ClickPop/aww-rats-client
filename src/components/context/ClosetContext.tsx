@@ -117,26 +117,71 @@ export const ClosetContextProvider: FC = ({ children }) => {
       if (closet && signerAddr) {
         try {
           const closetTokens = await closet.getActiveTokens();
-          setTotalClosetPieces(closetTokens.length);
+          const ownedTokens = await closet.getTokensByWallet(signerAddr);
+          const tokens = [...closetTokens, ...ownedTokens].reduce(
+            (
+              acc,
+              curr: {
+                id: BigNumber;
+                amount?: BigNumber;
+                token: typeof closetTokens[0]['token'];
+              },
+            ) => {
+              const idx = acc.findIndex((t) => t.id.eq(curr.id));
+              if (curr.id.gt(0)) {
+                if (idx !== -1) {
+                  const newAcc = [...acc];
+                  newAcc[idx] = {
+                    id: curr.id,
+                    amount: curr.amount,
+                    token: curr.token,
+                  };
+                  return newAcc;
+                }
+                return [
+                  ...acc,
+                  { id: curr.id, amount: curr.amount, token: curr.token },
+                ];
+              }
+              return acc;
+            },
+            [] as {
+              id: BigNumber;
+              amount?: BigNumber;
+              token: typeof closetTokens[0]['token'];
+            }[],
+          );
+          // console.log(tokens);
+          setTotalClosetPieces(tokens.length);
           const uri = await closet.uri(1);
           const tokenObject: Record<string, ClosetTokenWithMeta> = {};
-          for (const token of closetTokens) {
+          for (const token of tokens) {
             try {
+              const id = token.id.toString();
               const total = await closet.totalSupply(token.id);
               const bal = await closet.balanceOf(signerAddr, token.id);
               setTokenCounts((c) => ({
-                minted: { ...c.minted, [token.id.toString()]: total },
-                owned: { ...c.owned, [token.id.toString()]: bal },
+                minted: { ...c.minted, [id]: total },
+                owned: { ...c.owned, [id]: bal },
               }));
-              const meta = (await fetch(
-                uri.replace('{id}', token.id.toString()),
-              ).then((r) => r.json())) as Metadata;
-              tokenObject[token.id.toString()] = { ...token, tokenMeta: meta };
-              setLoadedTokens((l) => [...l, token.id.toString()]);
+              const meta = (await fetch(uri.replace('{id}', id)).then((r) =>
+                r.json(),
+              )) as Metadata;
+              tokenObject[id] = { ...token, tokenMeta: meta };
+              setLoadedTokens((l) => [...l, id]);
               if (meta.attributes.find((a) => a.trait_type === 'Sponsor')) {
                 setSponsoredPieces((p) => ({
                   ...p,
-                  [token.id.toString()]: { ...token, tokenMeta: meta },
+                  [id]: { ...token, tokenMeta: meta },
+                }));
+              }
+              if (token.amount) {
+                setOwnedItems((o) => ({
+                  ...o,
+                  [id]: {
+                    ...token,
+                    tokenMeta: meta,
+                  } as ClosetUserTokenWithMeta,
                 }));
               }
             } catch (err) {
@@ -145,22 +190,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
           }
 
           setClosetPieces(tokenObject);
-
-          const ownedTokens = await closet.getTokensByWallet(signerAddr);
-          for (const token of ownedTokens) {
-            try {
-              const id = token.id.toString();
-              token.id.toString();
-              if (tokenObject[id]) {
-                setOwnedItems((o) => ({
-                  ...o,
-                  [id]: { ...token, tokenMeta: tokenObject[id].tokenMeta },
-                }));
-              }
-            } catch (err) {
-              console.error(err);
-            }
-          }
         } catch (err) {
           console.error(err);
         }

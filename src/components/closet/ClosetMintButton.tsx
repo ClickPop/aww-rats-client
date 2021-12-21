@@ -115,8 +115,8 @@ export const ClosetMintButton: FC<Props> = ({ piece }) => {
     <button
       className={
         canMint
-          ? `text-gray-800 bg-light hover:bg-yellow-300 p-2 rounded-b-md block w-full duration-300`
-          : 'text-gray-400 bg-gray-800 p-2 rounded-b-md block w-full cursor-not-allowed'
+          ? `text-gray-800 bg-light hover:bg-yellow-300 p-2 block w-full duration-300`
+          : 'text-gray-400 bg-gray-800 p-2 block w-full cursor-not-allowed'
       }
       disabled={!canMint}
       onClick={handleMint}>
