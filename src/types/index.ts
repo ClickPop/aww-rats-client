@@ -148,6 +148,11 @@ export interface ParsedMoralisTokenMeta extends BaseMoralisMeta {
   };
 }
 
+export interface ReactSelectOption {
+  label: string;
+  value: string;
+}
+
 export interface SimplifiedMetadata {
   label: string;
   value: string;
