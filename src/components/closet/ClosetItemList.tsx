@@ -168,9 +168,8 @@ export const ClosetItemList = () => {
           </div>
         )}
         {Object.entries(piecesByType).map(
-          ([pieceType, pieces]) =>
-            filterType !== 'all' &&
-            filterType === pieceType && (
+          ([pieceType, pieces]) => (filterType === 'all' || filterType === pieceType) ? 
+            (
               <div key={pieceType}>
                 <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
                   {pieceType}
@@ -188,7 +187,7 @@ export const ClosetItemList = () => {
                     ))}
                 </div>
               </div>
-            ),
+            ) : ''
         )}
       </div>
     </div>
