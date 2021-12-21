@@ -39,9 +39,9 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
 
   return (
     <div
-      className={`rounded-md border-${
-        selected ? 'white' : 'none'
-      } border-2 flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200`}>
+      className={`rounded-md ${
+        selected && 'ring-2 ring-white'
+      } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
           loading='eager'
