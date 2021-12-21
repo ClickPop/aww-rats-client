@@ -167,27 +167,28 @@ export const ClosetItemList = () => {
             </div>
           </div>
         )}
-        {Object.entries(piecesByType).map(
-          ([pieceType, pieces]) => (filterType === 'all' || filterType === pieceType) ? 
-            (
-              <div key={pieceType}>
-                <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
-                  {pieceType}
-                </h3>
+        {Object.entries(piecesByType).map(([pieceType, pieces]) =>
+          filterType === 'all' || filterType === pieceType ? (
+            <div key={pieceType}>
+              <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
+                {pieceType}
+              </h3>
 
-                <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                  {pieces
-                    .filter((a) => filterShowMethod(a, filterShow))
-                    .map((piece) => (
-                      <ClosetItem
-                        key={piece.id.toString()}
-                        piece={piece}
-                        pieceType={pieceType}
-                      />
-                    ))}
-                </div>
+              <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                {pieces
+                  .filter((a) => filterShowMethod(a, filterShow))
+                  .map((piece) => (
+                    <ClosetItem
+                      key={piece.id.toString()}
+                      piece={piece}
+                      pieceType={pieceType}
+                    />
+                  ))}
               </div>
-            ) : ''
+            </div>
+          ) : (
+            ''
+          ),
         )}
       </div>
     </div>
