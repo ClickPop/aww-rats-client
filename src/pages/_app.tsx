@@ -1,9 +1,7 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import FullStory from 'react-fullstory';
 import { EthersContextProvider } from '~/components/context/EthersContext';
 import '~/styles/index.scss';
-import { FULLSTORY_ORG_ID } from '~/config/env';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -33,7 +31,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='theme-color' content='#ffffff' />
       </Head>
       <EthersContextProvider>
-        {FULLSTORY_ORG_ID && <FullStory org={FULLSTORY_ORG_ID} />}
         <Component {...pageProps} />
       </EthersContextProvider>
     </>
