@@ -14,8 +14,7 @@
         {
             "trait_type": "Cunning",
             "display_type": "number",
-            "value": 1,
-            "max_value": 7
+            "value": 1
         }
     ]
 }
