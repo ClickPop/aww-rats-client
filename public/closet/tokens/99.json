@@ -1,1 +1,21 @@
-{"name":"VR Goggles","image":"https://www.awwrats.com/closet/images/glasses-vr.png","description":"Your window to the metaverse.","attributes":[{"trait_type":"Piece Type","value":"glasses"},{"trait_type":"Collection","value":"VR"}]}
+{
+    "name": "VR Goggles",
+    "image": "https://www.awwrats.com/closet/images/glasses-vr.png",
+    "description": "Your window to the metaverse.",
+    "attributes": [
+        {
+            "trait_type": "Piece Type",
+            "value": "glasses"
+        },
+        {
+            "trait_type": "Collection",
+            "value": "VR"
+        },
+        {
+            "trait_type": "Cunning",
+            "display_type": "number",
+            "value": 1,
+            "max_value": 7
+        }
+    ]
+}
