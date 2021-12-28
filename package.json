@@ -5,8 +5,9 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "install-all": "yarn && cd smart-contracts && yarn",
-    "dev": "concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
-    "dev:local-node": "concurrently \"cd smart-contracts && yarn hardhat node\" \"cd smart-contracts && yarn setup-local\"",
+    "codegen": "graphql-codegen",
+    "dev": "yarn codegen && concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
+    "dev:local-node": "yarn codegen && concurrently \"cd smart-contracts && yarn hardhat node\" \"cd smart-contracts && yarn setup-local\"",
     "build": "echo $PUBSUB_KEYFILE > pubsub-keyfile.json && yarn compile && next build",
     "start": "next start",
     "check-types": "tsc --noEmit",
@@ -16,6 +17,7 @@
     "test-contract": "cd smart-contracts && yarn test"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.6",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",
@@ -29,6 +31,11 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.3.0",
+    "@graphql-codegen/introspection": "^2.1.0",
+    "@graphql-codegen/typescript": "^2.4.1",
+    "@graphql-codegen/typescript-operations": "^2.2.1",
+    "@graphql-codegen/typescript-react-apollo": "^3.2.2",
     "@neupauer/tailwindcss-plugin-colors": "^1.0.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/forms": "^0.3.0",
@@ -41,6 +48,7 @@
     "concurrently": "^6.2.1",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "graphql": "^16.2.0",
     "husky": "^7.0.2",
     "lint-staged": "^11.2.0",
     "postcss": "^8.3.6",

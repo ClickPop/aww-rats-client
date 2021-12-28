@@ -1,0 +1,5 @@
+mutation Login($wallet: String!, $msg: String!) {
+  login(wallet: $wallet, msg: $msg) {
+    authorized
+  }
+}
