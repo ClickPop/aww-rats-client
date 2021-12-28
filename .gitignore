@@ -40,3 +40,6 @@ smart-contracts/rat.png
 smart-contracts/testnet-tokens.json
 smart-contracts/tokens.json
 smart-contracts/tokens.example.json
+
+generated.ts
+graphql.schema.json
