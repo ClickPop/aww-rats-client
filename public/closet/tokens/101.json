@@ -13,7 +13,7 @@
         },
         {
             "trait_type": "Cunning",
-            "display_type": "number",
+            "display_type": "boost_number",
             "value": 1
         }
     ]
