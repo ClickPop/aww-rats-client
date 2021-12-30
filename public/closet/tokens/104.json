@@ -1,0 +1,20 @@
+{
+    "name": "Undersea Background",
+    "image": "https://www.awwrats.com/closet/images/background-undersea.png",
+    "description": "An undersea environment earned by the highest rollers in the sewer. You need at least 5 rats <a href=\"https://awwrats.com\">rats</a> to get one of these.",
+    "attributes": [
+        {
+            "trait_type": "Piece Type",
+            "value": "background"
+        },
+        {
+            "trait_type": "Collection",
+            "value": "Rat Whale"
+        },
+        {
+            "trait_type": "Rattitude",
+            "display_type": "boost_number",
+            "value": 1
+        }
+    ]
+}
