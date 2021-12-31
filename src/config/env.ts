@@ -70,3 +70,6 @@ export const IPFSGateways = [
   'https://ipfs.infura.io/ipfs/',
   'https://dweb.link/ipfs/',
 ];
+
+export const HASURA_BASE_URL = process.env.NEXT_PUBLIC_HASURA_BASE_URL ?? '';
+export const SIGNER_MESSAGE = process.env.NEXT_PUBLIC_SIGNER_MESSAGE ?? '';
