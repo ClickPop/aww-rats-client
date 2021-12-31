@@ -1,0 +1,5 @@
+query GetActiveEncounters {
+  encounters(where: {active: {_eq: true}}) {
+    id
+  }
+}

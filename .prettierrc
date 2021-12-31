@@ -7,6 +7,5 @@
     "bracketSpacing": true,
     "jsxSingleQuote": true,
     "htmlWhitespaceSensitivity": "css",
-    "parser": "typescript",
     "bracketSameLine": true
 }
