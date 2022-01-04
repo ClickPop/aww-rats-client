@@ -10,7 +10,6 @@ import {
 } from '~/types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { Image } from '~/components/shared/Image';
 
 type Props = {
   piece: ClosetTokenWithMeta;
