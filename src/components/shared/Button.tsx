@@ -7,7 +7,7 @@ interface Props extends ButtonProps {
 
 export const Button: FC<Props> = ({ children, ...rest }) => {
   return (
-    <ChakraButton colorScheme='teal' variant='outline' {...rest}>
+    <ChakraButton colorScheme='purple' {...rest}>
       {children}
     </ChakraButton>
   );
