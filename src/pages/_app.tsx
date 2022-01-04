@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
 import { client } from '~/lib/apollo';
 import '~/styles/index.scss';
+import { ChakraProvider } from '@chakra-ui/react'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -32,11 +33,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='msapplication-TileColor' content='#2b5797' />
         <meta name='theme-color' content='#ffffff' />
       </Head>
-      <ApolloProvider client={client}>
-        <EthersContextProvider>
-          <Component {...pageProps} />
-        </EthersContextProvider>
-      </ApolloProvider>
+      <ChakraProvider>
+        <ApolloProvider client={client}>
+          <EthersContextProvider>
+            <Component {...pageProps} />
+          </EthersContextProvider>
+        </ApolloProvider>
+      </ChakraProvider>
     </>
   );
 }
