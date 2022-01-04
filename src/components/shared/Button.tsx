@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { Button as ChakraButton} from '@chakra-ui/react'
+import { Button as ChakraButton, ButtonProps } from '@chakra-ui/react';
 
-export const Button: FC = ({ children, className }) => {
+interface Props extends ButtonProps {
+  ratType?: string;
+}
+
+export const Button: FC<Props> = ({ children, ...rest }) => {
   return (
-    <ChakraButton
-        className={`${className ?? ''}`}
-        colorScheme='teal'
-        variant='outline'
-    >
-        {children}
+    <ChakraButton colorScheme='teal' variant='outline' {...rest}>
+      {children}
     </ChakraButton>
   );
 };
