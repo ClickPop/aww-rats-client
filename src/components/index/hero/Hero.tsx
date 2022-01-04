@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image } from '~/components/shared/Image';
-import { Button } from '~/components/shared/Button';
 import promoImg from '~/assets/images/promo-image.png';
 import logo from '~/assets/images/aww-rats-logo.png';
 import rat01 from '~/assets/images/rats/rat-01.png';
