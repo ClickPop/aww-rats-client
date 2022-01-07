@@ -4,9 +4,18 @@ import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
 import { client } from '~/lib/apollo';
 import '~/styles/index.scss';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const theme = extendTheme({
+    colors: {
+      pickRat: {
+        500: '#FFFFFF',
+        600: '#CCCCCC',
+      },
+    },
+  });
+
   return (
     <>
       <Head>
@@ -33,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='msapplication-TileColor' content='#2b5797' />
         <meta name='theme-color' content='#ffffff' />
       </Head>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <ApolloProvider client={client}>
           <EthersContextProvider>
             <Component {...pageProps} />
