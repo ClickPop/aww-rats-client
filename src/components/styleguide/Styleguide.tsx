@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '~/components/game/Button';
 import { GameIcon } from '~/types/game';
+import { PickRatButton } from '../game/PickRatButton';
 
 export const Styleguide = () => {
   return (
@@ -34,6 +35,17 @@ export const Styleguide = () => {
             buttonType='destructive'>
             Destructive
           </Button>
+        </div>
+
+        <div className='flex mt-2'>
+          <PickRatButton ratType={GameIcon.PetRat} label='Pet Rat' mr={2} />
+          <PickRatButton ratType={GameIcon.LabRat} label='Lab Rat' mr={2} />
+          <PickRatButton
+            ratType={GameIcon.StreetRat}
+            label='Street Rat'
+            mr={2}
+          />
+          <PickRatButton ratType={GameIcon.PackRat} label='Pack Rat' mr={2} />
         </div>
       </div>
     </div>
