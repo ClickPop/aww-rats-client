@@ -151,9 +151,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
               token: typeof closetTokens[0]['token'];
             }[],
           );
-          // console.log(tokens);
+
           setTotalClosetPieces(tokens.length);
-          const uri = await closet.uri(1);
           const tokenObject: Record<string, ClosetTokenWithMeta> = {};
           for (const token of tokens) {
             try {
@@ -164,8 +163,8 @@ export const ClosetContextProvider: FC = ({ children }) => {
                 minted: { ...c.minted, [id]: total },
                 owned: { ...c.owned, [id]: bal },
               }));
-              const meta = (await fetch(uri.replace('{id}', id)).then((r) =>
-                r.json(),
+              const meta = (await import(
+                `../../../public/closet/tokens/${id}.json`
               )) as Metadata;
               tokenObject[id] = { ...token, tokenMeta: meta };
               setLoadedTokens((l) => [...l, id]);
@@ -188,7 +187,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
               console.error(err);
             }
           }
-
           setClosetPieces(tokenObject);
         } catch (err) {
           console.error(err);
@@ -359,17 +357,13 @@ export const ClosetContextProvider: FC = ({ children }) => {
   useEffect(() => {
     setLoading((l) => ({
       ...l,
-      pieces:
-        loadedTokens.length + loadedTokenImages.length < totalClosetPieces * 2,
+      pieces: loadedTokens.length < totalClosetPieces,
     }));
 
     setTokenProgress(
-      calculatePercentage(
-        loadedTokens.length + loadedTokenImages.length,
-        totalClosetPieces * 2,
-      ),
+      calculatePercentage(loadedTokens.length, totalClosetPieces),
     );
-  }, [loadedTokenImages.length, loadedTokens.length, totalClosetPieces]);
+  }, [loadedTokens.length, totalClosetPieces]);
 
   return (
     <ClosetContext.Provider

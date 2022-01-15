@@ -53,8 +53,10 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden relative`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
-          loading='eager'
-          src={piece.tokenMeta.image}
+          src={`/closet/image-thumbnails/${piece.tokenMeta.image
+            .split('/')
+            .slice(-1)[0]
+            .replace('.png', '.webp')}`}
           alt=''
           layout='fill'
           className={`w-full h-full border-b border-gray-800 ${
