@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import React from 'react';
-import { RatRace } from '~/components/index/rat-race/RatRace';
-import { Layout } from '~/components/layout/Layout';
+import { Layout } from '~/components/layout/RatRaceLayout';
+import { RatRace } from '~/components/rat-race/RatRace';
 
 const RatRacePage: NextPage = () => {
   return (
