@@ -6,7 +6,7 @@ type Props = {
   pathName: string;
   pathTitle: string;
   altText?: string;
-  imgPath: string | StaticImageData;
+  imgPath?: string | StaticImageData;
 };
 
 export const Room: FC<Props> = ({
