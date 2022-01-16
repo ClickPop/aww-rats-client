@@ -2,43 +2,33 @@
     &Page {
         &--sewer {
             &-green {    
-                background-image:
-                    linear-gradient(#5aeaaf,#5aeaaf),
-                    url('/rat-race/images/bg-sewer-green-bottom.png'),
-                    url('/rat-race/images/bg-sewer-green-top.png'),
-                    linear-gradient(#bebebe,#bebebe);
+                background:
+                    linear-gradient(#5aeaaf,#5aeaaf) top left,
+                    url('/rat-race/images/bg-sewer-bottom.png') bottom right,
+                    url('/rat-race/images/bg-sewer-top.png') top left,
+                    linear-gradient(#bebebe,#bebebe) top left;
                 background-blend-mode:
                     multiply,
                     normal,
                     normal,
                     normal;
-                background-position:
-                    top left,
-                    bottom right,
-                    top left,
-                    top left;
                 background-repeat: no-repeat;
                 background-size: 100%;
             }
 
             &-red {
-                background-image:
-                    linear-gradient(#ff625d,#ff625d),
-                    url('/rat-race/images/bg-sewer-green-bottom.png'),
-                    url('/rat-race/images/bg-sewer-green-top.png'),
-                    linear-gradient(#bebebe,#bebebe);
-            background-blend-mode:
-                multiply,
-                normal,
-                normal,
-                normal;
-            background-position:
-                top left,
-                bottom right,
-                top left,
-                top left;
-            background-repeat: no-repeat;
-            background-size: 100%;
+                background:
+                    linear-gradient(#ff625d,#ff625d) top left multiply,
+                    url('/rat-race/images/bg-sewer-bottom.png') bottom right normal,
+                    url('/rat-race/images/bg-sewer-top.png') top left normal,
+                    linear-gradient(#bebebe,#bebebe) top left normal;
+                background-blend-mode:
+                    multiply,
+                    normal,
+                    normal,
+                    normal;
+                background-repeat: no-repeat;
+                background-size: 100%;
             }
         }
     }
