@@ -1,12 +1,44 @@
 .rr {
     &Page {
         &--sewer {
-            &-green {
-                background-color: #5aeaaf;
-                background-image: url('/rat-race/images/bg-sewer-green-bottom.png'), url('/rat-race/images/bg-sewer-green-top.png');
-                background-position: bottom right, top left;
-                background-repeat: no-repeat, no-repeat;
-                background-size: 100%, 100%;
+            &-green {    
+                background-image:
+                    linear-gradient(#5aeaaf,#5aeaaf),
+                    url('/rat-race/images/bg-sewer-green-bottom.png'),
+                    url('/rat-race/images/bg-sewer-green-top.png'),
+                    linear-gradient(#bebebe,#bebebe);
+                background-blend-mode:
+                    multiply,
+                    normal,
+                    normal,
+                    normal;
+                background-position:
+                    top left,
+                    bottom right,
+                    top left,
+                    top left;
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
+            &-red {
+                background-image:
+                    linear-gradient(#ff625d,#ff625d),
+                    url('/rat-race/images/bg-sewer-green-bottom.png'),
+                    url('/rat-race/images/bg-sewer-green-top.png'),
+                    linear-gradient(#bebebe,#bebebe);
+            background-blend-mode:
+                multiply,
+                normal,
+                normal,
+                normal;
+            background-position:
+                top left,
+                bottom right,
+                top left,
+                top left;
+            background-repeat: no-repeat;
+            background-size: 100%;
             }
         }
     }
