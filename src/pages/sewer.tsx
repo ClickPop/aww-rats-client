@@ -5,7 +5,7 @@ import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 
 const SewerPage: NextPage = () => {
   return (
-    <LayoutNoFooter className='min-h-screen bg-gray-800'>
+    <LayoutNoFooter className='min-h-screen bg-gray-800 text-white'>
       <Sewer />
     </LayoutNoFooter>
   );
