@@ -1,11 +1,17 @@
 import React from 'react';
-import Login from '~/components/rat-race/Login';
 
 export const RatRace = () => {
     return (
-        <>
-            <h1>It's the rat race.</h1>
-            {/* <Login /> */}
-        </>
+        <div className="max-w-xl px-4 mx-auto py-20">
+            <div>
+                <h1>Encounter Cards</h1>
+            </div>
+            <div>
+                <h1>Encounter Details</h1>
+            </div>
+            <div>
+                <h1>Rats Block</h1>
+            </div>
+        </div>
     );
 };
