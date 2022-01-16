@@ -19,13 +19,19 @@ export const Room: FC<Props> = ({
   return (
     <Link
       href={pathName}
-      className='grid grid-cols-6 items-center border border-tan hover:bg-tan hover:bg-opacity-5 duration-300 rounded-md overflow-hidden mb-8'>
-      <Image
-        src={imgPath}
-        alt={altText}
-        className='block col-span-3 md:col-span-2 mb-0 leading-none'
-        layout='responsive'
-      />
+      className='grid grid-cols-6 items-center border border-tan hover:bg-tan hover:bg-opacity-5 duration-300 rounded-md overflow-hidden mb-4 cursor-pointer'>
+      {imgPath ?
+        <Image
+          src={imgPath}
+          alt={altText}
+          className='block col-span-3 md:col-span-2 mb-0 leading-none'
+          layout='responsive'
+        />
+      :
+        <div 
+          className='block col-span-3 md:col-span-2 mb-0 leading-none bg-gray-500 h-full'>
+        </div>
+      }
       <div className='p-4 col-span-3 md:col-span-4'>
         <div className='font-semibold text-lg'>{pathTitle}</div>
         {children}
