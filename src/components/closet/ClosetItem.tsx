@@ -81,13 +81,6 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
             </span>
           </div>
         )}
-        {!ownedItem && !noMaxTokens && tokenMaxReached && (
-          <Link
-            className='absolute w-full h-full'
-            href={`https://opensea.io/assets/matic/0x40474b875c3debb9eeed7b1891f51cd0403ecc95/${piece.id.toString()}`}
-            openInNewTab
-          />
-        )}
       </div>
 
       <div className={`text-left flex-auto flex justify-between py-3`}>
@@ -136,6 +129,13 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           noWalletMax={noWalletMax}
         />
       </div>
+      {!ownedItem && !noMaxTokens && tokenMaxReached && (
+        <Link
+          className='absolute w-full h-full'
+          href={`https://opensea.io/assets/matic/0x40474b875c3debb9eeed7b1891f51cd0403ecc95/${piece.id.toString()}`}
+          openInNewTab
+        />
+      )}
     </div>
   );
 };
