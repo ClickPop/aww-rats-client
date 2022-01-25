@@ -2,9 +2,8 @@ import { JsonRpcSigner } from '@ethersproject/providers/lib/json-rpc-provider';
 import { BigNumber, providers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { Rat, Closet } from 'smart-contracts/src/types/index';
-import { SetStateAction } from 'react-transition-group/node_modules/@types/react';
 import { ICanvasOptions } from 'fabric/fabric-impl';
-import { Dispatch } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { SingleValue } from 'react-select';
 
 export * from 'smart-contracts/src/types';
