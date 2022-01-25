@@ -8,9 +8,9 @@ export const Sewer = () => {
     <div className='flex flex-col max-w-xl px-4 mx-auto py-20'>
       <h2 className='mb-4 text-4xl font-bold'>The Sewer</h2>
       <p className='mb-4'>
-        Aww Rats aren&apos;t just pictures. They&apos;re rapscallions with a
-        lot of life in them. We&apos;re creating all sorts of dApps for you to
-        use your rats in.
+        Aww Rats aren&apos;t just pictures. They&apos;re rapscallions with a lot
+        of life in them. We&apos;re creating all sorts of dApps for you to use
+        your rats in.
       </p>
 
       <Room pathName='/closet' pathTitle='The Closet' imgPath={closetImg}>
