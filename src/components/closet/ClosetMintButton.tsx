@@ -13,9 +13,21 @@ import { CheeseLoader } from '~/components/shared/CheeseLoader';
 
 type Props = {
   piece: ClosetTokenWithMeta;
+  ownedItem: ClosetUserTokenWithMeta;
+  tokenMaxReached: boolean;
+  noMaxTokens: boolean;
+  walletMaxReached: boolean;
+  noWalletMax: boolean;
 };
 
-export const ClosetMintButton: FC<Props> = ({ piece }) => {
+export const ClosetMintButton: FC<Props> = ({
+  piece,
+  ownedItem,
+  tokenMaxReached,
+  walletMaxReached,
+  noMaxTokens,
+  noWalletMax,
+}) => {
   const { closet, signer, provider, signerAddr } = useContext(EthersContext);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
 
@@ -25,16 +37,6 @@ export const ClosetMintButton: FC<Props> = ({ piece }) => {
     tokenCounts: { minted, owned },
     setTokenCounts,
   } = useContext(ClosetContext);
-
-  const ownedItem = ownedItems[piece.id.toString()];
-  const tokenMaxReached = piece.token.maxTokens.lte(
-    minted[piece.id.toString()] ?? 0,
-  );
-  const noMaxTokens = piece.token.maxTokens.eq(0);
-  const walletMaxReached = piece.token.maxPerWallet.lte(
-    owned[piece.id.toString()] ?? 0,
-  );
-  const noWalletMax = piece.token.maxPerWallet.eq(0);
 
   const canMint =
     (!tokenMaxReached || noMaxTokens) &&
@@ -96,7 +98,7 @@ export const ClosetMintButton: FC<Props> = ({ piece }) => {
   const handleButtonContent = () => {
     switch (true) {
       case tokenMaxReached && !noMaxTokens:
-        return 'Sold Out';
+        return 'View on OpenSea';
       case walletMaxReached && !noWalletMax:
         return 'Max Owned';
       case !piece.token.active:

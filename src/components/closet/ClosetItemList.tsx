@@ -31,7 +31,7 @@ export const ClosetItemList = () => {
     Accessory = 'accessory',
     Hat = 'hat',
   }
-  const { loading, closetPieces, currentRat, sponsoredPieces, ownedItems } =
+  const { loading, closetPieces, sponsoredPieces, ownedItems } =
     useContext(ClosetContext);
   const [filterShow, setFilterShow] = useState<FilterShowEnum>(
     FilterShowEnum.All,

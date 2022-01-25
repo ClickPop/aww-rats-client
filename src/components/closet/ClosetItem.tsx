@@ -5,6 +5,7 @@ import { ClosetTokenWithMeta, ClosetUserTokenWithMeta, ERC20 } from '~/types';
 import { Image } from '~/components/shared/Image';
 import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
+import { Link } from '~/components/shared/Link';
 
 type Props = {
   piece: ClosetTokenWithMeta;
@@ -22,6 +23,14 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   } = useContext(ClosetContext);
 
   const ownedItem = ownedItems[piece.id.toString()];
+  const tokenMaxReached = piece.token.maxTokens.lte(
+    minted[piece.id.toString()] ?? 0,
+  );
+  const noMaxTokens = piece.token.maxTokens.eq(0);
+  const walletMaxReached = piece.token.maxPerWallet.lte(
+    owned[piece.id.toString()] ?? 0,
+  );
+  const noWalletMax = piece.token.maxPerWallet.eq(0);
 
   const selected =
     currentRat?.properties.get(pieceType) === piece.id.toString();
@@ -41,11 +50,13 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
     <div
       className={`rounded-md ${
         selected && 'ring-2 ring-white'
-      } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden`}>
+      } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden relative`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
-          loading='eager'
-          src={piece.tokenMeta.image}
+          src={`/closet/image-thumbnails/${piece.tokenMeta.image
+            .split('/')
+            .slice(-1)[0]
+            .replace('.png', '.webp')}`}
           alt=''
           layout='fill'
           className={`w-full h-full border-b border-gray-800 ${
@@ -58,7 +69,6 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }}
           onLoad={(e) => {
             const src = e.currentTarget.src;
-
             if (src.includes('/_next/image')) {
               setLoadedTokenImages([...loadedTokenImages, e.currentTarget.src]);
             }
@@ -110,8 +120,22 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       )}
 
       <div>
-        <ClosetMintButton piece={piece} />
+        <ClosetMintButton
+          piece={piece}
+          ownedItem={ownedItem}
+          tokenMaxReached={tokenMaxReached}
+          walletMaxReached={walletMaxReached}
+          noMaxTokens={noMaxTokens}
+          noWalletMax={noWalletMax}
+        />
       </div>
+      {!ownedItem && !noMaxTokens && tokenMaxReached && (
+        <Link
+          className='absolute w-full h-full'
+          href={`https://opensea.io/assets/matic/0x40474b875c3debb9eeed7b1891f51cd0403ecc95/${piece.id.toString()}`}
+          openInNewTab
+        />
+      )}
     </div>
   );
 };
