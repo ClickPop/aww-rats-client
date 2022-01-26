@@ -22,10 +22,10 @@
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",
     "jsdom": "^18.1.1",
-    "next": "11.1.2",
+    "next": "^12.0.8",
+    "node-fetch": "2.6.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-fullstory": "^1.4.0",
     "react-scroll": "^1.8.4",
     "react-select": "^5.1.0",
     "uuid": "^8.3.2"
