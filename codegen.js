@@ -14,18 +14,46 @@ module.exports = {
       },
     },
   ],
-  documents: ['./src/**/*.ts', './src/**/*.gql'],
   overwrite: true,
   generates: {
     './src/schema/generated.ts': {
+      documents: ['./src/**/*.ts', './src/**/*.gql'],
+      plugins: ['typescript', 'typescript-operations'],
+    },
+    './src/schema/apollo.ts': {
+      documents: ['./src/**/*.gql', '!./src/**/admin/**/*.gql'],
+      plugins: [
+        {
+          add: {
+            content: "import * as Types from './generated';",
+          },
+        },
+        {
+          'typescript-react-apollo': {
+            importOperationTypesFrom: 'Types',
+          },
+        },
+      ],
+    },
+    './src/schema/requests.ts': {
+      add: {
+        content: "import * as Types from './generated';",
+      },
+      documents: ['./src/**/admin/**/*.gql'],
       plugins: [
         'typescript',
         'typescript-operations',
-        'typescript-react-apollo',
+        // {
+        //   add: {
+        //     content: "import * as Types from './generated';",
+        //   },
+        // },
+        {
+          'typescript-graphql-request': {
+            importOperationTypesFrom: 'Types',
+          },
+        },
       ],
-    },
-    './src/schema/graphql.schema.json': {
-      plugins: ['introspection'],
     },
   },
 };

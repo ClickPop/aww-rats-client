@@ -1,0 +1,5 @@
+mutation updateEncounter($id: Int!, $encounter: encounters_set_input!) {
+  update_encounters_by_pk(pk_columns: { id: $id }, _set: $encounter) {
+    id
+  }
+}

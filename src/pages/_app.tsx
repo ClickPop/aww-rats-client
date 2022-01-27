@@ -2,7 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
-import { client } from '~/lib/apollo';
+import { apolloClient } from '~/lib/graphql';
 import '~/styles/index.scss';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='theme-color' content='#ffffff' />
       </Head>
       <ChakraProvider theme={theme}>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={apolloClient}>
           <EthersContextProvider>
             <Component {...pageProps} />
           </EthersContextProvider>

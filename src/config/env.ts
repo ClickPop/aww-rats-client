@@ -72,4 +72,5 @@ export const IPFSGateways = [
 ];
 
 export const HASURA_BASE_URL = process.env.NEXT_PUBLIC_HASURA_BASE_URL ?? '';
+export const HASURA_ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET ?? '';
 export const SIGNER_MESSAGE = process.env.NEXT_PUBLIC_SIGNER_MESSAGE ?? '';
