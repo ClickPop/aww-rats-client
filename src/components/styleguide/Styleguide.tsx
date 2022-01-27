@@ -45,12 +45,9 @@ export const Styleguide = () => {
         <div className='flex mt-2'>
           <PickRatButton ratType={GameIconTypes.PetRat} label='Pet Rat' mr={2} />
           <PickRatButton ratType={GameIconTypes.LabRat} label='Lab Rat' mr={2} />
-          <PickRatButton
-            ratType={GameIconTypes.StreetRat}
-            label='Street Rat'
-            mr={2}
-          />
+          <PickRatButton ratType={GameIconTypes.StreetRat} label='Street Rat' mr={2} />
           <PickRatButton ratType={GameIconTypes.PackRat} label='Pack Rat' mr={2} />
+          <PickRatButton label='Any old rat...' mr={2} />
         </div>
 
         <h1 className='text-xl text-white mt-4 mb-2'>Thumb Cards</h1>

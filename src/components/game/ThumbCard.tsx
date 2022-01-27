@@ -2,9 +2,6 @@ import React, { FC } from 'react';
 import { AspectRatio, Box, Flex, FlexProps, Heading, Text } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
 
-import { Stat } from '~/components/game/Stat';
-import { GameIconTypes } from '~/types/game';
-
 interface Props extends FlexProps {
   image: string | StaticImageData
   title?: string;
