@@ -24,8 +24,7 @@ export const Button: FC<Props> = ({
 
     switch (buttonType) {
       case 'secondary':
-        tempDefinedProps.colorScheme = 'whiteAlpha';
-        tempDefinedProps.variant = 'outline';
+        tempDefinedProps.colorScheme = 'darkAlpha';
         break;
       case 'destructive':
         tempDefinedProps.colorScheme = 'red';
