@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { EnergyIcon } from '~/components/game/Icons';
-import { Rattribute, EncounterType } from '~/types/game';
-import { Button } from '~/components/game/Button';
+import { GameIcon } from '~/components/game/Icons';
+import { Rattribute, EncounterType, GameIconTypes } from '~/types/game';
 import { Image } from '~/components/shared/Image';
 
 type Props = {
@@ -47,7 +46,7 @@ export const BattleCard: FC<Props> = ({
                 </div>
 
                 <div className='mb-4'>
-                    <EnergyIcon /> {energy}
+                    <GameIcon icon={GameIconTypes.Energy} /> {energy}
                 </div>
 
                 <div className='mb-4'>
