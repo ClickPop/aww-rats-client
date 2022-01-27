@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { SIGNER_MESSAGE } from '~/config/env';
-import { useLoginMutation } from '~/schema/generated';
+import { useLoginMutation } from '~/schema/apollo';
 
 const Login = () => {
   const [login, { loading }] = useLoginMutation();

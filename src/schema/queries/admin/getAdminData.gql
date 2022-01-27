@@ -1,0 +1,102 @@
+fragment reward on rewards {
+  tokens
+  closet_tokens
+}
+
+fragment encounter on encounters {
+  id
+  name
+  energy_cost
+  power
+  active
+  description
+  max_rats
+  image
+  win_text
+  loss_text
+  encounter_type
+  encounter_resistances {
+    resistance
+  }
+  encounter_weaknesses {
+    weakness
+  }
+}
+
+fragment raid on raids {
+  id
+  active
+  end_timestamp
+  start_timestamp
+  reward {
+    ...reward
+  }
+  result
+}
+
+query getAdminData(
+  $encounterLimit: Int
+  $encounterOffset: Int
+  $encounterOrderBy: [encounters_order_by!]
+  $encounterWhere: encounters_bool_exp
+  $gauntletLimit: Int
+  $gauntletOffset: Int
+  $gauntletOrderBy: [gauntlets_order_by!]
+  $gauntletWhere: gauntlets_bool_exp
+  $raidLimit: Int
+  $raidOffset: Int
+  $raidOrderBy: [raids_order_by!]
+  $raidWhere: raids_bool_exp
+) {
+  encounters(
+    limit: $encounterLimit
+    offset: $encounterOffset
+    order_by: $encounterOrderBy
+    where: $encounterWhere
+  ) {
+    ...encounter
+    reward {
+      ...reward
+    }
+    gauntlet_encounters {
+      gauntlet_id
+      position
+    }
+    raids {
+      ...raid
+    }
+  }
+  gauntlets(
+    limit: $gauntletLimit
+    offset: $gauntletOffset
+    order_by: $gauntletOrderBy
+    where: $gauntletWhere
+  ) {
+    id
+    active
+    description
+    image
+    win_text
+    loss_text
+    reward {
+      ...reward
+    }
+    gauntlet_encounters {
+      encounter {
+        ...encounter
+      }
+      position
+    }
+  }
+  raids(
+    limit: $raidLimit
+    offset: $raidOffset
+    order_by: $raidOrderBy
+    where: $raidWhere
+  ) {
+    ...raid
+    encounter {
+      ...encounter
+    }
+  }
+}
