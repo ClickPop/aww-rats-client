@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { IconButton, IconButtonProps, HTMLChakraProps } from '@chakra-ui/react';
-import { GameIcon } from '~/types/game';
+import { GameIconTypes } from '~/types/game';
 import {
   PetRatIcon,
   StreetRatIcon,
@@ -10,22 +10,22 @@ import {
 } from '~/components/game/Icons';
 
 interface Props extends HTMLChakraProps<'button'> {
-  ratType?: GameIcon;
+  ratType?: GameIconTypes;
   label: string;
 }
 
 export const PickRatButton: FC<Props> = ({ ratType, label, ...rest }) => {
-  const getIcon = (ratType: GameIcon | undefined) => {
+  const getIcon = (ratType: GameIconTypes | undefined) => {
     switch (ratType) {
-      case GameIcon.StreetRat:
+      case GameIconTypes.StreetRat:
         return <StreetRatIcon />;
-      case GameIcon.LabRat:
+      case GameIconTypes.LabRat:
         return <LabRatIcon />;
-      case GameIcon.PackRat:
+      case GameIconTypes.PackRat:
         return <PackRatIcon />;
-      case GameIcon.PetRat:
+      case GameIconTypes.PetRat:
         return <PetRatIcon />;
-      case GameIcon.Plus:
+      case GameIconTypes.Plus:
       default:
         return <PlusIcon />;
     }

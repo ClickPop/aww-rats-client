@@ -1,0 +1,15 @@
+{
+	"name": "Vampire Costume: Fangs",
+  "image": "https://www.awwrats.com/images/closet/pieces/snout-costume-vampire.png",
+  "description": "Vampire Costume Fangs piece from the Halloween 2021 Closet Collection.",
+  "attributes": [
+    {
+      "trait_type":  "Piece Type",
+      "value": "Snout"
+    },
+    {
+        "trait_type":  "Collection",
+        "value": "Halloween 2021"
+    }
+  ]
+}
