@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Button as ChakraButton, Divider, ButtonProps } from '@chakra-ui/react';
-import { GameIcon } from '~/types/game';
-import { EnergyIcon } from '~/components/game/Icons';
+import { GameIconTypes } from '~/types/game';
+import { GameIcon } from '~/components/game/Icons';
 
 interface Props extends ButtonProps {
-  icon?: GameIcon;
+  icon?: GameIconTypes;
   iconNumber?: number;
   buttonType?: 'primary' | 'secondary' | 'destructive';
 }
@@ -16,14 +16,6 @@ export const Button: FC<Props> = ({
   buttonType,
   ...rest
 }) => {
-  const getIcon = (icon: GameIcon | undefined) => {
-    switch (icon) {
-      case GameIcon.Energy:
-        return <EnergyIcon />;
-    }
-    return;
-  };
-
   const getDefinedProps = (
     buttonType: Props['buttonType'],
     icon: Props['icon'],
@@ -44,7 +36,7 @@ export const Button: FC<Props> = ({
     }
 
     if (icon && !iconNumber) {
-      tempDefinedProps.rightIcon = getIcon(icon);
+      tempDefinedProps.rightIcon = <GameIcon icon={icon} />;
     }
 
     return tempDefinedProps;
@@ -56,7 +48,7 @@ export const Button: FC<Props> = ({
   ): JSX.Element => {
     let tempIcon;
     if (icon && iconNumber) {
-      tempIcon = getIcon(icon);
+      tempIcon = <GameIcon icon={icon} />;
       if (tempIcon) {
         return (
           <>
