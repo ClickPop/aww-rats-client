@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Button as ChakraButton, Divider, ButtonProps } from '@chakra-ui/react';
-import { GameIcon } from '~/types/game';
+import { GameIconTypes } from '~/types/game';
 import { EnergyIcon } from '~/components/game/Icons';
 
 interface Props extends ButtonProps {
-  icon?: GameIcon;
+  icon?: GameIconTypes;
   iconNumber?: number;
   buttonType?: 'primary' | 'secondary' | 'destructive';
 }
@@ -16,9 +16,9 @@ export const Button: FC<Props> = ({
   buttonType,
   ...rest
 }) => {
-  const getIcon = (icon: GameIcon | undefined) => {
+  const getIcon = (icon: GameIconTypes | undefined) => {
     switch (icon) {
-      case GameIcon.Energy:
+      case GameIconTypes.Energy:
         return <EnergyIcon />;
     }
     return;
