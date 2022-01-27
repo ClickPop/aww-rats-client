@@ -27,15 +27,15 @@ export const StrengthIcon: FC<IconProps> = ({ children, ...rest }) => (
       <path d="M37.35,27.9s10.24,7,3.11,16.42c0,0,2.13,8.51.15,9.85S61.23,48.62,52.75,35.6A19.71,19.71,0,0,0,37.35,27.9Z" fill="#f1b31c"/>
     </g>
     <g id="line">
-      <path d="M16.62,34.35c-.43-4.28-1.13-12.72-2-13.76,0,0,5.2,1.11,7.81-3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M23.65,46.88s10.81,2.7,19.29-4.32" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M16.87,44.43S19.74,30,33.24,28a21,21,0,0,1,20.21,8.52,6.27,6.27,0,0,1,.53.77,8.35,8.35,0,0,1-1.8,10.56c-11,9.47-26.43,11.72-46.52,11.6,0,0-3.75,1.15-4.61-3.57,0,0-.77-20.94,3.82-35.63,0,0-.2-6,0-9.93A2.58,2.58,0,0,1,5.72,8.6C11.5,3.27,14.1,2.48,14.1,2.48L22.49,1c1.43,1,4.72,4.74,3.57,11.5" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M14.74,13.09s1.82,2.59,3.63-.28v-3l-.46-1.66-.36-.28" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M18.7,13.09s1.81,2.59,3.63-.28v-3l-.87-2.13" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M26,12.81c-2,1.89-3.32,0-3.32,0" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M14.39,13.09" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M9.45,10.24a3.69,3.69,0,0,1,1.28,2.44,1.26,1.26,0,0,0,.34.77c.59.59,2,1.52,3.32-.64v-3l-.64-1.27" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M29.51,12.08c1.92.57,2.26,3.43-.7,4.1l-6.33,1.44" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <path d="M16.62,34.35c-.43-4.28-1.13-12.72-2-13.76,0,0,5.2,1.11,7.81-3" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M23.65,46.88s10.81,2.7,19.29-4.32" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M16.87,44.43S19.74,30,33.24,28a21,21,0,0,1,20.21,8.52,6.27,6.27,0,0,1,.53.77,8.35,8.35,0,0,1-1.8,10.56c-11,9.47-26.43,11.72-46.52,11.6,0,0-3.75,1.15-4.61-3.57,0,0-.77-20.94,3.82-35.63,0,0-.2-6,0-9.93A2.58,2.58,0,0,1,5.72,8.6C11.5,3.27,14.1,2.48,14.1,2.48L22.49,1c1.43,1,4.72,4.74,3.57,11.5" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M14.74,13.09s1.82,2.59,3.63-.28v-3l-.46-1.66-.36-.28" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M18.7,13.09s1.81,2.59,3.63-.28v-3l-.87-2.13" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M26,12.81c-2,1.89-3.32,0-3.32,0" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M14.39,13.09" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M9.45,10.24a3.69,3.69,0,0,1,1.28,2.44,1.26,1.26,0,0,0,.34.77c.59.59,2,1.52,3.32-.64v-3l-.64-1.27" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M29.51,12.08c1.92.57,2.26,3.43-.7,4.1l-6.33,1.44" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
     </g>
   </Icon>
 );
@@ -55,25 +55,25 @@ export const AttackIcon: FC<IconProps> = ({ children, ...rest }) => (
     <g id="line">
       <g id="_2694-2" data-name=" 2694-2">
         <g>
-          <path d="M40.34,46.54h0a2,2,0,0,0,1.89,3.52" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M51.62,45a2,2,0,1,0-1.89-3.52h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M51.62,45a22.21,22.21,0,0,0-9.39,5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M40.34,46.54a22.1,22.1,0,0,0,9.39-5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M40.34,46.54h0a2,2,0,0,0,1.89,3.52" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M51.62,45a2,2,0,1,0-1.89-3.52h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M51.62,45a22.21,22.21,0,0,0-9.39,5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M40.34,46.54a22.1,22.1,0,0,0,9.39-5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
         </g>
-        <path d="M53.67,55.94a2,2,0,1,1-3.52,1.89,90,90,0,0,1-3.85-10l1.18-.63A87.59,87.59,0,0,1,53.67,55.94Z" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-        <path d="M28.27,13.12a25.65,25.65,0,0,1,6.46,7.56L46.92,42.77a22.34,22.34,0,0,1-4.52,2.42L30.79,22.79a25.87,25.87,0,0,1-2.7-9.58" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <path d="M53.67,55.94a2,2,0,1,1-3.52,1.89,90,90,0,0,1-3.85-10l1.18-.63A87.59,87.59,0,0,1,53.67,55.94Z" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+        <path d="M28.27,13.12a25.65,25.65,0,0,1,6.46,7.56L46.92,42.77a22.34,22.34,0,0,1-4.52,2.42L30.79,22.79a25.87,25.87,0,0,1-2.7-9.58" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
         <g>
-          <path d="M29.77,50.06a2,2,0,0,0,1.89-3.52h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M22.27,41.52h0A2,2,0,1,0,20.38,45h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M29.77,50.06a22.21,22.21,0,0,0-9.39-5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M22.27,41.52a22.1,22.1,0,0,0,9.39,5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M29.77,50.06a2,2,0,0,0,1.89-3.52h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M22.27,41.52h0A2,2,0,1,0,20.38,45h0" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M29.77,50.06a22.21,22.21,0,0,0-9.39-5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M22.27,41.52a22.1,22.1,0,0,0,9.39,5" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
         </g>
         <g>
-          <path d="M37.7,20a30.93,30.93,0,0,1,6-6.83" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M34.34,36,29.6,45.19a22.34,22.34,0,0,1-4.52-2.42l6.36-11.52" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          <path d="M43.91,13.21a25.7,25.7,0,0,1-2.71,9.58l-.91,1.75" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M37.7,20a30.93,30.93,0,0,1,6-6.83" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M34.34,36,29.6,45.19a22.34,22.34,0,0,1-4.52-2.42l6.36-11.52" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+          <path d="M43.91,13.21a25.7,25.7,0,0,1-2.71,9.58l-.91,1.75" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
         </g>
-        <path d="M18.33,55.94a2,2,0,1,0,3.52,1.89,90,90,0,0,0,3.85-10l-1.18-.63A87.59,87.59,0,0,0,18.33,55.94Z" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <path d="M18.33,55.94a2,2,0,1,0,3.52,1.89,90,90,0,0,0,3.85-10l-1.18-.63A87.59,87.59,0,0,0,18.33,55.94Z" transform="translate(-17.09 -12.12)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
       </g>
     </g>
   </Icon>
@@ -82,8 +82,8 @@ export const AttackIcon: FC<IconProps> = ({ children, ...rest }) => (
 export const RewardIcon: FC<IconProps> = ({ children, ...rest }) => (
   <Icon viewBox='0 0 43.72 51.56' {...rest}>
     <g id="color">
-      <path d="M56.72,40A20.71,20.71,0,0,1,37.53,60.7C53,51.68,54.84,36,42.15,21.18L42,21c-3.27-3.78,1.44-9.8,1.44-9.8h2a3.25,3.25,0,0,1,3.24,3.24v0a3.21,3.21,0,0,1-.69,2,3.18,3.18,0,0,1-1.29,1h0c-1.17,1.16-2.2,3.13.8,5.35l.11.08a3.64,3.64,0,0,1,.35.24,20.37,20.37,0,0,1,4,3.64,19.69,19.69,0,0,1,2.69,4.13,2,2,0,0,1,.11.21c.15.33.29.65.42,1s.21.54.3.8.19.55.27.81v0l.22.76,0,.13c0,.12.06.22.08.34a3.59,3.59,0,0,1,.12.47c0,.16.07.3.1.46l.09.39s0,0,0,.05c0,.29.1.56.14.82s.09.69.13,1,0,.41.05.58C56.73,39.54,56.72,40,56.72,40Z" transform="translate(-14 -10.2)" fill="#6a462f" stroke="#6a462f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M37.53,60.7l-.5,0c-.34,0-.69,0-1,0A20.72,20.72,0,0,1,15.28,40v-.13c0-.28,0-.55,0-.83,0-.12,0-.24,0-.38s0-.37.05-.58.07-.55.12-.86c0-.15.05-.31.07-.48a26.7,26.7,0,0,1,.8-3.29c.06-.19.13-.4.21-.61.21-.58.45-1.18.73-1.79a1,1,0,0,1,.11-.21,34.92,34.92,0,0,1,2.69-4.13,20.37,20.37,0,0,1,3.95-3.64,3.64,3.64,0,0,1,.35-.24l.11-.08c2.95-2.19,2-4.14.85-5.3a3.16,3.16,0,0,1-1.46-1.11l0,0a3.22,3.22,0,0,1-.62-1.9v0A3.25,3.25,0,0,1,26.5,11.2H43.44s-4.71,6-1.44,9.8l.15.18C54.84,36,53,51.68,37.53,60.7Z" transform="translate(-14 -10.2)" fill="#a57939" stroke="#a57939" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <path d="M56.72,40A20.71,20.71,0,0,1,37.53,60.7C53,51.68,54.84,36,42.15,21.18L42,21c-3.27-3.78,1.44-9.8,1.44-9.8h2a3.25,3.25,0,0,1,3.24,3.24v0a3.21,3.21,0,0,1-.69,2,3.18,3.18,0,0,1-1.29,1h0c-1.17,1.16-2.2,3.13.8,5.35l.11.08a3.64,3.64,0,0,1,.35.24,20.37,20.37,0,0,1,4,3.64,19.69,19.69,0,0,1,2.69,4.13,2,2,0,0,1,.11.21c.15.33.29.65.42,1s.21.54.3.8.19.55.27.81v0l.22.76,0,.13c0,.12.06.22.08.34a3.59,3.59,0,0,1,.12.47c0,.16.07.3.1.46l.09.39s0,0,0,.05c0,.29.1.56.14.82s.09.69.13,1,0,.41.05.58C56.73,39.54,56.72,40,56.72,40Z" transform="translate(-14 -10.2)" fill="#6a462f" stroke="#6a462f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M37.53,60.7l-.5,0c-.34,0-.69,0-1,0A20.72,20.72,0,0,1,15.28,40v-.13c0-.28,0-.55,0-.83,0-.12,0-.24,0-.38s0-.37.05-.58.07-.55.12-.86c0-.15.05-.31.07-.48a26.7,26.7,0,0,1,.8-3.29c.06-.19.13-.4.21-.61.21-.58.45-1.18.73-1.79a1,1,0,0,1,.11-.21,34.92,34.92,0,0,1,2.69-4.13,20.37,20.37,0,0,1,3.95-3.64,3.64,3.64,0,0,1,.35-.24l.11-.08c2.95-2.19,2-4.14.85-5.3a3.16,3.16,0,0,1-1.46-1.11l0,0a3.22,3.22,0,0,1-.62-1.9v0A3.25,3.25,0,0,1,26.5,11.2H43.44s-4.71,6-1.44,9.8l.15.18C54.84,36,53,51.68,37.53,60.7Z" transform="translate(-14 -10.2)" fill="#a57939" stroke="#a57939" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
     </g>
     <g id="line">
       <path d="M16.49,34.82c.09-.46.19-.91.32-1.36C16.68,33.94,16.58,34.39,16.49,34.82Z" transform="translate(-14 -10.2)"/>
@@ -91,13 +91,13 @@ export const RewardIcon: FC<IconProps> = ({ children, ...rest }) => (
       <path d="M16.31,35.7c.05-.28.11-.58.18-.88C16.43,35.11,16.36,35.4,16.31,35.7Z" transform="translate(-14 -10.2)"/>
       <path d="M16,44.58" transform="translate(-14 -10.2)"/>
       <path d="M16.06,37.91c0,.27,0,.53,0,.8C16,38.56,16,38.29,16.06,37.91Z" transform="translate(-14 -10.2)"/>
-      <line x1="28.36" y1="9.63" x2="15.52" y2="9.63" fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"/>
-      <path d="M56.72,40a20.72,20.72,0,0,1-41.44,0v-.13c0-.28,0-.55,0-.83,0-.12,0-.24,0-.38s0-.37.05-.58.07-.55.12-.86c0-.15.05-.31.07-.48a26.7,26.7,0,0,1,.8-3.29c.06-.19.13-.4.21-.61.21-.58.45-1.18.73-1.79a1,1,0,0,1,.11-.21,34.92,34.92,0,0,1,2.69-4.13,20.74,20.74,0,0,1,3.95-3.65l.35-.23.11-.08c2.95-2.19,2-4.14.85-5.3a3.16,3.16,0,0,1-1.46-1.11l0,0a3.22,3.22,0,0,1-.62-1.9v0A3.25,3.25,0,0,1,26.5,11.2H45.43a3.25,3.25,0,0,1,3.24,3.24v0a3.21,3.21,0,0,1-.69,2,3.18,3.18,0,0,1-1.29,1h0c-1.17,1.16-2.2,3.13.8,5.35l.11.08.35.23a20.74,20.74,0,0,1,4,3.65,19.69,19.69,0,0,1,2.69,4.13,2,2,0,0,1,.11.21c.15.33.29.65.42,1s.21.54.3.8.19.55.27.81v0l.22.76,0,.13c0,.12.06.22.08.34a3.59,3.59,0,0,1,.12.47c0,.16.07.3.1.46s.07.26.09.39,0,0,0,.05c0,.29.1.56.14.82s.09.69.13,1,0,.41.05.58C56.73,39.54,56.72,40,56.72,40Z" transform="translate(-14 -10.2)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M39.19,36.36a2.83,2.83,0,0,0-2.85-1.85h0a2.66,2.66,0,0,0-2.91,2.31,2.66,2.66,0,0,0,2.91,2.32h-.06a2.66,2.66,0,0,1,2.91,2.32,2.66,2.66,0,0,1-2.91,2.32h0a2.83,2.83,0,0,1-2.85-1.85" transform="translate(-14 -10.2)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <line x1="22.31" y1="24.31" x2="22.31" y2="22.09" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <line x1="22.31" y1="35.8" x2="22.31" y2="33.59" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M22,20s-6,0-6,6" transform="translate(-14 -10.2)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-      <path d="M17,18a2,2,0,0,1-2-2" transform="translate(-14 -10.2)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <line x1="28.36" y1="9.63" x2="15.52" y2="9.63" fill="none" stroke="#000" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="2"/>
+      <path d="M56.72,40a20.72,20.72,0,0,1-41.44,0v-.13c0-.28,0-.55,0-.83,0-.12,0-.24,0-.38s0-.37.05-.58.07-.55.12-.86c0-.15.05-.31.07-.48a26.7,26.7,0,0,1,.8-3.29c.06-.19.13-.4.21-.61.21-.58.45-1.18.73-1.79a1,1,0,0,1,.11-.21,34.92,34.92,0,0,1,2.69-4.13,20.74,20.74,0,0,1,3.95-3.65l.35-.23.11-.08c2.95-2.19,2-4.14.85-5.3a3.16,3.16,0,0,1-1.46-1.11l0,0a3.22,3.22,0,0,1-.62-1.9v0A3.25,3.25,0,0,1,26.5,11.2H45.43a3.25,3.25,0,0,1,3.24,3.24v0a3.21,3.21,0,0,1-.69,2,3.18,3.18,0,0,1-1.29,1h0c-1.17,1.16-2.2,3.13.8,5.35l.11.08.35.23a20.74,20.74,0,0,1,4,3.65,19.69,19.69,0,0,1,2.69,4.13,2,2,0,0,1,.11.21c.15.33.29.65.42,1s.21.54.3.8.19.55.27.81v0l.22.76,0,.13c0,.12.06.22.08.34a3.59,3.59,0,0,1,.12.47c0,.16.07.3.1.46s.07.26.09.39,0,0,0,.05c0,.29.1.56.14.82s.09.69.13,1,0,.41.05.58C56.73,39.54,56.72,40,56.72,40Z" transform="translate(-14 -10.2)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M39.19,36.36a2.83,2.83,0,0,0-2.85-1.85h0a2.66,2.66,0,0,0-2.91,2.31,2.66,2.66,0,0,0,2.91,2.32h-.06a2.66,2.66,0,0,1,2.91,2.32,2.66,2.66,0,0,1-2.91,2.32h0a2.83,2.83,0,0,1-2.85-1.85" transform="translate(-14 -10.2)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <line x1="22.31" y1="24.31" x2="22.31" y2="22.09" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <line x1="22.31" y1="35.8" x2="22.31" y2="33.59" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M22,20s-6,0-6,6" transform="translate(-14 -10.2)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+      <path d="M17,18a2,2,0,0,1-2-2" transform="translate(-14 -10.2)" fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
     </g>
   </Icon>
 );
