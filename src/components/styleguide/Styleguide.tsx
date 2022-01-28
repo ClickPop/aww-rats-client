@@ -52,10 +52,10 @@ export const Styleguide = () => {
             </Flex>
 
             <Flex mt={2}>
-              <PickRatButton ratType={GameIconTypes.PetRat} label='Pet Rat' mr={2} />
-              <PickRatButton ratType={GameIconTypes.LabRat} label='Lab Rat' mr={2} />
-              <PickRatButton ratType={GameIconTypes.StreetRat} label='Street Rat' mr={2} />
-              <PickRatButton ratType={GameIconTypes.PackRat} label='Pack Rat' mr={2} />
+              <PickRatButton ratType={RatType.PetRat} label='Pet Rat' mr={2} />
+              <PickRatButton ratType={RatType.LabRat} label='Lab Rat' mr={2} />
+              <PickRatButton ratType={RatType.StreetRat} label='Street Rat' mr={2} />
+              <PickRatButton ratType={RatType.PackRat} label='Pack Rat' mr={2} />
               <PickRatButton label='Any old rat...' mr={2} />
             </Flex>
           </Box>
