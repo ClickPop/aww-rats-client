@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Text, Flex, FlexProps, Tooltip } from '@chakra-ui/react';
+import { Text, Flex, FlexProps } from '@chakra-ui/react';
 import { GameIconTypes } from '~/types/game';
 import { GameIcon } from '~/components/game/Icons';
 

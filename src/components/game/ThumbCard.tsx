@@ -2,15 +2,15 @@ import React, { FC } from 'react';
 import { AspectRatio, Box, Flex, FlexProps, Heading, Text } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
 
-interface Props extends FlexProps {
+export interface ThumbCardProps extends FlexProps {
   image: string | StaticImageData
   title?: string;
   flag?: string;
   state?: 'disabled' | 'active' | 'selected';
 }
-export const ThumbCard: FC<Props> = ({children, image, title, flag, state, ...rest}) => {
+export const ThumbCard: FC<ThumbCardProps> = ({children, image, title, flag, state, ...rest}) => {
 
-  const getDefinedProps = (state: Props['state']): FlexProps => {
+  const getDefinedProps = (state: ThumbCardProps['state']): FlexProps => {
     let tempDefinedProps: FlexProps = {};
 
     let subduedPseudo = {
