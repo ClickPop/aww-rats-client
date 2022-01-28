@@ -20,7 +20,7 @@ export const Stat: FC<Props> = ({
 }) => (
   <Flex {...rest} lineHeight='1.2em' mb={1}>
     {icon && <GameIcon icon={icon} mr={1} boxSize='1em' my='auto' />}
-    {(showLabel || !icon) && <Text as='span' fontWeight='bold'>{label}</Text>}
+    {(showLabel || !icon) && <Text as='span' fontWeight='regular'>{label}</Text>}
     {value && <Text as="span" align='right' ml={1} flex={1}>{value}</Text>}
   </Flex>
 )
