@@ -21,5 +21,12 @@ export enum Rattribute {
 export enum EncounterType {
   Solo = 'solo',
   Raid = 'raid',
-  Gauntlet = 'gauntlet'
+  Gauntlet = 'gauntlet',
+}
+
+export enum RatType {
+  PetRat = 'pet',
+  LabRat = 'lab',
+  StreetRat = 'street',
+  PackRat = 'pack',
 }
