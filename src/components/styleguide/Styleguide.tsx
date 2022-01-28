@@ -2,11 +2,12 @@ import React from 'react';
 import { Heading, Flex, Box, VStack, HStack } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
 import { Button } from '~/components/game/Button';
-import { GameIconTypes, RatType } from '~/types/game';
+import { GameIconTypes, RatType, EncounterType, Rattribute } from '~/types/game';
 import { PickRatButton } from '~/components/game/PickRatButton';
 import { ThumbCard } from '~/components/game/ThumbCard';
 import { BattleThumbCard } from '~/components/game/BattleThumbCard';
 import { RatThumbCard } from '~/components/game/RatThumbCard';
+import { BattleCard } from '~/components/game/BattleCard';
 import { Stat } from '~/components/game/Stat';
 
 import fpoCat from '~/assets/images/ratrace/fpo/fpo.cat.png';
@@ -131,7 +132,7 @@ export const Styleguide = () => {
                   showRatTypeIcon={true}
                   cunning={3}
                   cuteness={1}
-                  rattitude={4}
+                  rattitude={2}
                 />
 
                 <RatThumbCard 
@@ -141,7 +142,7 @@ export const Styleguide = () => {
                   showRatTypeIcon={true}
                   cunning={3}
                   cuteness={1}
-                  rattitude={4}
+                  rattitude={2}
                 />
 
                 <RatThumbCard 
@@ -151,13 +152,27 @@ export const Styleguide = () => {
                   showRatTypeIcon={true}
                   cunning={3}
                   cuteness={1}
-                  rattitude={4}
+                  rattitude={2}
                 />
               </VStack>
           </HStack>
         </Box>
+
+        <Box w='100%' p={6} rounded="md" bg='whiteAlpha.600' boxShadow="md">
+          <Heading as='h2' size='lg' mb={2}>Batle Cards</Heading>
+          <BattleCard
+            className='max-w-4xl text-dark'
+            imgPath={fpoCat}
+            altText='The Battle thubmnail illustration.'
+            title='Cat'
+            description='A description of the encounters you are about to undertake. This should be fun and add to the lore of the rataverse. Are you trying to acquire trash? Get a snack? Help a spider save a life through artistic weaving?'
+            encounterType={EncounterType.Solo}
+            weakness={Rattribute.Cunning}
+            resistance={Rattribute.Cuteness}
+            energy={5}
+          />
+        </Box>
       </VStack>
     </Box>
-        
   );
 };
