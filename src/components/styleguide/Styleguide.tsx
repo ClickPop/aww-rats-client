@@ -266,7 +266,7 @@ export const Styleguide = () => {
 
         <Box w='100%' p={6} rounded='md' bg='whiteAlpha.600' boxShadow='md'>
           <Heading as='h2' size='lg' mb={2}>
-            Batle Cards
+            Battle Cards
           </Heading>
           <BattleCard
             image={fpoCat}
