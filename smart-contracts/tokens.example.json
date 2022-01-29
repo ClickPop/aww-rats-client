@@ -1,0 +1,43 @@
+{
+    "tokens": [
+      {
+        "name": "Knitpunk Winter",
+        "cost": "0",
+        "maxTokens": 20,
+        "maxPerWallet": 1,
+        "active": false,
+        "revShareAddress": "0x38882F37879aE3d53100F90651Df448960dB4975",
+        "revShareAmount": [1,1]
+      }
+    ],
+    "meta": [
+      {
+        "name": "Knitpunk Winter",
+        "image": "https://www.awwrats.com/closet/images/background-knitwinter.png",
+        "description": "A snazzy background from our friends at <a href=\"https://twitter.com/knitpunksNFT\">Knitpunks</a>",
+        "attributes": [
+          {
+            "trait_type": "Piece Type",
+            "value": "background"
+          },
+          {
+            "trait_type": "Collection",
+            "value": "Knitpunks"
+          },
+          {
+            "trait_type": "Sponsor",
+            "value": "Knitpunks"
+          },
+          {
+            "trait_type": "Sponsor URL",
+            "value": "https://twitter.com/knitpunksNFT"
+          },
+          {
+              "trait_type": "Cunning",
+              "display_type": "boost_number",
+              "value": 1
+          }
+        ]
+      }
+    ]
+  }
