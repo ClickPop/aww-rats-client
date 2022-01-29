@@ -25,7 +25,7 @@ export const Styleguide = () => {
       <Image
         src={fpoBG}
         alt='background'
-        objectFit='fixed'
+        objectFit='cover'
         className='absolute top-0 left-0 w-max h-max'
       />
       <VStack
