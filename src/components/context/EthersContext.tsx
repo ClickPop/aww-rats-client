@@ -17,8 +17,8 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [closet, setCloset] = useState<Closet | undefined>();
   const [signerAddr, setSignerAddr] = useState('');
   const etherState = useEthers();
-  const { provider, signer, connected, network } = etherState;
   useEffect(() => {
+    const { signer, connected, network, accounts } = etherState;
     (async () => {
       if (connected && network?.chainId === CHAIN_ID) {
         try {
@@ -44,16 +44,15 @@ export const EthersContextProvider: FC = ({ children }) => {
         }
       }
 
-      if (signer) {
-        const addr = await signer.getAddress();
-        setSignerAddr(addr);
+      if (accounts?.[0]) {
+        setSignerAddr(accounts[0].toLowerCase());
       }
     })();
-  }, [connected, signer, provider, network]);
+  }, [etherState]);
 
   const connectToMetamask = async () => {
     try {
-      await provider?.send('eth_requestAccounts', []);
+      await etherState.provider?.send('eth_requestAccounts', []);
     } catch (err) {
       console.error(err);
     }

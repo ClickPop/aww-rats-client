@@ -15,7 +15,7 @@ export type EthersState = {
   signer?: JsonRpcSigner;
   network?: providers.Network;
   connected?: boolean;
-  account?: string;
+  accounts?: string[];
 };
 
 export type LOADING_STATE =

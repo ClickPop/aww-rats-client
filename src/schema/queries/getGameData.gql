@@ -1,6 +1,5 @@
 fragment reward on rewards {
-  tokens
-  closet_tokens
+  id
 }
 
 fragment encounter on encounters {
@@ -28,13 +27,11 @@ fragment raid on raids {
   active
   end_timestamp
   start_timestamp
-  reward {
-    ...reward
-  }
+  reward_id
   result
 }
 
-query getAdminData(
+query getGameData(
   $encounterLimit: Int
   $encounterOffset: Int
   $encounterOrderBy: [encounters_order_by!]
@@ -55,9 +52,7 @@ query getAdminData(
     where: $encounterWhere
   ) {
     ...encounter
-    reward {
-      ...reward
-    }
+    reward_id
     gauntlet_encounters {
       gauntlet_id
       position
@@ -78,9 +73,7 @@ query getAdminData(
     image
     win_text
     loss_text
-    reward {
-      ...reward
-    }
+    reward_id
     gauntlet_encounters {
       encounter {
         ...encounter
@@ -98,5 +91,19 @@ query getAdminData(
     encounter {
       ...encounter
     }
+  }
+  rewards {
+    id
+    tokens
+    closet_tokens
+  }
+  encounter_types {
+    encounter_type
+  }
+  rattributes {
+    rattribute
+  }
+  rat_types {
+    rat_type
   }
 }
