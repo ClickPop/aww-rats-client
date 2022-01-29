@@ -18,6 +18,10 @@ import { Stat } from '~/components/game/Stat';
 
 import fpoCat from '~/assets/images/ratrace/fpo/fpo.cat.png';
 import fpoRat from '~/assets/images/ratrace/fpo/fpo.rat.png';
+import fpoLabRat from '~/assets/images/ratrace/fpo/fpo.lab-rat.png';
+import fpoStreetRat from '~/assets/images/ratrace/fpo/fpo.street-rat.png';
+import fpoPetRat from '~/assets/images/ratrace/fpo/fpo.pet-rat.png';
+import fpoPackRat from '~/assets/images/ratrace/fpo/fpo.pack-rat.png';
 import fpoBG from '~/assets/images/ratrace/fpo/fpo.bg.jpg';
 
 export const Styleguide = () => {
@@ -104,12 +108,56 @@ export const Styleguide = () => {
             Team Cards
           </Heading>
 
-          <Flex mt={2} flexWrap='wrap'>
-            <TeamCard mr={5} mb={5} />
-            <TeamCard mr={5} mb={5} ratType={RatType.LabRat} />
-            <TeamCard mr={5} mb={5} ratType={RatType.StreetRat} />
-            <TeamCard mr={5} mb={5} ratType={RatType.PetRat} />
-            <TeamCard mr={5} mb={5} ratType={RatType.PackRat} />
+          <Flex mt={2} flexWrap='wrap' gap={10} justifyContent='center'>
+            <Box>
+              <Heading as='h3' size='md'>
+                Lab Rat
+              </Heading>
+              <HStack gap={4}>
+                <TeamCard ratType={RatType.LabRat} />
+                <TeamCard ratType={RatType.LabRat} rat={fpoLabRat} />
+              </HStack>
+            </Box>
+
+            <Box>
+              <Heading as='h3' size='md'>
+                Street Rat
+              </Heading>
+              <HStack gap={4}>
+                <TeamCard ratType={RatType.StreetRat} />
+                <TeamCard ratType={RatType.StreetRat} rat={fpoStreetRat} />
+              </HStack>
+            </Box>
+
+            <Box>
+              <Heading as='h3' size='md'>
+                Pack Rat
+              </Heading>
+              <HStack gap={4}>
+                <TeamCard ratType={RatType.PackRat} />
+                <TeamCard ratType={RatType.PackRat} rat={fpoPackRat} />
+              </HStack>
+            </Box>
+
+            <Box>
+              <Heading as='h3' size='md'>
+                Pet Rat
+              </Heading>
+              <HStack gap={4}>
+                <TeamCard ratType={RatType.PetRat} />
+                <TeamCard ratType={RatType.PetRat} rat={fpoPetRat} />
+              </HStack>
+            </Box>
+
+            <Box>
+              <Heading as='h3' size='md'>
+                Any Rat
+              </Heading>
+              <HStack gap={4}>
+                <TeamCard />
+                <TeamCard rat={fpoRat} />
+              </HStack>
+            </Box>
           </Flex>
         </Box>
 
