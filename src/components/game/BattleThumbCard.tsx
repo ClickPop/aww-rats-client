@@ -11,15 +11,16 @@ interface BattleThumbCardStat {
 }
 
 export interface BattleThumbCardProps extends ThumbCardProps {
-  stats?: BattleThumbCardStat[]
+  stats?: BattleThumbCardStat[];
 }
 
-export const BattleThumbCard: FC<BattleThumbCardProps> = ({stats, ...rest}) => {
+export const BattleThumbCard: FC<BattleThumbCardProps> = ({
+  stats,
+  ...rest
+}) => {
   return (
     <ThumbCard {...rest}>
-      {stats && stats.map(stat => (
-        <Stat key={stat.label} {...stat} />
-      ))}
+      {stats && stats.map((stat) => <Stat key={stat.label} {...stat} />)}
     </ThumbCard>
-  )
-}
+  );
+};

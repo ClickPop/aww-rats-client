@@ -8,6 +8,7 @@ interface Props extends FlexProps {
   label?: string;
   value?: string | number;
   showLabel?: boolean;
+  bold?: boolean;
 }
 
 export const Stat: FC<Props> = ({
@@ -16,13 +17,21 @@ export const Stat: FC<Props> = ({
   label,
   value,
   showLabel,
+  bold,
   ...rest
 }) => (
   <Flex {...rest} lineHeight='1.2em' mb={1}>
     {icon && <GameIcon icon={icon} mr={1} boxSize='1em' my='auto' />}
-    {(showLabel || !icon) && <Text as='span' fontWeight='regular'>{label}</Text>}
-    {value && <Text as="span" align='right' ml={1} flex={1}>{value}</Text>}
+    {(showLabel || !icon) && (
+      <Text as='span' fontWeight={bold ? 'bold' : 'normal'}>
+        {label}
+        {!icon && ': '}
+      </Text>
+    )}
+    {value && (
+      <Text as='span' align='right' ml={!icon ? 2 : 1} flex={1}>
+        {value}
+      </Text>
+    )}
   </Flex>
-)
-
-
+);
