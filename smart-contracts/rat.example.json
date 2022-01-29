@@ -1,0 +1,84 @@
+{
+    "name": "Bison",
+    "description": "Bison is a friendly and creative pack rat. They enjoy exploring the open road, sipping on Baja Blast, jamming out to tunes, and spending time with their Weebeast Walter.",
+    "attributes": [
+        {
+            "trait_type": "Accessory",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Background",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Color",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Ears",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Eyes",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Generation",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Glasses",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Hand",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Hat",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Markings",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Pet",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Shirt",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Snout",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Tail",
+            "value": "Name"
+        },
+        {
+            "trait_type": "Type",
+            "value": "Type Rat"
+        },
+        {
+            "trait_type": "Cunning",
+            "display_type": "number",
+            "value": 0,
+            "max_value": 7
+        },
+        {
+            "trait_type": "Cuteness",
+            "display_type": "number",
+            "value": 0,
+            "max_value": 7
+        },
+        {
+            "trait_type": "Rattitude",
+            "display_type": "number",
+            "value": 0,
+            "max_value": 7
+        }
+    ]
+}
