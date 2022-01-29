@@ -13,6 +13,7 @@ import { ThumbCard } from '~/components/game/ThumbCard';
 import { BattleThumbCard } from '~/components/game/BattleThumbCard';
 import { RatThumbCard } from '~/components/game/RatThumbCard';
 import { BattleCard } from '~/components/game/BattleCard';
+import { TeamCard } from '~/components/game/TeamCard';
 import { Stat } from '~/components/game/Stat';
 
 import fpoCat from '~/assets/images/ratrace/fpo/fpo.cat.png';
@@ -95,6 +96,20 @@ export const Styleguide = () => {
             />
             <PickRatButton ratType={RatType.PackRat} label='Pack Rat' mr={2} />
             <PickRatButton label='Any old rat...' mr={2} />
+          </Flex>
+        </Box>
+
+        <Box w='100%' p={6} rounded='md' bg='whiteAlpha.600' boxShadow='md'>
+          <Heading as='h2' size='lg' mb={2}>
+            Team Cards
+          </Heading>
+
+          <Flex mt={2} flexWrap='wrap'>
+            <TeamCard mr={5} mb={5} />
+            <TeamCard mr={5} mb={5} ratType={RatType.LabRat} />
+            <TeamCard mr={5} mb={5} ratType={RatType.StreetRat} />
+            <TeamCard mr={5} mb={5} ratType={RatType.PetRat} />
+            <TeamCard mr={5} mb={5} ratType={RatType.PackRat} />
           </Flex>
         </Box>
 

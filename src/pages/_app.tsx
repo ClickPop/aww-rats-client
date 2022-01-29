@@ -13,6 +13,26 @@ function MyApp({ Component, pageProps }: AppProps) {
         500: '#FFFFFF',
         600: '#CCCCCC',
       },
+      pickRatStatic: {
+        500: '#FFFFFF',
+        600: '#FFFFFF',
+      },
+      packRat: {
+        500: '#FF7558',
+        600: '#ff4a24',
+      },
+      labRat: {
+        500: '#00E99A',
+        600: '#00c682',
+      },
+      streetRat: {
+        500: '#00A5FF',
+        600: '#008cd8',
+      },
+      petRat: {
+        500: '#FE7098',
+        600: '#fd3970',
+      },
       darkAlpha: {
         50: 'rgba(40, 45, 58, 0.1)',
         100: 'rgba(40, 45, 58, 0.25)',
