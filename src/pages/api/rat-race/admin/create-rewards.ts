@@ -1,23 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { sdk } from '~/lib/graphql';
-import {
-  Encounters_Insert_Input,
-  InsertEncountersMutation,
-} from '~/schema/requests';
+import { InsertRewardsMutation, Rewards_Insert_Input } from '~/schema/requests';
 
-const { insertEncounters } = sdk;
+const { insertRewards } = sdk;
 
 interface Request extends Exclude<NextApiRequest, 'body'> {
   body: {
-    encounters: Encounters_Insert_Input | Encounters_Insert_Input[];
+    encounters: Rewards_Insert_Input | Rewards_Insert_Input[];
   };
 }
 
 export default async function handler(
   req: Request,
   res: NextApiResponse<
-    InsertEncountersMutation | { status: 'error'; error: string }
+    InsertRewardsMutation | { status: 'error'; error: string }
   >,
 ) {
   if (req.method !== 'POST') {
@@ -25,10 +22,10 @@ export default async function handler(
   }
   try {
     const { body } = req;
-    const encounters = await insertEncounters(
+    const rewards = await insertRewards(
       typeof body === 'string' ? JSON.parse(body) : body,
     );
-    res.status(200).json(encounters);
+    res.status(200).json(rewards);
   } catch (err) {
     console.error(err);
     return res

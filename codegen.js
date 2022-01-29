@@ -18,7 +18,18 @@ module.exports = {
   generates: {
     './src/schema/generated.ts': {
       documents: ['./src/**/*.ts', './src/**/*.gql'],
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: [
+        {
+          typescript: {
+            skipTypename: true,
+          },
+        },
+        {
+          'typescript-operations': {
+            skipTypename: true,
+          },
+        },
+      ],
     },
     './src/schema/apollo.ts': {
       documents: ['./src/**/*.gql', '!./src/**/admin/**/*.gql'],
@@ -31,6 +42,7 @@ module.exports = {
         {
           'typescript-react-apollo': {
             importOperationTypesFrom: 'Types',
+            skipTypename: true,
           },
         },
       ],

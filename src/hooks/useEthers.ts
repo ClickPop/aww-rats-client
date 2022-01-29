@@ -20,8 +20,8 @@ export const useEthers: UseEthersHook = () => {
       provider.on('network', (network) => {
         setEthState((s) => ({ ...s, network }));
       });
-      window.ethereum.on('accountsChanged', ([account]: string[]) => {
-        setEthState((s) => ({ ...s, connected: !!account, account }));
+      window.ethereum.on('accountsChanged', (accounts: string[]) => {
+        setEthState((s) => ({ ...s, connected: !!accounts, accounts }));
       });
       const signer = provider.getSigner();
       provider.listAccounts().then(async (accounts: string[]) => {
