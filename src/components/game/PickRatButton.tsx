@@ -15,7 +15,11 @@ export const PickRatButton: FC<Props> = ({ ratType, label, ...rest }) => {
   ): IconButtonProps => {
     let tempDefinedProps: IconButtonProps = {
       'aria-label': label,
-      icon: ratType ? <GameIcon icon={ratType} /> : <GameIcon icon={GameIconTypes.Plus} />,
+      icon: ratType ? (
+        <GameIcon icon={ratType} />
+      ) : (
+        <GameIcon icon={GameIconTypes.Plus} />
+      ),
       borderRadius: 'full',
       colorScheme: 'pickRat',
       fontSize: 'xl',

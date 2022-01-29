@@ -12,7 +12,14 @@ export interface RatThumbCardProps extends ThumbCardProps {
   rattitude?: number;
 }
 
-export const RatThumbCard: FC<RatThumbCardProps> = ({ratType, showRatTypeIcon, cunning, cuteness, rattitude, ...rest}) => {
+export const RatThumbCard: FC<RatThumbCardProps> = ({
+  ratType,
+  showRatTypeIcon,
+  cunning,
+  cuteness,
+  rattitude,
+  ...rest
+}) => {
   return (
     <ThumbCard {...rest}>
       <RatTypeStat ratType={ratType} showIcon={showRatTypeIcon} />
@@ -20,5 +27,5 @@ export const RatThumbCard: FC<RatThumbCardProps> = ({ratType, showRatTypeIcon, c
       {cuteness && <Stat label='Cuteness' value={cuteness} />}
       {rattitude && <Stat label='Rattitude' value={rattitude} />}
     </ThumbCard>
-  )
-}
+  );
+};
