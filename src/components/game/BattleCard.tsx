@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 import {
   Flex,
-  Grid,
-  GridItem,
   Box,
   Heading,
   AspectRatio,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import { GameIcon } from '~/components/game/Icons';
@@ -43,7 +42,7 @@ export const BattleCard: FC<Props> = ({
   reward,
 }) => {
   return (
-    <Flex rounded='lg' bg='darkAlpha.500' p={4} color='white'>
+    <Stack direction={['column', 'row']} rounded='lg' bg='darkAlpha.500' p={4} color='white'>
       <AspectRatio
         ratio={1 / 1}
         w='120px'
@@ -58,11 +57,11 @@ export const BattleCard: FC<Props> = ({
       </AspectRatio>
 
       <Box>
-        <Heading as='h3' size='md'>
+        <Heading as='h3' size='md' mb={3}>
           {title}
         </Heading>
 
-        <Flex gap={6} my={2}>
+        <Flex gap={4} mb={2} align='start'>
           <Stat
             label='Type'
             value={encounterType}
@@ -80,12 +79,12 @@ export const BattleCard: FC<Props> = ({
           )}
         </Flex>
 
-        <Flex gap={6} mt={2}>
+        <Stack gap={{base: 0, md: 4}} mb={2} direction={{base: 'column', md: 'row'}} align='start'>
           <Stat label='Weakness' value={weakness} bold />
           <Stat label='Resistance' value={resistance} bold />
-        </Flex>
+        </Stack>
 
-        <Flex gap={6} mb={2}>
+        <Flex gap={4} mb={2}>
           {strength && (
             <Stat
               label='Strength'
@@ -121,6 +120,6 @@ export const BattleCard: FC<Props> = ({
           </Text>
         )}
       </Box>
-    </Flex>
+    </Stack>
   );
 };
