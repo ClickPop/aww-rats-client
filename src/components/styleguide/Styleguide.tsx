@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Flex, Box, VStack, HStack } from '@chakra-ui/react';
+import { Heading, Flex, Box, Stack, VStack, HStack } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
 import { Button } from '~/components/game/Button';
 import {
@@ -46,36 +46,45 @@ export const Styleguide = () => {
             Buttons
           </Heading>
 
-          <Flex mt={2}>
-            <Button mr={2}>Primary</Button>
-            <Button mr={2} buttonType='secondary'>
+          <Heading as='h3' size='md' mb={2}>
+            Basic
+          </Heading>
+          <Stack mt={2} direction={['column', 'row']} spacing='2' align='start'>
+            <Button>Primary</Button>
+            <Button buttonType='secondary'>
               Secondary
             </Button>
-            <Button mr={2} buttonType='destructive'>
+            <Button buttonType='destructive'>
               Destructive
             </Button>
-          </Flex>
+          </Stack>
 
-          <Flex mt={2}>
-            <Button mr={2} icon={GameIconTypes.Energy} iconNumber={5}>
+          <Heading as='h3' size='md' my={2}>
+            Combo
+          </Heading>
+          <Stack mt={2} direction={['column', 'row']} spacing='2' align='start'>
+            <Button
+              icon={GameIconTypes.Energy}
+              iconNumber={5}>
               Primary
             </Button>
             <Button
-              mr={2}
               icon={GameIconTypes.Energy}
               iconNumber={5}
               buttonType='secondary'>
               Secondary
             </Button>
             <Button
-              mr={2}
               icon={GameIconTypes.Energy}
               iconNumber={5}
               buttonType='destructive'>
               Destructive
             </Button>
-          </Flex>
+          </Stack>
 
+          <Heading as='h3' size='md' my={2}>
+            Icon
+          </Heading>
           <Flex mt={2}>
             <PickRatButton ratType={RatType.PetRat} label='Pet Rat' mr={2} />
             <PickRatButton ratType={RatType.LabRat} label='Lab Rat' mr={2} />
