@@ -9,8 +9,10 @@ import {
 } from '@chakra-ui/react';
 import React, { FC, useContext, useState } from 'react';
 import { GameAdminContext } from '~/components/context/GameAdminContext';
-import { Rewards_Insert_Input } from '~/schema/generated';
-import { InsertRewardsMutation } from '~/schema/requests';
+import {
+  Rewards_Insert_Input,
+  InsertRewardsMutation,
+} from '~/schema/generated';
 
 type Props = {
   onClose: () => void;

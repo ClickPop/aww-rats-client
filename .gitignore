@@ -32,7 +32,7 @@ yarn-error.log*
 
 # vercel
 .vercel
-pubsub-keyfile.json
+gcloud-key.json
 
 # Local Files
 smart-contracts/rat.json

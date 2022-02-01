@@ -1,18 +1,29 @@
 import { Text, VStack } from '@chakra-ui/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { GameAdminContextProvider } from '~/components/context/GameAdminContext';
 import { EncountersTable } from '~/components/game/admin/EncountersTable';
-import { GauntletsTable } from '~/components/game/admin/GauntletsTable';
-import { RaidsTable } from '~/components/game/admin/RaidsTable';
 import { RewardsTable } from '~/components/game/admin/RewardsTable';
-import { useGetGameDataQuery } from '~/schema/apollo';
-import { Rattributes_Enum, Rat_Types_Enum } from '~/schema/generated';
+import Login from '~/components/access/Login';
+import { useGetGameDataQuery } from '~/schema/generated';
+import { EthersContext } from '~/components/context/EthersContext';
 
 export const Admin = () => {
-  const { data, loading } = useGetGameDataQuery();
+  const { data, loading, error } = useGetGameDataQuery();
+  const { isLoggedIn } = useContext(EthersContext);
 
   if (loading) {
     return <Text color='white'>Loading...</Text>;
+  }
+
+  if (error) {
+    console.error(error);
+    return (
+      <Text color='white'>An error occurred, please check the console</Text>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return <Login />;
   }
 
   return data ? (

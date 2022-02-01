@@ -1,7 +1,0 @@
-mutation insertEncounters($encounters: [encounters_insert_input!]!) {
-  insert_encounters(objects: $encounters) {
-    returning {
-      id
-    }
-  }
-}

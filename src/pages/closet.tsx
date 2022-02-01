@@ -9,10 +9,6 @@ const ClosetWrapper = dynamic(
   },
 );
 
-const LoginButton = dynamic(() => import('~/components/rat-race/Login'), {
-  ssr: false,
-});
-
 const ClosetPage: NextPage = () => {
   return (
     <LayoutNoFooter className='bg-gray-800'>
@@ -43,9 +39,6 @@ const ClosetPage: NextPage = () => {
         />
       </Head>
       <ClosetWrapper />
-      <div className='h-20 w-10'>
-        <LoginButton />
-      </div>
     </LayoutNoFooter>
   );
 };

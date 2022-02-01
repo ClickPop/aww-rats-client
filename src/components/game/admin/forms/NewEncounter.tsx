@@ -13,47 +13,89 @@ import {
   Textarea,
   Text,
 } from '@chakra-ui/react';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useState } from 'react';
 import { GameAdminContext } from '~/components/context/GameAdminContext';
 import {
   Encounters_Insert_Input,
   Encounter_Types_Enum,
-  InsertEncountersMutation,
   Rattributes_Enum,
-} from '~/schema/requests';
+  useUpsertEncountersMutation,
+} from '~/schema/generated';
 import ReactSelect from 'react-select';
+import { ImageUpload } from '~/components/game/admin/forms/ImageUpload';
 
 type Props = {
   onClose: () => void;
+  editEncounter?: Encounters_Insert_Input;
 };
 
-export const NewEncounter: FC<Props> = ({ onClose }) => {
+export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
   const { rewards, rattributes, refetch } = useContext(GameAdminContext);
-  const [newEncounter, setNewEncounter] = useState<Encounters_Insert_Input>({
-    power: 1,
-    energy_cost: 1,
-    active: false,
-    name: '',
-    max_rats: 1,
-    reward_id: -1,
-    encounter_type: Encounter_Types_Enum.Solo,
-    encounter_resistances: {
-      data: [],
+  const [newEncounter, setNewEncounter] = useState<Encounters_Insert_Input>(
+    editEncounter ?? {
+      power: 1,
+      energy_cost: 1,
+      active: false,
+      max_rats: 1,
+      encounter_type: Encounter_Types_Enum.Solo,
+      encounter_resistances: {
+        data: [],
+      },
+      encounter_weaknesses: {
+        data: [],
+      },
     },
-    encounter_weaknesses: {
-      data: [],
+  );
+
+  const [upsertEncounters] = useUpsertEncountersMutation();
+
+  const onDrop = useCallback(
+    ([file]: File[]) => {
+      const handleUpload = async () => {
+        try {
+          const name =
+            newEncounter.name && newEncounter.name.length > 0
+              ? `${newEncounter.name}.png`
+              : file.name;
+          const { signedURL }: { signedURL: string; path: string } =
+            await fetch('/api/image/get-signed-upload-url', {
+              method: 'post',
+              headers: {
+                'content-type': 'application/json',
+              },
+              body: JSON.stringify({
+                path: `rat-race/images/encounters/${name}`,
+              }),
+            }).then((res) => res.json());
+
+          await fetch(signedURL, {
+            method: 'put',
+            body: file,
+          }).then((res) => res.text());
+
+          setNewEncounter((ne) => ({
+            ...ne,
+            image: `https://storage.googleapis.com/aww-rats/rat-race/images/encounters/${name}`,
+          }));
+        } catch (err) {
+          console.error();
+        }
+      };
+
+      handleUpload();
     },
-  });
+    [newEncounter.name],
+  );
+
+  const isValid = newEncounter.name && newEncounter.reward_id;
 
   const handleSubmit = async () => {
     try {
-      const resp: InsertEncountersMutation = await fetch(
-        '/api/rat-race/admin/create-encounters',
-        {
-          method: 'post',
-          body: JSON.stringify({ encounters: newEncounter }),
+      await upsertEncounters({
+        variables: {
+          encounters: [newEncounter],
         },
-      ).then((res) => res.json());
+      });
       refetch();
       onClose();
     } catch (err) {
@@ -69,7 +111,7 @@ export const NewEncounter: FC<Props> = ({ onClose }) => {
         }}>
         <Grid templateColumns='repeat(2, 1fr)' gap='1rem'>
           <GridItem colSpan={2}>
-            <FormControl>
+            <FormControl isRequired>
               <FormLabel>Name</FormLabel>
               <Input
                 value={newEncounter.name ?? undefined}
@@ -122,6 +164,10 @@ export const NewEncounter: FC<Props> = ({ onClose }) => {
               <ReactSelect
                 isMulti
                 isSearchable={false}
+                value={newEncounter?.encounter_resistances?.data.map((er) => ({
+                  value: er.resistance as string,
+                  label: er.resistance as string,
+                }))}
                 options={rattributes
                   .filter(
                     (r) =>
@@ -152,6 +198,10 @@ export const NewEncounter: FC<Props> = ({ onClose }) => {
               <ReactSelect
                 isMulti
                 isSearchable={false}
+                value={newEncounter?.encounter_weaknesses?.data.map((er) => ({
+                  value: er.weakness as string,
+                  label: er.weakness as string,
+                }))}
                 options={rattributes
                   .filter(
                     (r) =>
@@ -219,7 +269,7 @@ export const NewEncounter: FC<Props> = ({ onClose }) => {
             </FormControl>
           </GridItem>
           <GridItem>
-            <FormControl>
+            <FormControl isRequired={true}>
               <FormLabel>Reward</FormLabel>
               <ReactSelect
                 options={rewards.map((r) => ({
@@ -277,13 +327,19 @@ export const NewEncounter: FC<Props> = ({ onClose }) => {
               />
             </FormControl>
           </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Image</FormLabel>
+              <ImageUpload onDrop={onDrop} image={newEncounter.image} />
+            </FormControl>
+          </GridItem>
         </Grid>
 
         <ButtonGroup mt='2rem' width='100%' justifyContent='center'>
           <Button colorScheme='red' onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme='green' type='submit'>
+          <Button colorScheme='green' type='submit' disabled={!isValid}>
             Save
           </Button>
         </ButtonGroup>

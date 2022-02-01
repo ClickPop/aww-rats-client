@@ -1,6 +1,6 @@
 import { NetworkStatus } from '@apollo/client';
-import { createContext, FC, useMemo, useState } from 'react';
-import { useGetGameDataQuery } from '~/schema/apollo';
+import { createContext, FC, useEffect, useMemo, useState } from 'react';
+import { useGetGameDataQuery } from '~/schema/generated';
 import { GetGameDataQuery } from '~/schema/generated';
 import {
   GameAdminContext as GameAdminContextType,
@@ -97,17 +97,55 @@ const defaultContext: GameAdminContextType = {
       rat_types: [],
       rattributes: [],
       encounter_types: [],
+      encounters_aggregate: { aggregate: { count: 0 } },
+      gauntlets_aggregate: { aggregate: { count: 0 } },
+      raids_aggregate: { aggregate: { count: 0 } },
+      rewards_aggregate: { aggregate: { count: 0 } },
     },
     loading: false,
     networkStatus: NetworkStatus.refetch,
   }),
   getTableHeaders,
+  encountersPagination: {
+    page: 1,
+    pageSize: 5,
+    totalPages: 1,
+  },
+  setEncountersPagination: () => {},
 };
 
 export const GameAdminContext = createContext(defaultContext);
 
 export const GameAdminContextProvider: FC = ({ children }) => {
-  const { data, loading, refetch } = useGetGameDataQuery();
+  const [encountersPagination, setEncountersPagination] = useState({
+    page: 1,
+    pageSize: 5,
+    totalPages: 1,
+  });
+  const { data, loading, refetch } = useGetGameDataQuery({
+    variables: {
+      encounterLimit: encountersPagination.pageSize,
+      encounterOffset:
+        (encountersPagination.page - 1) * encountersPagination.pageSize,
+    },
+  });
+
+  useEffect(() => {
+    setEncountersPagination((p) => ({
+      ...p,
+      totalPages: Math.max(
+        Math.ceil(
+          (data?.encounters_aggregate.aggregate?.count ?? 1) /
+            encountersPagination.pageSize,
+        ),
+        1,
+      ),
+    }));
+  }, [
+    data?.encounters_aggregate.aggregate?.count,
+    encountersPagination.pageSize,
+  ]);
+
   const encounters = useMemo(
     () => normalizeEncounters(data?.encounters),
     [data?.encounters],
@@ -133,6 +171,8 @@ export const GameAdminContextProvider: FC = ({ children }) => {
         rat_types: data?.rat_types ?? [],
         rattributes: data?.rattributes ?? [],
         getTableHeaders: getTableHeaders,
+        encountersPagination,
+        setEncountersPagination,
       }}>
       {children}
     </GameAdminContext.Provider>
