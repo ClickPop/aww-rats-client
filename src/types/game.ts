@@ -1,5 +1,5 @@
-import { useGetGameDataQuery } from '~/schema/apollo';
-import { GetGameDataQuery } from '~/schema/generated';
+import { Dispatch, SetStateAction } from 'react';
+import { GetGameDataQuery, useGetGameDataQuery } from '~/schema/generated';
 
 export enum GameIconTypes {
   Energy = 'energy',
@@ -34,7 +34,7 @@ export enum RatType {
 export interface NormalizedEncounter
   extends Omit<
     GetGameDataQuery['encounters'][0],
-    'gauntlet_encounters' | 'reward' | 'raids'
+    'gauntlet_encounters' | 'raids'
   > {
   gauntlet_encounters: number[];
   raids: number[];
@@ -54,13 +54,30 @@ export interface NormalizedGauntlet
 }
 
 export interface GameAdminContext
-  extends Omit<GetGameDataQuery, 'encounters' | 'raids' | 'gauntlets'> {
+  extends Omit<
+    GetGameDataQuery,
+    | 'encounters'
+    | 'raids'
+    | 'gauntlets'
+    | 'encounters_aggregate'
+    | 'gauntlets_aggregate'
+    | 'raids_aggregate'
+    | 'rewards_aggregate'
+  > {
   encounters: NormalizedEncounter[];
   raids: NormalizedRaid[];
   gauntlets: NormalizedGauntlet[];
   refetch: ReturnType<typeof useGetGameDataQuery>['refetch'];
   loading: boolean;
   getTableHeaders: GetTableHeaders;
+  encountersPagination: PaginationObject;
+  setEncountersPagination: Dispatch<SetStateAction<PaginationObject>>;
 }
+
+export type PaginationObject = {
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
 
 export type GetTableHeaders = <T extends Array<any>>(data: T) => Set<string>;

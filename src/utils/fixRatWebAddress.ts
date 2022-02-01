@@ -3,4 +3,4 @@ export const fixRatWebAddress = (url: string): string => {
     // url = url.replace(/^(https?:\/\/)?(www\.)?awwrats.com/i, '');
   }
   return url;
-}
+};

@@ -61,6 +61,7 @@ query getGameData(
       ...raid
     }
   }
+
   gauntlets(
     limit: $gauntletLimit
     offset: $gauntletOffset
@@ -81,6 +82,7 @@ query getGameData(
       position
     }
   }
+
   raids(
     limit: $raidLimit
     offset: $raidOffset
@@ -92,18 +94,46 @@ query getGameData(
       ...encounter
     }
   }
+
   rewards {
     id
     tokens
     closet_tokens
   }
+
   encounter_types {
     encounter_type
   }
+
   rattributes {
     rattribute
   }
+
   rat_types {
     rat_type
+  }
+
+  encounters_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  gauntlets_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  raids_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  rewards_aggregate {
+    aggregate {
+      count
+    }
   }
 }

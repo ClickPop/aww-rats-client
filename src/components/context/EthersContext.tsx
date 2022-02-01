@@ -7,6 +7,8 @@ import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers } from 'ethers';
 
 const defaultEthersContext: EthersContextType = {
+  isLoggedIn: false,
+  setLoggedIn: () => {},
   connectToMetamask: () => undefined,
 };
 
@@ -16,9 +18,16 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [contract, setContract] = useState<Rat | undefined>();
   const [closet, setCloset] = useState<Closet | undefined>();
   const [signerAddr, setSignerAddr] = useState('');
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const etherState = useEthers();
+
   useEffect(() => {
     const { signer, connected, network, accounts } = etherState;
+
+    if (typeof document !== 'undefined') {
+      setLoggedIn(!!document?.cookie?.includes('wallet='));
+    }
+
     (async () => {
       if (connected && network?.chainId === CHAIN_ID) {
         try {
@@ -66,6 +75,8 @@ export const EthersContextProvider: FC = ({ children }) => {
         connectToMetamask,
         signerAddr,
         closet,
+        isLoggedIn,
+        setLoggedIn,
       }}>
       {children}
     </EthersContext.Provider>

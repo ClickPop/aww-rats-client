@@ -63,6 +63,8 @@ export interface EthersContextType extends EthersState {
   closet?: Closet;
   connectToMetamask: () => void;
   signerAddr?: string;
+  isLoggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ClosetContextType {

@@ -29,40 +29,9 @@ module.exports = {
             skipTypename: true,
           },
         },
-      ],
-    },
-    './src/schema/apollo.ts': {
-      documents: ['./src/**/*.gql', '!./src/**/admin/**/*.gql'],
-      plugins: [
-        {
-          add: {
-            content: "import * as Types from './generated';",
-          },
-        },
         {
           'typescript-react-apollo': {
-            importOperationTypesFrom: 'Types',
             skipTypename: true,
-          },
-        },
-      ],
-    },
-    './src/schema/requests.ts': {
-      add: {
-        content: "import * as Types from './generated';",
-      },
-      documents: ['./src/**/admin/**/*.gql'],
-      plugins: [
-        'typescript',
-        'typescript-operations',
-        // {
-        //   add: {
-        //     content: "import * as Types from './generated';",
-        //   },
-        // },
-        {
-          'typescript-graphql-request': {
-            importOperationTypesFrom: 'Types',
           },
         },
       ],
