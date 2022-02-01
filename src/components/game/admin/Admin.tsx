@@ -15,15 +15,15 @@ export const Admin = () => {
     return <Text color='white'>Loading...</Text>;
   }
 
+  if (!isLoggedIn) {
+    return <Login />;
+  }
+
   if (error) {
     console.error(error);
     return (
       <Text color='white'>An error occurred, please check the console</Text>
     );
-  }
-
-  if (!isLoggedIn) {
-    return <Login />;
   }
 
   return data ? (
