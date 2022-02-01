@@ -8,7 +8,7 @@
     "codegen": "graphql-codegen",
     "dev": "yarn codegen && concurrently \"next dev\" \"cd smart-contracts && yarn watch compilation\"",
     "dev:local-node": "yarn codegen && concurrently \"cd smart-contracts && yarn hardhat node\" \"cd smart-contracts && yarn setup-local\"",
-    "build": "echo $GCP_KEYFILE > gcloud-key.json && yarn compile && yarn codegen && next build",
+    "build": "yarn compile && yarn codegen && next build",
     "start": "next start",
     "check-types": "tsc --noEmit",
     "lint": "next lint",
