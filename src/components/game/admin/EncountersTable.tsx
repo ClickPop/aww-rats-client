@@ -21,10 +21,11 @@ import {
 } from '@chakra-ui/react';
 import React, { FC, useContext, useState } from 'react';
 import { GameAdminContext } from '~/components/context/GameAdminContext';
-import { NewEncounter } from '~/components/game/admin/forms/NewEncounter';
+import { EncounterForm } from '~/components/game/admin/forms/EncounterForm';
 import {
   Encounters_Insert_Input,
   Encounter_Resistance_Constraint,
+  Encounter_Types_Enum,
   useDeleteEncountersMutation,
 } from '~/schema/generated';
 import { Encounter_Weakness_Constraint } from '~/schema/generated';
@@ -45,6 +46,20 @@ function handleData(key: keyof NormalizedEncounter, data: NormalizedEncounter) {
   }
 }
 
+const defaultEncounterData = {
+  power: 1,
+  energy_cost: 1,
+  active: false,
+  max_rats: 1,
+  encounter_type: Encounter_Types_Enum.Solo,
+  encounter_resistances: {
+    data: [],
+  },
+  encounter_weaknesses: {
+    data: [],
+  },
+};
+
 export const EncountersTable: FC = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -54,14 +69,19 @@ export const EncountersTable: FC = () => {
     encountersPagination,
     setEncountersPagination,
   } = useContext(GameAdminContext);
-  const [editEncounter, setEditEncounter] = useState<
-    Encounters_Insert_Input | undefined
-  >();
 
-  const [delteEncounters] = useDeleteEncountersMutation();
+  const [deleteEncounters] = useDeleteEncountersMutation();
 
   const handleNewPage = async (page: number) => {
     setEncountersPagination((p) => ({ ...p, page }));
+  };
+
+  const [encounter, setEncounter] =
+    useState<Encounters_Insert_Input>(defaultEncounterData);
+
+  const handleClose = () => {
+    onClose();
+    setEncounter(defaultEncounterData);
   };
 
   return (
@@ -95,7 +115,7 @@ export const EncountersTable: FC = () => {
                       <Button
                         size='xs'
                         onClick={() => {
-                          setEditEncounter({
+                          setEncounter({
                             ...{ ...entry, __typename: undefined },
                             gauntlet_encounters: undefined,
                             raids: undefined,
@@ -129,7 +149,7 @@ export const EncountersTable: FC = () => {
                       <Button
                         size='xs'
                         onClick={async () => {
-                          await delteEncounters({
+                          await deleteEncounters({
                             variables: {
                               ids: [entry.id],
                             },
@@ -186,11 +206,15 @@ export const EncountersTable: FC = () => {
           </ButtonGroup>
         </HStack>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalBody position='relative'>
-            <NewEncounter onClose={onClose} editEncounter={editEncounter} />
+            <EncounterForm
+              onClose={handleClose}
+              encounter={encounter}
+              setEncounter={setEncounter}
+            />
             <Box as='span' position='absolute' top={0} right={0}>
               <ModalCloseButton />
             </Box>

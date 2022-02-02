@@ -18,7 +18,7 @@ type Props = {
   onClose: () => void;
 };
 
-export const NewReward: FC<Props> = ({ onClose }) => {
+export const RewardForm: FC<Props> = ({ onClose }) => {
   const { refetch } = useContext(GameAdminContext);
   const [newReward, setNewReward] = useState<Rewards_Insert_Input>({
     tokens: 0,

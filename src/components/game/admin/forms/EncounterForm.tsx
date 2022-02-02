@@ -13,7 +13,14 @@ import {
   Textarea,
   Text,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import { GameAdminContext } from '~/components/context/GameAdminContext';
 import {
   Encounters_Insert_Input,
@@ -26,26 +33,16 @@ import { ImageUpload } from '~/components/game/admin/forms/ImageUpload';
 
 type Props = {
   onClose: () => void;
-  editEncounter?: Encounters_Insert_Input;
+  encounter: Encounters_Insert_Input;
+  setEncounter: Dispatch<SetStateAction<Encounters_Insert_Input>>;
 };
 
-export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
+export const EncounterForm: FC<Props> = ({
+  onClose,
+  encounter,
+  setEncounter,
+}) => {
   const { rewards, rattributes, refetch } = useContext(GameAdminContext);
-  const [newEncounter, setNewEncounter] = useState<Encounters_Insert_Input>(
-    editEncounter ?? {
-      power: 1,
-      energy_cost: 1,
-      active: false,
-      max_rats: 1,
-      encounter_type: Encounter_Types_Enum.Solo,
-      encounter_resistances: {
-        data: [],
-      },
-      encounter_weaknesses: {
-        data: [],
-      },
-    },
-  );
 
   const [upsertEncounters] = useUpsertEncountersMutation();
 
@@ -54,8 +51,8 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
       const handleUpload = async () => {
         try {
           const name =
-            newEncounter.name && newEncounter.name.length > 0
-              ? `${newEncounter.name}.png`
+            encounter.name && encounter.name.length > 0
+              ? `${encounter.name}.png`
               : file.name;
           const { signedURL }: { signedURL: string; path: string } =
             await fetch('/api/image/get-signed-upload-url', {
@@ -73,7 +70,7 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             body: file,
           }).then((res) => res.text());
 
-          setNewEncounter((ne) => ({
+          setEncounter((ne) => ({
             ...ne,
             image: `https://storage.googleapis.com/aww-rats/rat-race/images/encounters/${name}`,
           }));
@@ -84,16 +81,16 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
 
       handleUpload();
     },
-    [newEncounter.name],
+    [encounter.name, setEncounter],
   );
 
-  const isValid = newEncounter.name && newEncounter.reward_id;
+  const isValid = encounter.name && encounter.reward_id;
 
   const handleSubmit = async () => {
     try {
       await upsertEncounters({
         variables: {
-          encounters: [newEncounter],
+          encounters: [encounter],
         },
       });
       refetch();
@@ -114,9 +111,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             <FormControl isRequired>
               <FormLabel>Name</FormLabel>
               <Input
-                value={newEncounter.name ?? undefined}
+                value={encounter.name ?? undefined}
                 onChange={({ currentTarget: { value } }) =>
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     name: value,
                   }))
@@ -130,9 +127,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
               <NumberInput
                 min={1}
                 max={50}
-                value={newEncounter.energy_cost ?? undefined}
+                value={encounter.energy_cost ?? undefined}
                 onChange={(_, val) => {
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     energy_cost: isNaN(val) ? 1 : val,
                   }));
@@ -147,9 +144,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
               <NumberInput
                 min={1}
                 max={50}
-                value={newEncounter.power ?? undefined}
+                value={encounter.power ?? undefined}
                 onChange={(_, val) => {
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     power: isNaN(val) ? 1 : val,
                   }));
@@ -164,14 +161,14 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
               <ReactSelect
                 isMulti
                 isSearchable={false}
-                value={newEncounter?.encounter_resistances?.data.map((er) => ({
+                value={encounter?.encounter_resistances?.data.map((er) => ({
                   value: er.resistance as string,
                   label: er.resistance as string,
                 }))}
                 options={rattributes
                   .filter(
                     (r) =>
-                      !newEncounter.encounter_weaknesses?.data?.some(
+                      !encounter.encounter_weaknesses?.data?.some(
                         (er) => er.weakness === r.rattribute,
                       ),
                   )
@@ -180,7 +177,7 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
                     label: r.rattribute,
                   }))}
                 onChange={(vals) => {
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     encounter_resistances: {
                       data: vals.map((v) => ({
@@ -198,14 +195,14 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
               <ReactSelect
                 isMulti
                 isSearchable={false}
-                value={newEncounter?.encounter_weaknesses?.data.map((er) => ({
+                value={encounter?.encounter_weaknesses?.data.map((er) => ({
                   value: er.weakness as string,
                   label: er.weakness as string,
                 }))}
                 options={rattributes
                   .filter(
                     (r) =>
-                      !newEncounter.encounter_resistances?.data.some(
+                      !encounter.encounter_resistances?.data.some(
                         (er) => er.resistance === r.rattribute,
                       ),
                   )
@@ -214,7 +211,7 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
                     label: r.rattribute,
                   }))}
                 onChange={(vals) => {
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     encounter_weaknesses: {
                       data: vals.map((v) => ({
@@ -230,9 +227,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             <FormControl>
               <FormLabel>Description</FormLabel>
               <Textarea
-                value={newEncounter.description ?? ''}
+                value={encounter.description ?? ''}
                 onChange={({ currentTarget: { value } }) =>
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     description: value,
                   }))
@@ -244,9 +241,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             <FormControl>
               <FormLabel>Win Text</FormLabel>
               <Textarea
-                value={newEncounter.win_text ?? ''}
+                value={encounter.win_text ?? ''}
                 onChange={({ currentTarget: { value } }) =>
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     win_text: value,
                   }))
@@ -258,9 +255,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             <FormControl>
               <FormLabel>Loss Text</FormLabel>
               <Textarea
-                value={newEncounter.loss_text ?? ''}
+                value={encounter.loss_text ?? ''}
                 onChange={({ currentTarget: { value } }) =>
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     loss_text: value,
                   }))
@@ -277,7 +274,7 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
                   label: r.id,
                 }))}
                 onChange={(val) =>
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     reward_id: val?.value ?? -1,
                   }))
@@ -288,10 +285,10 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
           </GridItem>
           <GridItem>
             <Text height='100%'>
-              {(newEncounter.reward_id ?? 0) > 0 &&
+              {(encounter.reward_id ?? 0) > 0 &&
                 JSON.stringify(
                   {
-                    ...rewards.find((r) => r.id === newEncounter.reward_id),
+                    ...rewards.find((r) => r.id === encounter.reward_id),
                     __typename: undefined,
                   },
                   null,
@@ -305,9 +302,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
               <NumberInput
                 min={1}
                 max={50}
-                value={newEncounter.max_rats ?? 0}
+                value={encounter.max_rats ?? 0}
                 onChange={(_, val) => {
-                  setNewEncounter((ne) => ({
+                  setEncounter((ne) => ({
                     ...ne,
                     max_rats: isNaN(val) ? 1 : val,
                   }));
@@ -320,9 +317,9 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
             <FormControl>
               <FormLabel>Active?</FormLabel>
               <Switch
-                isChecked={newEncounter.active ?? undefined}
+                isChecked={encounter.active ?? undefined}
                 onChange={({ currentTarget: { checked } }) =>
-                  setNewEncounter((ne) => ({ ...ne, active: checked }))
+                  setEncounter((ne) => ({ ...ne, active: checked }))
                 }
               />
             </FormControl>
@@ -330,7 +327,7 @@ export const NewEncounter: FC<Props> = ({ onClose, editEncounter }) => {
           <GridItem>
             <FormControl>
               <FormLabel>Image</FormLabel>
-              <ImageUpload onDrop={onDrop} image={newEncounter.image} />
+              <ImageUpload onDrop={onDrop} image={encounter.image} />
             </FormControl>
           </GridItem>
         </Grid>
