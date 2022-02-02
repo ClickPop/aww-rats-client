@@ -17,8 +17,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { GameAdminContext } from '~/components/context/GameAdminContext';
-import { NewEncounter } from '~/components/game/admin/forms/NewEncounter';
-import { NewReward } from '~/components/game/admin/forms/NewReward';
+import { RewardForm } from '~/components/game/admin/forms/RewardForm';
 import { GetGameDataQuery } from '~/schema/generated';
 
 export const RewardsTable = () => {
@@ -64,7 +63,7 @@ export const RewardsTable = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalBody position='relative'>
-            <NewReward onClose={onClose} />
+            <RewardForm onClose={onClose} />
             <Box as='span' position='absolute' top={0} right={0}>
               <ModalCloseButton />
             </Box>
