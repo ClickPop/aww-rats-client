@@ -5,7 +5,7 @@ import { useLoginMutation } from '~/schema/generated';
 
 const Login = () => {
   const [login, { loading }] = useLoginMutation();
-  const { signer, signerAddr } = useContext(EthersContext);
+  const { signer, signerAddr, setLoggedIn } = useContext(EthersContext);
 
   if (loading) {
     return <div>loading...</div>;
@@ -21,7 +21,9 @@ const Login = () => {
             msg,
           },
         });
-        console.log(res);
+        if (res.data?.login?.authorized) {
+          setLoggedIn(true);
+        }
       } catch (err) {
         console.error(err);
       }

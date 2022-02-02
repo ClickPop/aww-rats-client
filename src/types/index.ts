@@ -15,7 +15,7 @@ export type EthersState = {
   signer?: JsonRpcSigner;
   network?: providers.Network;
   connected?: boolean;
-  account?: string;
+  accounts?: string[];
 };
 
 export type LOADING_STATE =
@@ -63,6 +63,8 @@ export interface EthersContextType extends EthersState {
   closet?: Closet;
   connectToMetamask: () => void;
   signerAddr?: string;
+  isLoggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ClosetContextType {
