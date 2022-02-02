@@ -12,6 +12,7 @@ import { GameAdminContext } from '~/components/context/GameAdminContext';
 import {
   Rewards_Insert_Input,
   InsertRewardsMutation,
+  useInsertRewardsMutation,
 } from '~/schema/generated';
 
 type Props = {
@@ -23,16 +24,10 @@ export const RewardForm: FC<Props> = ({ onClose }) => {
   const [newReward, setNewReward] = useState<Rewards_Insert_Input>({
     tokens: 0,
   });
-
+  const [insertReward] = useInsertRewardsMutation();
   const handleSubmit = async () => {
     try {
-      const resp: InsertRewardsMutation = await fetch(
-        '/api/rat-race/admin/create-rewards',
-        {
-          method: 'post',
-          body: JSON.stringify({ rewards: newReward }),
-        },
-      ).then((res) => res.json());
+      await insertReward({ variables: { rewards: newReward } });
       refetch();
       onClose();
     } catch (err) {
