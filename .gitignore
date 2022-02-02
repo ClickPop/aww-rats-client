@@ -32,20 +32,16 @@ yarn-error.log*
 
 # vercel
 .vercel
-pubsub-keyfile.json
+gcloud-key.json
 
 # Local Files
 smart-contracts/rat.json
 smart-contracts/rat.png
 smart-contracts/testnet-tokens.json
 smart-contracts/tokens.json
-<<<<<<< Updated upstream
 smart-contracts/tokens.example.json
-
 generated.ts
+src/schema/apollo.ts
+src/schema/requests.ts
 graphql.schema.json
-=======
 
-generated.ts
-graphql.schema.json
->>>>>>> Stashed changes

@@ -2,7 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
-import { client } from '~/lib/apollo';
+import { apolloClient } from '~/lib/graphql';
 import '~/styles/index.scss';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         50: 'rgba(40, 45, 58, 0.1)',
         100: 'rgba(40, 45, 58, 0.25)',
         200: 'rgba(40, 45, 58, 0.4)',
-        300: 'rgba(40, 45, 58, 0.55)', 
+        300: 'rgba(40, 45, 58, 0.55)',
         400: 'rgba(40, 45, 58, 0.7)',
         500: 'rgba(40, 45, 58, 0.85)',
         600: 'rgba(40, 45, 58, 1)',
@@ -29,14 +29,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         50: '#c2c7d4',
         100: '#9da5bb',
         200: '#7884a2',
-        300: '#5a6583', 
+        300: '#5a6583',
         400: '#41495e',
         500: '#282D3A',
         600: '#212631',
         700: '#1c1f28',
         800: '#16181f',
         900: '#101217',
-      }
+      },
     },
   });
 
@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='theme-color' content='#ffffff' />
       </Head>
       <ChakraProvider theme={theme}>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={apolloClient}>
           <EthersContextProvider>
             <Component {...pageProps} />
           </EthersContextProvider>
