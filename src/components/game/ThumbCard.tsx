@@ -84,7 +84,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       {...rest}
       ml={2}>
       <AspectRatio ratio={1 / 1} w='120px'>
-        <Image src={image} objectFit='cover' alt={title ? title : 'Image'} />
+        <Image src={image} layout='fill' alt={title ? title : 'Image'} />
       </AspectRatio>
 
       <Box m={3} color='white' flex={1} align='left' my='auto'>
