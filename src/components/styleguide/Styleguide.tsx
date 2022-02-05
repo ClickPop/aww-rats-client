@@ -23,6 +23,7 @@ import fpoStreetRat from '~/assets/images/ratrace/fpo/fpo.street-rat.png';
 import fpoPetRat from '~/assets/images/ratrace/fpo/fpo.pet-rat.png';
 import fpoPackRat from '~/assets/images/ratrace/fpo/fpo.pack-rat.png';
 import fpoBG from '~/assets/images/ratrace/fpo/fpo.bg.jpg';
+import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
 
 export const Styleguide = () => {
   return (
@@ -56,21 +57,15 @@ export const Styleguide = () => {
           </Heading>
           <Stack mt={2} direction={['column', 'row']} spacing='2' align='start'>
             <Button>Primary</Button>
-            <Button buttonType='secondary'>
-              Secondary
-            </Button>
-            <Button buttonType='destructive'>
-              Destructive
-            </Button>
+            <Button buttonType='secondary'>Secondary</Button>
+            <Button buttonType='destructive'>Destructive</Button>
           </Stack>
 
           <Heading as='h3' size='md' my={2}>
             Combo
           </Heading>
           <Stack mt={2} direction={['column', 'row']} spacing='2' align='start'>
-            <Button
-              icon={GameIconTypes.Energy}
-              iconNumber={5}>
+            <Button icon={GameIconTypes.Energy} iconNumber={5}>
               Primary
             </Button>
             <Button
@@ -345,9 +340,9 @@ export const Styleguide = () => {
             altText='The Battle thubmnail illustration.'
             title='Cat'
             description='A description of the encounters you are about to undertake. This should be fun and add to the lore of the rataverse. Are you trying to acquire trash? Get a snack? Help a spider save a life through artistic weaving?'
-            encounterType={EncounterType.Solo}
-            weakness={Rattribute.Cunning}
-            resistance={Rattribute.Cuteness}
+            encounterType={Encounter_Types_Enum.Solo}
+            weakness={[Rattributes_Enum.Cunning]}
+            resistance={[Rattributes_Enum.Cuteness]}
             energy={5}
             strength={30}
             attack={10}
