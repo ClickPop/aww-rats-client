@@ -1,16 +1,10 @@
 import React, { FC } from 'react';
-import {
-  Flex,
-  Box,
-  Heading,
-  AspectRatio,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Flex, Box, Heading, AspectRatio, Stack, Text } from '@chakra-ui/react';
 import { GameIcon } from '~/components/game/Icons';
 import { Stat } from '~/components/game/Stat';
 import { Rattribute, EncounterType, GameIconTypes } from '~/types/game';
 import { Image } from '~/components/shared/Image';
+import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
 
 type Props = {
   className?: string;
@@ -18,17 +12,16 @@ type Props = {
   image: string | StaticImageData;
   title: string;
   description: string;
-  weakness: Rattribute;
-  resistance: Rattribute;
+  weakness: Rattributes_Enum[];
+  resistance: Rattributes_Enum[];
   energy: number | string;
-  encounterType: EncounterType;
+  encounterType: Encounter_Types_Enum;
   strength?: number;
   attack?: number;
   reward?: number | string;
 };
 
 export const BattleCard: FC<Props> = ({
-  className,
   altText,
   image,
   title,
@@ -42,7 +35,12 @@ export const BattleCard: FC<Props> = ({
   reward,
 }) => {
   return (
-    <Stack direction={['column', 'row']} rounded='lg' bg='darkAlpha.500' p={4} color='white'>
+    <Stack
+      direction={['column', 'row']}
+      rounded='lg'
+      bg='darkAlpha.500'
+      p={4}
+      color='white'>
       <AspectRatio
         ratio={1 / 1}
         w='120px'
@@ -53,7 +51,7 @@ export const BattleCard: FC<Props> = ({
         overflow='hidden'
         p={0}
         mr={4}>
-        <Image src={image} objectFit='cover' alt={altText ? altText : title} />
+        <Image src={image} layout='fill' alt={altText ? altText : title} />
       </AspectRatio>
 
       <Box>
@@ -79,9 +77,13 @@ export const BattleCard: FC<Props> = ({
           )}
         </Flex>
 
-        <Stack gap={{base: 0, md: 4}} mb={2} direction={{base: 'column', md: 'row'}} align='start'>
-          <Stat label='Weakness' value={weakness} bold />
-          <Stat label='Resistance' value={resistance} bold />
+        <Stack
+          gap={{ base: 0, md: 4 }}
+          mb={2}
+          direction={{ base: 'column', md: 'row' }}
+          align='start'>
+          <Stat label='Weakness' value={weakness.join(', ')} bold />
+          <Stat label='Resistance' value={resistance.join(', ')} bold />
         </Stack>
 
         <Flex gap={4} mb={2}>
