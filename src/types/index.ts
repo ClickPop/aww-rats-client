@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers/lib/json-rpc-provider';
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, BigNumberish, providers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { Rat, Closet } from 'smart-contracts/src/types/index';
 import { ICanvasOptions } from 'fabric/fabric-impl';
@@ -56,6 +56,11 @@ export type OpenSeaAttribute = {
     | 'date';
   value: string | number;
   max_value?: number;
+};
+
+export type RatWithMeta = {
+  id: BigNumberish;
+  meta: Metadata;
 };
 
 export interface EthersContextType extends EthersState {
