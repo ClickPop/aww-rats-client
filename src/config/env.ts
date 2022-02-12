@@ -74,10 +74,6 @@ export const IPFSGateways = [
 export const HASURA_BASE_URL = process.env.NEXT_PUBLIC_HASURA_BASE_URL ?? '';
 export const HASURA_ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET ?? '';
 export const SIGNER_MESSAGE = process.env.NEXT_PUBLIC_SIGNER_MESSAGE ?? '';
-export const ADMINS = [
-  '0x38882F37879aE3d53100F90651Df448960dB4975',
-  '0x7C2AFA50eFbA033bDAed696771d1608cF34Ce97f',
-].map((s) => s.toLowerCase());
 
 export const GCP_CLIENT_EMAIL = process.env.GCP_CLIENT_EMAIL ?? '';
 export const GCP_PRIVATE_KEY = process.env.GCP_PRIVATE_KEY ?? '';
