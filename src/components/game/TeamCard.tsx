@@ -44,6 +44,7 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
           layout='fill'
           src={rat}
           alt={altText ? altText : 'Selected Rat'}
+          className='w-full h-full'
         />
       ) : (
         <PickRatButton ratType={ratType} as='div' notActive />
