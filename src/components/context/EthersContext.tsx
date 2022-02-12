@@ -54,7 +54,7 @@ export const EthersContextProvider: FC = ({ children }) => {
       }
 
       if (accounts?.[0]) {
-        setSignerAddr(accounts[0].toLowerCase());
+        setSignerAddr(accounts[0]);
       }
     })();
   }, [etherState]);

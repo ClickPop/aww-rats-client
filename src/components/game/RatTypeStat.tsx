@@ -2,10 +2,11 @@ import React, { FC } from 'react';
 import { Text, Flex, FlexProps, Box, AspectRatio } from '@chakra-ui/react';
 import { RatType } from '~/types/game';
 import { GameIcon } from '~/components/game/Icons';
+import { Rat_Types_Enum } from '~/schema/generated';
 
 interface Props extends FlexProps {
   showIcon?: boolean;
-  ratType: RatType;
+  ratType: Rat_Types_Enum;
 }
 
 export const RatTypeStat: FC<Props> = ({ showIcon, ratType, ...rest }) => {

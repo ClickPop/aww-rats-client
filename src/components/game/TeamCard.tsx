@@ -22,7 +22,6 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
   };
 
   const definedProps: BoxProps = getDefinedProps(ratType);
-  console.log(definedProps);
 
   return (
     <Box
@@ -42,7 +41,7 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
       {...rest}>
       {rat ? (
         <Image
-          objectFit='cover'
+          layout='fill'
           src={rat}
           alt={altText ? altText : 'Selected Rat'}
         />

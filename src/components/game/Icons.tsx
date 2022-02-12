@@ -551,16 +551,16 @@ export const GameIcon: FC<GameIconProps> = ({ icon, ...rest }) => {
     case 'plus':
       return <PlusIcon {...rest} />;
     case GameIconTypes.PetRat:
-    case 'petrat':
+    case 'pet':
       return <PetRatIcon {...rest} />;
     case GameIconTypes.PackRat:
-    case 'packrat':
+    case 'pack':
       return <PackRatIcon {...rest} />;
     case GameIconTypes.LabRat:
-    case 'labrat':
+    case 'lab':
       return <LabRatIcon {...rest} />;
     case GameIconTypes.StreetRat:
-    case 'streetrat':
+    case 'street':
       return <StreetRatIcon {...rest} />;
     default:
       return <></>;
