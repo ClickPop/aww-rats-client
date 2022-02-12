@@ -1,0 +1,11 @@
+query GetRatsByWallet($wallet: String!) {
+  rats(where: { owner: { _eq: $wallet } }) {
+    id
+    name
+    cunning
+    cuteness
+    rattitude
+    type
+    image
+  }
+}

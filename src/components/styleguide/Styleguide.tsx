@@ -23,7 +23,11 @@ import fpoStreetRat from '~/assets/images/ratrace/fpo/fpo.street-rat.png';
 import fpoPetRat from '~/assets/images/ratrace/fpo/fpo.pet-rat.png';
 import fpoPackRat from '~/assets/images/ratrace/fpo/fpo.pack-rat.png';
 import fpoBG from '~/assets/images/ratrace/fpo/fpo.bg.jpg';
-import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
+import {
+  Encounter_Types_Enum,
+  Rattributes_Enum,
+  Rat_Types_Enum,
+} from '~/schema/generated';
 
 export const Styleguide = () => {
   return (
@@ -301,7 +305,7 @@ export const Styleguide = () => {
               </Heading>
               <RatThumbCard
                 image={fpoRat}
-                ratType={RatType.LabRat}
+                ratType={Rat_Types_Enum.Lab}
                 showRatTypeIcon={true}
                 cunning={3}
                 cuteness={1}
@@ -311,7 +315,7 @@ export const Styleguide = () => {
               <RatThumbCard
                 state='disabled'
                 image={fpoRat}
-                ratType={RatType.LabRat}
+                ratType={Rat_Types_Enum.Lab}
                 showRatTypeIcon={true}
                 cunning={3}
                 cuteness={1}
@@ -321,7 +325,7 @@ export const Styleguide = () => {
               <RatThumbCard
                 state='selected'
                 image={fpoRat}
-                ratType={RatType.LabRat}
+                ratType={Rat_Types_Enum.Lab}
                 showRatTypeIcon={true}
                 cunning={3}
                 cuteness={1}
