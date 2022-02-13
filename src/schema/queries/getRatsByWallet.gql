@@ -1,5 +1,9 @@
 query GetRatsByWallet($wallet: String!) {
-  rats(where: { owner: { _eq: $wallet } }) {
+  rats(
+    where: {
+      _and: [{ owner: { _eq: $wallet } }, { type: { _is_null: false } }]
+    }
+  ) {
     id
     name
     cunning

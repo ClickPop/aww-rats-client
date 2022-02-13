@@ -1,5 +1,9 @@
 query GetCurrentPlayer {
   players {
     id
+    energy
+    max_energy
+    xp
+    level
   }
 }

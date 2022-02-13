@@ -34,6 +34,8 @@ export const RatList: FC<Props> = ({ drawer }) => {
 
   const getCardState = (id: BigNumberish) =>
     alreadySelected(id) ? 'selected' : undefined;
+
+  console.log(data?.rats.map((r) => r.type));
   return (
     <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
@@ -47,12 +49,12 @@ export const RatList: FC<Props> = ({ drawer }) => {
               {data.rats.map((rat) =>
                 rat ? (
                   <RatThumbCard
-                    key={
+                    key={`${
                       BigNumber.isBigNumber(rat.id)
                         ? rat.id.toString()
                         : String(rat.id)
-                    }
-                    ratType={stringToRatType(rat.type!) as Rat_Types_Enum}
+                    }-${rat.name}`}
+                    ratType={stringToRatType(rat.type ?? '') as Rat_Types_Enum}
                     image={`/api/image/proxy-image?imageURL=${rat.image!.replace(
                       'ipfs://',
                       'https://ipfs.io/ipfs/',
