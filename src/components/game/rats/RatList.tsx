@@ -49,6 +49,8 @@ export const RatList: FC<Props> = ({ drawer }) => {
               {data.rats.map((rat) =>
                 rat ? (
                   <RatThumbCard
+                    mb={2}
+                    ml={0}
                     key={`${
                       BigNumber.isBigNumber(rat.id)
                         ? rat.id.toString()

@@ -11,7 +11,7 @@ import { PlayerStats } from '~/components/game/player/PlayerStats';
 const Home: NextPage = () => {
   return (
     <RatRaceLayout className='min-h-screen rrPage--sewer-green'>
-      <Box pt={24}>
+      <Box>
         <AuthCookieRequired>
           <GameContextProvider>
             <PlayerStats />
