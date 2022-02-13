@@ -79,6 +79,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       rounded='md'
       overflow='hidden'
       w='300px'
+      minW='300px'
       pos='relative'
       {...getDefinedProps(state)}
       {...rest}

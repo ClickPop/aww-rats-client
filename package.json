@@ -37,6 +37,7 @@
     "react-fullstory": "^1.4.0",
     "react-scroll": "^1.8.4",
     "react-select": "^5.1.0",
+    "simplebar-react": "^2.3.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
