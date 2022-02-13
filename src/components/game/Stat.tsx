@@ -12,7 +12,6 @@ interface Props extends FlexProps {
 }
 
 export const Stat: FC<Props> = ({
-  children,
   icon,
   label,
   value,

@@ -6,6 +6,7 @@ import { GameContextProvider } from '~/components/context/GameContext';
 import { SelectedEncounter } from '~/components/game/SelectedEncounter';
 import { RatSelector } from '~/components/game/rats/RatSelector';
 import AuthCookieRequired from '~/components/access/AuthCookieRequired';
+import { PlayerStats } from '~/components/game/player/PlayerStats';
 
 const Home: NextPage = () => {
   return (
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
       <Box pt={24}>
         <AuthCookieRequired>
           <GameContextProvider>
+            <PlayerStats />
             <SoloEncounterList />
             <SelectedEncounter />
             <RatSelector />
