@@ -20,8 +20,8 @@ export const SoloEncounterList = () => {
   }
 
   return data ? (
-    <Box overflow='scroll' py={4}>
-      <HStack justifyContent='center'>
+    <Box overflow='scroll'>
+      <HStack p={4}>
         {data.encounters.map((enc) => (
           <BattleThumbCard
             key={enc.id}
