@@ -1,5 +1,7 @@
 import { Box, HStack } from '@chakra-ui/react';
 import React, { useContext } from 'react';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 import { GameContext } from '~/components/context/GameContext';
 import { BattleThumbCard } from '~/components/game/BattleThumbCard';
 import { useGetActiveEncountersQuery } from '~/schema/generated';
@@ -20,7 +22,7 @@ export const SoloEncounterList = () => {
   }
 
   return data ? (
-    <Box overflow='scroll'>
+    <SimpleBar overflow='scroll'>
       <HStack p={4}>
         {data.encounters.map((enc) => (
           <BattleThumbCard
@@ -53,6 +55,6 @@ export const SoloEncounterList = () => {
           />
         ))}
       </HStack>
-    </Box>
+    </SimpleBar>
   ) : null;
 };
