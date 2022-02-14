@@ -82,8 +82,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       minW='300px'
       pos='relative'
       {...getDefinedProps(state)}
-      {...rest}
-      ml={2}>
+      {...rest}>
       <AspectRatio ratio={1 / 1} w='120px'>
         <Image src={image} layout='fill' alt={title ? title : 'Image'} />
       </AspectRatio>
