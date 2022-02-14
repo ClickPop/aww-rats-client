@@ -17,11 +17,7 @@ export const SoloEncounterList = () => {
     return (
       <SimpleBar style={{ overflow: 'scroll' }}>
         <HStack p={2}>
-          <BattleThumbCard
-            image={Placeholder}
-            title='Loading'
-            mb={2}
-          />
+          <BattleThumbCard image={Placeholder} title='Loading' mb={2} />
         </HStack>
       </SimpleBar>
     );

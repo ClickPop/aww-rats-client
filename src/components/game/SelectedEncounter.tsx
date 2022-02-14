@@ -22,8 +22,6 @@ export const SelectedEncounter = () => {
       />
     </Box>
   ) : (
-    <>
-      Select an encounter from the list above.
-    </>
+    <>Select an encounter from the list above.</>
   );
 };
