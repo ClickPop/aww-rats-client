@@ -19,6 +19,7 @@ const wsLink = new WebSocketLink({
 
 const httpLink = new HttpLink({
   uri: `${HASURA_BASE_URL}/v1/graphql`,
+  credentials: 'include',
 });
 
 const splitLink = split(
