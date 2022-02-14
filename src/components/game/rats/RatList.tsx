@@ -35,7 +35,6 @@ export const RatList: FC<Props> = ({ drawer }) => {
   const getCardState = (id: BigNumberish) =>
     alreadySelected(id) ? 'selected' : undefined;
 
-  console.log(data?.rats.map((r) => r.type));
   return (
     <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
@@ -70,17 +69,24 @@ export const RatList: FC<Props> = ({ drawer }) => {
                         setSelectedRats((st) =>
                           st.map((r, i) => (i === selectRatIndex ? rat : r)),
                         );
+                      } else {
+                        setSelectedRats((st) =>
+                          st.map((r, i) =>
+                            i === selectRatIndex && r && r.id === rat.id
+                              ? null
+                              : r,
+                          ),
+                        );
                       }
+                      drawer.onClose();
                     }}
                   />
                 ) : null,
               )}
               <Button
-                onClick={() =>
-                  setSelectedRats((st) =>
-                    st.map((r, i) => (i === selectRatIndex ? null : r)),
-                  )
-                }>
+                onClick={() => {
+                  drawer.onClose();
+                }}>
                 Clear
               </Button>
             </>
