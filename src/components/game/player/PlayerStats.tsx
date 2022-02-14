@@ -14,9 +14,8 @@ export const PlayerStats = () => {
       bgColor='darkAlpha.500'
       color='gray.200'
       fontWeight='semibold'
-      mx='2rem'
-      p='2rem'
-      rounded='lg'>
+      px='2'
+      py='1'>
       <Text>{player.id}</Text>
       <Stat
         label='Energy'
