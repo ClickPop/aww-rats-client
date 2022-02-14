@@ -1,10 +1,12 @@
 import {
+  Box,
   Center,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  Tooltip,
 } from '@chakra-ui/react';
 import React, { useContext, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
@@ -12,12 +14,26 @@ import { Button } from '~/components/game/Button';
 import { useAttemptSoloEncounterMutation } from '~/schema/generated';
 
 export const AttemptEncounterButton = () => {
-  const { selectedEncounter, selectedRats } = useContext(GameContext);
-  const canAttempt =
-    selectedEncounter && selectedRats.filter((r) => !!r).length > 0;
+  const { selectedEncounter, selectedRats, player } = useContext(GameContext);
+  const hasEnoughEnergy = !!(
+    selectedEncounter &&
+    player &&
+    player.energy >= selectedEncounter.energy_cost
+  );
+  const atLeastOneRatSelected = selectedRats.filter((r) => !!r).length > 0;
+  const canAttempt = hasEnoughEnergy && atLeastOneRatSelected;
   const [attempt, { loading }] = useAttemptSoloEncounterMutation();
   const [result, setResult] = useState<boolean | null>(null);
-  return canAttempt ? (
+  const getToolTipText = () => {
+    if (!atLeastOneRatSelected) {
+      return 'Must select at least one rat';
+    }
+    if (!hasEnoughEnergy) {
+      return 'Not Enough Energy';
+    }
+    return '';
+  };
+  return selectedEncounter ? (
     <>
       <Button
         mx='auto'
@@ -37,7 +53,11 @@ export const AttemptEncounterButton = () => {
           }
         }}
         disabled={!canAttempt}
-        isLoading={loading}>
+        isLoading={loading}
+        tooltip={{
+          isDisabled: canAttempt,
+          label: getToolTipText(),
+        }}>
         Attempt Encounter
       </Button>
       <Modal

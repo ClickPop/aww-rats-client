@@ -1,5 +1,12 @@
 import React, { FC } from 'react';
-import { Button as ChakraButton, Divider, ButtonProps } from '@chakra-ui/react';
+import {
+  Button as ChakraButton,
+  Divider,
+  ButtonProps,
+  Tooltip,
+  TooltipProps,
+  Box,
+} from '@chakra-ui/react';
 import { GameIconTypes } from '~/types/game';
 import { GameIcon } from '~/components/game/Icons';
 
@@ -7,6 +14,7 @@ interface Props extends ButtonProps {
   icon?: GameIconTypes;
   iconNumber?: number;
   buttonType?: 'primary' | 'secondary' | 'destructive';
+  tooltip?: Omit<TooltipProps, 'children'>;
 }
 
 export const Button: FC<Props> = ({
@@ -14,6 +22,7 @@ export const Button: FC<Props> = ({
   icon,
   iconNumber,
   buttonType,
+  tooltip,
   ...rest
 }) => {
   const getDefinedProps = (
@@ -65,9 +74,13 @@ export const Button: FC<Props> = ({
   const iconChildren = getIconChildren(icon, iconNumber);
 
   return (
-    <ChakraButton {...definedProps} {...rest}>
-      {children}
-      {iconChildren}
-    </ChakraButton>
+    <Tooltip {...(tooltip ?? {})}>
+      <Box as='span'>
+        <ChakraButton {...definedProps} {...rest}>
+          {children}
+          {iconChildren}
+        </ChakraButton>
+      </Box>
+    </Tooltip>
   );
 };

@@ -19,13 +19,8 @@ export const Admin = () => {
 
   if (!isLoggedIn) {
     return (
-      <VStack
-        alignItems='center'
-        maxW='100vw'>
-        <Image
-          src={RatRace}
-          alt='The Rat Race'
-        />
+      <VStack alignItems='center' maxW='100vw'>
+        <Image src={RatRace} alt='The Rat Race' />
         <Login />
       </VStack>
     );
