@@ -1,0 +1,9 @@
+subscription GetCurrentPlayer($id: String!) {
+  players_by_pk(id: $id) {
+    id
+    energy
+    max_energy
+    xp
+    level
+  }
+}

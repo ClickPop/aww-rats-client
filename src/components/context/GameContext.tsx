@@ -13,8 +13,8 @@ import {
   GetActiveEncountersQuery,
   useGetRatsByWalletQuery,
   GetRatsByWalletQuery,
-  useGetCurrentPlayerQuery,
-  GetCurrentPlayerQuery,
+  useGetCurrentPlayerSubscription,
+  GetCurrentPlayerSubscription,
 } from '~/schema/generated';
 
 type defaultContext = {
@@ -36,7 +36,7 @@ type defaultContext = {
   >;
   selectRatIndex: number | null;
   setSelectRatIndex: Dispatch<SetStateAction<number | null>>;
-  player?: GetCurrentPlayerQuery['players'][0];
+  player?: GetCurrentPlayerSubscription['players_by_pk'];
 };
 
 export const GameContext = createContext<defaultContext>({
@@ -70,8 +70,11 @@ export const GameContextProvider: FC = ({ children }) => {
     Array<GetRatsByWalletQuery['rats'][0] | null>
   >([]);
   const [selectRatIndex, setSelectRatIndex] = useState<number | null>(null);
-  const { data } = useGetCurrentPlayerQuery({ skip: !isLoggedIn });
-
+  const { data, error } = useGetCurrentPlayerSubscription({
+    variables: { id: signerAddr! },
+    skip: !isLoggedIn && !signerAddr,
+  });
+  console.log(error);
   useEffect(() => {
     if (selectedEncounter) {
       setSelectedRats(new Array(selectedEncounter.max_rats).fill(null));
@@ -89,7 +92,7 @@ export const GameContextProvider: FC = ({ children }) => {
         setSelectedRats,
         selectRatIndex,
         setSelectRatIndex,
-        player: data?.players[0],
+        player: data?.players_by_pk,
       }}>
       {children}
     </GameContext.Provider>
