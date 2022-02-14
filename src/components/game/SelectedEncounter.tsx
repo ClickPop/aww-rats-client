@@ -21,5 +21,9 @@ export const SelectedEncounter = () => {
         encounterType={Encounter_Types_Enum.Solo}
       />
     </Box>
-  ) : null;
+  ) : (
+    <>
+      Select an encounter from the list above.
+    </>
+  );
 };

@@ -1,11 +1,13 @@
 import { Text, VStack } from '@chakra-ui/react';
 import React, { useContext } from 'react';
+import { Image } from '~/components/shared/Image';
 import { GameAdminContextProvider } from '~/components/context/GameAdminContext';
 import { EncountersTable } from '~/components/game/admin/EncountersTable';
 import { RewardsTable } from '~/components/game/admin/RewardsTable';
 import Login from '~/components/access/Login';
 import { useGetGameDataQuery } from '~/schema/generated';
 import { EthersContext } from '~/components/context/EthersContext';
+import RatRace from '~/assets/svg/RatRace.svg';
 
 export const Admin = () => {
   const { data, loading, error } = useGetGameDataQuery();
@@ -16,7 +18,17 @@ export const Admin = () => {
   }
 
   if (!isLoggedIn) {
-    return <Login />;
+    return (
+      <VStack
+        alignItems='center'
+        maxW='100vw'>
+        <Image
+          src={RatRace}
+          alt='The Rat Race'
+        />
+        <Login />
+      </VStack>
+    );
   }
 
   if (error) {
