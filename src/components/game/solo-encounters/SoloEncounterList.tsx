@@ -22,7 +22,7 @@ export const SoloEncounterList = () => {
   }
 
   return data ? (
-    <SimpleBar overflow='scroll'>
+    <SimpleBar style={{ overflow: 'scroll' }}>
       <HStack p={2}>
         {data.encounters.map((enc) => (
           <BattleThumbCard
