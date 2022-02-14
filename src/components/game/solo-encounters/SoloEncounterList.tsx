@@ -6,6 +6,7 @@ import { GameContext } from '~/components/context/GameContext';
 import { BattleThumbCard } from '~/components/game/BattleThumbCard';
 import { useGetActiveEncountersQuery } from '~/schema/generated';
 import { GameIconTypes } from '~/types/game';
+import Placeholder from '~/assets/images/rat-placeholder.png';
 
 export const SoloEncounterList = () => {
   const {
@@ -13,7 +14,17 @@ export const SoloEncounterList = () => {
     setSelectedEncounter,
   } = useContext(GameContext);
   if (loading) {
-    return <Box>Loading...</Box>;
+    return (
+      <SimpleBar style={{ overflow: 'scroll' }}>
+        <HStack p={2}>
+          <BattleThumbCard
+            image={Placeholder}
+            title='Loading'
+            mb={2}
+          />
+        </HStack>
+      </SimpleBar>
+    );
   }
 
   if (error) {
@@ -29,6 +40,7 @@ export const SoloEncounterList = () => {
             key={enc.id}
             image={enc.image || ''}
             title={enc.name}
+            mb={2}
             stats={[
               {
                 label: 'Strength',
