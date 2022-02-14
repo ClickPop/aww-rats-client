@@ -25,7 +25,9 @@ export const EthersContextProvider: FC = ({ children }) => {
     const { signer, connected, network, accounts } = etherState;
 
     if (typeof document !== 'undefined') {
-      setLoggedIn(!!document?.cookie?.includes('wallet='));
+      setLoggedIn(
+        !!(document?.cookie?.includes('wallet=') && connected && signer),
+      );
     }
 
     (async () => {
