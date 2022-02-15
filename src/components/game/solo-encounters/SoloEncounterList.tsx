@@ -16,8 +16,8 @@ export const SoloEncounterList = () => {
   } = useContext(GameContext);
   if (loading) {
     return (
-      <SimpleBar pb={4}>
-        <HStack p={2}>
+      <SimpleBar>
+        <HStack p={2} pb={4}>
           <BattleThumbCard image={Placeholder} title='Loading' mb={2} />
         </HStack>
       </SimpleBar>
@@ -31,13 +31,13 @@ export const SoloEncounterList = () => {
 
   return data ? (
     <SimpleBar>
-      <HStack p={2}>
+      <HStack p={2} pb={4}>
         {data.encounters.map((enc) => (
           <BattleThumbCard
             key={enc.id}
+            boxShadow='lg'
             image={enc.image || ''}
             title={enc.name}
-            mb={2}
             stats={[
               {
                 label: 'Strength',
