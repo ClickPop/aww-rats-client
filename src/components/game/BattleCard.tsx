@@ -37,8 +37,8 @@ export const BattleCard: FC<Props> = ({
   return (
     <Stack
       direction={['column', 'row']}
-      rounded='lg'
-      bg='darkAlpha.500'
+      rounded='md'
+      bg='darkAlpha.800'
       p={4}
       color='white'>
       <AspectRatio
