@@ -4,7 +4,6 @@ import { EthersContext } from '~/components/context/EthersContext';
 import { SIGNER_MESSAGE } from '~/config/env';
 import { useLoginMutation } from '~/schema/generated';
 
-
 const Login = () => {
   const [login, { loading, error }] = useLoginMutation();
   const { signer, signerAddr, setLoggedIn } = useContext(EthersContext);
