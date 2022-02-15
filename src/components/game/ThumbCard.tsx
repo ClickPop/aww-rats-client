@@ -25,7 +25,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
 }) => {
   const getDefinedProps = (state: ThumbCardProps['state']): FlexProps => {
     let tempDefinedProps: FlexProps = {
-      bg: 'darkAlpha.700',
+      bg: 'blueGray.500',
     };
 
     let subduedPseudo = {
@@ -65,7 +65,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       default:
         tempDefinedProps.transition = 'all 0.2s cubic-bezier(.08,.52,.52,1)';
         tempDefinedProps._hover = {
-          bg: 'darkAlpha.900',
+          bg: 'blueGray.700',
         };
         break;
     }
@@ -76,7 +76,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
   return (
     <Flex
       as='button'
-      rounded='sm'
+      rounded='xl'
       overflow='hidden'
       w='300px'
       minW='300px'
