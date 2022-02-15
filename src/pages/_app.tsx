@@ -57,6 +57,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         800: '#16181f',
         900: '#101217',
       },
+      blueGray: {
+        500: '#383D6E',
+        700: '#1C1E3B',
+      },
     },
   });
 

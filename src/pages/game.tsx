@@ -11,7 +11,7 @@ import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounte
 
 const Home: NextPage = () => {
   return (
-    <RatRaceLayout className='min-h-screen rrPage--sewer-green'>
+    <RatRaceLayout className='min-h-screen rrPage--sewer-blueGray'>
       <Box>
         <AuthCookieRequired>
           <GameContextProvider>

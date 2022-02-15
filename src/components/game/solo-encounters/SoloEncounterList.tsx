@@ -16,7 +16,7 @@ export const SoloEncounterList = () => {
   } = useContext(GameContext);
   if (loading) {
     return (
-      <SimpleBar style={{ overflow: 'scroll' }}>
+      <SimpleBar pb={4}>
         <HStack p={2}>
           <BattleThumbCard image={Placeholder} title='Loading' mb={2} />
         </HStack>
