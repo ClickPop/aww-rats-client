@@ -26,13 +26,13 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
   return (
     <Box
       as='button'
+      bg='blueGray.600'
+      boxShadow='inner'
+      h='150px'
+      overflow='hidden'
       rounded='lg'
-      border='12px solid'
-      w='200px'
-      h='200px'
-      bg='darkAlpha.300'
-      boxShadow='-6px 6px 3px #00000050'
       transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
+      w='150px'
       _hover={{
         bg: 'darkAlpha.400',
       }}

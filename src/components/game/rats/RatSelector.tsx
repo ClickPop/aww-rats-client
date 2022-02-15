@@ -1,4 +1,4 @@
-import { Box, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react';
+import { Box, Grid, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
@@ -87,10 +87,11 @@ export const RatSelector = () => {
           <Text fontWeight='semibold'>Cuteness: {cuteness}</Text>
           <Text fontWeight='semibold'>Rattitude: {rattitude}</Text>
         </HStack>
-        <HStack
+        <Grid gap={2}
           display='flex'
           flexWrap='wrap'
-          my={8}
+          mt={8}
+          mb={4}
         >
           {selectedRats.map((rat, i) => (
             <TeamCard
@@ -108,7 +109,7 @@ export const RatSelector = () => {
               }}
             />
           ))}
-        </HStack>
+        </Grid>
       </Box>
       <RatList
         drawer={{
