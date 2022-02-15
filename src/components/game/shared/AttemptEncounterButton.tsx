@@ -38,6 +38,7 @@ export const AttemptEncounterButton = () => {
       <Button
         display='block'
         w='100%'
+        borderTopRadius='none'
         onClick={async () => {
           if (canAttempt) {
             const attemptResult = await attempt({

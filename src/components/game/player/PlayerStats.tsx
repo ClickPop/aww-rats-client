@@ -11,12 +11,11 @@ export const PlayerStats = () => {
   return player ? (
     <HStack
       justifyContent='space-between'
-      bgColor='darkAlpha.500'
       color='gray.200'
       fontWeight='semibold'
-      px='2'
-      py='1'>
-      <Text>{player.id}</Text>
+      p='2'
+    >
+      <Text>🐀 {player.id}</Text>
       <Stat
         label='Energy'
         icon={GameIconTypes.Energy}

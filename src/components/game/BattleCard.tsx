@@ -42,8 +42,9 @@ export const BattleCard: FC<Props> = ({
       color='white'>
       <AspectRatio
         ratio={1 / 1}
-        w='300px'
-        h='300px'
+        minW='200px'
+        w='200px'
+        h='200px'
         rounded='md'
         boxShadow='dark-lg'
         overflow='hidden'

@@ -45,6 +45,13 @@ export const RatList: FC<Props> = ({ drawer }) => {
           {loading && <Box>Loading...</Box>}
           {!loading && data ? (
             <>
+              <Button
+                mb={2}
+                onClick={() => {
+                  drawer.onClose();
+                }}>
+                Clear Party
+              </Button>
               {data.rats.map((rat) =>
                 rat ? (
                   <RatThumbCard
@@ -83,12 +90,6 @@ export const RatList: FC<Props> = ({ drawer }) => {
                   />
                 ) : null,
               )}
-              <Button
-                onClick={() => {
-                  drawer.onClose();
-                }}>
-                Clear
-              </Button>
             </>
           ) : (
             !loading && <Box>No rats</Box>
