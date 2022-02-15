@@ -29,7 +29,6 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
       rounded='lg'
       border='12px solid'
       w='200px'
-      minW='200px'
       h='200px'
       bg='darkAlpha.300'
       boxShadow='-6px 6px 3px #00000050'

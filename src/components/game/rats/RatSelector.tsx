@@ -69,7 +69,10 @@ export const RatSelector = () => {
 
   return selectedEncounter ? (
     <>
-      <Box w='fit-content' mx='auto'>
+      <Box
+        color='white'
+        mt={4}
+      >
         <Text as='h2' fontSize='3xl'>
           Your Team
         </Text>
@@ -84,7 +87,11 @@ export const RatSelector = () => {
           <Text fontWeight='semibold'>Cuteness: {cuteness}</Text>
           <Text fontWeight='semibold'>Rattitude: {rattitude}</Text>
         </HStack>
-        <HStack mt={2} justifyContent='center'>
+        <HStack
+          display='flex'
+          flexWrap='wrap'
+          my={8}
+        >
           {selectedRats.map((rat, i) => (
             <TeamCard
               key={rat ? rat.id : i}

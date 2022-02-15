@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Flex, Box, Heading, AspectRatio, Stack, Text } from '@chakra-ui/react';
 import { GameIcon } from '~/components/game/Icons';
 import { Stat } from '~/components/game/Stat';
+import { RatSelector } from '~/components/game/rats/RatSelector';
 import { Rattribute, EncounterType, GameIconTypes } from '~/types/game';
 import { Image } from '~/components/shared/Image';
 import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
@@ -37,19 +38,14 @@ export const BattleCard: FC<Props> = ({
   return (
     <Stack
       direction={['column', 'row']}
-      rounded='md'
-      bg='darkAlpha.800'
       p={4}
       color='white'>
       <AspectRatio
         ratio={1 / 1}
-        w='100%'
-        h='100%'
-        minW='120px'
-        minH='120px'
-        maxW='300px'
-        maxH='300px'
+        w='300px'
+        h='300px'
         rounded='md'
+        boxShadow='dark-lg'
         overflow='hidden'
         p={0}
         mr={4}>
@@ -123,6 +119,8 @@ export const BattleCard: FC<Props> = ({
             {description}
           </Text>
         )}
+
+        <RatSelector />
       </Box>
     </Stack>
   );
