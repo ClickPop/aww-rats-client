@@ -12,6 +12,7 @@ export const SoloEncounterList = () => {
   const {
     soloEncountersResults: { data, loading, error },
     setSelectedEncounter,
+    selectedEncounter,
   } = useContext(GameContext);
   if (loading) {
     return (
@@ -57,6 +58,7 @@ export const SoloEncounterList = () => {
                 showLabel: true,
               },
             ]}
+            state = {enc.id===selectedEncounter?.id ? 'selected' : undefined}
             onClick={() => {
               setSelectedEncounter(enc);
             }}
