@@ -7,7 +7,7 @@ import { Encounter_Types_Enum } from '~/schema/generated';
 export const SelectedEncounter = () => {
   const { selectedEncounter } = useContext(GameContext);
   return selectedEncounter ? (
-    <Box maxWidth='50%' mx='auto' mt={10}>
+    <Box maxWidth='50%' mx='auto' mt={2}>
       <BattleCard
         image={selectedEncounter.image ?? ''}
         title={selectedEncounter.name}
