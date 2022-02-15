@@ -51,12 +51,6 @@ export const SoloEncounterList = () => {
                 value: enc.energy_cost,
                 showLabel: true,
               },
-              {
-                label: 'Reward',
-                icon: GameIconTypes.Reward,
-                value: enc.reward.tokens,
-                showLabel: true,
-              },
             ]}
             state = {enc.id===selectedEncounter?.id ? 'selected' : undefined}
             onClick={() => {
