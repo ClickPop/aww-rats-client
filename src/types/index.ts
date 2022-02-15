@@ -210,3 +210,5 @@ export interface ClosetTokenWithMeta extends ClosetTokenWithId {
 export interface ClosetUserTokenWithMeta extends ClosetUserToken {
   tokenMeta: Metadata;
 }
+
+export type RattributeUnion = 'cuteness' | 'cunning' | 'rattitude';
