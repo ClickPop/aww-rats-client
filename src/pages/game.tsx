@@ -4,7 +4,6 @@ import { Box } from '@chakra-ui/react';
 import { SoloEncounterList } from '~/components/game/solo-encounters/SoloEncounterList';
 import { GameContextProvider } from '~/components/context/GameContext';
 import { SelectedEncounter } from '~/components/game/SelectedEncounter';
-import { RatSelector } from '~/components/game/rats/RatSelector';
 import AuthCookieRequired from '~/components/access/AuthCookieRequired';
 import { PlayerStats } from '~/components/game/player/PlayerStats';
 import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounterButton';
@@ -17,10 +16,19 @@ const Home: NextPage = () => {
           <GameContextProvider>
             <PlayerStats />
             <SoloEncounterList />
-            <SelectedEncounter />
-            <RatSelector />
-            <Box w='fit-content' mt='2rem' mx='auto'>
-              <AttemptEncounterButton />
+            <Box
+              bg='blueGray.500'
+              display='flex'
+              flexDirection='column'
+              my={2}
+              mx='auto'
+              w='60%'
+              rounded='xl'
+            >
+              <SelectedEncounter />
+              <Box>
+                <AttemptEncounterButton />
+              </Box>
             </Box>
           </GameContextProvider>
         </AuthCookieRequired>
