@@ -1,6 +1,13 @@
 .rr {
     &Page {
         &--sewer {
+            &-blueGray {
+                background:
+                    linear-gradient(-45deg, #1C1E3B, #2d3058);
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
             &-green {    
                 background:
                     linear-gradient(#5aeaaf,#5aeaaf) top left,
