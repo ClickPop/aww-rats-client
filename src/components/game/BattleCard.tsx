@@ -46,13 +46,13 @@ export const BattleCard: FC<Props> = ({
         w='200px'
         h='200px'
         rounded='md'
-        boxShadow='dark-lg'
+        boxShadow='lg'
         overflow='hidden'
         p={0}
         mr={4}
         transition='transform 2s'
         _hover={{
-          transform: 'translateY(-2px) scale(1.01)'
+          transform: 'translateY(-4px) scale(1.01)'
         }}
       >
         <Image
@@ -63,7 +63,12 @@ export const BattleCard: FC<Props> = ({
       </AspectRatio>
 
       <Box>
-        <Heading as='h3' size='md' mb={3}>
+        <Heading
+          as='h3'
+          fontWeight='extrabold'
+          mb={2}
+          size='lg'
+        >
           {title}
         </Heading>
 
