@@ -88,7 +88,7 @@ export const RatSelector = () => {
           </Box>
           {minRoll} - {maxRoll}
         </Text>
-        <HStack mt={2}>
+        <HStack my={2}>
           <RattributePill rattribute='cunning' value={cunning} />
           <RattributePill rattribute='cuteness' value={cuteness} />
           <RattributePill rattribute='rattitude' value={rattitude} />
@@ -96,7 +96,7 @@ export const RatSelector = () => {
         <Grid gap={2}
           display='flex'
           flexWrap='wrap'
-          mt={8}
+          mt={4}
         >
           {selectedRats.map((rat, i) => (
             <TeamCard
