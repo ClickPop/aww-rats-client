@@ -1,4 +1,4 @@
-import { Box, Grid, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react';
+import { Box, Grid, HStack, Text, useDisclosure, Heading } from '@chakra-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
@@ -73,9 +73,14 @@ export const RatSelector = () => {
         color='white'
         mt={4}
       >
-        <Text as='h2' fontSize='3xl'>
+        <Heading
+          as='h3'
+          fontWeight='extrabold'
+          mb={2}
+          size='md'
+        >
           Your Team
-        </Text>
+        </Heading>
         <Text>
           <Box mr='0.5rem' as='span' role='img' aria-label='rat-power'>
             💪
@@ -91,7 +96,6 @@ export const RatSelector = () => {
           display='flex'
           flexWrap='wrap'
           mt={8}
-          mb={4}
         >
           {selectedRats.map((rat, i) => (
             <TeamCard

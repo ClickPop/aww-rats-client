@@ -34,7 +34,7 @@ export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
       transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
       w='150px'
       _hover={{
-        bg: 'darkAlpha.400',
+        bg: 'blueGray.700',
       }}
       {...definedProps}
       {...rest}>
