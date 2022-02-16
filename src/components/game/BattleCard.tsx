@@ -72,13 +72,26 @@ export const BattleCard: FC<Props> = ({
           {title}
         </Heading>
 
-        <Flex gap={4} mb={2} align='start'>
+        <Flex fontSize='sm' gap={4} mb={2} align='start'>
           <Stat
             label='Type'
             value={encounterType}
             bold
             textTransform='capitalize'
           />
+        </Flex>
+
+        <Stack
+          fontSize='sm'
+          gap={{ base: 0, md: 4 }}
+          mb={2}
+          direction={{ base: 'column', md: 'row' }}
+          align='start'>
+          <Stat label='Weakness' value={weakness.join(', ')} bold />
+          <Stat label='Resistance' value={resistance.join(', ')} bold />
+        </Stack>
+
+        <Flex fontSize='sm' gap={4} mb={2}>
           {energy && (
             <Stat
               label='Energy'
@@ -88,18 +101,6 @@ export const BattleCard: FC<Props> = ({
               bold
             />
           )}
-        </Flex>
-
-        <Stack
-          gap={{ base: 0, md: 4 }}
-          mb={2}
-          direction={{ base: 'column', md: 'row' }}
-          align='start'>
-          <Stat label='Weakness' value={weakness.join(', ')} bold />
-          <Stat label='Resistance' value={resistance.join(', ')} bold />
-        </Stack>
-
-        <Flex gap={4} mb={2}>
           {strength && (
             <Stat
               label='Strength'
@@ -130,7 +131,7 @@ export const BattleCard: FC<Props> = ({
         </Flex>
 
         {description && (
-          <Text as='p' mt={4}>
+          <Text as='p' mt={4} mb={8}>
             {description}
           </Text>
         )}

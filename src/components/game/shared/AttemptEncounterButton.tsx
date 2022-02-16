@@ -21,6 +21,7 @@ export const AttemptEncounterButton = () => {
     player.energy >= selectedEncounter.energy_cost
   );
 
+  // The button to start an encounter is set from this list of potential labels when someone selects an encounter.
   const buttonLabels = [
     "Chaaaarge",
     "Let's go",

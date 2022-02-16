@@ -3,6 +3,7 @@ import React, { useContext, useMemo } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
 import { TeamCard } from '~/components/game/TeamCard';
+import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Rattributes_Enum } from '~/schema/generated';
 import { RattributeUnion } from '~/types';
 import { rattributeToString } from '~/utils/enums';
@@ -81,16 +82,16 @@ export const RatSelector = () => {
         >
           Your Team
         </Heading>
-        <Text>
+        <Text fontSize='sm'>
           <Box mr='0.5rem' as='span' role='img' aria-label='rat-power'>
             💪
           </Box>
           {minRoll} - {maxRoll}
         </Text>
-        <HStack>
-          <Text fontWeight='semibold'>Cunning: {cunning}</Text>
-          <Text fontWeight='semibold'>Cuteness: {cuteness}</Text>
-          <Text fontWeight='semibold'>Rattitude: {rattitude}</Text>
+        <HStack mt={2}>
+          <RattributePill rattribute='cunning' value={cunning} />
+          <RattributePill rattribute='cuteness' value={cuteness} />
+          <RattributePill rattribute='rattitude' value={rattitude} />
         </HStack>
         <Grid gap={2}
           display='flex'
