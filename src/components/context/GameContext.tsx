@@ -75,8 +75,6 @@ export const GameContextProvider: FC = ({ children }) => {
     skip: !isLoggedIn && !signerAddr,
   });
 
-  console.log(data);
-
   useEffect(() => {
     if (selectedEncounter) {
       setSelectedRats(new Array(selectedEncounter.max_rats).fill(null));

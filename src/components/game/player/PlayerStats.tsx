@@ -13,8 +13,7 @@ export const PlayerStats = () => {
       justifyContent='space-between'
       color='gray.200'
       fontWeight='semibold'
-      p='2'
-    >
+      p='2'>
       <Text>🐀 {player.id}</Text>
       <Stat
         label='Energy'

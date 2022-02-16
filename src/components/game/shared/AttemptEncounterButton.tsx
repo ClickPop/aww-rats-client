@@ -8,10 +8,20 @@ import {
   ModalOverlay,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { Button } from '~/components/game/Button';
 import { useAttemptSoloEncounterMutation } from '~/schema/generated';
+
+// The button to start an encounter is set from this list of potential labels when someone selects an encounter.
+const buttonLabels = [
+  'Chaaaarge',
+  "Let's go",
+  'Let it rip',
+  'Go for it',
+  'Go',
+  'Get it',
+];
 
 export const AttemptEncounterButton = () => {
   const { selectedEncounter, selectedRats, player } = useContext(GameContext);
@@ -21,16 +31,12 @@ export const AttemptEncounterButton = () => {
     player.energy >= selectedEncounter.energy_cost
   );
 
-  // The button to start an encounter is set from this list of potential labels when someone selects an encounter.
-  const buttonLabels = [
-    "Chaaaarge",
-    "Let's go",
-    "Let it rip",
-    "Go for it",
-    "Go",
-    "Get it",
-  ]
-  const buttonLabel = buttonLabels[Math.floor(Math.random() * buttonLabels.length)];
+  const buttonLabel = useMemo(
+    () => buttonLabels[Math.floor(Math.random() * buttonLabels.length)],
+    // We want this to change whenever we select a new encounter, just silencing this warning.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedEncounter],
+  );
 
   const atLeastOneRatSelected = selectedRats.filter((r) => !!r).length > 0;
   const canAttempt = hasEnoughEnergy && atLeastOneRatSelected;
@@ -56,7 +62,7 @@ export const AttemptEncounterButton = () => {
         pb={10}
         w='100%'
         _hover={{
-          animation: 'encounterShimmer 4s ease infinite;'
+          animation: 'encounterShimmer 4s ease infinite;',
         }}
         onClick={async () => {
           if (canAttempt) {

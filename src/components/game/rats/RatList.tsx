@@ -36,27 +36,16 @@ export const RatList: FC<Props> = ({ drawer }) => {
     alreadySelected(id) ? 'selected' : undefined;
 
   return (
-    <Drawer
-      {...drawer}
-      placement='right'
-      size='sm'
-    >
+    <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
-      <DrawerContent
-        background='blueGray.600'
-        color='white'
-      >
+      <DrawerContent background='blueGray.600' color='white'>
         <DrawerCloseButton
           background='var(--chakra-colors-purple-500)'
           _hover={{
-            background: 'var(--chakra-colors-purple-700)'
+            background: 'var(--chakra-colors-purple-700)',
           }}
         />
-        <DrawerHeader
-          pb={2}
-        >
-          Your Rats
-        </DrawerHeader>
+        <DrawerHeader pb={2}>Your Rats</DrawerHeader>
         <DrawerBody>
           {loading && <Box>Loading...</Box>}
           {!loading && data ? (
@@ -66,7 +55,7 @@ export const RatList: FC<Props> = ({ drawer }) => {
                 mb={4}
                 w='100%'
                 _hover={{
-                  background: 'var(--chakra-colors-purple-700)'
+                  background: 'var(--chakra-colors-purple-700)',
                 }}
                 onClick={() => {
                   setSelectedRats(selectedRats.map(() => null));
