@@ -4,7 +4,6 @@ import { Box } from '@chakra-ui/react';
 import { SoloEncounterList } from '~/components/game/solo-encounters/SoloEncounterList';
 import { GameContextProvider } from '~/components/context/GameContext';
 import { SelectedEncounter } from '~/components/game/SelectedEncounter';
-import { RatSelector } from '~/components/game/rats/RatSelector';
 import AuthCookieRequired from '~/components/access/AuthCookieRequired';
 import { PlayerStats } from '~/components/game/player/PlayerStats';
 import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounterButton';
@@ -12,14 +11,23 @@ import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounte
 const Home: NextPage = () => {
   return (
     <RatRaceLayout className='min-h-screen rrPage--sewer-blueGray'>
-      <Box>
+      <Box pb={12}>
         <AuthCookieRequired>
           <GameContextProvider>
             <PlayerStats />
             <SoloEncounterList />
-            <SelectedEncounter />
-            <RatSelector />
-            <Box w='fit-content' mt='2rem' mx='auto'>
+            <Box
+              bg='blueGray.500'
+              boxShadow='lg'
+              display='flex'
+              flexDirection='column'
+              mt={2}
+              mx='auto'
+              w='725px'
+              rounded='xl'>
+              <SelectedEncounter />
+            </Box>
+            <Box position='fixed' bottom='0' w='100%'>
               <AttemptEncounterButton />
             </Box>
           </GameContextProvider>

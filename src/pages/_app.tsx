@@ -59,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       },
       blueGray: {
         500: '#383D6E',
+        600: '#26284a',
         700: '#1C1E3B',
       },
     },

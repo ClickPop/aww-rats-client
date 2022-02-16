@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { BattleCard } from '~/components/game/BattleCard';
@@ -7,7 +7,7 @@ import { Encounter_Types_Enum } from '~/schema/generated';
 export const SelectedEncounter = () => {
   const { selectedEncounter } = useContext(GameContext);
   return selectedEncounter ? (
-    <Box maxWidth='50%' mx='auto' mt={2}>
+    <Box>
       <BattleCard
         image={selectedEncounter.image ?? ''}
         title={selectedEncounter.name}
@@ -22,6 +22,8 @@ export const SelectedEncounter = () => {
       />
     </Box>
   ) : (
-    <>Select an encounter from the list above.</>
+    <Text color='gray.200' p={10} textAlign='center'>
+      Select an encounter ⬆️
+    </Text>
   );
 };

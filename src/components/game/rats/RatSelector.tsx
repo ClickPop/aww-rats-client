@@ -1,8 +1,16 @@
-import { Box, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Grid,
+  HStack,
+  Text,
+  useDisclosure,
+  Heading,
+} from '@chakra-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
 import { TeamCard } from '~/components/game/TeamCard';
+import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Rattributes_Enum } from '~/schema/generated';
 import { RattributeUnion } from '~/types';
 import { rattributeToString } from '~/utils/enums';
@@ -69,22 +77,31 @@ export const RatSelector = () => {
 
   return selectedEncounter ? (
     <>
-      <Box w='fit-content' mx='auto'>
-        <Text as='h2' fontSize='3xl'>
+      <Box color='white' mt={4}>
+        <Heading as='h3' fontWeight='extrabold' mb={2} size='md'>
           Your Team
-        </Text>
-        <Text>
+        </Heading>
+        <Text fontSize='sm'>
           <Box mr='0.5rem' as='span' role='img' aria-label='rat-power'>
             💪
           </Box>
           {minRoll} - {maxRoll}
         </Text>
-        <HStack>
-          <Text fontWeight='semibold'>Cunning: {cunning}</Text>
-          <Text fontWeight='semibold'>Cuteness: {cuteness}</Text>
-          <Text fontWeight='semibold'>Rattitude: {rattitude}</Text>
+        <HStack my={2}>
+          <RattributePill
+            rattribute={Rattributes_Enum.Cunning}
+            value={cunning}
+          />
+          <RattributePill
+            rattribute={Rattributes_Enum.Cuteness}
+            value={cuteness}
+          />
+          <RattributePill
+            rattribute={Rattributes_Enum.Rattitude}
+            value={rattitude}
+          />
         </HStack>
-        <HStack mt={2} justifyContent='center'>
+        <Grid gap={2} display='flex' flexWrap='wrap' mt={4}>
           {selectedRats.map((rat, i) => (
             <TeamCard
               key={rat ? rat.id : i}
@@ -101,7 +118,7 @@ export const RatSelector = () => {
               }}
             />
           ))}
-        </HStack>
+        </Grid>
       </Box>
       <RatList
         drawer={{

@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Flex, Box, Heading, AspectRatio, Stack, Text } from '@chakra-ui/react';
 import { GameIcon } from '~/components/game/Icons';
 import { Stat } from '~/components/game/Stat';
+import { RatSelector } from '~/components/game/rats/RatSelector';
 import { Rattribute, EncounterType, GameIconTypes } from '~/types/game';
 import { Image } from '~/components/shared/Image';
 import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
@@ -35,39 +36,49 @@ export const BattleCard: FC<Props> = ({
   reward,
 }) => {
   return (
-    <Stack
-      direction={['column', 'row']}
-      rounded='md'
-      bg='darkAlpha.800'
-      p={4}
-      color='white'>
+    <Stack direction={['column', 'row']} p={4} color='white'>
       <AspectRatio
         ratio={1 / 1}
-        w='100%'
-        h='100%'
-        minW='120px'
-        minH='120px'
-        maxW='300px'
-        maxH='300px'
+        minW='200px'
+        w='200px'
+        h='200px'
         rounded='md'
+        boxShadow='lg'
         overflow='hidden'
         p={0}
-        mr={4}>
+        mr={4}
+        transition='transform 2s'
+        _hover={{
+          transform: 'translateY(-4px) scale(1.01)',
+        }}>
         <Image src={image} layout='fill' alt={altText ? altText : title} />
       </AspectRatio>
 
       <Box>
-        <Heading as='h3' size='md' mb={3}>
+        <Heading as='h3' fontWeight='extrabold' mb={2} size='lg'>
           {title}
         </Heading>
 
-        <Flex gap={4} mb={2} align='start'>
+        <Flex fontSize='sm' gap={4} mb={2} align='start'>
           <Stat
             label='Type'
             value={encounterType}
             bold
             textTransform='capitalize'
           />
+        </Flex>
+
+        <Stack
+          fontSize='sm'
+          gap={{ base: 0, md: 4 }}
+          mb={2}
+          direction={{ base: 'column', md: 'row' }}
+          align='start'>
+          <Stat label='Weakness' value={weakness.join(', ')} bold />
+          <Stat label='Resistance' value={resistance.join(', ')} bold />
+        </Stack>
+
+        <Flex fontSize='sm' gap={4} mb={2}>
           {energy && (
             <Stat
               label='Energy'
@@ -77,18 +88,6 @@ export const BattleCard: FC<Props> = ({
               bold
             />
           )}
-        </Flex>
-
-        <Stack
-          gap={{ base: 0, md: 4 }}
-          mb={2}
-          direction={{ base: 'column', md: 'row' }}
-          align='start'>
-          <Stat label='Weakness' value={weakness.join(', ')} bold />
-          <Stat label='Resistance' value={resistance.join(', ')} bold />
-        </Stack>
-
-        <Flex gap={4} mb={2}>
           {strength && (
             <Stat
               label='Strength'
@@ -119,10 +118,12 @@ export const BattleCard: FC<Props> = ({
         </Flex>
 
         {description && (
-          <Text as='p' mt={4}>
+          <Text as='p' mt={4} mb={8}>
             {description}
           </Text>
         )}
+
+        <RatSelector />
       </Box>
     </Stack>
   );
