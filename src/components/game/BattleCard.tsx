@@ -49,8 +49,17 @@ export const BattleCard: FC<Props> = ({
         boxShadow='dark-lg'
         overflow='hidden'
         p={0}
-        mr={4}>
-        <Image src={image} layout='fill' alt={altText ? altText : title} />
+        mr={4}
+        transition='transform 2s'
+        _hover={{
+          transform: 'translateY(-2px) scale(1.01)'
+        }}
+      >
+        <Image
+          src={image}
+          layout='fill'
+          alt={altText ? altText : title}
+        />
       </AspectRatio>
 
       <Box>
