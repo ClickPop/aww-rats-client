@@ -11,7 +11,7 @@ import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounte
 const Home: NextPage = () => {
   return (
     <RatRaceLayout className='min-h-screen rrPage--sewer-blueGray'>
-      <Box>
+      <Box pb={6}>
         <AuthCookieRequired>
           <GameContextProvider>
             <PlayerStats />
@@ -20,15 +20,19 @@ const Home: NextPage = () => {
               bg='blueGray.500'
               display='flex'
               flexDirection='column'
-              my={2}
+              mt={2}
               mx='auto'
               w='60%'
               rounded='xl'
             >
               <SelectedEncounter />
-              <Box>
-                <AttemptEncounterButton />
-              </Box>
+            </Box>
+            <Box
+              position='fixed'
+              bottom='0'
+              w='100%'
+            >
+              <AttemptEncounterButton />
             </Box>
           </GameContextProvider>
         </AuthCookieRequired>
