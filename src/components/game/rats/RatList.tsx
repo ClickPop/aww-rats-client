@@ -38,18 +38,37 @@ export const RatList: FC<Props> = ({ drawer }) => {
   return (
     <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerHeader>Your Rats</DrawerHeader>
+      <DrawerContent background='blueGray.600' color='white'>
+        <DrawerCloseButton
+          background='var(--chakra-colors-purple-500)'
+          _hover={{
+            background: 'var(--chakra-colors-purple-700)',
+          }}
+        />
+        <DrawerHeader pb={2}>Your Rats</DrawerHeader>
         <DrawerBody>
           {loading && <Box>Loading...</Box>}
           {!loading && data ? (
             <>
+              <Button
+                background='var(--chakra-colors-purple-500)'
+                mb={4}
+                w='100%'
+                _hover={{
+                  background: 'var(--chakra-colors-purple-700)',
+                }}
+                onClick={() => {
+                  setSelectedRats(selectedRats.map(() => null));
+                  drawer.onClose();
+                }}>
+                Clear Party
+              </Button>
               {data.rats.map((rat) =>
                 rat ? (
                   <RatThumbCard
                     mb={2}
                     ml={0}
+                    w='100%'
                     key={`${
                       BigNumber.isBigNumber(rat.id)
                         ? rat.id.toString()
@@ -83,12 +102,6 @@ export const RatList: FC<Props> = ({ drawer }) => {
                   />
                 ) : null,
               )}
-              <Button
-                onClick={() => {
-                  drawer.onClose();
-                }}>
-                Clear
-              </Button>
             </>
           ) : (
             !loading && <Box>No rats</Box>

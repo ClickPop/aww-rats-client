@@ -78,6 +78,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       as='button'
       rounded='xl'
       overflow='hidden'
+      boxShadow='md'
       w='300px'
       minW='300px'
       pos='relative'
