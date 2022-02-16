@@ -48,6 +48,7 @@ export const RatList: FC<Props> = ({ drawer }) => {
               <Button
                 mb={2}
                 onClick={() => {
+                  setSelectedRats(selectedRats.map(() => null));
                   drawer.onClose();
                 }}>
                 Clear Party

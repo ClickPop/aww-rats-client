@@ -20,6 +20,17 @@ export const AttemptEncounterButton = () => {
     player &&
     player.energy >= selectedEncounter.energy_cost
   );
+
+  const buttonLabels = [
+    "Chaaaarge",
+    "Let's go",
+    "Let it rip",
+    "Go for it",
+    "Go",
+    "Get it",
+  ]
+  const buttonLabel = buttonLabels[Math.floor(Math.random() * buttonLabels.length)];
+
   const atLeastOneRatSelected = selectedRats.filter((r) => !!r).length > 0;
   const canAttempt = hasEnoughEnergy && atLeastOneRatSelected;
   const [attempt, { loading }] = useAttemptSoloEncounterMutation();
@@ -36,9 +47,16 @@ export const AttemptEncounterButton = () => {
   return selectedEncounter ? (
     <>
       <Button
+        background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
+        backgroundSize='600% 400%'
+        borderRadius='none'
         display='block'
+        pt={6}
+        pb={10}
         w='100%'
-        borderTopRadius='none'
+        _hover={{
+          animation: 'encounterShimmer 4s ease infinite;'
+        }}
         onClick={async () => {
           if (canAttempt) {
             const attemptResult = await attempt({
@@ -60,7 +78,7 @@ export const AttemptEncounterButton = () => {
           isDisabled: canAttempt,
           label: getToolTipText(),
         }}>
-        Attempt Encounter
+        {buttonLabel} 🎲
       </Button>
       <Modal
         isCentered
