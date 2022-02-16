@@ -1,4 +1,11 @@
-import { Box, Grid, HStack, Text, useDisclosure, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Grid,
+  HStack,
+  Text,
+  useDisclosure,
+  Heading,
+} from '@chakra-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
@@ -70,16 +77,8 @@ export const RatSelector = () => {
 
   return selectedEncounter ? (
     <>
-      <Box
-        color='white'
-        mt={4}
-      >
-        <Heading
-          as='h3'
-          fontWeight='extrabold'
-          mb={2}
-          size='md'
-        >
+      <Box color='white' mt={4}>
+        <Heading as='h3' fontWeight='extrabold' mb={2} size='md'>
           Your Team
         </Heading>
         <Text fontSize='sm'>
@@ -89,15 +88,20 @@ export const RatSelector = () => {
           {minRoll} - {maxRoll}
         </Text>
         <HStack my={2}>
-          <RattributePill rattribute='cunning' value={cunning} />
-          <RattributePill rattribute='cuteness' value={cuteness} />
-          <RattributePill rattribute='rattitude' value={rattitude} />
+          <RattributePill
+            rattribute={Rattributes_Enum.Cunning}
+            value={cunning}
+          />
+          <RattributePill
+            rattribute={Rattributes_Enum.Cuteness}
+            value={cuteness}
+          />
+          <RattributePill
+            rattribute={Rattributes_Enum.Rattitude}
+            value={rattitude}
+          />
         </HStack>
-        <Grid gap={2}
-          display='flex'
-          flexWrap='wrap'
-          mt={4}
-        >
+        <Grid gap={2} display='flex' flexWrap='wrap' mt={4}>
           {selectedRats.map((rat, i) => (
             <TeamCard
               key={rat ? rat.id : i}

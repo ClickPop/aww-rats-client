@@ -22,11 +22,7 @@ export const SelectedEncounter = () => {
       />
     </Box>
   ) : (
-    <Text
-      color='gray.200'
-      p={10}
-      textAlign='center'
-    >
+    <Text color='gray.200' p={10} textAlign='center'>
       Select an encounter ⬆️
     </Text>
   );

@@ -52,7 +52,7 @@ export const SoloEncounterList = () => {
                 showLabel: true,
               },
             ]}
-            state = {enc.id===selectedEncounter?.id ? 'selected' : undefined}
+            state={enc.id === selectedEncounter?.id ? 'selected' : undefined}
             onClick={() => {
               setSelectedEncounter(enc);
             }}

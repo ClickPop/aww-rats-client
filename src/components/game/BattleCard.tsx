@@ -36,10 +36,7 @@ export const BattleCard: FC<Props> = ({
   reward,
 }) => {
   return (
-    <Stack
-      direction={['column', 'row']}
-      p={4}
-      color='white'>
+    <Stack direction={['column', 'row']} p={4} color='white'>
       <AspectRatio
         ratio={1 / 1}
         minW='200px'
@@ -52,23 +49,13 @@ export const BattleCard: FC<Props> = ({
         mr={4}
         transition='transform 2s'
         _hover={{
-          transform: 'translateY(-4px) scale(1.01)'
-        }}
-      >
-        <Image
-          src={image}
-          layout='fill'
-          alt={altText ? altText : title}
-        />
+          transform: 'translateY(-4px) scale(1.01)',
+        }}>
+        <Image src={image} layout='fill' alt={altText ? altText : title} />
       </AspectRatio>
 
       <Box>
-        <Heading
-          as='h3'
-          fontWeight='extrabold'
-          mb={2}
-          size='lg'
-        >
+        <Heading as='h3' fontWeight='extrabold' mb={2} size='lg'>
           {title}
         </Heading>
 
