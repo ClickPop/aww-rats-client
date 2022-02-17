@@ -42,3 +42,5 @@ smart-contracts/tokens.json
 
 generated.ts
 graphql.schema.json
+
+tsconfig.tsbuildinfo
