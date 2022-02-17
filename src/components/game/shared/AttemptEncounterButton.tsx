@@ -8,10 +8,11 @@ import {
   ModalOverlay,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { Button } from '~/components/game/Button';
 import { useAttemptSoloEncounterMutation } from '~/schema/generated';
+import JSConfetti from 'js-confetti';
 
 // The button to start an encounter is set from this list of potential labels when someone selects an encounter.
 const buttonLabels = [
@@ -22,6 +23,8 @@ const buttonLabels = [
   'Go',
   'Get it',
 ];
+
+const jsConfetti = new JSConfetti();
 
 export const AttemptEncounterButton = () => {
   const { selectedEncounter, selectedRats, player } = useContext(GameContext);
@@ -51,6 +54,13 @@ export const AttemptEncounterButton = () => {
     }
     return '';
   };
+
+  useEffect(() => {
+    if (result) {
+      jsConfetti.addConfetti({ emojis: ['🐀', '🧀'] });
+    }
+  }, [result]);
+
   return selectedEncounter ? (
     <>
       <Button
