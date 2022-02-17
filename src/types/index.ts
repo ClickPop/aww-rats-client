@@ -39,12 +39,12 @@ type GeneratorSuccessData = {
   txHash: string;
 };
 
-export type Metadata = {
+export interface Metadata extends Record<string, unknown> {
   image: string;
   name: string;
   description: string;
   attributes: OpenSeaAttribute[];
-};
+}
 
 export type OpenSeaAttribute = {
   trait_type?: string;
