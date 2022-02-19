@@ -2,6 +2,7 @@ import React from 'react';
 import { Image } from '~/components/shared/Image';
 import { Link } from '~/components/shared/Link';
 import logo from '~/assets/images/aww-rats-avatar.png';
+import { OpenSeaLogo } from '~/components/shared/svg/OpenSeaLogo';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
 import { MenuLink } from '~/components/shared/MenuLink';
@@ -30,6 +31,12 @@ export const Header = () => {
           </MenuLink>
           <MenuLink href='/sewer' className='mr-4'>
             Sewer (dApps)
+          </MenuLink>
+          <MenuLink
+            href='https://opensea.io/collection/aww-rats'
+            className='mr-4'
+            target='_blank'>
+            <OpenSeaLogo width={24} height={24} />
           </MenuLink>
           <MenuLink
             href='https://www.twitter.com/awwratspack'
