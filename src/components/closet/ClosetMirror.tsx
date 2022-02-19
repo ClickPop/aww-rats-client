@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import { fabric } from 'fabric';
 import React, { useContext, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { Connect } from '~/components/shared/Connect';
+import { Image } from '~/components/shared/Image';
 import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
@@ -58,6 +60,20 @@ export const ClosetMirror = () => {
           options={rats}
           placeholder='Select your rat'
           onChange={handleChangeRat}
+          getOptionLabel={(opt) => opt?.name ?? opt?.id ?? ''}
+          formatOptionLabel={(opt) => (
+            <span className='inline-flex'>
+              <Image
+                layout='fixed'
+                width={24}
+                height={24}
+                src={`https://storage.googleapis.com/aww-rats/rats/cached-images/${opt?.id}.png`}
+                alt='rat thumbnail'
+                className='mr-4'
+              />
+              {opt?.name}
+            </span>
+          )}
           isClearable
           isSearchable
         />
