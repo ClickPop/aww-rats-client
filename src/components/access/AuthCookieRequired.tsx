@@ -1,12 +1,21 @@
-import { VStack } from '@chakra-ui/react';
+import { Center, VStack } from '@chakra-ui/react';
 import React, { FC, useContext } from 'react';
 import { Image } from '~/components/shared/Image';
 import Login from '~/components/access/Login';
 import { EthersContext } from '~/components/context/EthersContext';
 import RatRace from '~/assets/svg/RatRace.svg';
+import { Connect } from '~/components/shared/Connect';
 
 const AuthCookieRequired: FC = ({ children }) => {
-  const { isLoggedIn } = useContext(EthersContext);
+  const { isLoggedIn, signerAddr } = useContext(EthersContext);
+
+  if (!signerAddr) {
+    return (
+      <Center py={20}>
+        <Connect />
+      </Center>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
