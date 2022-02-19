@@ -57,23 +57,27 @@ export const ClosetMirror = () => {
       {!loading.tokens && rats && (
         <Select
           className='select-search mx-auto w-80 my-4'
-          options={rats}
+          options={rats.map((rat) =>
+            rat ? { label: rat.id, value: rat.id, rat } : null,
+          )}
           placeholder='Select your rat'
           onChange={handleChangeRat}
-          getOptionLabel={(opt) => opt?.name ?? opt?.id ?? ''}
-          formatOptionLabel={(opt) => (
-            <span className='inline-flex'>
-              <Image
-                layout='fixed'
-                width={24}
-                height={24}
-                src={`https://storage.googleapis.com/aww-rats/rats/cached-images/${opt?.id}.png`}
-                alt='rat thumbnail'
-                className='mr-4'
-              />
-              {opt?.name}
-            </span>
-          )}
+          getOptionLabel={(opt) => (opt ? opt.rat.name : '')}
+          formatOptionLabel={(opt) =>
+            opt ? (
+              <span className='inline-flex'>
+                <Image
+                  layout='fixed'
+                  width={24}
+                  height={24}
+                  src={`https://storage.googleapis.com/aww-rats/rats/cached-images/${opt.rat.id}.png`}
+                  alt='rat thumbnail'
+                  className='mr-4'
+                />
+                {opt.rat.name}
+              </span>
+            ) : null
+          }
           isClearable
           isSearchable
         />
