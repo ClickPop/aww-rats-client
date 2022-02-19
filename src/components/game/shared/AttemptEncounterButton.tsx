@@ -6,7 +6,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Tooltip,
 } from '@chakra-ui/react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
@@ -24,8 +23,6 @@ const buttonLabels = [
   'Get it',
 ];
 
-const jsConfetti = new JSConfetti();
-
 export const AttemptEncounterButton = () => {
   const { selectedEncounter, selectedRats, player } = useContext(GameContext);
   const hasEnoughEnergy = !!(
@@ -40,6 +37,8 @@ export const AttemptEncounterButton = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedEncounter],
   );
+
+  const jsConfetti = useMemo(() => new JSConfetti(), []);
 
   const atLeastOneRatSelected = selectedRats.filter((r) => !!r).length > 0;
   const canAttempt = hasEnoughEnergy && atLeastOneRatSelected;
@@ -59,7 +58,7 @@ export const AttemptEncounterButton = () => {
     if (result) {
       jsConfetti.addConfetti({ emojis: ['🐀', '🧀'] });
     }
-  }, [result]);
+  }, [result, jsConfetti]);
 
   return selectedEncounter ? (
     <>
