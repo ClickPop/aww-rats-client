@@ -104,7 +104,7 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
           OpenSea(JSON) to Third Web(CSV) Converter
         </h1>
         <p className="mb-2">
-          We're building tools to help creators create NFTs and build communities. We're also big fans of <a href="https://thirdweb.com/">thridweb</a> as a tool for creators to create NFTs on their own contract.
+          We&apos;re building tools to help creators create NFTs and build communities. We&apos;re also big fans of <a href="https://thirdweb.com/">thridweb</a> as a tool for creators to create NFTs on their own contract.
         </p>
         <p>
           You can use the converter to Convert the JSON file(s) you export from OpenSea to a csv that can be imported directly into thirdweb.
