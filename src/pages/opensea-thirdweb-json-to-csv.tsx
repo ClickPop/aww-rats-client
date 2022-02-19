@@ -99,23 +99,38 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
 
   return (
     <LayoutNoFooter className='min-h-screen bg-gray-800 text-white'>
-      <div className='pt-24 flex flex-col'>
-        <input
-          type='file'
-          name='file[]'
-          id='files'
-          onChange={handleUpload}
-          multiple
-        />
-        {error && <p className='mt-4 text-xl text-red-500'>{error}</p>}
-        <button
-          className={`p-3 bg-gray-600 rounded-md w-fit mt-4 ${
-            !!error ? 'cursor-not-allowed' : ''
-          }`}
-          onClick={downloadCsv}
-          disabled={!!error}>
-          Download
-        </button>
+      <div className='pt-24 mb-8 max-w-lg mx-auto'>
+        <h1 className='text-2xl font-bold mb-4'>
+          OpenSea(JSON) to Third Web(CSV) Converter
+        </h1>
+        <p className="mb-2">
+          We&apos;re building tools to help creators create NFTs and build communities. We&apos;re also big fans of <a href="https://thirdweb.com/">thridweb</a> as a tool for creators to create NFTs on their own contract.
+        </p>
+        <p>
+          You can use the converter to Convert the JSON file(s) you export from OpenSea to a csv that can be imported directly into thirdweb.
+        </p>
+      </div>
+      <div className='flex flex-col max-w-lg mx-auto'>
+        <div>
+          <input
+            type='file'
+            name='file[]'
+            id='files'
+            onChange={handleUpload}
+            multiple
+          />
+          {error && <p className='my-4 text-xl text-red-500'>{error}</p>}
+        </div>
+        <div>
+          <button
+            className={`my-4 px-4 py-3 inline-block rounded-md bg-light hover:bg-yellow-200 duration-300 text-gray-700 font-bold ${
+              !!error ? 'cursor-not-allowed' : ''
+            }`}
+            onClick={downloadCsv}
+            disabled={!!error}>
+            Download CSV
+          </button>
+        </div>
       </div>
     </LayoutNoFooter>
   );
