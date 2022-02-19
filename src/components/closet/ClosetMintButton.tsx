@@ -10,10 +10,10 @@ import {
 } from '~/types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
+import { GetClosetDataQuery } from '~/schema/generated';
 
 type Props = {
-  piece: ClosetTokenWithMeta;
-  ownedItem: ClosetUserTokenWithMeta;
+  piece: GetClosetDataQuery['closet_pieces'][0];
   tokenMaxReached: boolean;
   noMaxTokens: boolean;
   walletMaxReached: boolean;
@@ -22,7 +22,6 @@ type Props = {
 
 export const ClosetMintButton: FC<Props> = ({
   piece,
-  ownedItem,
   tokenMaxReached,
   walletMaxReached,
   noMaxTokens,
@@ -31,17 +30,10 @@ export const ClosetMintButton: FC<Props> = ({
   const { closet, signer, provider, signerAddr } = useContext(EthersContext);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
 
-  const {
-    ownedItems,
-    setOwnedItems,
-    tokenCounts: { minted, owned },
-    setTokenCounts,
-  } = useContext(ClosetContext);
-
   const canMint =
     (!tokenMaxReached || noMaxTokens) &&
     (!walletMaxReached || noWalletMax) &&
-    piece.token.active;
+    piece.active;
 
   const approveWeth = async () => {
     if (closet && signer && signerAddr && provider) {
@@ -49,7 +41,7 @@ export const ClosetMintButton: FC<Props> = ({
       const wethAddr = await closet.erc20();
       console.log(wethAddr);
       const weth = new ethers.Contract(wethAddr, ERC20ABI.abi, signer) as ERC20;
-      const cost = piece.token.cost;
+      const cost = piece.cost;
       const allowance = await weth.allowance(signerAddr, closet.address);
       if (cost.gt(0) && allowance < cost) {
         setLoading('APPROVAL');
@@ -71,23 +63,6 @@ export const ClosetMintButton: FC<Props> = ({
         await approveWeth();
         setLoading('TOKEN');
         await closet.mint(piece.id, 1).then((t) => t.wait());
-        const t: Record<string, ClosetUserTokenWithMeta> = {
-          ...ownedItems,
-          [piece.id.toString()]: ownedItem
-            ? { ...ownedItem, amount: ownedItem.amount.add(1) }
-            : { ...piece, amount: BigNumber.from(1) },
-        };
-        setOwnedItems(t);
-        setTokenCounts((c) => ({
-          minted: {
-            ...c.minted,
-            [piece.id.toString()]: c.minted[piece.id.toString()].add(1),
-          },
-          owned: {
-            ...c.owned,
-            [piece.id.toString()]: c.owned[piece.id.toString()].add(1),
-          },
-        }));
       } catch (err) {
         console.error(err);
       }
@@ -101,11 +76,11 @@ export const ClosetMintButton: FC<Props> = ({
         return 'View on OpenSea';
       case walletMaxReached && !noWalletMax:
         return 'Max Owned';
-      case !piece.token.active:
+      case !piece.active:
         return 'Unavailable';
-      case piece.token.cost.gt(0):
+      case piece.cost > 0:
         return <>Buy Now</>;
-      case piece.token.cost.eq(0):
+      case piece.cost === 0:
         return 'Free';
       default:
         return null;
