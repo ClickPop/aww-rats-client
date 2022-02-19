@@ -16,6 +16,7 @@ import {
   useGetCurrentPlayerSubscription,
   GetCurrentPlayerSubscription,
 } from '~/schema/generated';
+import { getCachedRatUrl } from '~/utils/getCachedImageUrl';
 
 type defaultContext = {
   soloEncountersResults: Pick<
@@ -58,6 +59,7 @@ export const GameContext = createContext<defaultContext>({
 
 export const GameContextProvider: FC = ({ children }) => {
   const { signerAddr, isLoggedIn } = useContext(EthersContext);
+  console.log(signerAddr);
   const ratResult = useGetRatsByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,
@@ -87,7 +89,17 @@ export const GameContextProvider: FC = ({ children }) => {
         soloEncountersResults,
         selectedEncounter,
         setSelectedEncounter,
-        ratResult,
+        ratResult: {
+          ...ratResult,
+          data: {
+            ...ratResult.data,
+            rats:
+              ratResult.data?.rats.map((rat) => ({
+                ...rat,
+                image: getCachedRatUrl(`${rat.id}`),
+              })) ?? [],
+          },
+        },
         selectedRats,
         setSelectedRats,
         selectRatIndex,

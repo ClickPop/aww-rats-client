@@ -75,14 +75,12 @@ export const RatList: FC<Props> = ({ drawer }) => {
                         : String(rat.id)
                     }-${rat.name}`}
                     ratType={stringToRatType(rat.type ?? '') as Rat_Types_Enum}
-                    image={`/api/image/proxy-image?imageURL=${rat.image!.replace(
-                      'ipfs://',
-                      'https://ipfs.io/ipfs/',
-                    )}`}
+                    image={`${rat.image!}`}
                     cunning={rat.cunning}
                     cuteness={rat.cuteness}
                     rattitude={rat.rattitude}
                     state={getCardState(rat.id)}
+                    imageProps={{ loading: 'eager' }}
                     onClick={() => {
                       if (!alreadySelected(rat.id)) {
                         setSelectedRats((st) =>
