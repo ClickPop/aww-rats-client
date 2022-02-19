@@ -40,8 +40,10 @@ smart-contracts/rat.png
 smart-contracts/testnet-tokens.json
 smart-contracts/tokens.json
 smart-contracts/tokens.example.json
+
 generated.ts
 src/schema/apollo.ts
 src/schema/requests.ts
 graphql.schema.json
 
+tsconfig.tsbuildinfo
