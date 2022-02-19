@@ -82,9 +82,7 @@ export interface ClosetContextType {
   ) => void;
   closetPieces: GetClosetDataQuery['closet_pieces'];
   sponsoredPieces: GetClosetDataQuery['closet_pieces'];
-  handleChangeRat: (
-    rat: SingleValue<GetClosetDataQuery['rats'][0] | null>,
-  ) => Promise<void>;
+  handleChangeRat: (rat: SingleValue<SelectRat>) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
 }
 
@@ -189,3 +187,11 @@ export interface ClosetTokenWithMeta extends ClosetTokenWithId {
 export interface ClosetUserTokenWithMeta extends ClosetUserToken {
   tokenMeta: Metadata;
 }
+
+export type CachedRat = GetClosetDataQuery['rats'][0];
+
+export type SelectRat = {
+  label: string;
+  value: string;
+  rat: CachedRat;
+};

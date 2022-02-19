@@ -25,7 +25,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const walletMaxReached = piece.max_per_wallet < owned;
   const noWalletMax = piece.max_per_wallet === 0;
 
-  const selected = currentRat?.[pieceType] === piece.id.toString();
+  const selected = currentRat?.[pieceType] === piece.id;
 
   if (!ownedItem && !piece.active) {
     return null;
@@ -52,7 +52,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }`}
           onClick={() => {
             if (ownedItem) {
-              tryOnClothes(pieceType, piece.id.toString());
+              tryOnClothes(pieceType, piece.id);
             }
           }}
         />

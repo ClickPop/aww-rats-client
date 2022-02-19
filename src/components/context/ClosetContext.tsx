@@ -9,9 +9,11 @@ import {
   useState,
 } from 'react';
 import {
+  CachedRat,
   ClosetContextType,
   ClosetLoading,
   CombinedCanvasNullable,
+  SelectRat,
 } from '~/types';
 import {
   RAT_CLOSET_PLACEHOLDER,
@@ -47,8 +49,6 @@ const defaultClosetContext: ClosetContextType = {
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
-
-type CachedRat = GetClosetDataQuery['rats'][0];
 
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
@@ -96,21 +96,21 @@ export const ClosetContextProvider: FC = ({ children }) => {
   // }, [closetLoading]);
 
   const handleChangeRat = useCallback(
-    async (rat: SingleValue<CachedRat>) => {
+    async (select: SingleValue<SelectRat>) => {
+      const rat = select?.rat ?? null;
       setLoading((l) => ({ ...l, mirror: true }));
       setCurrentRat(rat);
 
       const getImageURL = (key: string, val: string): string => {
         if (!val) {
-          return `${RAT_PIECES_PREFIX}${key}-.png`;
+          return `${RAT_PIECES_PREFIX}${key}-base.png`;
         }
 
         if (val.startsWith('data:')) {
           return val;
         }
 
-        const piece = closetPieces.find((p) => p.id === val);
-
+        const piece = closetPieces.find((p) => `${p.id}` === val);
         if (!!piece) {
           return piece.image;
         }
@@ -123,7 +123,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
           LAYER_ORDER.forEach((layer) => {
             const val = rat[layer as keyof CachedRat] as string;
             if (!!val && !hidePiece[layer]) {
-              layers.push([layer, val.toLowerCase().replace(/ /g, '-')]);
+              layers.push([layer, `${val}`.toLowerCase().replace(/ /g, '-')]);
             }
             if (layer === 'torso' || layer === 'head') {
               layers.push([layer, 'base']);
@@ -167,7 +167,11 @@ export const ClosetContextProvider: FC = ({ children }) => {
   };
 
   useEffect(() => {
-    handleChangeRat(currentRat);
+    handleChangeRat(
+      currentRat
+        ? { label: currentRat.id, value: currentRat.id, rat: currentRat }
+        : null,
+    );
     // In this case the handleChangeRat method is causing needless re-renders, but the linter warns if it's not there
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRat, hidePiece]);
@@ -178,8 +182,19 @@ export const ClosetContextProvider: FC = ({ children }) => {
   ) => {
     if (currentRat) {
       if (currentRat[pieceType] === piece) {
-        setCurrentRat((cr) => (!cr ? cr : { ...cr, [pieceType]: piece }));
-        handleChangeRat(currentRat);
+        const newCurrentRat = !currentRat
+          ? currentRat
+          : { ...currentRat, [pieceType]: oldClothes.get(pieceType) };
+        setCurrentRat(newCurrentRat);
+        handleChangeRat(
+          newCurrentRat
+            ? {
+                label: newCurrentRat.id,
+                value: newCurrentRat.id,
+                rat: newCurrentRat,
+              }
+            : null,
+        );
       } else {
         // if (piece.startsWith('data:') || closetPieces.find(p => p.name === currentRat[pieceType])) {
         //   const old = new Map(oldClothes);
@@ -198,7 +213,15 @@ export const ClosetContextProvider: FC = ({ children }) => {
         const old = new Map(oldClothes);
         old.set(pieceType, currentRat[pieceType] ?? 'none');
         setOldClothes(old);
-        handleChangeRat({ ...currentRat, [pieceType]: piece });
+        handleChangeRat(
+          currentRat
+            ? {
+                label: currentRat.id,
+                value: currentRat.id,
+                rat: { ...currentRat, [pieceType]: piece },
+              }
+            : null,
+        );
       }
     }
   };
