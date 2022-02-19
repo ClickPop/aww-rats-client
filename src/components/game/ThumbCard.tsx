@@ -8,12 +8,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
+import { ImageProps } from 'next/image';
 
 export interface ThumbCardProps extends FlexProps {
   image: string | StaticImageData;
   title?: string;
   flag?: string;
   state?: 'disabled' | 'active' | 'selected';
+  imageProps?: Omit<ImageProps, 'src'>;
 }
 export const ThumbCard: FC<ThumbCardProps> = ({
   children,
@@ -21,6 +23,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
   title,
   flag,
   state,
+  imageProps,
   ...rest
 }) => {
   const getDefinedProps = (state: ThumbCardProps['state']): FlexProps => {
@@ -85,7 +88,12 @@ export const ThumbCard: FC<ThumbCardProps> = ({
       {...getDefinedProps(state)}
       {...rest}>
       <AspectRatio ratio={1 / 1} w='120px'>
-        <Image src={image} layout='fill' alt={title ? title : 'Image'} />
+        <Image
+          src={image}
+          layout='fill'
+          alt={title ? title : 'Image'}
+          {...imageProps}
+        />
       </AspectRatio>
 
       <Box m={3} color='white' flex={1} align='left' my='auto'>

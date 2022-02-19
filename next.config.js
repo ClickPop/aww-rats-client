@@ -24,7 +24,6 @@ module.exports = {
       'development.awwrats.com',
       'www.awwrats.com',
       'awwrats.com',
-      'storage.cloud.google.com',
       'storage.googleapis.com',
     ],
   },
