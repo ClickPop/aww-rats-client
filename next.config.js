@@ -20,11 +20,6 @@ module.exports = {
     ];
   },
   images: {
-    domains: [
-      'development.awwrats.com',
-      'www.awwrats.com',
-      'awwrats.com',
-      'storage.googleapis.com',
-    ],
+    domains: ['development.awwrats.com', 'www.awwrats.com', 'awwrats.com'],
   },
 };

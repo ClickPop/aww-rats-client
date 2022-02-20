@@ -1,17 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 import { fabric } from 'fabric';
 import React, { useContext, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { ClosetContext } from '~/components/context/ClosetContext';
-import { EthersContext } from '~/components/context/EthersContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { Connect } from '~/components/shared/Connect';
-import { Image } from '~/components/shared/Image';
-import {
-  CHAIN_ID,
-  RAT_CLOSET_PLACEHOLDER,
-  REMOVABLE_CLOSET_PIECES,
-} from '~/config/env';
+import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
 
@@ -27,7 +20,6 @@ export const ClosetMirror = () => {
     getBase64Image,
     setCanvas,
   } = useContext(ClosetContext);
-  const { provider } = useContext(EthersContext);
   const canvasOpts = useMemo(() => {
     const opts: CanvasOpts = {
       canvasType: 'StaticCanvas',
@@ -59,38 +51,17 @@ export const ClosetMirror = () => {
   return (
     <>
       <Connect />
-      {loading.data && <CheeseLoader className='w-10 mx-auto' />}
-      {!loading.data &&
-        rats &&
-        provider &&
-        provider.network.chainId === CHAIN_ID && (
-          <Select
-            className='select-search mx-auto w-80 my-4'
-            options={rats.map((rat) =>
-              rat ? { label: rat.id, value: rat.id, rat } : null,
-            )}
-            placeholder='Select your rat'
-            onChange={handleChangeRat}
-            getOptionLabel={(opt) => (opt ? opt.rat.name : '')}
-            formatOptionLabel={(opt) =>
-              opt ? (
-                <span className='inline-flex'>
-                  <Image
-                    layout='fixed'
-                    width={24}
-                    height={24}
-                    src={`https://storage.googleapis.com/aww-rats/rats/cached-images/${opt.rat.id}.png`}
-                    alt='rat thumbnail'
-                    className='mr-4'
-                  />
-                  {opt.rat.name}
-                </span>
-              ) : null
-            }
-            isClearable
-            isSearchable
-          />
-        )}
+      {loading.tokens && <CheeseLoader className='w-10 mx-auto' />}
+      {!loading.tokens && rats && (
+        <Select
+          className='select-search mx-auto w-80 my-4'
+          options={rats}
+          placeholder='Select your rat'
+          onChange={handleChangeRat}
+          isClearable
+          isSearchable
+        />
+      )}
 
       <div
         className='
