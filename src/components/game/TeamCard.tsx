@@ -3,9 +3,10 @@ import { BoxProps, Box } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
 import { RatType } from '~/types/game';
 import { PickRatButton } from './PickRatButton';
+import { Rat_Types_Enum } from '~/schema/generated';
 
 interface Props extends BoxProps {
-  ratType?: RatType;
+  ratType?: Rat_Types_Enum;
   rat?: string | StaticImageData;
   altText?: string;
 }
@@ -13,10 +14,8 @@ interface Props extends BoxProps {
 export const TeamCard: FC<Props> = ({ ratType, rat, altText, ...rest }) => {
   const getDefinedProps = (ratType: Props['ratType']): BoxProps => {
     let tempDefinedProps: BoxProps = {};
-
     if (typeof ratType === 'string') {
       tempDefinedProps.borderColor = `${ratType}Rat.500`;
-      console.log(tempDefinedProps.borderColor);
     }
     return tempDefinedProps;
   };
