@@ -4,6 +4,7 @@ import { Image } from '~/components/shared/Image';
 import Login from '~/components/access/Login';
 import { EthersContext } from '~/components/context/EthersContext';
 import RatRace from '~/assets/svg/RatRace.svg';
+import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Connect } from '~/components/shared/Connect';
 
 const AuthCookieRequired: FC = ({ children }) => {
@@ -41,13 +42,20 @@ const AuthCookieRequired: FC = ({ children }) => {
             height='200px'
             src={RatRace}
           />
+          <RattributePill
+            rattribute='Alpha'
+            value='0.1'
+            mb={2}
+          />
           <Text
             align='center'
+            bg='darkAlpha.400'
             color='white'
-            pb={6}
-            pt={2}
+            fontSize='sm'
+            p={3}
+            rounded='lg'
           >
-            <strong>Alpha</strong><br />(That means this is just a really rough beginning)
+            <strong>Release Notes:</strong> This is our very first alpha. Don't be surprised if things are broken or don't work the way you expect. Let us know of any bugs you find or ideas you have in the discord.
           </Text>
           <Login />
         </VStack>
