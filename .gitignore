@@ -44,3 +44,5 @@ generated.ts
 graphql.schema.json
 
 tsconfig.tsbuildinfo
+
+gcloud-key.json
