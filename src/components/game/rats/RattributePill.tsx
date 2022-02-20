@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { Box, BoxProps, Text } from '@chakra-ui/react';
-import { Rattributes_Enum } from '~/schema/generated';
 
 interface Props extends BoxProps {
-  rattribute: Rattributes_Enum;
+  rattribute: string;
   value: number;
 }
 
