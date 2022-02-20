@@ -13,7 +13,8 @@ import { GameContext } from '~/components/context/GameContext';
 import { Button } from '~/components/game/Button';
 import { useAttemptSoloEncounterMutation } from '~/schema/generated';
 import { Image } from '~/components/shared/Image';
-import RatRaceResultImage from '~/assets/images/ratrace/result-placeholder.png';
+import SuccessImage from '~/assets/images/ratrace/ratrace-success.webp';
+import FailImage from '~/assets/images/ratrace/ratrace-fail.webp';
 import JSConfetti from 'js-confetti';
 
 // The button to start an encounter is set from this list of potential labels when someone selects an encounter.
@@ -122,7 +123,7 @@ export const AttemptEncounterButton = () => {
             p={0}
             m={0}
           >
-            <Image src={RatRaceResultImage} alt='You won... or lost!'/>
+            <Image src={result ? SuccessImage : FailImage } alt='You won... or lost!'/>
           </ModalHeader>
 
           <ModalBody pb={4}>

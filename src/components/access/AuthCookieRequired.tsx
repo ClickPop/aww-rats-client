@@ -44,7 +44,7 @@ const AuthCookieRequired: FC = ({ children }) => {
           />
           <RattributePill
             rattribute='Alpha'
-            value='0.1'
+            value={0.1}
             mb={2}
           />
           <Text
@@ -55,7 +55,7 @@ const AuthCookieRequired: FC = ({ children }) => {
             p={3}
             rounded='lg'
           >
-            <strong>Release Notes:</strong> This is our very first alpha. Don't be surprised if things are broken or don't work the way you expect. Let us know of any bugs you find or ideas you have in the discord.
+            <strong>Release Notes:</strong> This is our very first alpha. Don&apos;t be surprised if things are broken or don&apos;t work the way you expect. Let us know of any bugs you find or ideas you have in the discord.
           </Text>
           <Login />
         </VStack>
