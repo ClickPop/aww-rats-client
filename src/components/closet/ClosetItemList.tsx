@@ -5,7 +5,6 @@ import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta, ReactSelectOption } from '~/types';
 import { titleCase } from '~/utils/string';
 import type { MouseEvent } from 'react';
-import { GetClosetDataQuery } from '~/schema/generated';
 
 export const ClosetItemList = () => {
   enum FilterShowEnum {
@@ -32,7 +31,8 @@ export const ClosetItemList = () => {
     Accessory = 'accessory',
     Hat = 'hat',
   }
-  const { loading, closetPieces, sponsoredPieces } = useContext(ClosetContext);
+  const { loading, closetPieces, sponsoredPieces, ownedItems } =
+    useContext(ClosetContext);
   const [filterShow, setFilterShow] = useState<FilterShowEnum>(
     FilterShowEnum.All,
   );
@@ -56,14 +56,14 @@ export const ClosetItemList = () => {
   };
 
   const filterShowMethod = (
-    piece: typeof closetPieces[0],
+    piece: ClosetTokenWithMeta,
     state: FilterShowEnum,
   ) => {
     switch (state) {
       case FilterShowEnum.Unowned:
-        return (piece.owned.aggregate?.count ?? 0) > 0 ? false : true;
+        return ownedItems[piece.id.toString()] ? false : true;
       case FilterShowEnum.Owned:
-        return (piece.owned.aggregate?.count ?? 0) > 0 ? true : false;
+        return ownedItems[piece.id.toString()] ? true : false;
       case FilterShowEnum.All:
       default:
         return true;
@@ -72,19 +72,21 @@ export const ClosetItemList = () => {
 
   const piecesByType = useMemo(
     () =>
-      closetPieces.reduce((acc, curr) => {
-        const pieceType = curr.piece_type;
+      Object.values(closetPieces).reduce((acc, curr) => {
+        const pieceType = curr.tokenMeta.attributes.find(
+          (a) => a.trait_type === 'Piece Type',
+        )?.value;
         if (pieceType) {
           return {
             ...acc,
             [pieceType]: [...(acc[pieceType] ?? []), curr].sort((a) =>
-              (a.owned.aggregate?.count ?? 0) > 0 ? -1 : 0,
+              ownedItems[a.id.toString()] ? -1 : 0,
             ),
           };
         }
         return acc;
-      }, {} as Record<string, typeof closetPieces>),
-    [closetPieces],
+      }, {} as Record<string, ClosetTokenWithMeta[]>),
+    [closetPieces, ownedItems],
   );
 
   const pieceTypes = useMemo(() => {
@@ -98,7 +100,7 @@ export const ClosetItemList = () => {
 
   return (
     <div>
-      {!loading.data && (
+      {!loading.pieces && (
         <div className='filters flex space-x-4'>
           <div className='inline-flex rounded-md shadow-sm' role='group'>
             <button
@@ -161,7 +163,7 @@ export const ClosetItemList = () => {
 
       <div
         className={`flex flex-col w-full ${
-          loading.data
+          loading.pieces
             ? 'opacity-0 pointer-events-none overflow-hidden'
             : 'opacity-1 pointer-events-auto'
         }`}>
@@ -188,15 +190,17 @@ export const ClosetItemList = () => {
               </p>
 
               <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                {sponsoredPieces
-                  .sort((a) => ((a.owned.aggregate?.count ?? 0) > 0 ? -1 : 0))
+                {Object.values(sponsoredPieces)
+                  .sort((a) => (ownedItems[a.id.toString()] ? -1 : 0))
                   .filter((a) => filterShowMethod(a, filterShow))
                   .map((piece) => (
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
                       pieceType={
-                        piece.piece_type as keyof GetClosetDataQuery['rats'][0]
+                        (piece.tokenMeta.attributes.find(
+                          (a) => a.trait_type === 'Piece Type',
+                        )?.value as string) ?? ''
                       }
                     />
                   ))}
@@ -217,9 +221,7 @@ export const ClosetItemList = () => {
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
-                      pieceType={
-                        piece.piece_type as keyof GetClosetDataQuery['rats'][0]
-                      }
+                      pieceType={pieceType}
                     />
                   ))}
               </div>
