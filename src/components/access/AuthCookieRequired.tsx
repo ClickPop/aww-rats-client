@@ -44,7 +44,7 @@ const AuthCookieRequired: FC = ({ children }) => {
           />
           <RattributePill
             rattribute='Alpha'
-            value='0.1'
+            value={0.1}
             mb={2}
           />
           <Text
