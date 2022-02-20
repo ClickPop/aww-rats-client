@@ -6,11 +6,14 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  ModalHeader,
 } from '@chakra-ui/react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { Button } from '~/components/game/Button';
 import { useAttemptSoloEncounterMutation } from '~/schema/generated';
+import { Image } from '~/components/shared/Image';
+import RatRaceResultImage from '~/assets/images/ratrace/result-placeholder.png';
 import JSConfetti from 'js-confetti';
 
 // The button to start an encounter is set from this list of potential labels when someone selects an encounter.
@@ -96,21 +99,37 @@ export const AttemptEncounterButton = () => {
         }}>
         {buttonLabel} 🎲
       </Button>
+
       <Modal
         isCentered
         isOpen={result !== null}
-        onClose={() => setResult(null)}>
-        <ModalOverlay />
+        size="xl"
+        onClose={() => setResult(null)}
+      >
+        <ModalOverlay
+          backdropFilter='blur(4px)'
+        />
         <ModalContent
-          w={{ base: '90%', sm: '75%', md: '30%' }}
-          h={{ base: '50%', sm: '40%', md: '30%' }}>
-          <ModalCloseButton />
-          <ModalBody bgColor={result ? '#B8FFDD' : '#FFA4A4'}>
-            <Center h='100%'>
-              {result
-                ? selectedEncounter.win_text
-                : selectedEncounter.loss_text}
-            </Center>
+          bgColor={result ? 'green.50' : 'red.50'}
+          color='gray.900'
+          fontWeight='semibold'
+          rounded='2xl'
+          overflow='hidden'
+        >
+          <ModalCloseButton zIndex='5' />
+
+          <ModalHeader
+            p={0}
+            m={0}
+          >
+            <Image src={RatRaceResultImage} atl='Alt'/>
+          </ModalHeader>
+
+          <ModalBody pb={4}>
+            {result
+              ? selectedEncounter.win_text
+              : selectedEncounter.loss_text
+            }
           </ModalBody>
         </ModalContent>
       </Modal>
