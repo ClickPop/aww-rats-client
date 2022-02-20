@@ -12,8 +12,6 @@ import { RatList } from '~/components/game/rats/RatList';
 import { TeamCard } from '~/components/game/TeamCard';
 import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Rattributes_Enum } from '~/schema/generated';
-import { RattributeUnion } from '~/types';
-import { rattributeToString } from '~/utils/enums';
 
 export const RatSelector = () => {
   const { selectedEncounter, selectedRats, setSelectRatIndex } =
