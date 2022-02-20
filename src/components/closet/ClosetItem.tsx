@@ -20,9 +20,9 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const owned = piece.owned.aggregate?.count ?? 0;
 
   const ownedItem = (piece.owned.aggregate?.count ?? 0) > 0;
-  const tokenMaxReached = piece.max_tokens < minted;
+  const tokenMaxReached = piece.max_tokens <= minted;
   const noMaxTokens = piece.max_tokens === 0;
-  const walletMaxReached = piece.max_per_wallet < owned;
+  const walletMaxReached = piece.max_per_wallet <= owned;
   const noWalletMax = piece.max_per_wallet === 0;
 
   const selected = currentRat?.[pieceType] === piece.id;

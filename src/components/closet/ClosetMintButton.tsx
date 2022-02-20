@@ -72,10 +72,10 @@ export const ClosetMintButton: FC<Props> = ({
 
   const handleButtonContent = () => {
     switch (true) {
-      case tokenMaxReached && !noMaxTokens:
-        return 'View on OpenSea';
       case walletMaxReached && !noWalletMax:
         return 'Max Owned';
+      case tokenMaxReached && !noMaxTokens:
+        return 'View on OpenSea';
       case !piece.active:
         return 'Unavailable';
       case piece.cost > 0:
