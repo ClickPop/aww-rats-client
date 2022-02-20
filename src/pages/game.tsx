@@ -24,7 +24,8 @@ const Home: NextPage = () => {
               mt={2}
               mx='auto'
               w='725px'
-              rounded='xl'>
+              rounded='xl'
+            >
               <SelectedEncounter />
             </Box>
             <Box position='fixed' bottom='0' w='100%'>
