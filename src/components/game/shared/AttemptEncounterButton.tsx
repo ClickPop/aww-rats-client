@@ -28,7 +28,7 @@ const buttonLabels = [
 ];
 
 export const AttemptEncounterButton = () => {
-  const { selectedEncounter, selectedRats, player } = useContext(GameContext);
+  const { selectedEncounter, ratSlots, player } = useContext(GameContext);
   const hasEnoughEnergy = !!(
     selectedEncounter &&
     player &&
@@ -44,7 +44,7 @@ export const AttemptEncounterButton = () => {
 
   const jsConfetti = useMemo(() => new JSConfetti(), []);
 
-  const atLeastOneRatSelected = selectedRats.filter((r) => !!r).length > 0;
+  const atLeastOneRatSelected = ratSlots.filter((r) => !!r).length > 0;
   const canAttempt = hasEnoughEnergy && atLeastOneRatSelected;
   const [attempt, { loading }] = useAttemptSoloEncounterMutation();
   const [result, setResult] = useState<boolean | null>(null);
@@ -82,9 +82,9 @@ export const AttemptEncounterButton = () => {
             const attemptResult = await attempt({
               variables: {
                 encounter_id: selectedEncounter.id,
-                rat_ids: selectedRats
-                  .filter((rat) => rat?.id)
-                  .map((rat) => `${rat?.id}`),
+                rat_ids: ratSlots
+                  .filter((slot) => slot.rat?.id)
+                  .map((slot) => `${slot.rat?.id}`),
               },
             });
             if (attemptResult.data?.attempt_solo_encounter) {

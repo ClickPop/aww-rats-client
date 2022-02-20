@@ -6,32 +6,35 @@ import {
   useDisclosure,
   Heading,
 } from '@chakra-ui/react';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatList } from '~/components/game/rats/RatList';
 import { TeamCard } from '~/components/game/TeamCard';
 import { RattributePill } from '~/components/game/rats/RattributePill';
-import { Rattributes_Enum } from '~/schema/generated';
+import { Rattributes_Enum, Rat_Types_Enum } from '~/schema/generated';
 
 export const RatSelector = () => {
-  const { selectedEncounter, selectedRats, setSelectRatIndex } =
+  const { selectedEncounter, ratSlots, setSelectRatIndex } =
     useContext(GameContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [filterType, setFilterType] = useState<Rat_Types_Enum | undefined>();
   const filteredRats = useMemo(
-    () => selectedRats.filter((rat) => rat !== null),
-    [selectedRats],
+    () => ratSlots.filter((rat) => rat !== null),
+    [ratSlots],
   );
 
   const cuteness = useMemo(
-    () => filteredRats.reduce((acc, rat) => (rat?.cuteness ?? 0) + acc, 0),
+    () =>
+      filteredRats.reduce((acc, slot) => (slot.rat?.cuteness ?? 0) + acc, 0),
     [filteredRats],
   );
   const cunning = useMemo(
-    () => filteredRats.reduce((acc, rat) => (rat?.cunning ?? 0) + acc, 0),
+    () => filteredRats.reduce((acc, slot) => (slot.rat?.cunning ?? 0) + acc, 0),
     [filteredRats],
   );
   const rattitude = useMemo(
-    () => filteredRats.reduce((acc, rat) => (rat?.rattitude ?? 0) + acc, 0),
+    () =>
+      filteredRats.reduce((acc, slot) => (slot.rat?.rattitude ?? 0) + acc, 0),
     [filteredRats],
   );
 
@@ -100,21 +103,25 @@ export const RatSelector = () => {
           />
         </HStack>
         <Grid gap={2} display='flex' flexWrap='wrap' mt={4}>
-          {selectedRats.map((rat, i) => (
-            <TeamCard
-              key={rat ? rat.id : i}
-              rat={
-                rat?.image &&
-                `/api/image/proxy-image?imageURL=${rat?.image.replace(
-                  'ipfs://',
-                  'https://ipfs.io/ipfs/',
-                )}`
-              }
-              onClick={() => {
-                setSelectRatIndex(i);
-                onOpen();
-              }}
-            />
+          {ratSlots.map((slot, i) => (
+            <>
+              <TeamCard
+                key={slot?.rat ? slot.rat.id : i}
+                ratType={slot?.slotType}
+                rat={
+                  slot?.rat?.image &&
+                  `/api/image/proxy-image?imageURL=${slot?.rat?.image.replace(
+                    'ipfs://',
+                    'https://ipfs.io/ipfs/',
+                  )}`
+                }
+                onClick={() => {
+                  setFilterType(slot.slotType);
+                  setSelectRatIndex(i);
+                  onOpen();
+                }}
+              />
+            </>
           ))}
         </Grid>
       </Box>
@@ -126,6 +133,7 @@ export const RatSelector = () => {
             onClose();
           },
         }}
+        filterByType={filterType}
       />
     </>
   ) : null;

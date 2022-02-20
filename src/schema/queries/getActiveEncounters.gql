@@ -22,5 +22,10 @@ query GetActiveEncounters {
     encounter_resistances {
       resistance
     }
+    encounter_rat_constraints {
+      rat_type
+      locked_slots
+      external_contract_address
+    }
   }
 }
