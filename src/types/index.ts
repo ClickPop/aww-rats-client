@@ -5,6 +5,7 @@ import { Rat, Closet } from 'smart-contracts/src/types/index';
 import { ICanvasOptions } from 'fabric/fabric-impl';
 import { Dispatch, SetStateAction } from 'react';
 import { SingleValue } from 'react-select';
+import { GetClosetDataQuery } from '~/schema/generated';
 
 export * from 'smart-contracts/src/types';
 
@@ -69,37 +70,20 @@ export interface ClosetContextType {
   canvas: CombinedCanvasNullable;
   setCanvas: Dispatch<SetStateAction<CombinedCanvasNullable>>;
   loading: ClosetLoading;
-  tokenProgress: number;
-  signerTokens: BigNumber[];
-  rats: Array<SimplifiedMetadata | null>;
-  currentRat: SimplifiedMetadata | null;
+  rats: Array<GetClosetDataQuery['rats'][0] | null>;
+  currentRat: GetClosetDataQuery['rats'][0] | null;
   hidePiece: Record<string, boolean>;
   setHidePiece: Dispatch<SetStateAction<Record<string, boolean>>>;
   cart: ClosetCartState;
   cartDispatch: Dispatch<ClosetCartAction>;
-  tryOnClothes: (pieceType: string, piece: string) => void;
-  closetPieces: Record<string, ClosetTokenWithMeta>;
-  sponsoredPieces: Record<string, ClosetTokenWithMeta>;
-  ownedItems: Record<string, ClosetUserTokenWithMeta>;
-  setOwnedItems: Dispatch<
-    SetStateAction<Record<string, ClosetUserTokenWithMeta>>
-  >;
-  handleChangeRat: (
-    rat: SingleValue<SimplifiedMetadata | null>,
-  ) => Promise<void>;
+  tryOnClothes: (
+    pieceType: keyof GetClosetDataQuery['rats'][0],
+    piece: string,
+  ) => void;
+  closetPieces: GetClosetDataQuery['closet_pieces'];
+  sponsoredPieces: GetClosetDataQuery['closet_pieces'];
+  handleChangeRat: (rat: SingleValue<SelectRat>) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
-  loadedTokenImages: string[];
-  setLoadedTokenImages: Dispatch<SetStateAction<string[]>>;
-  tokenCounts: {
-    minted: Record<string, BigNumber>;
-    owned: Record<string, BigNumber>;
-  };
-  setTokenCounts: Dispatch<
-    SetStateAction<{
-      minted: Record<string, BigNumber>;
-      owned: Record<string, BigNumber>;
-    }>
-  >;
 }
 
 export type CombinedCanvas = fabric.StaticCanvas | fabric.Canvas;
@@ -159,10 +143,8 @@ export interface SimplifiedMetadata {
 }
 
 export interface ClosetLoading {
-  tokens: boolean;
-  metadata: boolean;
+  data: boolean;
   mirror: boolean;
-  pieces: boolean;
 }
 
 export type ClosetCartItem = {
@@ -203,3 +185,11 @@ export interface ClosetTokenWithMeta extends ClosetTokenWithId {
 export interface ClosetUserTokenWithMeta extends ClosetUserToken {
   tokenMeta: Metadata;
 }
+
+export type CachedRat = GetClosetDataQuery['rats'][0];
+
+export type SelectRat = {
+  label: string;
+  value: string;
+  rat: CachedRat;
+};
