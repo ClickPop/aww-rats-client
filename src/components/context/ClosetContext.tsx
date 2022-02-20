@@ -30,10 +30,8 @@ const defaultClosetContext: ClosetContextType = {
   canvas: null,
   setCanvas: () => {},
   loading: {
-    metadata: false,
+    data: false,
     mirror: false,
-    pieces: false,
-    tokens: false,
   },
   rats: [],
   currentRat: null,
@@ -52,26 +50,19 @@ export const ClosetContext = createContext(defaultClosetContext);
 
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
-  const { signerAddr } = useContext(EthersContext);
+  const { signerAddr, closet, contract } = useContext(EthersContext);
+  const { data, loading: closetLoading } = useGetClosetDataQuery({
+    variables: { id: signerAddr! },
+    skip: !signerAddr,
+  });
   const [currentRat, setCurrentRat] = useState<CachedRat | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
   const [hidePiece, setHidePiece] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState<ClosetLoading>({
-    tokens: false,
-    metadata: false,
+    data: closetLoading,
     mirror: false,
-    pieces: false,
   });
   const [cart, cartDispatch] = useReducer(closetCartReducer, {});
-
-  const {
-    data,
-    loading: closetLoading,
-    error,
-  } = useGetClosetDataQuery({
-    variables: { id: signerAddr! },
-    skip: !signerAddr,
-  });
 
   const rats = useMemo(() => data?.rats ?? [], [data?.rats]);
 
@@ -85,22 +76,21 @@ export const ClosetContextProvider: FC = ({ children }) => {
     [closetPieces],
   );
 
-  // useEffect(() => {
-  //   if (closetLoading) {
-  //     setLoading((l) => ({
-  //       ...l,
-  //       pieces: true,
-  //       metadata: true,
-  //     }));
-  //   }
-  // }, [closetLoading]);
+  useEffect(() => {
+    setLoading((l) => ({ ...l, data: closetLoading }));
+  }, [closetLoading]);
 
   const handleChangeRat = useCallback(
     async (select: SingleValue<SelectRat>) => {
       const rat = select?.rat ?? null;
       setLoading((l) => ({ ...l, mirror: true }));
       setCurrentRat(rat);
-
+      if (signerAddr && contract && rat) {
+        const owner = await contract.ownerOf(rat.id);
+        if (owner !== signerAddr) {
+          return;
+        }
+      }
       const getImageURL = (key: string, val: string): string => {
         if (!val) {
           return `${RAT_PIECES_PREFIX}${key}-base.png`;
@@ -122,7 +112,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
           const layers: [string, string][] = [];
           LAYER_ORDER.forEach((layer) => {
             const val = rat[layer as keyof CachedRat] as string;
-            if (!!val && !hidePiece[layer]) {
+            if (!!val && val !== 'none' && !hidePiece[layer]) {
               layers.push([layer, `${val}`.toLowerCase().replace(/ /g, '-')]);
             }
             if (layer === 'torso' || layer === 'head') {
@@ -154,7 +144,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
       setTimeout(() => setLoading((l) => ({ ...l, mirror: false })), 300);
       canvas?.renderAll();
     },
-    [canvas, closetPieces, hidePiece],
+    [canvas, closetPieces, hidePiece, contract, signerAddr],
   );
 
   const getBase64Image = (file: Blob): Promise<any | Error> => {
@@ -176,53 +166,47 @@ export const ClosetContextProvider: FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRat, hidePiece]);
 
-  const tryOnClothes = (
+  const tryOnClothes = async (
     pieceType: keyof GetClosetDataQuery['rats'][0],
     piece: string,
   ) => {
-    if (currentRat) {
-      if (currentRat[pieceType] === piece) {
-        const newCurrentRat = !currentRat
-          ? currentRat
-          : { ...currentRat, [pieceType]: oldClothes.get(pieceType) };
-        setCurrentRat(newCurrentRat);
-        handleChangeRat(
-          newCurrentRat
-            ? {
-                label: newCurrentRat.id,
-                value: newCurrentRat.id,
-                rat: newCurrentRat,
-              }
-            : null,
-        );
-      } else {
-        // if (piece.startsWith('data:') || closetPieces.find(p => p.name === currentRat[pieceType])) {
-        //   const old = new Map(oldClothes);
-        //   old.set(pieceType, currentRat[pieceType] ?? 'none');
-        //   setOldClothes(old);
-        // } else if (
-        //   Object.keys(closetPieces).includes(
-        //     currentRat[pieceType] ?? '',
-        //   )
-        // ) {
-        //   const old = new Map(oldClothes);
-        //   old.set(pieceType, currentRat[pieceType] ?? 'none');
-        //   setOldClothes(old);
-        // } else {
-        // }
-        const old = new Map(oldClothes);
-        old.set(pieceType, currentRat[pieceType] ?? 'none');
-        setOldClothes(old);
-        handleChangeRat(
-          currentRat
-            ? {
-                label: currentRat.id,
-                value: currentRat.id,
-                rat: { ...currentRat, [pieceType]: piece },
-              }
-            : null,
-        );
+    setLoading((l) => ({ ...l, mirror: true }));
+    if (currentRat && signerAddr && closet) {
+      const closetPiece = closetPieces.find((p) => p.id === piece);
+      if (closetPiece) {
+        const ownedAmount = await closet.balanceOf(signerAddr, closetPiece.id);
+        if (ownedAmount.gt(0)) {
+          if (currentRat[pieceType] === piece) {
+            const newCurrentRat = !currentRat
+              ? currentRat
+              : { ...currentRat, [pieceType]: oldClothes.get(pieceType) };
+            setCurrentRat(newCurrentRat);
+            await handleChangeRat(
+              newCurrentRat
+                ? {
+                    label: newCurrentRat.id,
+                    value: newCurrentRat.id,
+                    rat: newCurrentRat,
+                  }
+                : null,
+            );
+          } else {
+            const old = new Map(oldClothes);
+            old.set(pieceType, currentRat[pieceType] ?? 'none');
+            setOldClothes(old);
+            await handleChangeRat(
+              currentRat
+                ? {
+                    label: currentRat.id,
+                    value: currentRat.id,
+                    rat: { ...currentRat, [pieceType]: piece },
+                  }
+                : null,
+            );
+          }
+        }
       }
+      setLoading((l) => ({ ...l, mirror: false }));
     }
   };
 

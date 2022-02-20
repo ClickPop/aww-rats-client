@@ -143,10 +143,8 @@ export interface SimplifiedMetadata {
 }
 
 export interface ClosetLoading {
-  tokens: boolean;
-  metadata: boolean;
+  data: boolean;
   mirror: boolean;
-  pieces: boolean;
 }
 
 export type ClosetCartItem = {

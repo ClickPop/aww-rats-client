@@ -98,7 +98,7 @@ export const ClosetItemList = () => {
 
   return (
     <div>
-      {!loading.pieces && (
+      {!loading.data && (
         <div className='filters flex space-x-4'>
           <div className='inline-flex rounded-md shadow-sm' role='group'>
             <button
@@ -161,7 +161,7 @@ export const ClosetItemList = () => {
 
       <div
         className={`flex flex-col w-full ${
-          loading.pieces
+          loading.data
             ? 'opacity-0 pointer-events-none overflow-hidden'
             : 'opacity-1 pointer-events-auto'
         }`}>
