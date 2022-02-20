@@ -122,7 +122,7 @@ export const AttemptEncounterButton = () => {
             p={0}
             m={0}
           >
-            <Image src={RatRaceResultImage} atl='Alt'/>
+            <Image src={RatRaceResultImage} alt='You won... or lost!'/>
           </ModalHeader>
 
           <ModalBody pb={4}>
