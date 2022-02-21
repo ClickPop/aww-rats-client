@@ -37,7 +37,16 @@ const Login = () => {
 
   return (
     <div>
-      <Button onClick={handleLogin}>Login</Button>
+      <Button
+        onClick={handleLogin}
+        background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
+        backgroundSize='600% 400%'
+        _hover={{
+          animation: 'encounterShimmer 4s ease infinite;',
+        }}
+      >
+        Login
+      </Button>
     </div>
   );
 };
