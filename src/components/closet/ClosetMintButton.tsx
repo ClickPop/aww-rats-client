@@ -10,10 +10,10 @@ import {
 } from '~/types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { GetClosetDataQuery } from '~/schema/generated';
+import { GetClosetDataSubscription } from '~/schema/generated';
 
 type Props = {
-  piece: GetClosetDataQuery['closet_pieces'][0];
+  piece: GetClosetDataSubscription['closet_pieces'][0];
   tokenMaxReached: boolean;
   noMaxTokens: boolean;
   walletMaxReached: boolean;

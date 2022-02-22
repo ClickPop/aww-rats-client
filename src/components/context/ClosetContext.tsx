@@ -24,7 +24,12 @@ import { fabric } from 'fabric';
 import { SingleValue } from 'react-select';
 import { EthersContext } from '~/components/context/EthersContext';
 import { closetCartReducer } from '~/reducers/closetCart';
-import { GetClosetDataQuery, useGetClosetDataQuery } from '~/schema/generated';
+import {
+  GetClosetDataSubscription,
+  useGetClosetDataSubscription,
+  GetRatsSubscription,
+  useGetRatsSubscription,
+} from '~/schema/generated';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -51,7 +56,12 @@ export const ClosetContext = createContext(defaultClosetContext);
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
   const { signerAddr, closet, contract } = useContext(EthersContext);
-  const { data, loading: closetLoading } = useGetClosetDataQuery({
+  const { data: closetData, loading: closetLoading } =
+    useGetClosetDataSubscription({
+      variables: { id: signerAddr! },
+      skip: !signerAddr,
+    });
+  const { data: ratData, loading: ratsLoading } = useGetRatsSubscription({
     variables: { id: signerAddr! },
     skip: !signerAddr,
   });
@@ -64,11 +74,11 @@ export const ClosetContextProvider: FC = ({ children }) => {
   });
   const [cart, cartDispatch] = useReducer(closetCartReducer, {});
 
-  const rats = useMemo(() => data?.rats ?? [], [data?.rats]);
+  const rats = useMemo(() => ratData?.rats ?? [], [ratData?.rats]);
 
   const closetPieces = useMemo(
-    () => data?.closet_pieces ?? [],
-    [data?.closet_pieces],
+    () => closetData?.closet_pieces ?? [],
+    [closetData?.closet_pieces],
   );
 
   const sponsoredPieces = useMemo(
@@ -167,7 +177,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
   }, [currentRat, hidePiece]);
 
   const tryOnClothes = async (
-    pieceType: keyof GetClosetDataQuery['rats'][0],
+    pieceType: keyof GetRatsSubscription['rats'][0],
     piece: string,
   ) => {
     setLoading((l) => ({ ...l, mirror: true }));

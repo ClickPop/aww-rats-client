@@ -5,7 +5,10 @@ import { Rat, Closet } from 'smart-contracts/src/types/index';
 import { ICanvasOptions } from 'fabric/fabric-impl';
 import { Dispatch, SetStateAction } from 'react';
 import { SingleValue } from 'react-select';
-import { GetClosetDataQuery } from '~/schema/generated';
+import {
+  GetClosetDataSubscription,
+  GetRatsSubscription,
+} from '~/schema/generated';
 
 export * from 'smart-contracts/src/types';
 
@@ -70,18 +73,18 @@ export interface ClosetContextType {
   canvas: CombinedCanvasNullable;
   setCanvas: Dispatch<SetStateAction<CombinedCanvasNullable>>;
   loading: ClosetLoading;
-  rats: Array<GetClosetDataQuery['rats'][0] | null>;
-  currentRat: GetClosetDataQuery['rats'][0] | null;
+  rats: Array<GetRatsSubscription['rats'][0] | null>;
+  currentRat: GetRatsSubscription['rats'][0] | null;
   hidePiece: Record<string, boolean>;
   setHidePiece: Dispatch<SetStateAction<Record<string, boolean>>>;
   cart: ClosetCartState;
   cartDispatch: Dispatch<ClosetCartAction>;
   tryOnClothes: (
-    pieceType: keyof GetClosetDataQuery['rats'][0],
+    pieceType: keyof GetRatsSubscription['rats'][0],
     piece: string,
   ) => void;
-  closetPieces: GetClosetDataQuery['closet_pieces'];
-  sponsoredPieces: GetClosetDataQuery['closet_pieces'];
+  closetPieces: GetClosetDataSubscription['closet_pieces'];
+  sponsoredPieces: GetClosetDataSubscription['closet_pieces'];
   handleChangeRat: (rat: SingleValue<SelectRat>) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
 }
@@ -186,7 +189,7 @@ export interface ClosetUserTokenWithMeta extends ClosetUserToken {
   tokenMeta: Metadata;
 }
 
-export type CachedRat = GetClosetDataQuery['rats'][0];
+export type CachedRat = GetRatsSubscription['rats'][0];
 
 export type SelectRat = {
   label: string;

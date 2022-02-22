@@ -5,7 +5,10 @@ import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta, ReactSelectOption } from '~/types';
 import { titleCase } from '~/utils/string';
 import type { MouseEvent } from 'react';
-import { GetClosetDataQuery } from '~/schema/generated';
+import {
+  GetClosetDataSubscription,
+  GetRatsSubscription,
+} from '~/schema/generated';
 
 export const ClosetItemList = () => {
   enum FilterShowEnum {
@@ -61,9 +64,9 @@ export const ClosetItemList = () => {
   ) => {
     switch (state) {
       case FilterShowEnum.Unowned:
-        return (piece.owned.aggregate?.count ?? 0) > 0 ? false : true;
+        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? false : true;
       case FilterShowEnum.Owned:
-        return (piece.owned.aggregate?.count ?? 0) > 0 ? true : false;
+        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? true : false;
       case FilterShowEnum.All:
       default:
         return true;
@@ -77,9 +80,7 @@ export const ClosetItemList = () => {
         if (pieceType) {
           return {
             ...acc,
-            [pieceType]: [...(acc[pieceType] ?? []), curr].sort((a) =>
-              (a.owned.aggregate?.count ?? 0) > 0 ? -1 : 0,
-            ),
+            [pieceType]: [...(acc[pieceType] ?? []), curr],
           };
         }
         return acc;
@@ -189,14 +190,13 @@ export const ClosetItemList = () => {
 
               <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                 {sponsoredPieces
-                  .sort((a) => ((a.owned.aggregate?.count ?? 0) > 0 ? -1 : 0))
                   .filter((a) => filterShowMethod(a, filterShow))
                   .map((piece) => (
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
                       pieceType={
-                        piece.piece_type as keyof GetClosetDataQuery['rats'][0]
+                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
                       }
                     />
                   ))}
@@ -218,7 +218,7 @@ export const ClosetItemList = () => {
                       key={piece.id.toString()}
                       piece={piece}
                       pieceType={
-                        piece.piece_type as keyof GetClosetDataQuery['rats'][0]
+                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
                       }
                     />
                   ))}
