@@ -104,33 +104,26 @@ export const AttemptEncounterButton = () => {
       <Modal
         isCentered
         isOpen={result !== null}
-        size="xl"
-        onClose={() => setResult(null)}
-      >
-        <ModalOverlay
-          backdropFilter='blur(4px)'
-        />
+        size='xl'
+        onClose={() => setResult(null)}>
+        <ModalOverlay backdropFilter='blur(4px)' />
         <ModalContent
           bgColor={result ? 'green.50' : 'red.50'}
           color='gray.900'
           fontWeight='semibold'
           rounded='2xl'
-          overflow='hidden'
-        >
+          overflow='hidden'>
           <ModalCloseButton zIndex='5' />
 
-          <ModalHeader
-            p={0}
-            m={0}
-          >
-            <Image src={result ? SuccessImage : FailImage } alt='You won... or lost!'/>
+          <ModalHeader p={0} m={0}>
+            <Image
+              src={result ? SuccessImage : FailImage}
+              alt='You won... or lost!'
+            />
           </ModalHeader>
 
           <ModalBody pb={4}>
-            {result
-              ? selectedEncounter.win_text
-              : selectedEncounter.loss_text
-            }
+            {result ? selectedEncounter.win_text : selectedEncounter.loss_text}
           </ModalBody>
         </ModalContent>
       </Modal>
