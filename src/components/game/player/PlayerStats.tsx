@@ -30,17 +30,29 @@ export const PlayerStats = () => {
       fontWeight='semibold'
       p='2'>
       <Text>🐀 {player.id}</Text>
-      <Tooltip
-        placement='left'
-        isDisabled={player.energy === player.max_energy}
-        label={getTooltipText()}
-        shouldWrapChildren>
-        <Stat
-          label='Energy'
-          icon={GameIconTypes.Energy}
-          value={`${player.energy}/${player.max_energy}`}
-        />
-      </Tooltip>
+      <HStack gap={2}>
+        <Tooltip
+          placement='left'
+          label='Your earned but unclaimed tokens'
+          shouldWrapChildren>
+          <Stat
+            label='Reward'
+            icon={GameIconTypes.Reward}
+            value={player.tokens ?? 0}
+          />
+        </Tooltip>
+        <Tooltip
+          placement='left'
+          isDisabled={player.energy === player.max_energy}
+          label={getTooltipText()}
+          shouldWrapChildren>
+          <Stat
+            label='Energy'
+            icon={GameIconTypes.Energy}
+            value={`${player.energy}/${player.max_energy}`}
+          />
+        </Tooltip>
+      </HStack>
     </HStack>
   ) : null;
 };

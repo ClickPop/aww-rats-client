@@ -18,6 +18,7 @@ export const SelectedEncounter = () => {
         )}
         energy={selectedEncounter.energy_cost}
         strength={selectedEncounter.power}
+        reward={selectedEncounter.reward.tokens}
         encounterType={Encounter_Types_Enum.Solo}
       />
     </Box>
