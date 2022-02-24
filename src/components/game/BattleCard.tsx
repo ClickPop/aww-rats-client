@@ -97,22 +97,36 @@ export const BattleCard: FC<Props> = ({
 
         <Flex fontSize='sm' gap={4} mb={2}>
           {energy && (
-            <Stat
-              label='Energy'
-              icon={GameIconTypes.Energy}
-              value={energy}
-              showLabel={false}
-              bold
-            />
+            <Tooltip
+              hasArrow
+              placement='top'
+              label="The amount of energy it takes to attempt an encounter."
+              shouldWrapChildren
+            >
+              <Stat
+                label='Energy'
+                icon={GameIconTypes.Energy}
+                value={energy}
+                showLabel={false}
+                bold
+              />
+            </Tooltip>
           )}
           {strength && (
-            <Stat
-              label='Strength'
-              icon={GameIconTypes.Strength}
-              showLabel={false}
-              value={strength}
-              bold
-            />
+            <Tooltip
+              hasArrow
+              placement='top'
+              label="Think of this as the dice roll you have to beat with your team."
+              shouldWrapChildren
+            >
+              <Stat
+                label='Strength'
+                icon={GameIconTypes.Strength}
+                showLabel={false}
+                value={strength}
+                bold
+              />
+            </Tooltip>
           )}
           {attack && (
             <Stat
