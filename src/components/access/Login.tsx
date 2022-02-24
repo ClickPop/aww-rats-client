@@ -2,6 +2,7 @@ import { Button } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { SIGNER_MESSAGE } from '~/config/env';
+import { apolloClient } from '~/lib/graphql';
 import { useLoginMutation } from '~/schema/generated';
 
 const Login = () => {
@@ -43,8 +44,7 @@ const Login = () => {
         backgroundSize='600% 400%'
         _hover={{
           animation: 'encounterShimmer 4s ease infinite;',
-        }}
-      >
+        }}>
         Login
       </Button>
     </div>

@@ -96,7 +96,7 @@ export const ThumbCard: FC<ThumbCardProps> = ({
         />
       </AspectRatio>
 
-      <Box m={3} color='white' flex={1} align='left' my='auto'>
+      <Box m={3} color='white' flex={1} textAlign='left' my='auto'>
         {title && (
           <Heading as='h3' size='sm' mt={0} mb={2}>
             {title}

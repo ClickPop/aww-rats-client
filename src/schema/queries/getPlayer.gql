@@ -1,4 +1,4 @@
-subscription GetCurrentPlayer($id: String!) {
+query GetCurrentPlayer($id: String!) {
   players_by_pk(id: $id) {
     id
     energy

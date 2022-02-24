@@ -70,6 +70,7 @@ export interface EthersContextType extends EthersState {
   signerAddr?: string;
   isLoggedIn: boolean;
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
+  authLoading: boolean;
 }
 
 export interface ClosetContextType {
