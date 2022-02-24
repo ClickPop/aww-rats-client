@@ -1,4 +1,11 @@
-import { Box, Center, VStack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  VStack,
+  Text,
+  UnorderedList,
+  ListItem,
+} from '@chakra-ui/react';
 import React, { FC, useContext } from 'react';
 import { Image } from '~/components/shared/Image';
 import Login from '~/components/access/Login';
@@ -28,6 +35,7 @@ const AuthCookieRequired: FC = ({ children }) => {
 
   if (!isLoggedIn) {
     return (
+      <>
       <Box px={2} py={8}>
         <VStack
           alignItems='center'
@@ -45,22 +53,33 @@ const AuthCookieRequired: FC = ({ children }) => {
           px={4}
           rounded='xl'>
           <Image alt='The Rat Race' height='200px' src={RatRace} />
-          <RattributePill rattribute='Alpha' value={0.1} mb={2} />
-          <Text
-            align='center'
-            bg='darkAlpha.400'
+          <Login />
+          <Box
+            align='left'
+            bg='darkAlpha.500'
             color='white'
             fontSize='sm'
+            maxH='240px'
+            overflow='scroll'
             p={3}
-            rounded='lg'>
-            <strong>Release Notes:</strong> This is our very first alpha.
-            Don&apos;t be surprised if things are broken or don&apos;t work the
-            way you expect. Let us know of any bugs you find or ideas you have
-            in the discord.
-          </Text>
-          <Login />
+            rounded='lg'
+            mt={12}
+          >
+            <RattributePill rattribute='Alpha' value='0.1.1' mb={2} />
+            <Text mb={4}>
+              Things might broken or may not work the way you expect. Let us know about bugs or ideas the discord.
+            </Text>
+            <Text fontWeight='bold'>
+              02/24/2022
+            </Text>
+            <UnorderedList>
+              <ListItem>Begin tracking rewards people have earned for completing encounters. Not doing anything with this yet, but laying the groundwork.</ListItem>
+              <ListItem>Add tooltips to explain game features.</ListItem>
+            </UnorderedList>
+          </Box>
         </VStack>
       </Box>
+      </>
     );
   }
 

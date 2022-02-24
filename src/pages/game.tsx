@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import { RatRaceLayout } from '~/components/layout/RatRaceLayout';
 import { Box } from '@chakra-ui/react';
 import { SoloEncounterList } from '~/components/game/solo-encounters/SoloEncounterList';
+import { TutorialVideo } from '~/components/game/shared/TutorialVideo';
 import { GameContextProvider } from '~/components/context/GameContext';
 import { SelectedEncounter } from '~/components/game/SelectedEncounter';
 import AuthCookieRequired from '~/components/access/AuthCookieRequired';
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
     <RatRaceLayout className='min-h-screen rrPage--sewer-blueGray'>
       <Box pb={12}>
         <AuthCookieRequired>
+          <TutorialVideo />
           <GameContextProvider>
             <PlayerStats />
             <SoloEncounterList />
