@@ -20,6 +20,9 @@ fragment encounter on encounters {
   encounter_weaknesses {
     weakness
   }
+  reward {
+    tokens
+  }
 }
 
 fragment raid on raids {

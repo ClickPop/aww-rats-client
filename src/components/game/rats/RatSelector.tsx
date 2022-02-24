@@ -20,7 +20,7 @@ export const RatSelector = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [filterType, setFilterType] = useState<Rat_Types_Enum | undefined>();
   const filteredRats = useMemo(
-    () => ratSlots.filter((rat) => rat !== null),
+    () => ratSlots.filter((rat) => rat !== null && rat.rat),
     [ratSlots],
   );
 
