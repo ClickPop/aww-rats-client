@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import { IconButton, IconButtonProps, HTMLChakraProps } from '@chakra-ui/react';
-import { GameIconTypes, RatType } from '~/types/game';
+import { GameIconTypes } from '~/types/game';
 import { GameIcon } from '~/components/game/Icons';
+import { Rat_Types_Enum } from '~/schema/generated';
 
 interface Props extends HTMLChakraProps<'button'> {
-  ratType?: RatType;
+  ratType?: Rat_Types_Enum;
   label?: string;
   notActive?: boolean;
 }
