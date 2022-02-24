@@ -5,11 +5,13 @@ import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers } from 'ethers';
+import { useCheckAuthLazyQuery } from '~/schema/generated';
 
 const defaultEthersContext: EthersContextType = {
   isLoggedIn: false,
   setLoggedIn: () => {},
   connectToMetamask: () => undefined,
+  authLoading: true,
 };
 
 export const EthersContext = createContext(defaultEthersContext);
@@ -21,14 +23,24 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const etherState = useEthers();
 
+  const [checkAuth, { loading: authLoading }] = useCheckAuthLazyQuery();
+
   useEffect(() => {
     const { signer, connected, network, accounts } = etherState;
 
-    if (typeof document !== 'undefined') {
+    const handleCheckAuth = async () => {
+      const auth = await checkAuth();
       setLoggedIn(
-        !!(document?.cookie?.includes('wallet=') && connected && signer),
+        !!(
+          auth.data?.checkAuth?.role === 'user' &&
+          accounts?.[0] === auth.data?.checkAuth?.id &&
+          connected &&
+          signer
+        ),
       );
-    }
+    };
+
+    handleCheckAuth();
 
     (async () => {
       if (connected && network?.chainId === CHAIN_ID) {
@@ -59,7 +71,7 @@ export const EthersContextProvider: FC = ({ children }) => {
         setSignerAddr(accounts[0]);
       }
     })();
-  }, [etherState]);
+  }, [etherState, checkAuth]);
 
   const connectToMetamask = async () => {
     try {
@@ -79,6 +91,7 @@ export const EthersContextProvider: FC = ({ children }) => {
         closet,
         isLoggedIn,
         setLoggedIn,
+        authLoading,
       }}>
       {children}
     </EthersContext.Provider>

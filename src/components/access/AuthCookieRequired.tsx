@@ -8,7 +8,15 @@ import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Connect } from '~/components/shared/Connect';
 
 const AuthCookieRequired: FC = ({ children }) => {
-  const { isLoggedIn, signerAddr } = useContext(EthersContext);
+  const { isLoggedIn, signerAddr, authLoading } = useContext(EthersContext);
+
+  if (authLoading) {
+    return (
+      <Center py={20}>
+        <Text>Loading...</Text>
+      </Center>
+    );
+  }
 
   if (!signerAddr) {
     return (
@@ -36,30 +44,21 @@ const AuthCookieRequired: FC = ({ children }) => {
           py={8}
           px={4}
           gap={4}
-          rounded='2xl'
-        >
-          <Image
-            alt='The Rat Race'
-            height='200px'
-            src={RatRace}
-          />
-          <Box
-            align='center'
-          >
-            <RattributePill
-              rattribute='Alpha'
-              value={0.1}
-              mb={2}
-            />
+          rounded='2xl'>
+          <Image alt='The Rat Race' height='200px' src={RatRace} />
+          <Box textAlign='center'>
+            <RattributePill rattribute='Alpha' value={0.1} mb={2} />
             <Text
               align='left'
               bg='darkAlpha.400'
               color='white'
               fontSize='sm'
               p={3}
-              rounded='lg'
-            >
-              <strong>Release Notes:</strong> This is our very first alpha. Don&apos;t be surprised if things are broken or don&apos;t work the way you expect. Let us know of any bugs you find or ideas you have in the discord.
+              rounded='lg'>
+              <strong>Release Notes:</strong> This is our very first alpha.
+              Don&apos;t be surprised if things are broken or don&apos;t work
+              the way you expect. Let us know of any bugs you find or ideas you
+              have in the discord.
             </Text>
           </Box>
           <Login />

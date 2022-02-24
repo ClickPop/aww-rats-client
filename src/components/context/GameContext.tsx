@@ -13,8 +13,9 @@ import {
   GetActiveEncountersQuery,
   useGetRatsByWalletQuery,
   GetRatsByWalletQuery,
-  useGetCurrentPlayerSubscription,
-  GetCurrentPlayerSubscription,
+  useGetCurrentPlayerQuery,
+  GetCurrentPlayerQuery,
+  GetCurrentPlayerDocument,
 } from '~/schema/generated';
 import { getCachedRatUrl } from '~/utils/getCachedImageUrl';
 
@@ -37,7 +38,7 @@ type defaultContext = {
   >;
   selectRatIndex: number | null;
   setSelectRatIndex: Dispatch<SetStateAction<number | null>>;
-  player?: GetCurrentPlayerSubscription['players_by_pk'];
+  player?: GetCurrentPlayerQuery['players_by_pk'];
 };
 
 export const GameContext = createContext<defaultContext>({
@@ -59,7 +60,6 @@ export const GameContext = createContext<defaultContext>({
 
 export const GameContextProvider: FC = ({ children }) => {
   const { signerAddr, isLoggedIn } = useContext(EthersContext);
-  console.log(signerAddr);
   const ratResult = useGetRatsByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,
@@ -72,10 +72,26 @@ export const GameContextProvider: FC = ({ children }) => {
     Array<GetRatsByWalletQuery['rats'][0] | null>
   >([]);
   const [selectRatIndex, setSelectRatIndex] = useState<number | null>(null);
-  const { data, error } = useGetCurrentPlayerSubscription({
+  const {
+    data,
+    error,
+    loading: playerLoading,
+    subscribeToMore,
+  } = useGetCurrentPlayerQuery({
     variables: { id: signerAddr! },
     skip: !isLoggedIn && !signerAddr,
   });
+
+  useEffect(() => {
+    if (signerAddr && isLoggedIn) {
+      subscribeToMore({
+        variables: {
+          id: signerAddr,
+        },
+        document: GetCurrentPlayerDocument,
+      });
+    }
+  }, [signerAddr, isLoggedIn, subscribeToMore]);
 
   useEffect(() => {
     if (selectedEncounter) {
