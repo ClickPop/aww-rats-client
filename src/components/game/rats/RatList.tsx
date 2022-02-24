@@ -35,10 +35,6 @@ export const RatList: FC<Props> = ({ drawer, filterByType }) => {
   const getCardState = (id: BigNumberish) =>
     alreadySelected(id) ? 'selected' : undefined;
 
-  console.log(
-    filterByType,
-    data?.rats.map((r) => r.type),
-  );
   return (
     <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
