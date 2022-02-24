@@ -14,27 +14,31 @@ import React, { FC, useContext } from 'react';
 import { GameContext } from '~/components/context/GameContext';
 import { RatThumbCard } from '~/components/game/RatThumbCard';
 import { Rat_Types_Enum } from '~/schema/generated';
-import { Metadata, RatWithMeta } from '~/types';
 import { stringToRatType } from '~/utils/enums';
 
 type Props = {
   drawer: Omit<DrawerProps, 'children'>;
+  filterByType?: Rat_Types_Enum;
 };
 
-export const RatList: FC<Props> = ({ drawer }) => {
+export const RatList: FC<Props> = ({ drawer, filterByType }) => {
   const {
     ratResult: { data, loading },
-    selectedRats,
-    setSelectedRats,
+    ratSlots,
+    setRatSlots,
     selectRatIndex,
   } = useContext(GameContext);
 
   const alreadySelected = (id: BigNumberish) =>
-    !!selectedRats.find((r) => r?.id === id);
+    !!ratSlots.find((slot) => slot.rat?.id === id);
 
   const getCardState = (id: BigNumberish) =>
     alreadySelected(id) ? 'selected' : undefined;
 
+  console.log(
+    filterByType,
+    data?.rats.map((r) => r.type),
+  );
   return (
     <Drawer {...drawer} placement='right' size='sm'>
       <DrawerOverlay />
@@ -58,48 +62,63 @@ export const RatList: FC<Props> = ({ drawer }) => {
                   background: 'var(--chakra-colors-purple-700)',
                 }}
                 onClick={() => {
-                  setSelectedRats(selectedRats.map(() => null));
+                  setRatSlots(
+                    ratSlots.map((slot) => ({ ...slot, rat: undefined })),
+                  );
                   drawer.onClose();
                 }}>
                 Clear Party
               </Button>
-              {data.rats.map((rat) =>
-                rat ? (
-                  <RatThumbCard
-                    mb={2}
-                    ml={0}
-                    w='100%'
-                    key={`${
-                      BigNumber.isBigNumber(rat.id)
-                        ? rat.id.toString()
-                        : String(rat.id)
-                    }-${rat.name}`}
-                    ratType={stringToRatType(rat.type ?? '') as Rat_Types_Enum}
-                    image={`${rat.image!}`}
-                    cunning={rat.cunning}
-                    cuteness={rat.cuteness}
-                    rattitude={rat.rattitude}
-                    state={getCardState(rat.id)}
-                    imageProps={{ loading: 'eager' }}
-                    onClick={() => {
-                      if (!alreadySelected(rat.id)) {
-                        setSelectedRats((st) =>
-                          st.map((r, i) => (i === selectRatIndex ? rat : r)),
-                        );
-                      } else {
-                        setSelectedRats((st) =>
-                          st.map((r, i) =>
-                            i === selectRatIndex && r && r.id === rat.id
-                              ? null
-                              : r,
-                          ),
-                        );
+              {data.rats
+                .filter(
+                  (r) =>
+                    !filterByType ||
+                    filterByType ===
+                      (stringToRatType(r.type ?? '') as Rat_Types_Enum),
+                )
+                .map((rat) =>
+                  rat ? (
+                    <RatThumbCard
+                      mb={2}
+                      ml={0}
+                      w='100%'
+                      key={`${
+                        BigNumber.isBigNumber(rat.id)
+                          ? rat.id.toString()
+                          : String(rat.id)
+                      }-${rat.name}`}
+                      ratType={
+                        stringToRatType(rat.type ?? '') as Rat_Types_Enum
                       }
-                      drawer.onClose();
-                    }}
-                  />
-                ) : null,
-              )}
+                      image={`${rat.image!}`}
+                      cunning={rat.cunning}
+                      cuteness={rat.cuteness}
+                      rattitude={rat.rattitude}
+                      state={getCardState(rat.id)}
+                      imageProps={{ loading: 'eager' }}
+                      onClick={() => {
+                        if (!alreadySelected(rat.id)) {
+                          setRatSlots((st) =>
+                            st.map((r, i) =>
+                              i === selectRatIndex ? { ...r, rat } : r,
+                            ),
+                          );
+                        } else {
+                          setRatSlots((st) =>
+                            st.map((slot, i) =>
+                              i === selectRatIndex &&
+                              slot &&
+                              slot.rat?.id === rat.id
+                                ? { ...slot, rat: undefined }
+                                : slot,
+                            ),
+                          );
+                        }
+                        drawer.onClose();
+                      }}
+                    />
+                  ) : null,
+                )}
             </>
           ) : (
             !loading && <Box>No rats</Box>

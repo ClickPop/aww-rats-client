@@ -43,24 +43,21 @@ const AuthCookieRequired: FC = ({ children }) => {
           maxW='480px'
           py={8}
           px={4}
-          gap={4}
-          rounded='2xl'>
+          rounded='xl'>
           <Image alt='The Rat Race' height='200px' src={RatRace} />
-          <Box textAlign='center'>
-            <RattributePill rattribute='Alpha' value={0.1} mb={2} />
-            <Text
-              align='left'
-              bg='darkAlpha.400'
-              color='white'
-              fontSize='sm'
-              p={3}
-              rounded='lg'>
-              <strong>Release Notes:</strong> This is our very first alpha.
-              Don&apos;t be surprised if things are broken or don&apos;t work
-              the way you expect. Let us know of any bugs you find or ideas you
-              have in the discord.
-            </Text>
-          </Box>
+          <RattributePill rattribute='Alpha' value={0.1} mb={2} />
+          <Text
+            align='center'
+            bg='darkAlpha.400'
+            color='white'
+            fontSize='sm'
+            p={3}
+            rounded='lg'>
+            <strong>Release Notes:</strong> This is our very first alpha.
+            Don&apos;t be surprised if things are broken or don&apos;t work the
+            way you expect. Let us know of any bugs you find or ideas you have
+            in the discord.
+          </Text>
           <Login />
         </VStack>
       </Box>
