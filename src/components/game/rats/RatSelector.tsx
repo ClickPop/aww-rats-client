@@ -5,6 +5,7 @@ import {
   Text,
   useDisclosure,
   Heading,
+  Tooltip,
 } from '@chakra-ui/react';
 import React, { useContext, useMemo, useState } from 'react';
 import { GameContext } from '~/components/context/GameContext';
@@ -83,10 +84,17 @@ export const RatSelector = () => {
           Your Team
         </Heading>
         <Text fontSize='sm'>
-          <Box mr='0.5rem' as='span' role='img' aria-label='rat-power'>
-            💪
-          </Box>
-          {minRoll} - {maxRoll}
+          <Tooltip
+            hasArrow
+            placement='top'
+            label="The power of your team + any weaknesses and - any resistances from the encounter. Think of this as your range of dice rolls and compare this to the strenth of the encounter above."
+            shouldWrapChildren
+          >
+            <Box mr='0.5rem' as='span' role='img' aria-label='rat-power'>
+              💪
+            </Box>
+            {minRoll} - {maxRoll}
+          </Tooltip>
         </Text>
         <HStack my={2}>
           <RattributePill
