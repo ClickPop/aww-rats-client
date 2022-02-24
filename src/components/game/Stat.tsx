@@ -19,7 +19,7 @@ export const Stat: FC<Props> = ({
   bold,
   ...rest
 }) => (
-  <Flex {...rest} lineHeight='1.2em'>
+  <Flex cursor='default' {...rest} lineHeight='1.2em'>
     {icon && <GameIcon icon={icon} mr={1} boxSize='1em' my='auto' />}
     {(showLabel || !icon) && (
       <Text as='span' fontWeight={bold ? 'bold' : 'normal'}>
