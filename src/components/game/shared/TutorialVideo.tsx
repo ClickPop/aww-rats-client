@@ -1,20 +1,23 @@
 import React from 'react';
 import {
-    Box,
     Modal,
     ModalOverlay,
     ModalContent,
     ModalCloseButton,
     ModalBody,
+    useDisclosure,
+    Button,
 } from '@chakra-ui/react';
 import {
     QuestionIcon,
 } from '@chakra-ui/icons';
 
 export const TutorialVideo = () => {
+    const { isOpen:modalIsOpen, onClose:modalClose, onOpen:modalOpen } = useDisclosure();
     return (
         <>
-            <Box
+            <Button
+                onClick={modalOpen}
                 bottom={5}
                 color='purple.200'
                 position='absolute'
@@ -29,10 +32,11 @@ export const TutorialVideo = () => {
                     h={10}
                     w={10}
                 />
-            </Box>
+            </Button>
             <Modal
                 isCentered
-                isOpen={true}
+                isOpen={modalIsOpen}
+                onClose={modalClose}
                 size='xl'
             >
                 <ModalOverlay backdropFilter='blur(4px)' />
@@ -41,7 +45,7 @@ export const TutorialVideo = () => {
                     fontWeight='semibold'
                     rounded='2xl'
                     overflow='hidden'>
-                    <ModalCloseButton zIndex={10} />
+                    <ModalCloseButton />
                     <ModalBody pb={4}>
                         Testing
                     </ModalBody>
