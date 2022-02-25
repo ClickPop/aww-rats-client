@@ -6,20 +6,23 @@ import { Image } from '~/components/shared/Image';
 import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
 import { Link } from '~/components/shared/Link';
-import { GetClosetDataQuery } from '~/schema/generated';
+import {
+  GetClosetDataSubscription,
+  GetRatsSubscription,
+} from '~/schema/generated';
 
 type Props = {
-  piece: GetClosetDataQuery['closet_pieces'][0];
-  pieceType: keyof GetClosetDataQuery['rats'][0];
+  piece: GetClosetDataSubscription['closet_pieces'][0];
+  pieceType: keyof GetRatsSubscription['rats'][0];
 };
 
 export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const { currentRat, tryOnClothes } = useContext(ClosetContext);
 
   const minted = piece.minted.aggregate?.sum?.amount ?? 0;
-  const owned = piece.owned.aggregate?.count ?? 0;
+  const owned = piece.owned.aggregate?.sum?.amount ?? 0;
 
-  const ownedItem = (piece.owned.aggregate?.count ?? 0) > 0;
+  const ownedItem = (piece.owned.aggregate?.sum?.amount ?? 0) > 0;
   const tokenMaxReached = piece.max_tokens <= minted;
   const noMaxTokens = piece.max_tokens === 0;
   const walletMaxReached = piece.max_per_wallet <= owned;

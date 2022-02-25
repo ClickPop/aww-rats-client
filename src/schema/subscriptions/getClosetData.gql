@@ -1,30 +1,4 @@
-query GetClosetData($id: String!) {
-  rats(where: { owner: { _eq: $id } }) {
-    id
-    name
-    image
-    accessory
-    background
-    color
-    ears
-    eyes
-    generation
-    glasses
-    hand
-    hat
-    head
-    markings
-    pet
-    shirt
-    snout
-    tail
-    torso
-    type
-    cunning
-    cuteness
-    rattitude
-  }
-
+subscription GetClosetData($id: String!) {
   closet_pieces(
     where: {
       _or: [
@@ -32,6 +6,7 @@ query GetClosetData($id: String!) {
         { closet_tokens: { owner: { _eq: $id } } }
       ]
     }
+    order_by: [{ user_closet_tokens_count: desc_nulls_last }, { id: asc }]
   ) {
     id
     image
@@ -45,9 +20,12 @@ query GetClosetData($id: String!) {
     piece_type
     sponsor
     sponsor_url
+    user_closet_tokens_count
     owned: closet_tokens_aggregate(where: { owner: { _eq: $id } }) {
       aggregate {
-        count
+        sum {
+          amount
+        }
       }
     }
     minted: closet_tokens_aggregate {

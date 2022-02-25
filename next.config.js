@@ -27,4 +27,7 @@ module.exports = {
       'storage.googleapis.com',
     ],
   },
+  experimental: {
+    esmExternals: false,
+  },
 };
