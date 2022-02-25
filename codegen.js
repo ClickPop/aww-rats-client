@@ -14,18 +14,27 @@ module.exports = {
       },
     },
   ],
-  documents: ['./src/**/*.ts', './src/**/*.gql'],
   overwrite: true,
   generates: {
     './src/schema/generated.ts': {
+      documents: ['./src/**/*.ts', './src/**/*.gql'],
       plugins: [
-        'typescript',
-        'typescript-operations',
-        'typescript-react-apollo',
+        {
+          typescript: {
+            skipTypename: true,
+          },
+        },
+        {
+          'typescript-operations': {
+            skipTypename: true,
+          },
+        },
+        {
+          'typescript-react-apollo': {
+            skipTypename: true,
+          },
+        },
       ],
-    },
-    './src/schema/graphql.schema.json': {
-      plugins: ['introspection'],
     },
   },
 };
