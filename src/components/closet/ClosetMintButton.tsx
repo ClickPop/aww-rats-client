@@ -39,11 +39,10 @@ export const ClosetMintButton: FC<Props> = ({
     if (closet && signer && signerAddr && provider) {
       setLoading('INITIAL');
       const wethAddr = await closet.erc20();
-      console.log(wethAddr);
       const weth = new ethers.Contract(wethAddr, ERC20ABI.abi, signer) as ERC20;
       const cost = piece.cost;
       const allowance = await weth.allowance(signerAddr, closet.address);
-      if (cost.gt(0) && allowance < cost) {
+      if (cost > 0 && allowance.lt(cost)) {
         setLoading('APPROVAL');
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
         if (bal.lt(cost)) {

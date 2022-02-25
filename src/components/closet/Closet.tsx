@@ -47,7 +47,7 @@ const Closet = () => {
               <CheeseLoader className='w-20 h-20' />
             </div>
           )}
-          {provider && provider.network.chainId === CHAIN_ID && (
+          {provider && provider?.network?.chainId === CHAIN_ID && (
             <ClosetItemList />
           )}
         </div>
