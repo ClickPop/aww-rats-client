@@ -59,13 +59,13 @@ const AuthCookieRequired: FC = ({ children }) => {
             bg='darkAlpha.500'
             color='white'
             fontSize='sm'
-            maxH='240px'
-            overflow='scroll'
+            maxH='200px'
+            overflowY='scroll'
             p={3}
             rounded='lg'
             mt={12}
           >
-            <RattributePill rattribute='Alpha' value='0.1.1' mb={2} />
+            <RattributePill rattribute='Alpha' value={0.1} mb={2} />
             <Text mb={4}>
               Things might broken or may not work the way you expect. Let us know about bugs or ideas the discord.
             </Text>
