@@ -13,9 +13,8 @@ import {
   GetActiveEncountersQuery,
   useGetRatsByWalletQuery,
   GetRatsByWalletQuery,
-  useGetCurrentPlayerQuery,
-  GetCurrentPlayerQuery,
-  GetCurrentPlayerDocument,
+  useGetCurrentPlayerSubscription,
+  GetCurrentPlayerSubscription,
   Rat_Types_Enum,
 } from '~/schema/generated';
 import { getCachedRatUrl } from '~/utils/getCachedImageUrl';
@@ -43,7 +42,7 @@ type defaultContext = {
   setRatSlots: Dispatch<SetStateAction<Array<RatSlot>>>;
   selectRatIndex: number | null;
   setSelectRatIndex: Dispatch<SetStateAction<number | null>>;
-  player?: GetCurrentPlayerQuery['players_by_pk'];
+  player?: GetCurrentPlayerSubscription['players_by_pk'];
 };
 
 export const GameContext = createContext<defaultContext>({
@@ -79,22 +78,10 @@ export const GameContextProvider: FC = ({ children }) => {
     data,
     error,
     loading: playerLoading,
-    subscribeToMore,
-  } = useGetCurrentPlayerQuery({
+  } = useGetCurrentPlayerSubscription({
     variables: { id: signerAddr! },
     skip: !isLoggedIn && !signerAddr,
   });
-
-  useEffect(() => {
-    if (signerAddr && isLoggedIn) {
-      subscribeToMore({
-        variables: {
-          id: signerAddr,
-        },
-        document: GetCurrentPlayerDocument,
-      });
-    }
-  }, [signerAddr, isLoggedIn, subscribeToMore]);
 
   useEffect(() => {
     if (selectedEncounter) {

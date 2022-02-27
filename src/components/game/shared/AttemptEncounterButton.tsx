@@ -105,7 +105,8 @@ export const AttemptEncounterButton = () => {
         isCentered
         isOpen={result !== null}
         size='xl'
-        onClose={() => setResult(null)}>
+        onClose={() => setResult(null)}
+      >
         <ModalOverlay backdropFilter='blur(4px)' />
         <ModalContent
           bgColor={result ? 'green.50' : 'red.50'}

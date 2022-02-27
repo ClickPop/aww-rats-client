@@ -119,6 +119,7 @@ export const EncountersTable: FC = () => {
                             ...{ ...entry, __typename: undefined },
                             gauntlet_encounters: undefined,
                             raids: undefined,
+                            reward: { data: { tokens: entry.reward.tokens } },
                             encounter_resistances: {
                               data: entry.encounter_resistances.map((e) => ({
                                 ...e,
