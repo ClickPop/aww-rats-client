@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import React, { ChangeEventHandler, useState } from 'react';
+import { Link } from '~/components/shared/Link';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import { Metadata, OpenSeaAttribute } from '~/types';
 
@@ -101,13 +102,13 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
     <LayoutNoFooter className='min-h-screen bg-gray-800 text-white'>
       <div className='pt-24 mb-8 max-w-lg mx-auto'>
         <h1 className='text-2xl font-bold mb-4'>
-          OpenSea(JSON) to Third Web(CSV) Converter
+          OpenSea(JSON) to thirdweb(CSV) Converter
         </h1>
         <p className="mb-2">
-          We&apos;re building tools to help creators create NFTs and build communities. We&apos;re also big fans of <a href="https://thirdweb.com/">thridweb</a> as a tool for creators to create NFTs on their own contract.
+          We&apos;re building tools to help creators create NFTs and build communities. We&apos;re also big fans of thirdweb as a tool for creators to create NFTs on their own contract.
         </p>
         <p>
-          You can use the converter to Convert the JSON file(s) you export from OpenSea to a csv that can be imported directly into thirdweb.
+          You can use the converter to convert the JSON file(s) you export from OpenSea to a .csv that can be imported directly into thirdweb.
         </p>
       </div>
       <div className='flex flex-col max-w-lg mx-auto'>
@@ -130,6 +131,39 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
             disabled={!!error}>
             Download CSV
           </button>
+        </div>
+      </div>
+      <div className='mb-8 mt-8 max-w-lg mx-auto'>
+        <h1 className='text-2xl font-bold mb-4'>
+          Resources
+        </h1>
+        <p className="mb-4">
+          Get started with {' '}
+          <Link
+            href='https://thirdweb.com/'
+            className='underline'>
+            thirdweb
+          </Link>.
+        </p>
+        <p className="mb-4">
+          View OpenSea&apos;s metadata standards to format your JSON files:{' '}
+          <Link
+            href='https://docs.opensea.io/docs/metadata-standards'
+            className='underline'>
+            Review
+          </Link>.
+        </p>
+        <div className='mb-8 max-w-lg'>
+        <p>
+          <iframe
+            width="560"
+            height="315"
+            className="mb-8"
+            src="https://www.youtube.com/embed/EvnRI6fsglc"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+          </iframe>
+        </p>
         </div>
       </div>
     </LayoutNoFooter>
