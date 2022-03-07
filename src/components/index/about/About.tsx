@@ -25,6 +25,7 @@ export const About = () => {
           </p>
           <p className='my-4'>
             Owning a Rat gives you access to all sorts of fun benefits immediately, such as:
+            </p>
             <ul className='list-disc pl-8 mb-8'>
               <li className='list-item mb-2'>
                 Free access forever to any {' '}
@@ -48,16 +49,16 @@ export const About = () => {
                 Monthly airdrops of additional NFTs as we continue to expand the Aww, Rats! universe (coming soon)
               </li>
               <li className='list-item mb-2'>
-                *Note: Owning a {' '}
+                <strong>Note:</strong> Owning a {' '}
                 <Link
                   href='https://opensea.io/collection/aww-rats?search[sortAscending]=true&search[sortBy]=PRICE&search[stringTraits][0][name]=Generation&search[stringTraits][0][values][0]=Big%20Cheese&search[toggles][0]=BUY_NOW'
-                  className='underline text-blue-500'>
+                  className='underline text-blue-500'
+                  target='_blank'>
                   Big Cheese Rat
                 </Link>
                 {' '}will give you access to our most exclusive Discord channel where you can participate in regular voting on Roadmap items, receive early access to product development, and more.
               </li>
             </ul>
-          </p>
         </div>
         <Image
           className='w-full h-full'

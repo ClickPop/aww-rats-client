@@ -35,7 +35,7 @@ export const Header = () => {
             href='https://www.youtube.com/channel/UCVgncISRbHeQMjO-Vv8VUaA'
             className='mr-4 quicklogos'
             target='_blank'>
-            <YouTubeLogo width={36} height={36} />
+            <YouTubeLogo width={24} height={24} />
           </MenuLink>
           <MenuLink
             href='https://www.twitch.tv/awwratspack'

@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import React, { ChangeEventHandler, useState } from 'react';
 import { Link } from '~/components/shared/Link';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
+import { AspectRatio } from '@chakra-ui/react';
 import { Metadata, OpenSeaAttribute } from '~/types';
 
 const parseHeaders = (data: Record<string, unknown>): Set<string> => {
@@ -155,14 +156,13 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
         </p>
         <div className='mb-8 max-w-lg'>
         <p>
-          <iframe
-            width="560"
-            height="315"
-            className="mb-8"
-            src="https://www.youtube.com/embed/EvnRI6fsglc"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-          </iframe>
+          <AspectRatio maxW='560px' ratio={16 / 9}>
+            <iframe
+              title='How to Deploy an NFT Drop Using a Smart Contract - no coding needed! (ThirdWeb.com)'
+              src='https://www.youtube.com/embed/EvnRI6fsglc'
+              allowFullScreen
+            />
+          </AspectRatio>
         </p>
         </div>
       </div>
