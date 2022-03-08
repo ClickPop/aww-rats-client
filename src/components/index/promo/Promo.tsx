@@ -13,8 +13,8 @@ export const Promo = () => {
       />
       <div className='m-4 md:mr-8 text-left'>
         <p className='mb-4'>
-          If you only have ETH on the Ethereum network, you will need to
-          bridge it to Polygon. {''}
+          If you only have ETH on the Ethereum network, you will need to bridge
+          it to Polygon. {''}
           <a
             className='underline mb-2 text-xs'
             href='https://go.awwrats.com/how-to-buy'

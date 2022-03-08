@@ -1,0 +1,27 @@
+subscription GetRats($id: String!) {
+  rats(where: { owner: { _eq: $id } }, order_by: { id: asc }) {
+    id
+    name
+    image
+    accessory
+    background
+    color
+    ears
+    eyes
+    generation
+    glasses
+    hand
+    hat
+    head
+    markings
+    pet
+    shirt
+    snout
+    tail
+    torso
+    type
+    cunning
+    cuteness
+    rattitude
+  }
+}

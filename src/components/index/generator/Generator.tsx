@@ -20,13 +20,13 @@ export const Generator = () => {
           sure the new critter is unique it to the blockchain.
         </p>
         <p className='mb-8'>
-          The best part? {' '}
+          The best part?{' '}
           <Link
             href='https://github.com/ClickPop/looks'
             className='underline text-blue-500'>
             The geneRATor is opensource
-          </Link>
-          {' '}and can be accessed by anybody for their own use.
+          </Link>{' '}
+          and can be accessed by anybody for their own use.
         </p>
 
         <h3 className='mb-4 text-2xl font-bold'>Rat Pieces</h3>
