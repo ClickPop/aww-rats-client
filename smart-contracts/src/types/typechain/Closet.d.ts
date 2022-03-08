@@ -18,7 +18,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface ClosetInterface extends ethers.utils.Interface {
   functions: {
@@ -386,6 +386,184 @@ interface ClosetInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "WalletMaxChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WalletUnbanned"): EventFragment;
 }
+
+export type AdminChangedEvent = TypedEvent<
+  [string, string] & { previousAdmin: string; newAdmin: string }
+>;
+
+export type ApprovalForAllEvent = TypedEvent<
+  [string, string, boolean] & {
+    account: string;
+    operator: string;
+    approved: boolean;
+  }
+>;
+
+export type BatchTokensBurnedEvent = TypedEvent<
+  [BigNumber[], BigNumber[], string] & {
+    tokenIds: BigNumber[];
+    amounts: BigNumber[];
+    wallet: string;
+  }
+>;
+
+export type BatchTokensMintedEvent = TypedEvent<
+  [BigNumber[], BigNumber[], string] & {
+    tokenIds: BigNumber[];
+    amounts: BigNumber[];
+    wallet: string;
+  }
+>;
+
+export type BeaconUpgradedEvent = TypedEvent<[string] & { beacon: string }>;
+
+export type ChangeERC20ContractEvent = TypedEvent<
+  [string] & { erc20Addr: string }
+>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
+
+export type TokenTypeAddedEvent = TypedEvent<
+  [
+    BigNumber,
+    [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string,
+      [BigNumber, BigNumber]
+    ] & {
+      name: string;
+      cost: BigNumber;
+      maxTokens: BigNumber;
+      maxPerWallet: BigNumber;
+      active: boolean;
+      revShareAddress: string;
+      revShareAmount: [BigNumber, BigNumber];
+    }
+  ] & {
+    tokenId: BigNumber;
+    token: [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string,
+      [BigNumber, BigNumber]
+    ] & {
+      name: string;
+      cost: BigNumber;
+      maxTokens: BigNumber;
+      maxPerWallet: BigNumber;
+      active: boolean;
+      revShareAddress: string;
+      revShareAmount: [BigNumber, BigNumber];
+    };
+  }
+>;
+
+export type TokenTypeChangedEvent = TypedEvent<
+  [
+    BigNumber,
+    [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string,
+      [BigNumber, BigNumber]
+    ] & {
+      name: string;
+      cost: BigNumber;
+      maxTokens: BigNumber;
+      maxPerWallet: BigNumber;
+      active: boolean;
+      revShareAddress: string;
+      revShareAmount: [BigNumber, BigNumber];
+    }
+  ] & {
+    tokenId: BigNumber;
+    token: [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string,
+      [BigNumber, BigNumber]
+    ] & {
+      name: string;
+      cost: BigNumber;
+      maxTokens: BigNumber;
+      maxPerWallet: BigNumber;
+      active: boolean;
+      revShareAddress: string;
+      revShareAmount: [BigNumber, BigNumber];
+    };
+  }
+>;
+
+export type TokensBurnedEvent = TypedEvent<
+  [BigNumber, BigNumber, string] & {
+    tokenId: BigNumber;
+    amount: BigNumber;
+    wallet: string;
+  }
+>;
+
+export type TokensMintedEvent = TypedEvent<
+  [BigNumber, BigNumber, string] & {
+    tokenId: BigNumber;
+    amount: BigNumber;
+    wallet: string;
+  }
+>;
+
+export type TransferBatchEvent = TypedEvent<
+  [string, string, string, BigNumber[], BigNumber[]] & {
+    operator: string;
+    from: string;
+    to: string;
+    ids: BigNumber[];
+    values: BigNumber[];
+  }
+>;
+
+export type TransferSingleEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber] & {
+    operator: string;
+    from: string;
+    to: string;
+    id: BigNumber;
+    value: BigNumber;
+  }
+>;
+
+export type URIEvent = TypedEvent<
+  [string, BigNumber] & { value: string; id: BigNumber }
+>;
+
+export type UpgradedEvent = TypedEvent<[string] & { implementation: string }>;
+
+export type WalletBannedEvent = TypedEvent<
+  [string, string] & { wallet: string; reason: string }
+>;
+
+export type WalletMaxChangedEvent = TypedEvent<
+  [string, BigNumber, BigNumber] & {
+    wallet: string;
+    tokenId: BigNumber;
+    max: BigNumber;
+  }
+>;
+
+export type WalletUnbannedEvent = TypedEvent<[string] & { wallet: string }>;
 
 export class Closet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1519,12 +1697,29 @@ export class Closet extends BaseContract {
   };
 
   filters: {
+    "AdminChanged(address,address)"(
+      previousAdmin?: null,
+      newAdmin?: null
+    ): TypedEventFilter<
+      [string, string],
+      { previousAdmin: string; newAdmin: string }
+    >;
+
     AdminChanged(
       previousAdmin?: null,
       newAdmin?: null
     ): TypedEventFilter<
       [string, string],
       { previousAdmin: string; newAdmin: string }
+    >;
+
+    "ApprovalForAll(address,address,bool)"(
+      account?: string | null,
+      operator?: string | null,
+      approved?: null
+    ): TypedEventFilter<
+      [string, string, boolean],
+      { account: string; operator: string; approved: boolean }
     >;
 
     ApprovalForAll(
@@ -1536,7 +1731,25 @@ export class Closet extends BaseContract {
       { account: string; operator: string; approved: boolean }
     >;
 
+    "BatchTokensBurned(uint256[],uint256[],address)"(
+      tokenIds?: null,
+      amounts?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber[], BigNumber[], string],
+      { tokenIds: BigNumber[]; amounts: BigNumber[]; wallet: string }
+    >;
+
     BatchTokensBurned(
+      tokenIds?: null,
+      amounts?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber[], BigNumber[], string],
+      { tokenIds: BigNumber[]; amounts: BigNumber[]; wallet: string }
+    >;
+
+    "BatchTokensMinted(uint256[],uint256[],address)"(
       tokenIds?: null,
       amounts?: null,
       wallet?: null
@@ -1554,13 +1767,29 @@ export class Closet extends BaseContract {
       { tokenIds: BigNumber[]; amounts: BigNumber[]; wallet: string }
     >;
 
+    "BeaconUpgraded(address)"(
+      beacon?: string | null
+    ): TypedEventFilter<[string], { beacon: string }>;
+
     BeaconUpgraded(
       beacon?: string | null
     ): TypedEventFilter<[string], { beacon: string }>;
 
+    "ChangeERC20Contract(address)"(
+      erc20Addr?: null
+    ): TypedEventFilter<[string], { erc20Addr: string }>;
+
     ChangeERC20Contract(
       erc20Addr?: null
     ): TypedEventFilter<[string], { erc20Addr: string }>;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
 
     OwnershipTransferred(
       previousOwner?: string | null,
@@ -1570,7 +1799,99 @@ export class Closet extends BaseContract {
       { previousOwner: string; newOwner: string }
     >;
 
+    "TokenTypeAdded(uint256,tuple)"(
+      tokenId?: null,
+      token?: null
+    ): TypedEventFilter<
+      [
+        BigNumber,
+        [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        }
+      ],
+      {
+        tokenId: BigNumber;
+        token: [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        };
+      }
+    >;
+
     TokenTypeAdded(
+      tokenId?: null,
+      token?: null
+    ): TypedEventFilter<
+      [
+        BigNumber,
+        [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        }
+      ],
+      {
+        tokenId: BigNumber;
+        token: [
+          string,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          string,
+          [BigNumber, BigNumber]
+        ] & {
+          name: string;
+          cost: BigNumber;
+          maxTokens: BigNumber;
+          maxPerWallet: BigNumber;
+          active: boolean;
+          revShareAddress: string;
+          revShareAmount: [BigNumber, BigNumber];
+        };
+      }
+    >;
+
+    "TokenTypeChanged(uint256,tuple)"(
       tokenId?: null,
       token?: null
     ): TypedEventFilter<
@@ -1662,7 +1983,25 @@ export class Closet extends BaseContract {
       }
     >;
 
+    "TokensBurned(uint256,uint256,address)"(
+      tokenId?: null,
+      amount?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; amount: BigNumber; wallet: string }
+    >;
+
     TokensBurned(
+      tokenId?: null,
+      amount?: null,
+      wallet?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; amount: BigNumber; wallet: string }
+    >;
+
+    "TokensMinted(uint256,uint256,address)"(
       tokenId?: null,
       amount?: null,
       wallet?: null
@@ -1680,6 +2019,23 @@ export class Closet extends BaseContract {
       { tokenId: BigNumber; amount: BigNumber; wallet: string }
     >;
 
+    "TransferBatch(address,address,address,uint256[],uint256[])"(
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
+      ids?: null,
+      values?: null
+    ): TypedEventFilter<
+      [string, string, string, BigNumber[], BigNumber[]],
+      {
+        operator: string;
+        from: string;
+        to: string;
+        ids: BigNumber[];
+        values: BigNumber[];
+      }
+    >;
+
     TransferBatch(
       operator?: string | null,
       from?: string | null,
@@ -1694,6 +2050,23 @@ export class Closet extends BaseContract {
         to: string;
         ids: BigNumber[];
         values: BigNumber[];
+      }
+    >;
+
+    "TransferSingle(address,address,address,uint256,uint256)"(
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
+      id?: null,
+      value?: null
+    ): TypedEventFilter<
+      [string, string, string, BigNumber, BigNumber],
+      {
+        operator: string;
+        from: string;
+        to: string;
+        id: BigNumber;
+        value: BigNumber;
       }
     >;
 
@@ -1714,19 +2087,42 @@ export class Closet extends BaseContract {
       }
     >;
 
+    "URI(string,uint256)"(
+      value?: null,
+      id?: BigNumberish | null
+    ): TypedEventFilter<[string, BigNumber], { value: string; id: BigNumber }>;
+
     URI(
       value?: null,
       id?: BigNumberish | null
     ): TypedEventFilter<[string, BigNumber], { value: string; id: BigNumber }>;
 
+    "Upgraded(address)"(
+      implementation?: string | null
+    ): TypedEventFilter<[string], { implementation: string }>;
+
     Upgraded(
       implementation?: string | null
     ): TypedEventFilter<[string], { implementation: string }>;
+
+    "WalletBanned(address,string)"(
+      wallet?: null,
+      reason?: null
+    ): TypedEventFilter<[string, string], { wallet: string; reason: string }>;
 
     WalletBanned(
       wallet?: null,
       reason?: null
     ): TypedEventFilter<[string, string], { wallet: string; reason: string }>;
+
+    "WalletMaxChanged(address,uint256,uint256)"(
+      wallet?: null,
+      tokenId?: null,
+      max?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { wallet: string; tokenId: BigNumber; max: BigNumber }
+    >;
 
     WalletMaxChanged(
       wallet?: null,
@@ -1736,6 +2132,10 @@ export class Closet extends BaseContract {
       [string, BigNumber, BigNumber],
       { wallet: string; tokenId: BigNumber; max: BigNumber }
     >;
+
+    "WalletUnbanned(address)"(
+      wallet?: null
+    ): TypedEventFilter<[string], { wallet: string }>;
 
     WalletUnbanned(
       wallet?: null

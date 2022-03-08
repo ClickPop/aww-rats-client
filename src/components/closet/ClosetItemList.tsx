@@ -5,6 +5,10 @@ import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetTokenWithMeta, ReactSelectOption } from '~/types';
 import { titleCase } from '~/utils/string';
 import type { MouseEvent } from 'react';
+import {
+  GetClosetDataSubscription,
+  GetRatsSubscription,
+} from '~/schema/generated';
 
 export const ClosetItemList = () => {
   enum FilterShowEnum {
@@ -31,8 +35,7 @@ export const ClosetItemList = () => {
     Accessory = 'accessory',
     Hat = 'hat',
   }
-  const { loading, closetPieces, sponsoredPieces, ownedItems } =
-    useContext(ClosetContext);
+  const { loading, closetPieces, sponsoredPieces } = useContext(ClosetContext);
   const [filterShow, setFilterShow] = useState<FilterShowEnum>(
     FilterShowEnum.All,
   );
@@ -56,14 +59,14 @@ export const ClosetItemList = () => {
   };
 
   const filterShowMethod = (
-    piece: ClosetTokenWithMeta,
+    piece: typeof closetPieces[0],
     state: FilterShowEnum,
   ) => {
     switch (state) {
       case FilterShowEnum.Unowned:
-        return ownedItems[piece.id.toString()] ? false : true;
+        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? false : true;
       case FilterShowEnum.Owned:
-        return ownedItems[piece.id.toString()] ? true : false;
+        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? true : false;
       case FilterShowEnum.All:
       default:
         return true;
@@ -72,21 +75,17 @@ export const ClosetItemList = () => {
 
   const piecesByType = useMemo(
     () =>
-      Object.values(closetPieces).reduce((acc, curr) => {
-        const pieceType = curr.tokenMeta.attributes.find(
-          (a) => a.trait_type === 'Piece Type',
-        )?.value;
+      closetPieces.reduce((acc, curr) => {
+        const pieceType = curr.piece_type;
         if (pieceType) {
           return {
             ...acc,
-            [pieceType]: [...(acc[pieceType] ?? []), curr].sort((a) =>
-              ownedItems[a.id.toString()] ? -1 : 0,
-            ),
+            [pieceType]: [...(acc[pieceType] ?? []), curr],
           };
         }
         return acc;
-      }, {} as Record<string, ClosetTokenWithMeta[]>),
-    [closetPieces, ownedItems],
+      }, {} as Record<string, typeof closetPieces>),
+    [closetPieces],
   );
 
   const pieceTypes = useMemo(() => {
@@ -100,7 +99,7 @@ export const ClosetItemList = () => {
 
   return (
     <div>
-      {!loading.pieces && (
+      {!loading.data && (
         <div className='filters flex space-x-4'>
           <div className='inline-flex rounded-md shadow-sm' role='group'>
             <button
@@ -163,7 +162,7 @@ export const ClosetItemList = () => {
 
       <div
         className={`flex flex-col w-full ${
-          loading.pieces
+          loading.data
             ? 'opacity-0 pointer-events-none overflow-hidden'
             : 'opacity-1 pointer-events-auto'
         }`}>
@@ -190,17 +189,14 @@ export const ClosetItemList = () => {
               </p>
 
               <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                {Object.values(sponsoredPieces)
-                  .sort((a) => (ownedItems[a.id.toString()] ? -1 : 0))
+                {sponsoredPieces
                   .filter((a) => filterShowMethod(a, filterShow))
                   .map((piece) => (
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
                       pieceType={
-                        (piece.tokenMeta.attributes.find(
-                          (a) => a.trait_type === 'Piece Type',
-                        )?.value as string) ?? ''
+                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
                       }
                     />
                   ))}
@@ -221,7 +217,9 @@ export const ClosetItemList = () => {
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
-                      pieceType={pieceType}
+                      pieceType={
+                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
+                      }
                     />
                   ))}
               </div>

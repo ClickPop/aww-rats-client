@@ -14,6 +14,7 @@ This is a mono repo housing both the web-client and smart-contracts used by Aww,
 
 1. Run `yarn install-all` to install the deps for both parts of the repo.
 2. Make sure you have a file called `.env.local` with the required env vars.
+3. Run `yarn build` in order to compile the 'smart-contracts' folder.
 4. Run `yarn dev` to start the development server (This will also run the Solidity compiler in watch mode).
 5. Navigate your browser to http://localhost:3000.
 

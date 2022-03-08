@@ -43,3 +43,10 @@
         width: 220px;
     }
 }
+
+/* Extra small devices (phones, 640px and down, will only show the OpenSea logo in the header) */
+@media only screen and (max-width: 40em) {
+  .quicklogos {
+    display:none;
+  }
+}
