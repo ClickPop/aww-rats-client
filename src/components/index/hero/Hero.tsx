@@ -23,9 +23,12 @@ export const Hero = () => {
           placeholder='blur'
         />
         <div className='text-center justify-center items-center max-w-4xl mx-auto px-4'>
-          <h1 className='text-4xl mb-2 font-bold'>
+          <h1 className='text-4xl mb-8 font-bold'>
             An NFT Project By Creators, for Creators.
           </h1>
+          <p className='text-2xl mb-8'>
+            Minting is currently LIVE. But act fast - less than 30% are left!
+          </p>
         </div>
         <div className='w-screen my-12 overflow-hidden'>
           <div className='flex flex-row items-center justify-center overflow-hidden'>

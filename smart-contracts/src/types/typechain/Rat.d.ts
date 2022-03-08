@@ -18,7 +18,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface RatInterface extends ethers.utils.Interface {
   functions: {
@@ -344,6 +344,47 @@ interface RatInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "TokenTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
+
+export type ApprovalEvent = TypedEvent<
+  [string, string, BigNumber] & {
+    owner: string;
+    approved: string;
+    tokenId: BigNumber;
+  }
+>;
+
+export type ApprovalForAllEvent = TypedEvent<
+  [string, string, boolean] & {
+    owner: string;
+    operator: string;
+    approved: boolean;
+  }
+>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
+
+export type TokenBurnedEvent = TypedEvent<
+  [BigNumber, string] & { tokenId: BigNumber; tokenOwner: string }
+>;
+
+export type TokenMintedEvent = TypedEvent<[BigNumber] & { tokenId: BigNumber }>;
+
+export type TokenTransferredEvent = TypedEvent<
+  [BigNumber, string, string, BigNumber[], BigNumber[], string[]] & {
+    tokenId: BigNumber;
+    newOwner: string;
+    oldOwner: string;
+    newOwnerTokens: BigNumber[];
+    oldOwnerTokens: BigNumber[];
+    tokenOwners: string[];
+  }
+>;
+
+export type TransferEvent = TypedEvent<
+  [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
+>;
 
 export class Rat extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -899,6 +940,15 @@ export class Rat extends BaseContract {
   };
 
   filters: {
+    "Approval(address,address,uint256)"(
+      owner?: string | null,
+      approved?: string | null,
+      tokenId?: BigNumberish | null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { owner: string; approved: string; tokenId: BigNumber }
+    >;
+
     Approval(
       owner?: string | null,
       approved?: string | null,
@@ -906,6 +956,15 @@ export class Rat extends BaseContract {
     ): TypedEventFilter<
       [string, string, BigNumber],
       { owner: string; approved: string; tokenId: BigNumber }
+    >;
+
+    "ApprovalForAll(address,address,bool)"(
+      owner?: string | null,
+      operator?: string | null,
+      approved?: null
+    ): TypedEventFilter<
+      [string, string, boolean],
+      { owner: string; operator: string; approved: boolean }
     >;
 
     ApprovalForAll(
@@ -917,12 +976,28 @@ export class Rat extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
     ): TypedEventFilter<
       [string, string],
       { previousOwner: string; newOwner: string }
+    >;
+
+    "TokenBurned(uint256,address)"(
+      tokenId?: null,
+      tokenOwner?: null
+    ): TypedEventFilter<
+      [BigNumber, string],
+      { tokenId: BigNumber; tokenOwner: string }
     >;
 
     TokenBurned(
@@ -933,9 +1008,32 @@ export class Rat extends BaseContract {
       { tokenId: BigNumber; tokenOwner: string }
     >;
 
+    "TokenMinted(uint256)"(
+      tokenId?: null
+    ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
     TokenMinted(
       tokenId?: null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
+    "TokenTransferred(uint256,address,address,uint256[],uint256[],address[])"(
+      tokenId?: null,
+      newOwner?: null,
+      oldOwner?: null,
+      newOwnerTokens?: null,
+      oldOwnerTokens?: null,
+      tokenOwners?: null
+    ): TypedEventFilter<
+      [BigNumber, string, string, BigNumber[], BigNumber[], string[]],
+      {
+        tokenId: BigNumber;
+        newOwner: string;
+        oldOwner: string;
+        newOwnerTokens: BigNumber[];
+        oldOwnerTokens: BigNumber[];
+        tokenOwners: string[];
+      }
+    >;
 
     TokenTransferred(
       tokenId?: null,
@@ -954,6 +1052,15 @@ export class Rat extends BaseContract {
         oldOwnerTokens: BigNumber[];
         tokenOwners: string[];
       }
+    >;
+
+    "Transfer(address,address,uint256)"(
+      from?: string | null,
+      to?: string | null,
+      tokenId?: BigNumberish | null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { from: string; to: string; tokenId: BigNumber }
     >;
 
     Transfer(
