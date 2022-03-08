@@ -1,0 +1,39 @@
+subscription GetClosetData($id: String!) {
+  closet_pieces(
+    where: {
+      _or: [
+        { active: { _eq: true } }
+        { closet_tokens: { owner: { _eq: $id } } }
+      ]
+    }
+    order_by: [{ user_closet_tokens_count: desc_nulls_last }, { id: asc }]
+  ) {
+    id
+    image
+    active
+    name
+    cost
+    max_tokens
+    max_per_wallet
+    collection
+    description
+    piece_type
+    sponsor
+    sponsor_url
+    user_closet_tokens_count
+    owned: closet_tokens_aggregate(where: { owner: { _eq: $id } }) {
+      aggregate {
+        sum {
+          amount
+        }
+      }
+    }
+    minted: closet_tokens_aggregate {
+      aggregate {
+        sum {
+          amount
+        }
+      }
+    }
+  }
+}

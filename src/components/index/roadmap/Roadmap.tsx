@@ -15,14 +15,15 @@ export const Roadmap = () => {
         />
         <h2 className='text-4xl mb-3 font-bold'>Roadmap</h2>
         <p className='mb-8'>
-          A brand new Roadmap for 2022 is coming soon! Have questions or suggestions?
-          Join our {' '}
+          A brand new Roadmap for 2022 is coming soon! Have questions or
+          suggestions? Join our{' '}
           <Link
             href='https://discord.gg/awwrats'
             className='underline text-blue-500'>
             Discord
-          </Link>
-        {' '} and let us know. Until then, here&apos;s a recap of just some of the most notable milestones...
+          </Link>{' '}
+          and let us know. Until then, here&apos;s a recap of just some of the
+          most notable milestones...
         </p>
         {/** @ts-ignore */}
 
@@ -43,81 +44,83 @@ export const Roadmap = () => {
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Oct 4, 2021</td>
               <td className='text-left px-4 py-2'>
-                Aww, Rats! officially launches on Polygon! {' '}
+                Aww, Rats! officially launches on Polygon!{' '}
                 <Link
                   href='https://opensea.io/collection/aww-rats'
                   className='underline text-blue-500'>
                   The collection
-                </Link>
-                {' '}is born.
+                </Link>{' '}
+                is born.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Oct 11, 2021</td>
               <td className='text-left px-4 py-2'>
-                Our first dApp, {' '}
-                <Link
-                  href='/closet'
-                  className='underline text-blue-500'>
+                Our first dApp,{' '}
+                <Link href='/closet' className='underline text-blue-500'>
                   the Closet
                 </Link>
-                , was released. Dress up your Rats in fun clothes, accessories, backgrounds, and save it as a brand new Profile Picture.
+                , was released. Dress up your Rats in fun clothes, accessories,
+                backgrounds, and save it as a brand new Profile Picture.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Nov 5, 2021</td>
               <td className='text-left px-4 py-2'>
-                Our second dApp, {' '}
-                <Link
-                  href='/den'
-                  className='underline text-blue-500'>
+                Our second dApp,{' '}
+                <Link href='/den' className='underline text-blue-500'>
                   the Den
                 </Link>
-                , was released. Showcase any NFTs you have (Rats or otherwise) in your very own special alleyway in the Aww, Rats! sewer.
+                , was released. Showcase any NFTs you have (Rats or otherwise)
+                in your very own special alleyway in the Aww, Rats! sewer.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Dec 6, 2021</td>
               <td className='text-left px-4 py-2'>
-                Version 2.0 of {' '}
-                <Link
-                  href='/closet'
-                  className='underline text-blue-500'>
+                Version 2.0 of{' '}
+                <Link href='/closet' className='underline text-blue-500'>
                   the Closet
-                </Link>
-              {' '} dApp is released, starting the Aww, Rats! partnership program.
-                Any artist can now contribute to the Aww, Rats! Closet dApp in order to have their designs minted as NFTs,
-                earn passive revenue on each sale, and have their creations purchased and shown off by any Rat holder.
+                </Link>{' '}
+                dApp is released, starting the Aww, Rats! partnership program.
+                Any artist can now contribute to the Aww, Rats! Closet dApp in
+                order to have their designs minted as NFTs, earn passive revenue
+                on each sale, and have their creations purchased and shown off
+                by any Rat holder.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Dec 17, 2021</td>
               <td className='text-left px-4 py-2'>
-                Aww, Rats! makes the {' '}
+                Aww, Rats! makes the{' '}
                 <Link
                   href='https://github.com/ClickPop/aww-rats-client'
                   className='underline text-blue-500'>
                   main GitHub repo
-                </Link>
-                {' '}opensource. It is now freely accessible for anybody to review, contribute to, or fork as a starting point for their own project.
+                </Link>{' '}
+                opensource. It is now freely accessible for anybody to review,
+                contribute to, or fork as a starting point for their own
+                project.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Jan 29, 2022</td>
               <td className='text-left px-4 py-2'>
-                Aww, Rats! teams up with the nonprofit organization {' '}
+                Aww, Rats! teams up with the nonprofit organization{' '}
                 <Link
                   href='https://www.heartsinmotion.org/him-music-in-motion-33.htm'
                   className='underline text-blue-500'>
                   Music in Motion
-                </Link>
-                {' '}raising over $1,000 for the charity in one weekend.
+                </Link>{' '}
+                raising over $1,000 for the charity in one weekend.
               </td>
             </tr>
             <tr className='border-b border-blue-300 border-solid'>
               <td className='text-left px-4 py-2'>Feb 23, 2022</td>
               <td className='text-left px-4 py-2'>
-                Our third dApp, the Rat Race, opens for Alpha testing. The Rat Race is an interactive RPG-style game, requiring you to put your Rattributes to the test in order to complete various challenges.
+                Our third dApp, the Rat Race, opens for Alpha testing. The Rat
+                Race is an interactive RPG-style game, requiring you to put your
+                Rattributes to the test in order to complete various challenges.
               </td>
             </tr>
           </tbody>

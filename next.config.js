@@ -22,4 +22,7 @@ module.exports = {
   images: {
     domains: ['development.awwrats.com', 'www.awwrats.com', 'awwrats.com'],
   },
+  experimental: {
+    esmExternals: false,
+  },
 };
