@@ -6,45 +6,36 @@ import { Image } from '~/components/shared/Image';
 import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
 import { Link } from '~/components/shared/Link';
+import {
+  GetClosetDataSubscription,
+  GetRatsSubscription,
+} from '~/schema/generated';
 
 type Props = {
-  piece: ClosetTokenWithMeta;
-  pieceType: string;
+  piece: GetClosetDataSubscription['closet_pieces'][0];
+  pieceType: keyof GetRatsSubscription['rats'][0];
 };
 
 export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
-  const {
-    currentRat,
-    ownedItems,
-    tryOnClothes,
-    loadedTokenImages,
-    setLoadedTokenImages,
-    tokenCounts: { owned, minted },
-  } = useContext(ClosetContext);
+  const { currentRat, tryOnClothes } = useContext(ClosetContext);
 
-  const ownedItem = ownedItems[piece.id.toString()];
-  const tokenMaxReached = piece.token.maxTokens.lte(
-    minted[piece.id.toString()] ?? 0,
-  );
-  const noMaxTokens = piece.token.maxTokens.eq(0);
-  const walletMaxReached = piece.token.maxPerWallet.lte(
-    owned[piece.id.toString()] ?? 0,
-  );
-  const noWalletMax = piece.token.maxPerWallet.eq(0);
+  const minted = piece.minted.aggregate?.sum?.amount ?? 0;
+  const owned = piece.owned.aggregate?.sum?.amount ?? 0;
 
-  const selected =
-    currentRat?.properties.get(pieceType) === piece.id.toString();
+  const ownedItem = (piece.owned.aggregate?.sum?.amount ?? 0) > 0;
+  const tokenMaxReached = piece.max_tokens <= minted;
+  const noMaxTokens = piece.max_tokens === 0;
+  const walletMaxReached = piece.max_per_wallet <= owned;
+  const noWalletMax = piece.max_per_wallet === 0;
 
-  if (!ownedItem && !piece.token.active) {
+  const selected = currentRat?.[pieceType] === piece.id;
+
+  if (!ownedItem && !piece.active) {
     return null;
   }
 
-  const sponsorName = piece.tokenMeta.attributes.find(
-    (a) => a.trait_type === 'Sponsor',
-  )?.value;
-  const sponsorURL = piece.tokenMeta.attributes.find(
-    (a) => a.trait_type === 'Sponsor URL',
-  )?.value;
+  const sponsorName = piece.sponsor;
+  const sponsorURL = piece.sponsor_url;
 
   return (
     <div
@@ -53,7 +44,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden relative`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
-          src={`/closet/image-thumbnails/${piece.tokenMeta.image
+          src={`/closet/image-thumbnails/${piece.image
             .split('/')
             .slice(-1)[0]
             .replace('.png', '.webp')}`}
@@ -64,20 +55,14 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }`}
           onClick={() => {
             if (ownedItem) {
-              tryOnClothes(pieceType, piece.id.toString());
-            }
-          }}
-          onLoad={(e) => {
-            const src = e.currentTarget.src;
-            if (src.includes('/_next/image')) {
-              setLoadedTokenImages([...loadedTokenImages, e.currentTarget.src]);
+              tryOnClothes(pieceType, piece.id);
             }
           }}
         />
-        {owned[piece.id.toString()].gt(0) && (
+        {owned > 0 && (
           <div className='w-full h-full relative'>
             <span className='text-xs font-bold absolute inline top-1 right-1 w-fit h-fit text-white bg-purple-700 px-2 py-1 rounded-xl bg-opacity-80'>
-              <>You own {owned[piece.id.toString()].toString()}</>
+              <>You own {owned}</>
             </span>
           </div>
         )}
@@ -87,7 +72,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         <div className='px-2'>
           <div className='text-gray-400'>Name</div>
           <h5>
-            {piece.token.name}{' '}
+            {piece.name}{' '}
             {sponsorName && sponsorURL && (
               <div>
                 by{' '}
@@ -106,23 +91,20 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           <div className='text-gray-400'>Price</div>
           <div className='font-bold'>
             <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
-            {ethers.utils.formatEther(piece.token.cost)}
+            {ethers.utils.formatEther(piece.cost)}
           </div>
         </div>
       </div>
 
-      {piece.token.maxTokens.gt(0) && (
+      {piece.max_tokens > 0 && (
         <div className='px-2 py-2 border-t border-gray-800'>
-          {piece.token.maxTokens.toNumber() -
-            minted[piece.id.toString()].toNumber()}{' '}
-          / {piece.token.maxTokens.toString()} left
+          {piece.max_tokens - minted} / {piece.max_tokens} left
         </div>
       )}
 
       <div>
         <ClosetMintButton
           piece={piece}
-          ownedItem={ownedItem}
           tokenMaxReached={tokenMaxReached}
           walletMaxReached={walletMaxReached}
           noMaxTokens={noMaxTokens}

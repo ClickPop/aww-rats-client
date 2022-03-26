@@ -15,7 +15,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface ERC1967UpgradeUpgradeableInterface extends ethers.utils.Interface {
   functions: {};
@@ -30,6 +30,14 @@ interface ERC1967UpgradeUpgradeableInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "BeaconUpgraded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Upgraded"): EventFragment;
 }
+
+export type AdminChangedEvent = TypedEvent<
+  [string, string] & { previousAdmin: string; newAdmin: string }
+>;
+
+export type BeaconUpgradedEvent = TypedEvent<[string] & { beacon: string }>;
+
+export type UpgradedEvent = TypedEvent<[string] & { implementation: string }>;
 
 export class ERC1967UpgradeUpgradeable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -79,6 +87,14 @@ export class ERC1967UpgradeUpgradeable extends BaseContract {
   callStatic: {};
 
   filters: {
+    "AdminChanged(address,address)"(
+      previousAdmin?: null,
+      newAdmin?: null
+    ): TypedEventFilter<
+      [string, string],
+      { previousAdmin: string; newAdmin: string }
+    >;
+
     AdminChanged(
       previousAdmin?: null,
       newAdmin?: null
@@ -87,9 +103,17 @@ export class ERC1967UpgradeUpgradeable extends BaseContract {
       { previousAdmin: string; newAdmin: string }
     >;
 
+    "BeaconUpgraded(address)"(
+      beacon?: string | null
+    ): TypedEventFilter<[string], { beacon: string }>;
+
     BeaconUpgraded(
       beacon?: string | null
     ): TypedEventFilter<[string], { beacon: string }>;
+
+    "Upgraded(address)"(
+      implementation?: string | null
+    ): TypedEventFilter<[string], { implementation: string }>;
 
     Upgraded(
       implementation?: string | null

@@ -27,8 +27,8 @@ export const RAT_CLOSET_PLACEHOLDER = '/images/closet/rat-placeholder.png';
 export const LAYER_ORDER = [
   'background',
   'tail',
-  'ears',
   'pet',
+  'ears',
   'hand',
   'color',
   'markings',
