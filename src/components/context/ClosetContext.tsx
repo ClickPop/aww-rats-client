@@ -25,7 +25,6 @@ import { SingleValue } from 'react-select';
 import { EthersContext } from '~/components/context/EthersContext';
 import { closetCartReducer } from '~/reducers/closetCart';
 import {
-  GetClosetDataSubscription,
   useGetClosetDataSubscription,
   GetRatsSubscription,
   useGetRatsSubscription,
@@ -107,6 +106,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
         }
 
         if (val.startsWith('data:')) {
+          console.log(val);
           return val;
         }
 
@@ -123,7 +123,14 @@ export const ClosetContextProvider: FC = ({ children }) => {
           LAYER_ORDER.forEach((layer) => {
             const val = rat[layer as keyof CachedRat] as string;
             if (!!val && val !== 'none' && !hidePiece[layer]) {
-              layers.push([layer, `${val}`.toLowerCase().replace(/ /g, '-')]);
+              layers.push([
+                layer,
+                `${
+                  val.startsWith('data:')
+                    ? val
+                    : val.toLowerCase().replace(/ /g, '-')
+                }`,
+              ]);
             }
             if (layer === 'torso' || layer === 'head') {
               layers.push([layer, 'base']);
@@ -215,6 +222,19 @@ export const ClosetContextProvider: FC = ({ children }) => {
             );
           }
         }
+      } else {
+        const old = new Map(oldClothes);
+        old.set(pieceType, currentRat[pieceType] ?? 'none');
+        setOldClothes(old);
+        await handleChangeRat(
+          currentRat
+            ? {
+                label: currentRat.id,
+                value: currentRat.id,
+                rat: { ...currentRat, [pieceType]: piece },
+              }
+            : null,
+        );
       }
       setLoading((l) => ({ ...l, mirror: false }));
     }
