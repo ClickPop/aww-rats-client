@@ -1,0 +1,5 @@
+mutation attemptSoloEncounter($encounter_id: Int!, $rat_ids: [String!]!) {
+  attempt_solo_encounter(encounter_id: $encounter_id, rat_ids: $rat_ids) {
+    result
+  }
+}

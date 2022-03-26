@@ -1,0 +1,24 @@
+mutation upsertEncounters($encounters: [encounters_insert_input!]!) {
+  insert_encounters(
+    objects: $encounters
+    on_conflict: {
+      constraint: encounters_pkey
+      update_columns: [
+        power
+        energy_cost
+        description
+        win_text
+        loss_text
+        image
+        name
+        reward_id
+        max_rats
+        active
+      ]
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

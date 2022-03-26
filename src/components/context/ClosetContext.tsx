@@ -51,7 +51,6 @@ const defaultClosetContext: ClosetContextType = {
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
-
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
   const { signerAddr, closet, contract } = useContext(EthersContext);

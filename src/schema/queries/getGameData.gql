@@ -1,0 +1,142 @@
+fragment reward on rewards {
+  id
+}
+
+fragment encounter on encounters {
+  id
+  name
+  energy_cost
+  power
+  active
+  description
+  max_rats
+  image
+  win_text
+  loss_text
+  encounter_type
+  encounter_resistances {
+    resistance
+  }
+  encounter_weaknesses {
+    weakness
+  }
+  reward {
+    tokens
+  }
+}
+
+fragment raid on raids {
+  id
+  active
+  end_timestamp
+  start_timestamp
+  reward_id
+  result
+}
+
+query getGameData(
+  $encounterLimit: Int
+  $encounterOffset: Int
+  $encounterOrderBy: [encounters_order_by!]
+  $encounterWhere: encounters_bool_exp
+  $gauntletLimit: Int
+  $gauntletOffset: Int
+  $gauntletOrderBy: [gauntlets_order_by!]
+  $gauntletWhere: gauntlets_bool_exp
+  $raidLimit: Int
+  $raidOffset: Int
+  $raidOrderBy: [raids_order_by!]
+  $raidWhere: raids_bool_exp
+) {
+  encounters(
+    limit: $encounterLimit
+    offset: $encounterOffset
+    order_by: $encounterOrderBy
+    where: $encounterWhere
+  ) {
+    ...encounter
+    reward_id
+    gauntlet_encounters {
+      gauntlet_id
+      position
+    }
+    raids {
+      ...raid
+    }
+  }
+
+  gauntlets(
+    limit: $gauntletLimit
+    offset: $gauntletOffset
+    order_by: $gauntletOrderBy
+    where: $gauntletWhere
+  ) {
+    id
+    active
+    description
+    image
+    win_text
+    loss_text
+    reward_id
+    gauntlet_encounters {
+      encounter {
+        ...encounter
+      }
+      position
+    }
+  }
+
+  raids(
+    limit: $raidLimit
+    offset: $raidOffset
+    order_by: $raidOrderBy
+    where: $raidWhere
+  ) {
+    ...raid
+    encounter {
+      ...encounter
+    }
+  }
+
+  rewards {
+    id
+    tokens
+    closet_tokens
+  }
+
+  encounter_types {
+    encounter_type
+  }
+
+  rattributes {
+    rattribute
+  }
+
+  rat_types {
+    rat_type
+  }
+
+  encounters_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  gauntlets_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  raids_aggregate {
+    aggregate {
+      count
+    }
+  }
+
+  rewards_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
