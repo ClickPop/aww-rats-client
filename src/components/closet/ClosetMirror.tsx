@@ -63,7 +63,7 @@ export const ClosetMirror = () => {
       {!loading.data &&
         rats &&
         provider &&
-        provider.network.chainId === CHAIN_ID && (
+        provider?.network?.chainId === CHAIN_ID && (
           <Select
             className='select-search mx-auto w-80 my-4'
             options={rats.map((rat) =>
