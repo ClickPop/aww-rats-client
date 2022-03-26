@@ -13,6 +13,7 @@ const wsLink = new WebSocketLink({
   )}/v1/graphql`,
   options: {
     reconnect: true,
+    lazy: true,
   },
   webSocketImpl: isServer() ? ws : undefined,
 });

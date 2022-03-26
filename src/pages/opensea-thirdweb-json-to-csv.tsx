@@ -107,12 +107,13 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
         </h1>
         <p className='mb-2'>
           We&apos;re building tools to help creators create NFTs and build
-          communities. We&apos;re also big fans of thirdweb as a tool for
-          creators to create NFTs on their own contract.
+          communities. We&apos;re also big fans of{' '}
+          <a href='https://thirdweb.com/'>thridweb</a> as a tool for creators to
+          create NFTs on their own contract.
         </p>
         <p>
-          You can use the converter to convert the JSON file(s) you export from
-          OpenSea to a .csv that can be imported directly into thirdweb.
+          You can use the converter to Convert the JSON file(s) you export from
+          OpenSea to a csv that can be imported directly into thirdweb.
         </p>
       </div>
       <div className='flex flex-col max-w-lg mx-auto'>
