@@ -121,12 +121,12 @@ export const ClosetContextProvider: FC = ({ children }) => {
         if (rat) {
           const layers: [string, string][] = [];
           LAYER_ORDER.forEach((layer) => {
-            const val = rat[layer as keyof CachedRat] as string;
+            const val = `${rat[layer as keyof CachedRat]}`;
             if (!!val && val !== 'none' && !hidePiece[layer]) {
               layers.push([
                 layer,
                 `${
-                  val.startsWith('data:')
+                  val?.startsWith('data:')
                     ? val
                     : val.toLowerCase().replace(/ /g, '-')
                 }`,
