@@ -2,6 +2,8 @@ import React from 'react';
 import { Image } from '~/components/shared/Image';
 import { Link } from '~/components/shared/Link';
 import logo from '~/assets/images/aww-rats-avatar.png';
+import { YouTubeLogo } from '~/components/shared/svg/YouTubeLogo';
+import { TwitchLogo } from '~/components/shared/svg/TwitchLogo';
 import { OpenSeaLogo } from '~/components/shared/svg/OpenSeaLogo';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
@@ -26,11 +28,20 @@ export const Header = () => {
           <MenuLink to='generator' href='/' className='mr-4' offset={-25}>
             GeneRATor
           </MenuLink>
-          <MenuLink to='faqs' href='/' className='mr-4' offset={-25}>
-            FAQs
-          </MenuLink>
           <MenuLink href='/sewer' className='mr-4'>
             Sewer (dApps)
+          </MenuLink>
+          <MenuLink
+            href='https://www.youtube.com/channel/UCVgncISRbHeQMjO-Vv8VUaA'
+            className='mr-4 quicklogos'
+            target='_blank'>
+            <YouTubeLogo width={24} height={24} />
+          </MenuLink>
+          <MenuLink
+            href='https://www.twitch.tv/awwratspack'
+            className='mr-4 quicklogos'
+            target='_blank'>
+            <TwitchLogo width={24} height={24} />
           </MenuLink>
           <MenuLink
             href='https://opensea.io/collection/aww-rats'
@@ -40,11 +51,14 @@ export const Header = () => {
           </MenuLink>
           <MenuLink
             href='https://www.twitter.com/awwratspack'
-            className='mr-4'
+            className='mr-4 quicklogos'
             target='_blank'>
             <TwitterLogo width={24} height={24} />
           </MenuLink>
-          <MenuLink href='https://discord.gg/awwrats' target='_blank'>
+          <MenuLink
+            href='https://discord.gg/awwrats'
+            className='mr-4 quicklogos'
+            target='_blank'>
             <DiscordLogo width={24} height={24} />
           </MenuLink>
         </div>

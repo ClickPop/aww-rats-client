@@ -47,3 +47,8 @@ src/schema/requests.ts
 graphql.schema.json
 
 tsconfig.tsbuildinfo
+<<<<<<< HEAD
+=======
+
+gcloud-key.json
+>>>>>>> development

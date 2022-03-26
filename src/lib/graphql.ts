@@ -1,6 +1,5 @@
 import { ApolloClient, InMemoryCache, split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { HASURA_BASE_URL } from '~/config/env';
 import * as ws from 'ws';

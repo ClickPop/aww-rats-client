@@ -1,6 +1,8 @@
 import { NextPage } from 'next';
 import React, { ChangeEventHandler, useState } from 'react';
+import { Link } from '~/components/shared/Link';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
+import { AspectRatio } from '@chakra-ui/react';
 import { Metadata, OpenSeaAttribute } from '~/types';
 
 const parseHeaders = (data: Record<string, unknown>): Set<string> => {
@@ -101,7 +103,7 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
     <LayoutNoFooter className='min-h-screen bg-gray-800 text-white'>
       <div className='pt-24 mb-8 max-w-lg mx-auto'>
         <h1 className='text-2xl font-bold mb-4'>
-          OpenSea(JSON) to Third Web(CSV) Converter
+          OpenSea(JSON) to thirdweb(CSV) Converter
         </h1>
         <p className='mb-2'>
           We&apos;re building tools to help creators create NFTs and build
@@ -134,6 +136,36 @@ const OpenSeaThirdWebJsonToCsv: NextPage = () => {
             disabled={!!error}>
             Download CSV
           </button>
+        </div>
+      </div>
+      <div className='mb-8 mt-8 max-w-lg mx-auto'>
+        <h1 className='text-2xl font-bold mb-4'>Resources</h1>
+        <p className='mb-4'>
+          Get started with{' '}
+          <Link href='https://thirdweb.com/' className='underline'>
+            thirdweb
+          </Link>
+          .
+        </p>
+        <p className='mb-4'>
+          View OpenSea&apos;s metadata standards to format your JSON files:{' '}
+          <Link
+            href='https://docs.opensea.io/docs/metadata-standards'
+            className='underline'>
+            Review
+          </Link>
+          .
+        </p>
+        <div className='mb-8 max-w-lg'>
+          <p>
+            <AspectRatio maxW='560px' ratio={16 / 9}>
+              <iframe
+                title='How to Deploy an NFT Drop Using a Smart Contract - no coding needed! (ThirdWeb.com)'
+                src='https://www.youtube.com/embed/EvnRI6fsglc'
+                allowFullScreen
+              />
+            </AspectRatio>
+          </p>
         </div>
       </div>
     </LayoutNoFooter>

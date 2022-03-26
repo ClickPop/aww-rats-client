@@ -1,5 +1,13 @@
 import React, { FC } from 'react';
-import { Flex, Box, Heading, AspectRatio, Stack, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Heading,
+  AspectRatio,
+  Stack,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { GameIcon } from '~/components/game/Icons';
 import { Stat } from '~/components/game/Stat';
 import { RatSelector } from '~/components/game/rats/RatSelector';
@@ -73,24 +81,20 @@ export const BattleCard: FC<Props> = ({
           gap={{ base: 0, md: 4 }}
           mb={2}
           direction={{ base: 'column', md: 'row' }}
-          align='start'
-        >
+          align='start'>
+          <Tooltip
+            hasArrow
+            placement='top'
+            label='Any points your rat team has in skills the encounter is weak to will add to your roll.'
+            shouldWrapChildren>
+            <Stat label='Weakness' value={weakness.join(', ')} bold />
+          </Tooltip>
 
           <Tooltip
             hasArrow
             placement='top'
-            label="Any points your rat team has in skills the encounter is weak to will add to your roll."
-            shouldWrapChildren
-          >
-            <Stat label='Weakness' value={weakness.join(', ')} bold />
-          </Tooltip>  
-          
-          <Tooltip
-            hasArrow
-            placement='top'
-            label="Any points your rat team has in skills the encounter is resistant to will subtract from your roll."
-            shouldWrapChildren
-          >
+            label='Any points your rat team has in skills the encounter is resistant to will subtract from your roll.'
+            shouldWrapChildren>
             <Stat label='Resistance' value={resistance.join(', ')} bold />
           </Tooltip>
         </Stack>
@@ -100,9 +104,8 @@ export const BattleCard: FC<Props> = ({
             <Tooltip
               hasArrow
               placement='top'
-              label="The amount of energy it takes to attempt an encounter."
-              shouldWrapChildren
-            >
+              label='The amount of energy it takes to attempt an encounter.'
+              shouldWrapChildren>
               <Stat
                 label='Energy'
                 icon={GameIconTypes.Energy}
@@ -116,9 +119,8 @@ export const BattleCard: FC<Props> = ({
             <Tooltip
               hasArrow
               placement='top'
-              label="Think of this as the dice roll you have to beat with your team."
-              shouldWrapChildren
-            >
+              label='Think of this as the dice roll you have to beat with your team.'
+              shouldWrapChildren>
               <Stat
                 label='Strength'
                 icon={GameIconTypes.Strength}
