@@ -4,8 +4,67 @@ import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
 import { apolloClient } from '~/lib/graphql';
 import '~/styles/index.scss';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const theme = extendTheme({
+    colors: {
+      pickRat: {
+        500: '#FFFFFF',
+        600: '#CCCCCC',
+      },
+      pickRatStatic: {
+        500: '#FFFFFF',
+        600: '#FFFFFF',
+      },
+      pack: {
+        500: '#FF7558',
+        600: '#ff4a24',
+      },
+      lab: {
+        500: '#00E99A',
+        600: '#00c682',
+      },
+      street: {
+        500: '#00A5FF',
+        600: '#008cd8',
+      },
+      pet: {
+        500: '#FE7098',
+        600: '#fd3970',
+      },
+      darkAlpha: {
+        50: 'rgba(40, 45, 58, 0.1)',
+        100: 'rgba(40, 45, 58, 0.25)',
+        200: 'rgba(40, 45, 58, 0.4)',
+        300: 'rgba(40, 45, 58, 0.55)',
+        400: 'rgba(40, 45, 58, 0.7)',
+        500: 'rgba(40, 45, 58, 0.85)',
+        600: 'rgba(40, 45, 58, 1)',
+        700: '#212631',
+        800: '#1c1f28',
+        900: '#16181f',
+      },
+      dark: {
+        50: '#c2c7d4',
+        100: '#9da5bb',
+        200: '#7884a2',
+        300: '#5a6583',
+        400: '#41495e',
+        500: '#282D3A',
+        600: '#212631',
+        700: '#1c1f28',
+        800: '#16181f',
+        900: '#101217',
+      },
+      blueGray: {
+        500: '#383D6E',
+        600: '#26284a',
+        700: '#1C1E3B',
+      },
+    },
+  });
+
   return (
     <>
       <Head>
@@ -32,11 +91,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name='msapplication-TileColor' content='#2b5797' />
         <meta name='theme-color' content='#ffffff' />
       </Head>
-      <ApolloProvider client={apolloClient}>
-        <EthersContextProvider>
-          <Component {...pageProps} />
-        </EthersContextProvider>
-      </ApolloProvider>
+      <ChakraProvider theme={theme}>
+        <ApolloProvider client={apolloClient}>
+          <EthersContextProvider>
+            <Component {...pageProps} />
+          </EthersContextProvider>
+        </ApolloProvider>
+      </ChakraProvider>
     </>
   );
 }
