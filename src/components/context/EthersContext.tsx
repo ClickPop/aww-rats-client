@@ -5,9 +5,13 @@ import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers } from 'ethers';
+import { useCheckAuthLazyQuery } from '~/schema/generated';
 
 const defaultEthersContext: EthersContextType = {
+  isLoggedIn: false,
+  setLoggedIn: () => {},
   connectToMetamask: () => undefined,
+  authLoading: true,
 };
 
 export const EthersContext = createContext(defaultEthersContext);
@@ -16,9 +20,28 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [contract, setContract] = useState<Rat | undefined>();
   const [closet, setCloset] = useState<Closet | undefined>();
   const [signerAddr, setSignerAddr] = useState('');
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const etherState = useEthers();
-  const { provider, signer, connected, network } = etherState;
+
+  const [checkAuth, { loading: authLoading }] = useCheckAuthLazyQuery();
+
   useEffect(() => {
+    const { signer, connected, network, accounts } = etherState;
+
+    const handleCheckAuth = async () => {
+      const auth = await checkAuth();
+      setLoggedIn(
+        !!(
+          auth.data?.checkAuth?.role === 'user' &&
+          accounts?.[0] === auth.data?.checkAuth?.id &&
+          connected &&
+          signer
+        ),
+      );
+    };
+
+    handleCheckAuth();
+
     (async () => {
       if (connected && network?.chainId === CHAIN_ID) {
         try {
@@ -44,16 +67,15 @@ export const EthersContextProvider: FC = ({ children }) => {
         }
       }
 
-      if (signer) {
-        const addr = await signer.getAddress();
-        setSignerAddr(addr);
+      if (accounts?.[0]) {
+        setSignerAddr(accounts[0]);
       }
     })();
-  }, [connected, signer, provider, network]);
+  }, [etherState, checkAuth]);
 
   const connectToMetamask = async () => {
     try {
-      await provider?.send('eth_requestAccounts', []);
+      await etherState.provider?.send('eth_requestAccounts', []);
     } catch (err) {
       console.error(err);
     }
@@ -67,6 +89,9 @@ export const EthersContextProvider: FC = ({ children }) => {
         connectToMetamask,
         signerAddr,
         closet,
+        isLoggedIn,
+        setLoggedIn,
+        authLoading,
       }}>
       {children}
     </EthersContext.Provider>

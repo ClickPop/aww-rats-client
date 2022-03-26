@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers/lib/json-rpc-provider';
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, BigNumberish, providers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider';
 import { Rat, Closet } from 'smart-contracts/src/types/index';
 import { ICanvasOptions } from 'fabric/fabric-impl';
@@ -19,7 +19,7 @@ export type EthersState = {
   signer?: JsonRpcSigner;
   network?: providers.Network;
   connected?: boolean;
-  account?: string;
+  accounts?: string[];
 };
 
 export type LOADING_STATE =
@@ -62,11 +62,19 @@ export type OpenSeaAttribute = {
   max_value?: number;
 };
 
+export type RatWithMeta = {
+  id: BigNumberish;
+  meta: Metadata;
+};
+
 export interface EthersContextType extends EthersState {
   contract?: Rat;
   closet?: Closet;
   connectToMetamask: () => void;
   signerAddr?: string;
+  isLoggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+  authLoading: boolean;
 }
 
 export interface ClosetContextType {
@@ -189,6 +197,7 @@ export interface ClosetUserTokenWithMeta extends ClosetUserToken {
   tokenMeta: Metadata;
 }
 
+export type RattributeUnion = 'cuteness' | 'cunning' | 'rattitude';
 export type CachedRat = GetRatsSubscription['rats'][0];
 
 export type SelectRat = {

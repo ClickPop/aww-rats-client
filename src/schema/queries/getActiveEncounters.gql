@@ -1,5 +1,31 @@
 query GetActiveEncounters {
-  encounters(where: {active: {_eq: true}}) {
+  encounters(
+    where: {
+      _and: [{ active: { _eq: true } }, { encounter_type: { _eq: solo } }]
+    }
+  ) {
     id
+    name
+    image
+    power
+    energy_cost
+    description
+    win_text
+    loss_text
+    max_rats
+    reward {
+      tokens
+    }
+    encounter_weaknesses {
+      weakness
+    }
+    encounter_resistances {
+      resistance
+    }
+    encounter_rat_constraints {
+      rat_type
+      locked_slots
+      external_contract_address
+    }
   }
 }
