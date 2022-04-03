@@ -75,6 +75,7 @@ const ResultsPage: NextPage = () => {
                     <Tr textTransform='uppercase'>
                         <Th>Wallet Address</Th>
                         <Th>Tokens</Th>
+                        <Th>What do you think we should do?</Th>
                         <Th>Date</Th>
                     </Tr>
                 </Thead>
@@ -82,6 +83,7 @@ const ResultsPage: NextPage = () => {
                     <Tr>
                         <Td>0x89d0ad961584bc9c65d2982ad82faf0371939bdc</Td>
                         <Td>2</Td>
+                        <Td>I think you should do whatever you want!</Td>
                         <Td isNumeric>01/03/2022 @ 9:55am</Td>
                     </Tr>
                 </Tbody>
