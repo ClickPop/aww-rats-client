@@ -1,0 +1,13 @@
+query getResponsesBySurveyId($id: Int!) {
+  surveys_by_pk(id: $id) {
+    id
+    questions {
+      id
+      prompt
+      is_required
+      responses {
+        response_content
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 mutation createSurvey($surveyInput: surveys_insert_input!) {
-  insert_surveys_one(object: $surveyInput) {
-    id
+  insert_surveys_one(object: $surveyInput, on_conflict: {constraint: surveys_pkey, update_columns: [is_public, is_active, title, description]}) {
     questions {
       id
-    }
+    } 
+      id
   }
 }
