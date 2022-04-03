@@ -1,0 +1,8 @@
+mutation createSurvey($surveyInput: surveys_insert_input!) {
+  insert_surveys_one(object: $surveyInput) {
+    id
+    questions {
+      id
+    }
+  }
+}
