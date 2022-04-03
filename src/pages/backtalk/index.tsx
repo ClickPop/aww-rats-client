@@ -18,34 +18,15 @@ import { NextPage } from 'next';
 const BacktalkPage: NextPage = () => {
   return (
     <LayoutDashboard>
-      <Box
-        maxW='4xl'   
-        mx='auto'
-        py={4}
-      >
-        <Flex
-          align='baseline'
-          my={4}
-        >
-          <Heading
-            size='md'
-          >
-            Surveys
-          </Heading>
+      <Box maxW='4xl' mx='auto' py={4}>
+        <Flex align='baseline' my={4}>
+          <Heading size='md'>Surveys</Heading>
           <Spacer />
-          <Button
-            colorScheme='teal'
-            size='sm'
-            variant='link'
-            >
-              Public Surveys
+          <Button colorScheme='teal' size='sm' variant='link'>
+            Public Surveys
           </Button>
-          <Button
-            colorScheme='teal'
-            ml={2}
-            size='sm'
-            >
-              + Survey
+          <Button colorScheme='teal' ml={2} size='sm'>
+            + Survey
           </Button>
         </Flex>
 
@@ -53,8 +34,7 @@ const BacktalkPage: NextPage = () => {
           backgroundColor='white'
           border='1px'
           borderColor='gray.200'
-          borderRadius={8}
-        >
+          borderRadius={8}>
           <Table variant='simple'>
             <Thead>
               <Tr textTransform='uppercase'>
