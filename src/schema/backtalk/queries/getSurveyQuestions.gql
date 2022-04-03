@@ -1,0 +1,21 @@
+query getQuestionsBySurveyId($id: Int!) {
+  surveys_by_pk(id: $id) {
+    id
+    title
+    description
+    is_active
+    is_public
+    contract_address
+    questions {
+      id
+      prompt
+      question_type
+      is_required
+      options {
+        id
+        question_id
+        content
+      }
+    }
+  }
+}
