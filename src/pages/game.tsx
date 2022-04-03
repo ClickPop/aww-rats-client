@@ -9,7 +9,7 @@ import AuthCookieRequired from '~/components/access/AuthCookieRequired';
 import { PlayerStats } from '~/components/game/player/PlayerStats';
 import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounterButton';
 
-const Home: NextPage = () => {
+const GamePage: NextPage = () => {
   return (
     <RatRaceLayout className='min-h-screen rrPage--sewer-blueGray'>
       <Box pb={12}>
@@ -39,4 +39,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default GamePage;
