@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from '@chakra-ui/react';
-import { Navbar } from '~/components/backtalk/backtalk/Navbar';
+import { Navbar } from '~/components/backtalk/Navbar';
 
 export const LayoutDashboard = ({ children }) => {
   return (
@@ -9,7 +9,14 @@ export const LayoutDashboard = ({ children }) => {
       minH='100vh'
     >
       <Navbar />
-      {children}
+      <Box
+        maxW='4xl'   
+        mx='auto'
+        px={{base: 2, md: 0}}
+        py={4}
+      >
+        {children}
+      </Box>
     </Box>
   );
 };
