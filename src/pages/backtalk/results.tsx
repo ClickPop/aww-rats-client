@@ -23,7 +23,7 @@ const ResultsPage: NextPage = () => {
   return (
     <LayoutDashboard>
         <Flex align='baseline' my={4}>
-            <Heading size='md'>Marbles on Stream POAP</Heading>
+            <Heading as='h1' size='md'>Marbles on Stream POAP</Heading>
             <Spacer />
             <Select background='white' maxW='10rem' size='sm'>    
                 <option>Active</option>

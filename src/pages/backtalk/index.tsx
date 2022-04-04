@@ -22,6 +22,7 @@ const BacktalkPage: NextPage = () => {
         my={4}
       >
         <Heading
+          as='h1'
           size='md'
         >
           Surveys
