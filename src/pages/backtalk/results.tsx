@@ -1,12 +1,14 @@
 import {
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
   Heading,
   Progress,
-  Select,
   Spacer,
+  Switch,
   Text,
   Table,
   Thead,
@@ -25,14 +27,12 @@ const ResultsPage: NextPage = () => {
         <Flex align='baseline' my={4}>
             <Heading as='h1' size='md'>Marbles on Stream POAP</Heading>
             <Spacer />
-            <Select background='white' maxW='10rem' size='sm'>    
-                <option>Active</option>
-                <option>Inactive</option>
-            </Select>
-            <Select background='white' maxW='10rem' ml={2} size='sm'>
-                <option>Public</option>
-                <option>Private</option>
-            </Select>
+            <FormControl display='flex' alignItems='center' w={32}>
+                <FormLabel htmlFor='isactive' mb='0'>
+                    Activate
+                </FormLabel>
+                <Switch id='isactive' />
+            </FormControl>
             <Button colorScheme='teal' ml={2} size='sm'>
                 Export
             </Button>
