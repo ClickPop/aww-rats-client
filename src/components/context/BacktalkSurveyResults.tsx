@@ -51,7 +51,7 @@ export const BacktalkSurveyResultContextProvider: FC<Props> = ({
 
   const latestResponse =
     surveyResult?.data?.surveys_by_pk?.questions?.reduce<Date>((acc, curr) => {
-      const currDate = new Date(curr.latest_response[0].created_at ?? 0);
+      const currDate = new Date(curr.latest_response?.[0]?.created_at ?? 0);
       return compareAsc(currDate, acc) < 1 ? acc : currDate;
     }, new Date(0)) ?? new Date(0);
 

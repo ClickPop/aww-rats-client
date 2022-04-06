@@ -6,6 +6,7 @@ import {
   Th,
   Tbody,
   Td,
+  Box,
 } from '@chakra-ui/react';
 import React, { FC, useContext } from 'react';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
@@ -14,9 +15,10 @@ export const SurveyResultsList: FC = () => {
   const {
     surveyResult: { data },
     processedResponses,
+    responseCount,
   } = useContext(BacktalkSurveyResultContext);
 
-  return (
+  return responseCount > 0 ? (
     <TableContainer
       backgroundColor='white'
       border='1px'
@@ -49,5 +51,7 @@ export const SurveyResultsList: FC = () => {
         </Tbody>
       </Table>
     </TableContainer>
+  ) : (
+    <Box>No Responses</Box>
   );
 };

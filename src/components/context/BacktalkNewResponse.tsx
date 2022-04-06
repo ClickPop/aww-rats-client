@@ -9,14 +9,14 @@ import {
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import {
-  defaultSurveyFormState,
-  surveyFormReducer,
-} from '~/reducers/surveyForm';
+  defaultSurveyResponseState,
+  surveyResponseReducer,
+} from '~/reducers/surveyResponse';
 import {
   GetSurveyByIdQueryResult,
   useGetSurveyByIdQuery,
 } from '~/schema/generated';
-import { SurveyFormAction, SurveyFormState } from '~/types';
+import { SurveyResponseAction, SurveyResponseState } from '~/types';
 
 type Props = {
   id: number | null;
@@ -24,14 +24,14 @@ type Props = {
 
 type DefaultContext = {
   surveyFetchState: Pick<GetSurveyByIdQueryResult, 'error' | 'loading'>;
-  surveyFormData: SurveyFormState;
-  surveyFormDispatch: Dispatch<SurveyFormAction>;
+  surveyResponseData: SurveyResponseState;
+  surveyResponseDispatch: Dispatch<SurveyResponseAction>;
 };
 
 const defaultContext: DefaultContext = {
   surveyFetchState: { loading: false },
-  surveyFormData: defaultSurveyFormState,
-  surveyFormDispatch: () => {},
+  surveyResponseData: defaultSurveyResponseState,
+  surveyResponseDispatch: () => {},
 };
 
 export const backtalkNewResponseContext = createContext(defaultContext);
@@ -53,9 +53,9 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
     client: apolloBacktalkClient,
   });
 
-  const [surveyState, surveyFormDispatch] = useReducer(
-    surveyFormReducer,
-    defaultSurveyFormState,
+  const [surveyState, surveyResponseDispatch] = useReducer(
+    surveyResponseReducer,
+    defaultSurveyResponseState,
   );
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
       surveyData?.surveys_by_pk &&
       surveyState.id === -1
     ) {
-      surveyFormDispatch({
+      surveyResponseDispatch({
         type: 'setState',
         payload: {
           ...surveyData.surveys_by_pk,
@@ -93,8 +93,8 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
           error: getSurveyError,
           loading: getSurveyLoading,
         },
-        surveyFormData: surveyState,
-        surveyFormDispatch,
+        surveyResponseData: surveyState,
+        surveyResponseDispatch,
       }}>
       {children}
     </backtalkNewResponseContext.Provider>

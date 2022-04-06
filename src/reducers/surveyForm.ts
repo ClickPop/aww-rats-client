@@ -1,49 +1,26 @@
-import { SurveyFormAction, SurveyFormState, ResponseState } from '~/types';
+import {
+  Contracts_Constraint,
+  Contracts_Update_Column,
+  Questions_Constraint,
+  Questions_Update_Column,
+  Token_Types_Enum,
+} from '~/schema/generated';
+import { SurveyFormAction, SurveyFormState } from '~/types';
 
 export const defaultSurveyFormState: SurveyFormState = {
-  currentResponse: {
-    question_id: -1,
-    response_content: '',
-  },
-  id: -1,
-  questions: [],
-  responses: [],
-  step: 0,
   title: '',
+  questions: {
+    data: [],
+    on_conflict: {
+      constraint: Questions_Constraint.QuestionsPkey,
+      update_columns: [
+        Questions_Update_Column.Prompt,
+        Questions_Update_Column.IsRequired,
+      ],
+    },
+  },
+  owner: '',
 };
-
-const hasExistingResponse = (state: SurveyFormState, question_id: number) =>
-  !!state.responses.find((r) => r.question_id === question_id);
-
-const handleNewResponses = (state: SurveyFormState, question_id: number) =>
-  !hasExistingResponse(state, question_id)
-    ? [...state.responses, state.currentResponse].reduce<ResponseState[]>(
-        (acc, curr) =>
-          !acc.find((r) => r.question_id === curr.question_id)
-            ? [...acc, curr]
-            : acc,
-        [],
-      )
-    : [
-        ...state.responses.map((response) =>
-          response.question_id === state.currentResponse.question_id
-            ? state.currentResponse
-            : response,
-        ),
-      ];
-
-const handleResponses = (state: SurveyFormState, question_id: number) =>
-  !!state.currentResponse.response_content ||
-  hasExistingResponse(state, question_id)
-    ? handleNewResponses(state, question_id)
-    : state.responses;
-
-const handleSequentialResponse = (newStep: number, state: SurveyFormState) => ({
-  question_id: state.questions[newStep]?.id,
-  response_content:
-    state.responses.find((r) => r.question_id === state.questions[newStep]?.id)
-      ?.response_content ?? '',
-});
 
 export const surveyFormReducer = (
   state: SurveyFormState,
@@ -52,34 +29,54 @@ export const surveyFormReducer = (
   switch (action.type) {
     case 'setState':
       return action.payload;
-    case 'startSurvey':
-      return { ...state, step: 0 };
-    case 'nextStep':
-      const nextStep = Math.min(state.step + 1, state.questions.length);
+    case 'editTitle':
+      return { ...state, title: action.payload };
+    case 'editActive':
+      return { ...state, is_active: action.payload };
+    case 'updateMaxResponses':
+      return { ...state, max_responses: action.payload };
+    case 'addContract': {
       return {
         ...state,
-        step: nextStep,
-        responses: handleResponses(state, state.questions[state.step]?.id)
-          .filter((r) => !!r.response_content)
-          .sort((a, b) => (a.question_id ?? 0) - (b.question_id ?? 0)),
-        currentResponse: handleSequentialResponse(nextStep, state),
+        contract_address: action.payload.address
+          ? action.payload.address
+          : null,
+        contract: action.payload.address
+          ? {
+              data: {
+                address: action.payload.address,
+                token_type: Token_Types_Enum.Erc721,
+              },
+            }
+          : undefined,
       };
-    case 'previousStep':
-      const prevStep = Math.max(state.step - 1, 0);
+    }
+    case 'deleteQuestion':
       return {
         ...state,
-        step: prevStep,
-        responses: handleResponses(state, state.questions[state.step]?.id)
-          .filter((r) => !!r.response_content)
-          .sort((a, b) => (a.question_id ?? 0) - (b.question_id ?? 0)),
-        currentResponse: handleSequentialResponse(prevStep, state),
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.filter((_, i) => i !== action.payload) ?? [],
+        },
       };
-    case 'updateCurrentResponseFreeForm':
+    case 'addQuestion':
       return {
         ...state,
-        currentResponse: {
-          ...state.currentResponse,
-          response_content: action.payload,
+        questions: {
+          ...state.questions,
+          data: [...(state.questions?.data ?? []), action.payload],
+        },
+      };
+    case 'editQuestion':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.index ? action.payload.question : q,
+            ) ?? [],
         },
       };
     default:
