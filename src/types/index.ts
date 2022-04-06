@@ -9,8 +9,14 @@ import {
   GetClosetDataSubscription,
   GetRatsSubscription,
 } from '~/schema/generated';
-
+export * from '~/types/backtalk';
+export * from '~/types/game';
 export * from 'smart-contracts/src/types';
+
+export interface ReducerAction {
+  type: string;
+  payload?: unknown;
+}
 
 export type UseEthersHook = () => EthersState;
 
@@ -205,3 +211,22 @@ export type SelectRat = {
   value: string;
   rat: CachedRat;
 };
+
+export interface NetworkSwitchError {
+  state: string;
+  message: string;
+  error?: any;
+}
+
+export interface ChainCurrency {
+  name: string;
+  symbol: string;
+  decimals: number;
+}
+export interface ChainData {
+  id: number;
+  name: string;
+  nativeCurrency: ChainCurrency | null;
+  rpc: string[] | string;
+  scan: string[] | string;
+}
