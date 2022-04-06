@@ -1,16 +1,23 @@
 import { Button, useBoolean } from '@chakra-ui/react';
 import React, { useContext, useEffect } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
+import { Emoji } from '~/components/shared/Emoji';
 import { useConnect } from '~/hooks/useConnect';
-import { LoginMutation, useLoginMutation } from '~/schema/generated';
+import { apolloBacktalkClient } from '~/lib/graphql';
+import {
+  useBacktalkLoginMutation,
+  BacktalkLoginMutation,
+} from '~/schema/generated';
 
-const Login = () => {
-  const [login, { loading, error }] = useLoginMutation();
+export const Connect = () => {
+  const [login, { loading, error }] = useBacktalkLoginMutation({
+    client: apolloBacktalkClient,
+  });
   const { connected, isLoggedIn, signer, signerAddr } =
     useContext(EthersContext);
-  const { handleLogin, connectToMetamask } = useConnect<LoginMutation>(
+  const { handleLogin, connectToMetamask } = useConnect<BacktalkLoginMutation>(
     login,
-    (res, sa) => sa === res.data?.login?.id,
+    (res, sa) => sa === res.data?.login?.wallet,
   );
   const [shouldLogin, { on, off }] = useBoolean();
 
@@ -20,10 +27,6 @@ const Login = () => {
       off();
     }
   }, [handleLogin, off, shouldLogin, signer, signerAddr]);
-
-  if (loading) {
-    return <div>loading...</div>;
-  }
 
   if (error) {
     return <div>An error occurred, please check the console</div>;
@@ -40,15 +43,14 @@ const Login = () => {
             await handleLogin();
           }
         }}
-        background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-        backgroundSize='600% 400%'
-        _hover={{
-          animation: 'encounterShimmer 4s ease infinite;',
-        }}>
-        Login
+        paddingInlineStart='1ch'
+        isLoading={loading}>
+        <Emoji mr='0.5ch' aria-label='Electrical Plug'>
+          {' '}
+          🔌{' '}
+        </Emoji>{' '}
+        Connect
       </Button>
     </div>
   ) : null;
 };
-
-export default Login;

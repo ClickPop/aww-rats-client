@@ -12,23 +12,14 @@ import Login from '~/components/access/Login';
 import { EthersContext } from '~/components/context/EthersContext';
 import RatRace from '~/assets/svg/RatRace.svg';
 import { RattributePill } from '~/components/game/rats/RattributePill';
-import { Connect } from '~/components/shared/Connect';
 
 const AuthCookieRequired: FC = ({ children }) => {
-  const { isLoggedIn, signerAddr, authLoading } = useContext(EthersContext);
+  const { isLoggedIn, authLoading } = useContext(EthersContext);
 
   if (authLoading) {
     return (
       <Center py={20}>
         <Text>Loading...</Text>
-      </Center>
-    );
-  }
-
-  if (!signerAddr) {
-    return (
-      <Center py={20}>
-        <Connect />
       </Center>
     );
   }
