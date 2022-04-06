@@ -8,8 +8,8 @@ import { EthersContext } from '~/components/context/EthersContext';
 export const Survey: FC = () => {
   const {
     surveyFetchState: { loading },
-    surveyFormData: data,
-    surveyFormDispatch,
+    surveyResponseData: data,
+    surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
   const { connected, isLoggedIn } = useContext(EthersContext);
 
@@ -37,7 +37,9 @@ export const Survey: FC = () => {
               {connected && isLoggedIn && (
                 <Button
                   colorScheme='dark'
-                  onClick={() => surveyFormDispatch({ type: 'startSurvey' })}>
+                  onClick={() =>
+                    surveyResponseDispatch({ type: 'startSurvey' })
+                  }>
                   Start
                 </Button>
               )}

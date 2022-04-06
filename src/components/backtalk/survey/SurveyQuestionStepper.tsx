@@ -39,14 +39,14 @@ const getColorFromState = (
 
 export const SurveyQuestionStepper: FC = () => {
   const {
-    surveyFormData: {
+    surveyResponseData: {
       contract,
       questions,
       step,
       responses,
       currentResponse: { response_content },
     },
-    surveyFormDispatch,
+    surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
 
   const [createResponses, { loading, error, called }] =
@@ -90,7 +90,7 @@ export const SurveyQuestionStepper: FC = () => {
             <Textarea
               value={response_content ?? ''}
               onChange={(e) =>
-                surveyFormDispatch({
+                surveyResponseDispatch({
                   type: 'updateCurrentResponseFreeForm',
                   payload: e.currentTarget.value,
                 })
@@ -121,14 +121,14 @@ export const SurveyQuestionStepper: FC = () => {
           {step !== 0 && (
             <Button
               colorScheme='dark'
-              onClick={() => surveyFormDispatch({ type: 'previousStep' })}>
+              onClick={() => surveyResponseDispatch({ type: 'previousStep' })}>
               Back
             </Button>
           )}
           {!noMoreSteps && (
             <Button
               colorScheme='dark'
-              onClick={() => surveyFormDispatch({ type: 'nextStep' })}
+              onClick={() => surveyResponseDispatch({ type: 'nextStep' })}
               disabled={freeResponseState === 'error'}>
               Next
             </Button>
