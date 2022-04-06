@@ -23,17 +23,18 @@ const CreateSurveyPage: NextPage = () => {
   return (
     <LayoutDashboard>
       <Flex align='baseline' my={4}>
-          <Heading as='h1' size='md'>New Survey</Heading>
+        <Heading as='h1' size='md'>
+          New Survey
+        </Heading>
       </Flex>
 
       <Box
-          backgroundColor='white'
-          border='1px'
-          borderColor='gray.200'
-          borderRadius={8}
-          mb={4}
-          p={4}
-      >
+        backgroundColor='white'
+        border='1px'
+        borderColor='gray.200'
+        borderRadius={8}
+        mb={4}
+        p={4}>
         <FormControl mb={4} isRequired>
           <FormLabel htmlFor='surveyTitle'>Survey Title</FormLabel>
           <Input id='surveyTitle' placeholder='Name your survey' />
@@ -41,7 +42,9 @@ const CreateSurveyPage: NextPage = () => {
         <FormControl mb={4}>
           <FormLabel htmlFor='contract'>Limit to Contract</FormLabel>
           <Input id='contract' />
-          <FormHelperText>Leave this blank to let anyone with a wallet submit a response.</FormHelperText>
+          <FormHelperText>
+            Leave this blank to let anyone with a wallet submit a response.
+          </FormHelperText>
         </FormControl>
         <FormControl mb={8}>
           <FormLabel htmlFor='maxResponses'>Max Responses</FormLabel>
@@ -56,7 +59,9 @@ const CreateSurveyPage: NextPage = () => {
         </FormControl>
 
         <Box>
-          <Heading as='h2' size='sm' mb={2}>Question 1</Heading>
+          <Heading as='h2' size='sm' mb={2}>
+            Question 1
+          </Heading>
           <FormControl mb={4}>
             <FormLabel htmlFor='questionType'>Country</FormLabel>
             <Select id='questionType' disabled>
@@ -64,7 +69,7 @@ const CreateSurveyPage: NextPage = () => {
               <option>Multiple Choice</option>
             </Select>
           </FormControl>
-          <FormControl  mb={2} isRequired>
+          <FormControl mb={2} isRequired>
             <FormLabel htmlFor='surveyTitle'>Survey Title</FormLabel>
             <Input id='surveyTitle' placeholder='Name your survey' />
           </FormControl>
@@ -73,19 +78,11 @@ const CreateSurveyPage: NextPage = () => {
       </Box>
 
       <ActionBar>
-        <Button
-          colorScheme='teal'
-          size='sm'
-          variant='link'
-          >
-            Preview
+        <Button colorScheme='teal' size='sm' variant='link'>
+          Preview
         </Button>
-        <Button
-          colorScheme='teal'
-          ml={2}
-          size='sm'
-          >
-            Publish
+        <Button colorScheme='teal' ml={2} size='sm'>
+          Publish
         </Button>
       </ActionBar>
     </LayoutDashboard>
