@@ -23,7 +23,8 @@ export type SurveyResponseAction =
   | { type: 'nextStep' }
   | { type: 'previousStep' }
   | { type: 'updateCurrentResponseFreeForm'; payload: string }
-  | { type: 'startSurvey' };
+  | { type: 'startSurvey' }
+  | { type: 'endSurvey' };
 
 export type SurveyFormState = Required<
   Pick<Surveys_Insert_Input, 'title' | 'questions' | 'owner'>

@@ -31,7 +31,6 @@ import { BacktalkSurveyFormContext } from '~/components/context/BacktalkSurveyFo
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import {
-  Questions_Insert_Input,
   Question_Type_Enum,
   Token_Types_Enum,
   useCreateSurveyMutation,
@@ -41,29 +40,25 @@ export const SurveyForm = () => {
   const { push } = useRouter();
   const { signerAddr } = useContext(EthersContext);
   const [hasMaxResponses, { toggle }] = useBoolean(false);
-  const [editingQuestion, { toggle: toggleEditingQuestion }] =
-    useBoolean(false);
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
-  const { title, is_active, questions, contract_address } = surveyData;
-  const [newQuestion, setNewQuestion] = useState<Questions_Insert_Input>({
-    prompt: '',
-    question_type: Question_Type_Enum.FreeResponse,
-    is_required: (questions?.data.length ?? 0) < 1,
-  });
+  const { title, questions, contract_address } = surveyData;
+  const [prompt, setPrompt] = useState<{
+    index: number;
+    prompt: string;
+  } | null>(null);
 
-  const [createSurvey] = useCreateSurveyMutation({
+  const [createSurvey, { loading }] = useCreateSurveyMutation({
     client: apolloBacktalkClient,
   });
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log(signerAddr);
     if (signerAddr) {
       const res = await createSurvey({
         variables: {
-          surveyInput: { ...surveyData, owner: signerAddr },
+          surveyInput: { ...surveyData, is_active: true, owner: signerAddr },
         },
       });
       if (res.data?.insert_surveys_one) {
@@ -71,6 +66,12 @@ export const SurveyForm = () => {
       }
     }
   };
+
+  const validForm =
+    !!title &&
+    (questions?.data.length ?? 0) > 0 &&
+    !!questions?.data.some((q) => q.is_required) &&
+    !!questions?.data.every((q) => !!q.prompt);
 
   return (
     <form onSubmit={onSubmit}>
@@ -144,67 +145,7 @@ export const SurveyForm = () => {
           </NumberInput>
         </FormControl>
         <Box>
-          <Button onClick={toggleEditingQuestion} mb={4}>
-            New Question
-          </Button>
           <VStack w='100%'>
-            {editingQuestion && (
-              <Box w='100%'>
-                <Heading as='h2' size='sm' mb={2}>
-                  New Question
-                </Heading>
-                <FormControl mb={4}>
-                  <FormLabel htmlFor='questionType'>Question Type</FormLabel>
-                  <Select id='questionType' disabled>
-                    <option>Free Response</option>
-                    <option>Multiple Choice</option>
-                  </Select>
-                </FormControl>
-                <FormControl mb={2} isRequired>
-                  <FormLabel htmlFor='questionPrompt'>
-                    Question Prompt
-                  </FormLabel>
-                  <Input
-                    id='questionPrompt'
-                    placeholder='Question to ask?'
-                    value={newQuestion.prompt ?? ''}
-                    onChange={(e) =>
-                      setNewQuestion((nq) => ({
-                        ...nq,
-                        prompt: e.currentTarget.value,
-                      }))
-                    }
-                  />
-                </FormControl>
-                <HStack w='100%' justify='space-between'>
-                  <Checkbox
-                    isChecked={!!newQuestion.is_required}
-                    onChange={(e) =>
-                      setNewQuestion((nq) => ({
-                        ...nq,
-                        is_required: e.currentTarget.checked,
-                      }))
-                    }>
-                    Required
-                  </Checkbox>
-                  <Button
-                    onClick={() => {
-                      surveyDataDispatch({
-                        type: 'addQuestion',
-                        payload: newQuestion,
-                      });
-                      setNewQuestion({
-                        prompt: '',
-                        question_type: Question_Type_Enum.FreeResponse,
-                        is_required: false,
-                      });
-                      toggleEditingQuestion();
-                    }}>
-                    Add
-                  </Button>
-                </HStack>
-              </Box>
-            )}
             {questions?.data?.map((q, i) => (
               <Box key={q.id ?? `${i}-${q.prompt}`} w='100%'>
                 <HStack justify='space-between'>
@@ -216,10 +157,6 @@ export const SurveyForm = () => {
                       surveyDataDispatch({
                         type: 'deleteQuestion',
                         payload: i,
-                      });
-                      setNewQuestion({
-                        ...newQuestion,
-                        is_required: (questions.data.length ?? 0) - 1 < 1,
                       });
                     }}>
                     Delete
@@ -239,24 +176,74 @@ export const SurveyForm = () => {
                   <Input
                     id='questionPrompt'
                     placeholder='Question to ask?'
-                    disabled
-                    value={q.prompt ?? ''}
+                    value={prompt?.index === i ? prompt.prompt : q.prompt ?? ''}
+                    onChange={(e) =>
+                      setPrompt({ index: i, prompt: e.currentTarget.value })
+                    }
+                    onFocus={(e) =>
+                      setPrompt({ index: i, prompt: e.currentTarget.value })
+                    }
+                    onBlur={(e) => {
+                      surveyDataDispatch({
+                        type: 'editQuestion',
+                        payload: {
+                          index: i,
+                          question: {
+                            ...q,
+                            prompt: e.currentTarget.value,
+                          },
+                        },
+                      });
+
+                      setPrompt(null);
+                    }}
                   />
                 </FormControl>
-                <Checkbox disabled isChecked={q.is_required ?? false}>
+                <Checkbox
+                  isChecked={q.is_required ?? false}
+                  onChange={(e) =>
+                    surveyDataDispatch({
+                      type: 'editQuestion',
+                      payload: {
+                        index: i,
+                        question: {
+                          ...q,
+                          is_required: e.currentTarget.checked,
+                        },
+                      },
+                    })
+                  }>
                   Required
                 </Checkbox>
               </Box>
             ))}
           </VStack>
+          <Button
+            onClick={() =>
+              surveyDataDispatch({
+                type: 'addQuestion',
+                payload: {
+                  prompt: '',
+                  is_required: (questions?.data.length ?? 0) < 1,
+                  question_type: Question_Type_Enum.FreeResponse,
+                },
+              })
+            }
+            mb={4}>
+            New Question
+          </Button>
         </Box>
       </Box>
 
       <ActionBar>
-        <Button colorScheme='teal' size='sm' variant='link'>
-          Preview
-        </Button>
-        <Button colorScheme='teal' ml={2} size='sm' type='submit'>
+        <Button
+          colorScheme='teal'
+          ml={2}
+          size='sm'
+          type='submit'
+          name='submit'
+          isDisabled={!validForm}
+          isLoading={loading}>
           Publish
         </Button>
       </ActionBar>

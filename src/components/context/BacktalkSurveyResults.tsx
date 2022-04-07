@@ -1,8 +1,8 @@
+import { NetworkStatus } from '@apollo/client';
 import { compareAsc } from 'date-fns';
 import { createContext, FC, useMemo } from 'react';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import {
-  GetSurveyByIdQuery,
   GetSurveyByIdQueryResult,
   useGetSurveyByIdQuery,
 } from '~/schema/generated';
@@ -12,7 +12,10 @@ type Props = {
 };
 
 type DefaultValue = {
-  surveyResult: Pick<GetSurveyByIdQueryResult, 'data' | 'error' | 'loading'>;
+  surveyResult: Pick<
+    GetSurveyByIdQueryResult,
+    'data' | 'error' | 'loading' | 'refetch'
+  >;
   responseCount: number;
   latestResponse: Date;
   processedResponses: Record<
@@ -25,7 +28,15 @@ type DefaultValue = {
 };
 
 const defaultValue: DefaultValue = {
-  surveyResult: { data: {}, loading: false },
+  surveyResult: {
+    data: {},
+    loading: false,
+    refetch: async () => ({
+      data: {},
+      loading: false,
+      networkStatus: NetworkStatus.ready,
+    }),
+  },
   responseCount: 0,
   latestResponse: new Date(0),
   processedResponses: {},

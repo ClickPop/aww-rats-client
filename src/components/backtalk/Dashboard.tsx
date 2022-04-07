@@ -35,9 +35,9 @@ export const Dashboard = () => {
           ...acc,
           [curr.id]: curr.questions.reduce<Date>(
             (a, c) =>
-              compareAsc(new Date(c.latest_response[0].created_at ?? 0), a) < 1
+              compareAsc(new Date(c.latest_response[0]?.created_at ?? 0), a) < 1
                 ? a
-                : new Date(c.latest_response[0].created_at ?? 0),
+                : new Date(c.latest_response[0]?.created_at ?? 0),
             new Date(0),
           ),
         }),
@@ -70,9 +70,11 @@ export const Dashboard = () => {
         <Button colorScheme='teal' size='sm' variant='link'>
           Public Surveys
         </Button>
-        <Button colorScheme='teal' ml={2} size='sm'>
-          + Survey
-        </Button>
+        <Link href='/backtalk/create' passHref>
+          <Button colorScheme='teal' ml={2} size='sm'>
+            + Survey
+          </Button>
+        </Link>
       </Flex>
 
       {data?.surveys && data.surveys.length > 0 ? (

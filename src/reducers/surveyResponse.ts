@@ -61,6 +61,8 @@ export const surveyResponseReducer = (
       return action.payload;
     case 'startSurvey':
       return { ...state, step: 0 };
+    case 'endSurvey':
+      return { ...state, step: state.questions.length + 1 };
     case 'nextStep':
       const nextStep = Math.min(state.step + 1, state.questions.length);
       return {
