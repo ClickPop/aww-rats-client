@@ -2,15 +2,21 @@ import { Button, useBoolean } from '@chakra-ui/react';
 import React, { useContext, useEffect } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { useConnect } from '~/hooks/useConnect';
-import { LoginMutation, useLoginMutation } from '~/schema/generated';
+import { apolloBacktalkClient } from '~/lib/graphql';
+import {
+  useBacktalkLoginMutation,
+  BacktalkLoginMutation,
+} from '~/schema/generated';
 
-const Login = () => {
-  const [login, { loading, error }] = useLoginMutation();
-  const { connected, isLoggedIn, signer, signerAddr } =
+const BacktalkLogin = () => {
+  const [login, { loading, error }] = useBacktalkLoginMutation({
+    client: apolloBacktalkClient,
+  });
+  const { connected, isLoggedInBacktalk, signer, signerAddr } =
     useContext(EthersContext);
-  const { handleLogin, connectToMetamask } = useConnect<LoginMutation>(
+  const { handleLogin, connectToMetamask } = useConnect<BacktalkLoginMutation>(
     login,
-    (res, sa) => sa === res.data?.login?.id,
+    (res, sa) => sa === res.data?.login?.wallet,
   );
   const [shouldLogin, { on, off }] = useBoolean();
 
@@ -29,14 +35,14 @@ const Login = () => {
     return <div>An error occurred, please check the console</div>;
   }
 
-  return !isLoggedIn || !connected ? (
+  return !isLoggedInBacktalk || !connected ? (
     <div>
       <Button
         onClick={async () => {
           if (!connected && typeof window !== 'undefined' && window.ethereum) {
             on();
             await connectToMetamask();
-          } else if (!isLoggedIn) {
+          } else if (!isLoggedInBacktalk) {
             await handleLogin();
           }
         }}
@@ -51,4 +57,4 @@ const Login = () => {
   ) : null;
 };
 
-export default Login;
+export default BacktalkLogin;

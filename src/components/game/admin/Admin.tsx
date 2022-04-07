@@ -4,7 +4,7 @@ import { Image } from '~/components/shared/Image';
 import { GameAdminContextProvider } from '~/components/context/GameAdminContext';
 import { EncountersTable } from '~/components/game/admin/EncountersTable';
 import { RewardsTable } from '~/components/game/admin/RewardsTable';
-import Login from '~/components/access/Login';
+import Login from '~/components/access/GameLogin';
 import { useGetGameDataQuery } from '~/schema/generated';
 import { EthersContext } from '~/components/context/EthersContext';
 import RatRace from '~/assets/svg/RatRace.svg';

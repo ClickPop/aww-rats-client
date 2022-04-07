@@ -2,7 +2,6 @@ import { Box, Button, Center, Heading, Text } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect } from 'react';
 import { Connect } from '~/components/backtalk/Connect';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
-import { SurveyWrapper } from '~/components/backtalk/survey/SurveyWrapper';
 import { backtalkNewResponseContext } from '~/components/context/BacktalkNewResponse';
 import { EthersContext } from '~/components/context/EthersContext';
 
