@@ -1,4 +1,9 @@
-query getSurveyById($id: Int!, $includeResponses: Boolean = false) {
+query getSurveyById(
+  $id: Int!
+  $includeResponses: Boolean = false
+  $includeMyResponses: Boolean = false
+  $wallet: String
+) {
   surveys_by_pk(id: $id) {
     id
     title
@@ -14,12 +19,16 @@ query getSurveyById($id: Int!, $includeResponses: Boolean = false) {
       id
       prompt
       is_required
+      callerResponses: responses(where: { wallet: { _eq: $wallet } })
+        @include(if: $includeMyResponses) {
+        response_content
+      }
       responses @include(if: $includeResponses) {
         wallet
         response_content
         created_at
       }
-      responses_aggregate(distinct_on: wallet) @include(if: $includeResponses) {
+      responses_aggregate @include(if: $includeResponses) {
         aggregate {
           count
         }

@@ -1,8 +1,9 @@
 import { LayoutSurvey } from '~/components/backtalk/LayoutSurvey';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Survey } from '~/components/backtalk/survey/Survey';
+import { SurveyResponse } from '~/components/backtalk/survey/SurveyResponse';
 import { BacktalkNewResponseContextProvider } from '~/components/context/BacktalkNewResponse';
+import { SurveyWrapper } from '~/components/backtalk/survey/SurveyWrapper';
 
 const SurveyPage: NextPage = () => {
   const { query } = useRouter();
@@ -11,7 +12,9 @@ const SurveyPage: NextPage = () => {
   return (
     <LayoutSurvey>
       <BacktalkNewResponseContextProvider id={surveyId}>
-        <Survey />
+        <SurveyWrapper>
+          <SurveyResponse />
+        </SurveyWrapper>
       </BacktalkNewResponseContextProvider>
     </LayoutSurvey>
   );

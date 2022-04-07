@@ -48,6 +48,8 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
   } = useGetSurveyByIdQuery({
     variables: {
       id: id!,
+      includeMyResponses: true,
+      wallet: signerAddr,
     },
     skip: !id,
     client: apolloBacktalkClient,

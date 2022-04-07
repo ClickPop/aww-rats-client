@@ -2,7 +2,6 @@ import {
   Flex,
   Heading,
   Spacer,
-  Select,
   Grid,
   GridItem,
   Progress,
@@ -16,13 +15,19 @@ import {
 import React, { FC, useContext } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
+import { apolloBacktalkClient } from '~/lib/graphql';
+import { useUpdateSurveyMutation } from '~/schema/generated';
 
 export const SurveyResults: FC = () => {
   const {
-    surveyResult: { data },
+    surveyResult: { data, refetch },
     responseCount,
     latestResponse,
   } = useContext(BacktalkSurveyResultContext);
+
+  const [updateSurvey, { loading }] = useUpdateSurveyMutation({
+    client: apolloBacktalkClient,
+  });
 
   return data?.surveys_by_pk ? (
     <>
@@ -33,7 +38,25 @@ export const SurveyResults: FC = () => {
           <FormLabel htmlFor='isactive' mb='0'>
             Activate
           </FormLabel>
-          <Switch disabled id='isactive' />
+          <Switch
+            isChecked={data?.surveys_by_pk.is_active ?? false}
+            onChange={async (e) => {
+              if (data.surveys_by_pk?.id) {
+                await updateSurvey({
+                  variables: {
+                    id: data.surveys_by_pk?.id,
+                    surveyInput: {
+                      is_active: e.currentTarget.checked,
+                    },
+                  },
+                });
+
+                await refetch();
+              }
+            }}
+            isDisabled={loading}
+            id='isactive'
+          />
         </FormControl>
         <Button disabled colorScheme='teal' ml={2} size='sm'>
           Export
