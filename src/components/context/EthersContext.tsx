@@ -6,12 +6,15 @@ import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers } from 'ethers';
 import { useCheckAuthLazyQuery } from '~/schema/generated';
+import { apolloBacktalkClient } from '~/lib/graphql';
 
 const defaultEthersContext: EthersContextType = {
   isLoggedIn: false,
+  isLoggedInBacktalk: false,
   setLoggedIn: () => {},
   connectToMetamask: () => undefined,
   authLoading: true,
+  backtalkAuthLoading: true,
 };
 
 export const EthersContext = createContext(defaultEthersContext);
@@ -21,19 +24,33 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [closet, setCloset] = useState<Closet | undefined>();
   const [signerAddr, setSignerAddr] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedInBacktalk, setLoggedInBacktalk] = useState(false);
   const etherState = useEthers();
 
   const [checkAuth, { loading: authLoading }] = useCheckAuthLazyQuery();
+  const [BacktalkAuth, { loading: backtalkAuthLoading }] =
+    useCheckAuthLazyQuery({
+      client: apolloBacktalkClient,
+    });
 
   useEffect(() => {
     const { signer, connected, network, accounts } = etherState;
 
     const handleCheckAuth = async () => {
       const auth = await checkAuth();
+      const backtalkAuth = await BacktalkAuth();
       setLoggedIn(
         !!(
           auth.data?.checkAuth?.role === 'user' &&
           accounts?.[0] === auth.data?.checkAuth?.id &&
+          connected &&
+          signer
+        ),
+      );
+      setLoggedInBacktalk(
+        !!(
+          backtalkAuth.data?.checkAuth?.role === 'user' &&
+          accounts?.[0] === backtalkAuth.data?.checkAuth?.id &&
           connected &&
           signer
         ),
@@ -71,7 +88,7 @@ export const EthersContextProvider: FC = ({ children }) => {
         setSignerAddr(accounts[0]);
       }
     })();
-  }, [etherState, checkAuth]);
+  }, [etherState, checkAuth, BacktalkAuth]);
 
   const connectToMetamask = async () => {
     try {
@@ -90,8 +107,10 @@ export const EthersContextProvider: FC = ({ children }) => {
         signerAddr,
         closet,
         isLoggedIn,
+        isLoggedInBacktalk,
         setLoggedIn,
         authLoading,
+        backtalkAuthLoading,
       }}>
       {children}
     </EthersContext.Provider>
