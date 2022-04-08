@@ -1,0 +1,10 @@
+mutation updateSurvey($id: Int!, $surveyInput: surveys_set_input!) {
+  update_surveys_by_pk(pk_columns: { id: $id }, _set: $surveyInput) {
+    title
+    description
+    is_active
+    is_public
+    max_responses
+    updated_at
+  }
+}

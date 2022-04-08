@@ -1,6 +1,7 @@
-mutation createResponse($responseInput: responses_insert_input!) {
-  insert_responses_one(object: $responseInput, on_conflict:{constraint: responses_pkey, update_columns:[response_content]}) {
+mutation createResponses($responseInput: [ResponseInput!]!) {
+  create_new_response(input: $responseInput) {
     question_id
     response_content
+    wallet
   }
 }
