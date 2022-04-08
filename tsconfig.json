@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,25 +15,17 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "smart-contracts/*": [
-        "./smart-contracts/*"
-      ],
-      "*": [
-        "./node_modules/*"
-      ]
+      "~/*": ["./src/*"],
+      "smart-contracts/*": ["./smart-contracts/*"],
+      "*": ["./node_modules/*"]
     },
     "incremental": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "src/utils/calculatePercentage.tx"
   ],
-  "exclude": [
-    "node_modules",
-    "smart-contracts"
-  ]
+  "exclude": ["node_modules", "smart-contracts"]
 }

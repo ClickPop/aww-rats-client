@@ -27,6 +27,7 @@
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",
     "framer-motion": "5",
+    "gifuct-js": "^2.1.2",
     "graphql-request": "^3.7.0",
     "graphql-tag": "^2.12.6",
     "js-confetti": "^0.10.2",

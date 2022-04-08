@@ -29,6 +29,7 @@ import {
   GetRatsSubscription,
   useGetRatsSubscription,
 } from '~/schema/generated';
+import { fabricGif } from '~/utils/fabric/gif';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -105,7 +106,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
         }
 
         if (val.startsWith('data:')) {
-          console.log(val);
           return val;
         }
 
@@ -136,10 +136,12 @@ export const ClosetContextProvider: FC = ({ children }) => {
             }
           });
           for (const [key, val] of layers) {
-            const img = await new Promise<fabric.Image>((resolve) => {
-              fabric.Image.fromURL(getImageURL(key, val), resolve);
-            });
-            let aspect = img.width && img.height ? img.width / img.height : 1;
+            const img = val.includes('data:image/gif')
+              ? (await fabricGif(val)).image
+              : await new Promise<fabric.Image>((resolve) => {
+                  fabric.Image.fromURL(getImageURL(key, val), resolve);
+                });
+            const aspect = img.width && img.height ? img.width / img.height : 1;
 
             if (aspect >= 1) {
               //@ts-ignore
@@ -158,7 +160,10 @@ export const ClosetContextProvider: FC = ({ children }) => {
         }
       }
       setTimeout(() => setLoading((l) => ({ ...l, mirror: false })), 300);
-      canvas?.renderAll();
+      fabric.util.requestAnimFrame(function render() {
+        canvas?.renderAll();
+        fabric.util.requestAnimFrame(render);
+      });
     },
     [canvas, closetPieces, hidePiece, contract, signerAddr],
   );
