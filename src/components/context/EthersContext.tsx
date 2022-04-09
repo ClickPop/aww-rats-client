@@ -4,7 +4,7 @@ import { Closet, EthersContextType, Rat } from '~/types';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { useCheckAuthLazyQuery } from '~/schema/generated';
 import { apolloBacktalkClient } from '~/lib/graphql';
 
@@ -85,7 +85,7 @@ export const EthersContextProvider: FC = ({ children }) => {
       }
 
       if (accounts?.[0]) {
-        setSignerAddr(accounts[0]);
+        setSignerAddr(utils.getAddress(accounts[0]));
       }
     })();
   }, [etherState, checkAuth, BacktalkAuth]);
