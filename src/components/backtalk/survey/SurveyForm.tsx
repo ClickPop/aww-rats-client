@@ -21,9 +21,10 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
+  ChangeEventHandler,
   FormEventHandler,
   useContext,
-  useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { ActionBar } from '~/components/backtalk/ActionBar';
@@ -34,7 +35,9 @@ import {
   Question_Type_Enum,
   Token_Types_Enum,
   useCreateSurveyMutation,
+  useGetContractByAddressLazyQuery,
 } from '~/schema/generated';
+import { utils } from 'ethers';
 
 export const SurveyForm = () => {
   const { push } = useRouter();
@@ -43,11 +46,19 @@ export const SurveyForm = () => {
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
-  const { title, questions, contract_address } = surveyData;
+  const { title, questions, contract, contract_address } = surveyData;
   const [prompt, setPrompt] = useState<{
     index: number;
     prompt: string;
   } | null>(null);
+  const [error, setError] = useState<{ contract: boolean }>({
+    contract: false,
+  });
+
+  const [getContractByAddress, { loading: getContractLoading }] =
+    useGetContractByAddressLazyQuery({
+      client: apolloBacktalkClient,
+    });
 
   const [createSurvey, { loading }] = useCreateSurveyMutation({
     client: apolloBacktalkClient,
@@ -67,11 +78,45 @@ export const SurveyForm = () => {
     }
   };
 
+  const handleContractChange: ChangeEventHandler<HTMLInputElement> = async (
+    e,
+  ) => {
+    const val = e.currentTarget.value;
+    const isAddress = !!(val && utils.isAddress(val));
+
+    surveyDataDispatch({
+      type: 'addContract',
+      payload: {
+        address: val || null,
+        token_type: val ? Token_Types_Enum.Erc721 : undefined,
+      },
+    });
+
+    if (isAddress) {
+      const res = await getContractByAddress({
+        variables: { address: val },
+      });
+
+      if (res?.data?.contracts_by_pk) {
+        surveyDataDispatch({
+          type: 'addContractAddress',
+          payload: res.data.contracts_by_pk.address,
+        });
+      }
+    }
+
+    setError((err) => ({
+      ...err,
+      contract: !val ? false : !isAddress,
+    }));
+  };
+
   const validForm =
     !!title &&
     (questions?.data.length ?? 0) > 0 &&
     !!questions?.data.some((q) => q.is_required) &&
-    !!questions?.data.every((q) => !!q.prompt);
+    !!questions?.data.every((q) => !!q.prompt) &&
+    !error.contract;
 
   return (
     <form onSubmit={onSubmit}>
@@ -102,22 +147,13 @@ export const SurveyForm = () => {
             }
           />
         </FormControl>
-        <FormControl mb={4}>
+        <FormControl mb={4} isInvalid={error.contract}>
           <FormLabel htmlFor='contract'>Limit to Contract</FormLabel>
           <Input
             id='contract'
-            value={contract_address ?? ''}
-            onChange={(e) =>
-              surveyDataDispatch({
-                type: 'addContract',
-                payload: {
-                  address: e.currentTarget.value || null,
-                  token_type: e.currentTarget.value
-                    ? Token_Types_Enum.Erc721
-                    : undefined,
-                },
-              })
-            }
+            value={contract_address ?? contract?.data.address ?? ''}
+            onChange={handleContractChange}
+            isDisabled={getContractLoading}
           />
           <FormHelperText>
             Leave this blank to let anyone with a wallet submit a response.
