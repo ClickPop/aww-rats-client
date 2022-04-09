@@ -88,10 +88,7 @@ export const SurveyQuestionStepper: FC = () => {
         </VStack>
         {currentQuestion && (
           <>
-            <Text
-              pb={2}
-              textAlign='left'
-            >
+            <Text pb={2} textAlign='left'>
               {currentQuestion.prompt}
             </Text>
             <Textarea
@@ -105,7 +102,10 @@ export const SurveyQuestionStepper: FC = () => {
               resize='none'
               isInvalid={freeResponseState === 'error'}
             />
-            <Text alignSelf='end' fontSize={'xs'} color={getColorFromState(freeResponseState)}>
+            <Text
+              alignSelf='end'
+              fontSize={'xs'}
+              color={getColorFromState(freeResponseState)}>
               {response_content?.length ?? 0} / 280
             </Text>
           </>
@@ -115,7 +115,7 @@ export const SurveyQuestionStepper: FC = () => {
             .filter((q) => !!responses.find((r) => q.id === r.question_id))
             .map((q) => (
               <Box key={q.id}>
-                <Text fontWeight='600'>Q.{' '}{q.prompt}</Text>
+                <Text fontWeight='600'>Q. {q.prompt}</Text>
                 <Text>
                   A.{' '}
                   {
@@ -125,19 +125,16 @@ export const SurveyQuestionStepper: FC = () => {
                 </Text>
               </Box>
             ))}
-        <HStack
-          pt={2}
-          width='100%'
-        >
+        <HStack pt={2} width='100%'>
           {step !== 0 && (
             <Button
               colorScheme='gray'
               size='md'
               variant='outline'
               width='100%'
-              _hover= {{
+              _hover={{
                 backgroundColor: 'gray.200',
-                color: 'black'
+                color: 'black',
               }}
               onClick={() => surveyResponseDispatch({ type: 'previousStep' })}>
               Back
@@ -149,9 +146,9 @@ export const SurveyQuestionStepper: FC = () => {
               size='md'
               variant='outline'
               width='100%'
-              _hover= {{
+              _hover={{
                 backgroundColor: 'gray.200',
-                color: 'black'
+                color: 'black',
               }}
               onClick={() => surveyResponseDispatch({ type: 'nextStep' })}
               disabled={freeResponseState === 'error'}>
@@ -164,13 +161,12 @@ export const SurveyQuestionStepper: FC = () => {
               size='md'
               variant='outline'
               width='100%'
-              _hover= {{
+              _hover={{
                 backgroundColor: 'gray.200',
-                color: 'black'
+                color: 'black',
               }}
               type='submit'
-              isLoading={loading}
-            >
+              isLoading={loading}>
               Submit
             </Button>
           )}
