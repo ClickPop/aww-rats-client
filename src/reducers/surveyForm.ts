@@ -35,6 +35,8 @@ export const surveyFormReducer = (
       return { ...state, is_active: action.payload };
     case 'updateMaxResponses':
       return { ...state, max_responses: action.payload };
+    case 'editDescription':
+      return { ...state, description: action.payload };
     case 'addContract': {
       return {
         ...state,
