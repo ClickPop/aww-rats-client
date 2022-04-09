@@ -1,5 +1,7 @@
 import { Box, Button, Center, Heading, Text } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect } from 'react';
+import Link from 'next/link';
+import { Emoji } from '~/components/shared/Emoji';
 import { Connect } from '~/components/backtalk/Connect';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
 import { backtalkNewResponseContext } from '~/components/context/BacktalkNewResponse';
@@ -35,7 +37,36 @@ export const SurveyResponse: FC = () => {
   }
 
   if (surveyEnd) {
-    return <Center>The survey is OVER!</Center>;
+    return (
+      <>
+        <Heading as='h1' mb={2} size='md'>
+          Woo-hoo!{' '}
+          <Emoji aria-label='Party'>
+            🎉
+          </Emoji>
+        </Heading>
+        <Text mb={2}>
+          Thanks so much for your feedback for {data.title}.
+        </Text>
+        <Text>
+          Want to make a web3 survey of your own? 
+        </Text>
+        <Link href='/backtalk'>
+          <Button
+            colorScheme='gray'
+            mt={4}
+            size='md'
+            variant='outline'
+            _hover= {{
+              backgroundColor: 'gray.200',
+              color: 'black'
+            }}
+          >
+            Make one now
+          </Button>
+        </Link>
+      </>
+    );
   }
 
   return (
@@ -49,8 +80,20 @@ export const SurveyResponse: FC = () => {
           <Connect />
           {connected && isLoggedIn && (
             <Button
-              colorScheme='dark'
+              colorScheme='gray'
+              mt={4}
+              size='md'
+              variant='outline'
+              width='100%'
+              _hover= {{
+                backgroundColor: 'gray.200',
+                color: 'black'
+              }}
               onClick={() => surveyResponseDispatch({ type: 'startSurvey' })}>
+              <Emoji mr='0.5ch' aria-label='Right Arrow'>
+                {' '}
+                ➡️{' '}
+              </Emoji>{' '}
               Start
             </Button>
           )}
