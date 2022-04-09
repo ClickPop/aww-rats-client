@@ -40,9 +40,9 @@ export const Connect = () => {
         size='md'
         variant='outline'
         width='100%'
-        _hover= {{
+        _hover={{
           backgroundColor: 'gray.200',
-          color: 'black'
+          color: 'black',
         }}
         onClick={async () => {
           if (!connected && typeof window !== 'undefined' && window.ethereum) {

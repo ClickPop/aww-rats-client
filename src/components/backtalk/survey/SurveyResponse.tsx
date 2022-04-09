@@ -40,28 +40,20 @@ export const SurveyResponse: FC = () => {
     return (
       <>
         <Heading as='h1' mb={2} size='md'>
-          Woo-hoo!{' '}
-          <Emoji aria-label='Party'>
-            🎉
-          </Emoji>
+          Woo-hoo! <Emoji aria-label='Party'>🎉</Emoji>
         </Heading>
-        <Text mb={2}>
-          Thanks so much for your feedback for {data.title}.
-        </Text>
-        <Text>
-          Want to make a web3 survey of your own? 
-        </Text>
-        <Link href='/backtalk'>
+        <Text mb={2}>Thanks so much for your feedback for {data.title}.</Text>
+        <Text>Want to make a web3 survey of your own?</Text>
+        <Link href='/backtalk' passHref>
           <Button
             colorScheme='gray'
             mt={4}
             size='md'
             variant='outline'
-            _hover= {{
+            _hover={{
               backgroundColor: 'gray.200',
-              color: 'black'
-            }}
-          >
+              color: 'black',
+            }}>
             Make one now
           </Button>
         </Link>
@@ -85,9 +77,9 @@ export const SurveyResponse: FC = () => {
               size='md'
               variant='outline'
               width='100%'
-              _hover= {{
+              _hover={{
                 backgroundColor: 'gray.200',
-                color: 'black'
+                color: 'black',
               }}
               onClick={() => surveyResponseDispatch({ type: 'startSurvey' })}>
               <Emoji mr='0.5ch' aria-label='Right Arrow'>
