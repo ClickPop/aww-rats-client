@@ -18,6 +18,7 @@ import {
   Switch,
   VStack,
   HStack,
+  Textarea,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
@@ -145,6 +146,19 @@ export const SurveyForm = () => {
                 payload: e.currentTarget.value,
               })
             }
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel htmlFor='survey-description'>Survey Description</FormLabel>
+          <Textarea
+            value={surveyData.description ?? ''}
+            onChange={(e) =>
+              surveyDataDispatch({
+                type: 'editDescription',
+                payload: e.currentTarget.value,
+              })
+            }
+            resize='none'
           />
         </FormControl>
         <FormControl mb={4} isInvalid={error.contract}>
