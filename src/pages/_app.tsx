@@ -62,6 +62,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         600: '#26284a',
         700: '#1C1E3B',
       },
+      purple: {
+        950: '#1e153a',
+      },
+      backtalk: {
+        background: '#F5F6F8',
+      },
     },
   });
 

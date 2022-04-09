@@ -1,0 +1,41 @@
+query getSurveysByWallet(
+  $wallet: String!
+  $surveyLimit: Int = 20
+  $surveyOffset: Int = 0
+  $responseLimit: Int = 20
+  $responseOffset: Int = 0
+) {
+  surveys(
+    where: { owner: { _eq: $wallet } }
+    order_by: { id: desc }
+    limit: $surveyLimit
+    offset: $surveyOffset
+  ) {
+    id
+    title
+    description
+    is_active
+    is_public
+    contract {
+      address
+      token_type
+    }
+    questions(order_by: { id: asc }) {
+      id
+      prompt
+      is_required
+      responses(limit: $responseLimit, offset: $responseOffset) {
+        wallet
+        response_content
+      }
+      responses_aggregate {
+        aggregate {
+          count
+        }
+      }
+      latest_response: responses(limit: 1, order_by: { created_at: desc }) {
+        created_at
+      }
+    }
+  }
+}

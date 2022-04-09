@@ -1,0 +1,6 @@
+query CheckAuth {
+  checkAuth {
+    id
+    role
+  }
+}

@@ -1,0 +1,42 @@
+query getSurveyById(
+  $id: Int!
+  $includeResponses: Boolean = false
+  $includeMyResponses: Boolean = false
+  $wallet: String
+) {
+  surveys_by_pk(id: $id) {
+    id
+    title
+    description
+    is_active
+    is_public
+    max_responses
+    contract {
+      address
+      token_type
+    }
+    questions(order_by: { id: asc }) {
+      id
+      prompt
+      is_required
+      callerResponses: responses(where: { wallet: { _eq: $wallet } })
+        @include(if: $includeMyResponses) {
+        response_content
+      }
+      responses @include(if: $includeResponses) {
+        wallet
+        response_content
+        created_at
+      }
+      responses_aggregate @include(if: $includeResponses) {
+        aggregate {
+          count
+        }
+      }
+      latest_response: responses(limit: 1, order_by: { created_at: desc })
+        @include(if: $includeResponses) {
+        created_at
+      }
+    }
+  }
+}
