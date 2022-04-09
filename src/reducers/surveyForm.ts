@@ -38,17 +38,26 @@ export const surveyFormReducer = (
     case 'addContract': {
       return {
         ...state,
-        contract_address: action.payload.address
-          ? action.payload.address
-          : null,
+        contract_address: undefined,
         contract: action.payload.address
           ? {
               data: {
                 address: action.payload.address,
                 token_type: Token_Types_Enum.Erc721,
               },
+              on_conflict: {
+                constraint: Contracts_Constraint.ContractsPkey,
+                update_columns: [Contracts_Update_Column.Address],
+              },
             }
           : undefined,
+      };
+    }
+    case 'addContractAddress': {
+      return {
+        ...state,
+        contract_address: action.payload,
+        contract: undefined,
       };
     }
     case 'deleteQuestion':

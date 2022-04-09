@@ -41,4 +41,5 @@ export type SurveyFormAction =
       payload: { question: Questions_Insert_Input; index: number };
     }
   | { type: 'addContract'; payload: Contracts_Insert_Input }
+  | { type: 'addContractAddress'; payload: string }
   | { type: 'updateMaxResponses'; payload: number | null };
