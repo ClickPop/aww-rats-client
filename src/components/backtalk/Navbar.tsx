@@ -10,7 +10,12 @@ export const Navbar = () => {
       <Stack justify='space-between' maxW='4xl' mx='auto'>
         <Box>
           <Link href='/backtalk'>
-            <Image src={BacktalkLogo} alt='BacktalkLogo' height={46} width={58} />
+            <Image
+              src={BacktalkLogo}
+              alt='BacktalkLogo'
+              height={46}
+              width={58}
+            />
           </Link>
         </Box>
       </Stack>
