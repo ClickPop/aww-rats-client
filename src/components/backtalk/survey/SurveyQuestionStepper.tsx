@@ -70,23 +70,30 @@ export const SurveyQuestionStepper: FC = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <VStack>
-        <VStack w='100%' alignItems='start'>
-          {!noMoreSteps && (
-            <Text>
+      <VStack alignItems='start'>
+        <VStack w='100%' alignItems='start' mb={2}>
+          {!noMoreSteps ? (
+            <Text fontSize='xs'>
               {step + 1}/{questions?.length ?? 0}
             </Text>
+          ) : (
+            <Text fontSize='xs'>Review Answers</Text>
           )}
           <Progress
             colorScheme='purple'
-            w='100%'
             size='xs'
+            w='100%'
             value={(step / (questions?.length ?? 0)) * 100}
           />
         </VStack>
         {currentQuestion && (
           <>
-            <Text>{currentQuestion.prompt}</Text>
+            <Text
+              pb={2}
+              textAlign='left'
+            >
+              {currentQuestion.prompt}
+            </Text>
             <Textarea
               value={response_content ?? ''}
               onChange={(e) =>
@@ -98,7 +105,7 @@ export const SurveyQuestionStepper: FC = () => {
               resize='none'
               isInvalid={freeResponseState === 'error'}
             />
-            <Text alignSelf='end' color={getColorFromState(freeResponseState)}>
+            <Text alignSelf='end' fontSize={'xs'} color={getColorFromState(freeResponseState)}>
               {response_content?.length ?? 0} / 280
             </Text>
           </>
@@ -108,8 +115,9 @@ export const SurveyQuestionStepper: FC = () => {
             .filter((q) => !!responses.find((r) => q.id === r.question_id))
             .map((q) => (
               <Box key={q.id}>
-                <Text>{q.prompt}</Text>
+                <Text fontWeight='600'>Q.{' '}{q.prompt}</Text>
                 <Text>
+                  A.{' '}
                   {
                     responses.find((r) => q.id === r.question_id)
                       ?.response_content
@@ -117,24 +125,52 @@ export const SurveyQuestionStepper: FC = () => {
                 </Text>
               </Box>
             ))}
-        <HStack>
+        <HStack
+          pt={2}
+          width='100%'
+        >
           {step !== 0 && (
             <Button
-              colorScheme='dark'
+              colorScheme='gray'
+              size='md'
+              variant='outline'
+              width='100%'
+              _hover= {{
+                backgroundColor: 'gray.200',
+                color: 'black'
+              }}
               onClick={() => surveyResponseDispatch({ type: 'previousStep' })}>
               Back
             </Button>
           )}
           {!noMoreSteps && (
             <Button
-              colorScheme='dark'
+              colorScheme='gray'
+              size='md'
+              variant='outline'
+              width='100%'
+              _hover= {{
+                backgroundColor: 'gray.200',
+                color: 'black'
+              }}
               onClick={() => surveyResponseDispatch({ type: 'nextStep' })}
               disabled={freeResponseState === 'error'}>
               Next
             </Button>
           )}
           {noMoreSteps && (
-            <Button colorScheme='dark' type='submit' isLoading={loading}>
+            <Button
+              colorScheme='gray'
+              size='md'
+              variant='outline'
+              width='100%'
+              _hover= {{
+                backgroundColor: 'gray.200',
+                color: 'black'
+              }}
+              type='submit'
+              isLoading={loading}
+            >
               Submit
             </Button>
           )}

@@ -35,6 +35,15 @@ export const Connect = () => {
   return !isLoggedIn || !connected ? (
     <div>
       <Button
+        colorScheme='gray'
+        mt={4}
+        size='md'
+        variant='outline'
+        width='100%'
+        _hover= {{
+          backgroundColor: 'gray.200',
+          color: 'black'
+        }}
         onClick={async () => {
           if (!connected && typeof window !== 'undefined' && window.ethereum) {
             on();
@@ -43,10 +52,8 @@ export const Connect = () => {
             await handleLogin();
           }
         }}
-        paddingInlineStart='1ch'
         isLoading={loading}>
         <Emoji mr='0.5ch' aria-label='Electrical Plug'>
-          {' '}
           🔌{' '}
         </Emoji>{' '}
         Connect
