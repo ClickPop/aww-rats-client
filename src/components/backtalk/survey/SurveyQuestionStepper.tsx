@@ -66,6 +66,7 @@ export const SurveyQuestionStepper: FC = () => {
         responseInput: responses,
       },
     });
+    surveyResponseDispatch({ type: 'endSurvey' });
   };
 
   return (
