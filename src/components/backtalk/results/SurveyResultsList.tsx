@@ -1,13 +1,9 @@
 import {
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
   Box,
+  Heading,
+  Text,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 
@@ -19,38 +15,43 @@ export const SurveyResultsList: FC = () => {
   } = useContext(BacktalkSurveyResultContext);
 
   return responseCount > 0 ? (
-    <TableContainer
-      backgroundColor='white'
-      border='1px'
-      borderColor='gray.200'
-      borderRadius={8}>
-      <Table variant='simple'>
-        <Thead>
-          <Tr textTransform='uppercase'>
-            <Th>Wallet Address</Th>
-            {!!data?.surveys_by_pk?.contract && <Th>Tokens</Th>}
+    <>
+      <Heading as='h2' mb={4} size='sm'>
+        Individual Responses
+      </Heading>
+      {Object.entries(processedResponses).map(
+        ([wallet, proccessedReponses]) => (
+          <Box
+            backgroundColor='white'
+            border='1px'
+            borderColor='gray.200'
+            borderRadius={8}
+            key={wallet}
+            mb={4}
+            p={4}>
+            <Heading
+              as='h3'
+              color='gray.500'
+              mb={2}
+              size='xs'
+            >
+              {format(new Date(proccessedReponses.date), "'📅' eeee, MMMM d, yyyy 'at 🕐' H:mm  (z)")}
+            </Heading>
+            <Text mb={3}>
+              <strong>Wallet Address:<br /></strong>{' '}{wallet}
+            </Text>
             {data?.surveys_by_pk?.questions.map((q) => (
-              <Th key={q.id}>{q.prompt}</Th>
-            ))}
-            <Th>Date</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {Object.entries(processedResponses).map(
-            ([wallet, proccessedReponses]) => (
-              <Tr key={wallet}>
-                <Td>{wallet}</Td>
-                {!!data?.surveys_by_pk?.contract && <Td>PLACEHOLDER</Td>}
+              <Text mt={2}>
+                <strong>{q.prompt}:</strong><br />
                 {proccessedReponses.responses.map((response) => (
-                  <Td key={wallet + response}>{response}</Td>
+                  <span key={wallet + response}>{response}</span>
                 ))}
-                <Td isNumeric>{proccessedReponses.date}</Td>
-              </Tr>
-            ),
-          )}
-        </Tbody>
-      </Table>
-    </TableContainer>
+              </Text>
+            ))}
+          </Box>
+        ),
+      )}
+    </>
   ) : (
     <Box>No Responses</Box>
   );

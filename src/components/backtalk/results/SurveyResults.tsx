@@ -12,6 +12,7 @@ import {
   FormLabel,
   Switch,
 } from '@chakra-ui/react';
+import { format } from 'date-fns'
 import React, { FC, useContext } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
@@ -97,7 +98,8 @@ export const SurveyResults: FC = () => {
           <Heading as='h2' color='gray.500' size='sm'>
             Last Response
           </Heading>
-          <Text fontSize='xl'>{latestResponse.toISOString()}</Text>
+          <Text fontSize='xl'>
+          {format(new Date(latestResponse.toISOString()), "eeee, MMMM d, yyyy 'at' H:mm  (z)")}</Text>
         </GridItem>
       </Grid>
       <SurveyResultsList />
