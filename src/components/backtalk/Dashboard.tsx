@@ -68,9 +68,6 @@ export const Dashboard = () => {
       <Flex align='baseline' my={4}>
         <Heading size='md'>Surveys</Heading>
         <Spacer />
-        <Button colorScheme='teal' size='sm' variant='link'>
-          Public Surveys
-        </Button>
         <Link href='/backtalk/create' passHref>
           <Button colorScheme='teal' ml={2} size='sm'>
             + Survey
