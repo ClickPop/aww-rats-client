@@ -17,7 +17,7 @@ export const SurveyResponse: FC = () => {
 
   useEffect(() => {
     if (
-      data?.questions?.some((q) => q.callerResponses.length > 0) &&
+      data?.callerResponses.length > 0 &&
       data.step !== data.questions.length + 1
     ) {
       surveyResponseDispatch({

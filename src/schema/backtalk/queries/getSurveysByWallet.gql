@@ -16,26 +16,22 @@ query getSurveysByWallet(
     description
     is_active
     is_public
+    max_responses
+    response_count
+    latest_response
     contract {
       address
       token_type
+    }
+    survey_responses(limit: $responseLimit, offset: $responseOffset) {
+      wallet
+      response_values
+      question_ids
     }
     questions(order_by: { id: asc }) {
       id
       prompt
       is_required
-      responses(limit: $responseLimit, offset: $responseOffset) {
-        wallet
-        response_content
-      }
-      responses_aggregate {
-        aggregate {
-          count
-        }
-      }
-      latest_response: responses(limit: 1, order_by: { created_at: desc }) {
-        created_at
-      }
     }
   }
 }

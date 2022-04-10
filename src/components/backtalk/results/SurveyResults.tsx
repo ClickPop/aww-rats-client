@@ -22,8 +22,6 @@ import { useUpdateSurveyMutation } from '~/schema/generated';
 export const SurveyResults: FC = () => {
   const {
     surveyResult: { data, refetch },
-    responseCount,
-    latestResponse,
   } = useContext(BacktalkSurveyResultContext);
 
   const [updateSurvey, { loading }] = useUpdateSurveyMutation({
@@ -77,12 +75,12 @@ export const SurveyResults: FC = () => {
           </Heading>
           <Text fontSize='xl'>
             {!!data.surveys_by_pk.max_responses
-              ? `${responseCount}/${data.surveys_by_pk.max_responses}`
-              : responseCount}
+              ? `${data?.surveys_by_pk?.response_count}/${data.surveys_by_pk.max_responses}`
+              : data?.surveys_by_pk?.response_count}
           </Text>
           {!!data.surveys_by_pk.max_responses && (
             <Progress
-              value={responseCount}
+              value={data?.surveys_by_pk?.response_count}
               max={data.surveys_by_pk.max_responses}
             />
           )}
@@ -98,12 +96,14 @@ export const SurveyResults: FC = () => {
           <Heading as='h2' color='gray.500' size='sm'>
             Last Response
           </Heading>
-          <Text fontSize='xl'>
-            {format(
-              new Date(latestResponse.toISOString()),
-              "eeee, MMMM d, yyyy 'at' H:mm  (z)",
-            )}
-          </Text>
+          {!!data?.surveys_by_pk?.latest_response && (
+            <Text fontSize='xl'>
+              {format(
+                new Date(data.surveys_by_pk.latest_response),
+                "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+              )}
+            </Text>
+          )}
         </GridItem>
       </Grid>
       <SurveyResultsList />

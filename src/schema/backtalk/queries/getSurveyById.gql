@@ -11,32 +11,28 @@ query getSurveyById(
     is_active
     is_public
     max_responses
+    response_count @include(if: $includeResponses)
+    latest_response @include(if: $includeResponses)
     contract {
       address
       token_type
+    }
+    callerResponses: survey_responses(where: { wallet: { _eq: $wallet } })
+      @include(if: $includeMyResponses) {
+      wallet
+      response_values
+      question_ids
+    }
+    survey_responses @include(if: $includeResponses) {
+      wallet
+      response_values
+      question_ids
+      created_at
     }
     questions(order_by: { id: asc }) {
       id
       prompt
       is_required
-      callerResponses: responses(where: { wallet: { _eq: $wallet } })
-        @include(if: $includeMyResponses) {
-        response_content
-      }
-      responses @include(if: $includeResponses) {
-        wallet
-        response_content
-        created_at
-      }
-      responses_aggregate @include(if: $includeResponses) {
-        aggregate {
-          count
-        }
-      }
-      latest_response: responses(limit: 1, order_by: { created_at: desc })
-        @include(if: $includeResponses) {
-        created_at
-      }
     }
   }
 }

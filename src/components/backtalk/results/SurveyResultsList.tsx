@@ -6,17 +6,17 @@ import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurvey
 export const SurveyResultsList: FC = () => {
   const {
     surveyResult: { data },
-    processedResponses,
-    responseCount,
   } = useContext(BacktalkSurveyResultContext);
 
-  return responseCount > 0 ? (
+  console.log(data);
+
+  return data?.surveys_by_pk?.response_count > 0 ? (
     <>
       <Heading as='h2' mb={4} size='sm'>
         Individual Responses
       </Heading>
-      {Object.entries(processedResponses).map(
-        ([wallet, proccessedReponses]) => (
+      {(data?.surveys_by_pk?.survey_responses ?? []).map(
+        ({ wallet, created_at, response_values, question_ids }) => (
           <Box
             backgroundColor='white'
             border='1px'
@@ -27,7 +27,7 @@ export const SurveyResultsList: FC = () => {
             p={4}>
             <Heading as='h3' color='gray.500' mb={2} size='xs'>
               {format(
-                new Date(proccessedReponses.date),
+                new Date(created_at),
                 "'📅' eeee, MMMM d, yyyy 'at 🕐' H:mm  (z)",
               )}
             </Heading>
@@ -38,15 +38,32 @@ export const SurveyResultsList: FC = () => {
               </strong>{' '}
               {wallet}
             </Text>
-            {data?.surveys_by_pk?.questions.map((q) => (
-              <Text key={q.id} mt={2}>
-                <strong>{q.prompt}:</strong>
-                <br />
-                {proccessedReponses.responses.map((response) => (
-                  <span key={wallet + response}>{response}</span>
-                ))}
-              </Text>
-            ))}
+            {data?.surveys_by_pk?.questions.map((q) =>
+              (question_ids as number[])?.findIndex((qid) => qid === q.id) >
+              -1 ? (
+                <Text key={q.id} mt={2}>
+                  <strong>{q.prompt}:</strong>
+                  <br />
+                  <span
+                    key={
+                      wallet +
+                      response_values[
+                        (question_ids as number[])?.findIndex(
+                          (qid) => qid === q.id,
+                        )
+                      ]
+                    }>
+                    {
+                      response_values[
+                        (question_ids as number[])?.findIndex(
+                          (qid) => qid === q.id,
+                        )
+                      ]
+                    }
+                  </span>
+                </Text>
+              ) : null,
+            )}
           </Box>
         ),
       )}
