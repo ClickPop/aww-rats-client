@@ -13,7 +13,7 @@ export const Link: FC<LinkProps> = ({
   ...props
 }) => {
   return (
-    <NextLink {...props}>
+    <NextLink {...props} passHref>
       <a
         className={className}
         rel={openInNewTab ? 'noreferrer noopener' : ''}

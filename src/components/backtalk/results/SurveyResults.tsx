@@ -99,7 +99,11 @@ export const SurveyResults: FC = () => {
             Last Response
           </Heading>
           <Text fontSize='xl'>
-          {format(new Date(latestResponse.toISOString()), "eeee, MMMM d, yyyy 'at' H:mm  (z)")}</Text>
+            {format(
+              new Date(latestResponse.toISOString()),
+              "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+            )}
+          </Text>
         </GridItem>
       </Grid>
       <SurveyResultsList />
