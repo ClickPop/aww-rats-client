@@ -12,7 +12,7 @@ import {
   FormLabel,
   Switch,
 } from '@chakra-ui/react';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';

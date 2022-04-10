@@ -9,8 +9,9 @@ export const Navbar = () => {
     <Box backgroundColor='white' boxShadow='xs' py={1}>
       <Stack justify='space-between' maxW='4xl' mx='auto'>
         <Box>
-          <Link href='/backtalk'>
+          <Link href='/backtalk' passHref>
             <Image
+              cursor='pointer'
               src={BacktalkLogo}
               alt='BacktalkLogo'
               height={46}
