@@ -41,7 +41,7 @@ export const SurveyResultsList: FC = () => {
               <strong>Wallet Address:<br /></strong>{' '}{wallet}
             </Text>
             {data?.surveys_by_pk?.questions.map((q) => (
-              <Text mt={2}>
+              <Text  key={q.id} mt={2}>
                 <strong>{q.prompt}:</strong><br />
                 {proccessedReponses.responses.map((response) => (
                   <span key={wallet + response}>{response}</span>
