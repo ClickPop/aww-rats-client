@@ -1,6 +1,6 @@
 import { Box, Button, Center, Heading, Text } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from '~/components/shared/Link';
 import { Emoji } from '~/components/shared/Emoji';
 import { Connect } from '~/components/backtalk/Connect';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
@@ -44,7 +44,7 @@ export const SurveyResponse: FC = () => {
         </Heading>
         <Text mb={2}>Thanks so much for your feedback for {data.title}.</Text>
         <Text>Want to make a web3 survey of your own?</Text>
-        <Link href='/backtalk' passHref>
+        <Link href='/backtalk'>
           <Button
             colorScheme='gray'
             mt={4}

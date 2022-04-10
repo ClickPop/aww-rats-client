@@ -12,9 +12,8 @@ import {
   Button,
   Box,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 import { compareAsc } from 'date-fns';
-import Link from 'next/link';
+import { Link } from '~/components/shared/Link';
 import React, { useContext, useMemo } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
@@ -68,7 +67,7 @@ export const Dashboard = () => {
       <Flex align='baseline' my={4}>
         <Heading size='md'>Surveys</Heading>
         <Spacer />
-        <Link href='/backtalk/create' passHref>
+        <Link href='/backtalk/create'>
           <Button colorScheme='teal' ml={2} size='sm'>
             + Survey
           </Button>

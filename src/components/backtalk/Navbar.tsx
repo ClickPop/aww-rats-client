@@ -1,5 +1,5 @@
 import { Box, Stack } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Link } from '~/components/shared/Link';
 import React from 'react';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk/backtalk-logo.png';
@@ -9,9 +9,8 @@ export const Navbar = () => {
     <Box backgroundColor='white' boxShadow='xs' py={1}>
       <Stack justify='space-between' maxW='4xl' mx='auto'>
         <Box>
-          <Link href='/backtalk' passHref>
+          <Link href='/backtalk'>
             <Image
-              cursor='pointer'
               src={BacktalkLogo}
               alt='BacktalkLogo'
               height={46}
