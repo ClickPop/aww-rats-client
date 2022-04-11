@@ -34,9 +34,7 @@ export const SurveyResultsList: FC = () => {
             <Heading as='h3' color='gray.500' size='xs'>
               Wallet Address:
             </Heading>
-            <Text mb={3}>
-              {wallet}
-            </Text>
+            <Text mb={3}>{wallet}</Text>
             {data?.surveys_by_pk?.questions.map((q) =>
               (question_ids as number[])?.findIndex((qid) => qid === q.id) >
               -1 ? (

@@ -1,11 +1,11 @@
-import { createContext, FC, useEffect, useState } from 'react';
+import { createContext, FC, useEffect, useRef, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { Closet, EthersContextType, Rat } from '~/types';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers, utils } from 'ethers';
-import { useCheckAuthLazyQuery } from '~/schema/generated';
+import { useCheckAuthQuery } from '~/schema/generated';
 import { apolloBacktalkClient } from '~/lib/graphql';
 
 const defaultEthersContext: EthersContextType = {
@@ -27,9 +27,9 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [isLoggedInBacktalk, setLoggedInBacktalk] = useState(false);
   const etherState = useEthers();
 
-  const [checkAuth, { loading: authLoading }] = useCheckAuthLazyQuery();
-  const [BacktalkAuth, { loading: backtalkAuthLoading }] =
-    useCheckAuthLazyQuery({
+  const { loading: authLoading, data: authData } = useCheckAuthQuery();
+  const { loading: backtalkAuthLoading, data: backtalkAuthData } =
+    useCheckAuthQuery({
       client: apolloBacktalkClient,
     });
 
@@ -37,20 +37,18 @@ export const EthersContextProvider: FC = ({ children }) => {
     const { signer, connected, network, accounts } = etherState;
 
     const handleCheckAuth = async () => {
-      const auth = await checkAuth();
-      const backtalkAuth = await BacktalkAuth();
       setLoggedIn(
         !!(
-          auth.data?.checkAuth?.role === 'user' &&
-          accounts?.[0] === auth.data?.checkAuth?.id &&
+          authData?.checkAuth?.role === 'user' &&
+          accounts?.[0] === authData?.checkAuth?.id &&
           connected &&
           signer
         ),
       );
       setLoggedInBacktalk(
         !!(
-          backtalkAuth.data?.checkAuth?.role === 'user' &&
-          accounts?.[0] === backtalkAuth.data?.checkAuth?.id &&
+          backtalkAuthData?.checkAuth?.role === 'user' &&
+          accounts?.[0] === backtalkAuthData?.checkAuth?.id &&
           connected &&
           signer
         ),
@@ -88,7 +86,13 @@ export const EthersContextProvider: FC = ({ children }) => {
         setSignerAddr(utils.getAddress(accounts[0]));
       }
     })();
-  }, [etherState, checkAuth, BacktalkAuth]);
+  }, [
+    etherState,
+    authData?.checkAuth?.role,
+    authData?.checkAuth?.id,
+    backtalkAuthData?.checkAuth?.role,
+    backtalkAuthData?.checkAuth?.id,
+  ]);
 
   const connectToMetamask = async () => {
     try {

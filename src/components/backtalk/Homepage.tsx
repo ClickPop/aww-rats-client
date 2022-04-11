@@ -20,16 +20,8 @@ import BacktalkLogin from '~/components/access/BacktalkLogin';
 const Homepage = () => {
   return (
     <Box backgroundColor='white' minH='100vh'>
-      <Box
-        background='purple.50'
-      >
-        <Flex
-          alignItems='center'
-          maxW='4xl'
-          mx='auto'
-          pb={8}
-          pt={12}
-        >
+      <Box background='purple.50'>
+        <Flex alignItems='center' maxW='4xl' mx='auto' pb={8} pt={12}>
           <Box width='50%'>
             <NextImage
               alt='Backtalk'
@@ -41,7 +33,8 @@ const Homepage = () => {
               The Web3 Community Feedback Tool
             </Heading>
             <Text mb={4}>
-              Get feedback you can trust from validated members of your community.
+              Get feedback you can trust from validated members of your
+              community.
             </Text>
             <BacktalkLogin />
           </Box>
@@ -54,33 +47,27 @@ const Homepage = () => {
         </Flex>
       </Box>
 
-      <Box
-        maxW='4xl'
-        mx='auto'
-        my={12}
-      >
+      <Box maxW='4xl' mx='auto' my={12}>
         <VStack mb={4}>
-          <Text>
-            Used by communities like:
-          </Text>
+          <Text>Used by communities like:</Text>
         </VStack>
 
         <Grid templateColumns='repeat(3, 1fr)' gap={12} mb={12}>
-          <GridItem align='center'>
+          <GridItem alignSelf='center'>
             <NextImage
               src={AwwRatsLogo}
               alt='Aww, Rats! Logo'
               placeholder='blur'
             />
           </GridItem>
-          <GridItem align='center'>
+          <GridItem alignSelf='center'>
             <NextImage
               src={AwwRatsLogo}
               alt='Aww, Rats! Logo'
               placeholder='blur'
             />
           </GridItem>
-          <GridItem align='center'>
+          <GridItem alignSelf='center'>
             <NextImage
               src={AwwRatsLogo}
               alt='Aww, Rats! Logo'
@@ -128,10 +115,10 @@ const Homepage = () => {
               project launch with momentum.
             </Text>
             <Text mb={2}>
-              This is far better than the current way of building a pre-sale list
-              by manually gathering addresses in Discord or Twitter, manually
-              updating Discord roles, or creating a .csv of addresses by hand
-              (🤮).
+              This is far better than the current way of building a pre-sale
+              list by manually gathering addresses in Discord or Twitter,
+              manually updating Discord roles, or creating a .csv of addresses
+              by hand (🤮).
             </Text>
           </Box>
 
@@ -139,7 +126,9 @@ const Homepage = () => {
             <Heading size='md' mb={2}>
               DAO-lite
             </Heading>
-            <Text mb={2}>Let your community vote on ideas and initiatives.</Text>
+            <Text mb={2}>
+              Let your community vote on ideas and initiatives.
+            </Text>
             <Text mb={2}>
               A no-code governance token alternative to unlock the value of
               community ownership and decision making without the need for
@@ -163,8 +152,8 @@ const Homepage = () => {
                   Tie responses back to wallet addresses and token holders.
                 </ListItem>
                 <ListItem>
-                  Get to know your community over time by seeing all of the survey
-                  responses over time with a wallet.
+                  Get to know your community over time by seeing all of the
+                  survey responses over time with a wallet.
                 </ListItem>
                 <ListItem>
                   <strong>Coming soon:</strong> Capture the amount of tokens a
@@ -202,14 +191,14 @@ const Homepage = () => {
             <List>
               <UnorderedList>
                 <ListItem>
-                  Clear and simple reports make it easy to see what your community
-                  is thinking as a group, and then dive in to see which
-                  individuals have specific feedback.
+                  Clear and simple reports make it easy to see what your
+                  community is thinking as a group, and then dive in to see
+                  which individuals have specific feedback.
                 </ListItem>
                 <ListItem>
-                  <strong>Coming soon:</strong> Associate feedback with the number
-                  of tokens someone has to understand what your superfans are
-                  thinking.
+                  <strong>Coming soon:</strong> Associate feedback with the
+                  number of tokens someone has to understand what your superfans
+                  are thinking.
                 </ListItem>
               </UnorderedList>
             </List>
@@ -218,7 +207,6 @@ const Homepage = () => {
           <BacktalkLogin />
         </VStack>
       </Box>
-
     </Box>
   );
 };
