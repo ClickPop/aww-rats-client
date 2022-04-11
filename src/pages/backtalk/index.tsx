@@ -6,11 +6,11 @@ import Homepage from '~/components/backtalk/Homepage';
 
 const BacktalkPage: NextPage = () => {
   return (
-    <LayoutDashboard>
-      <AuthCookieRequired fallback={<Homepage />}>
+    <AuthCookieRequired fallback={<Homepage />}>
+      <LayoutDashboard>
         <Dashboard />
-      </AuthCookieRequired>
-    </LayoutDashboard>
+      </LayoutDashboard>
+    </AuthCookieRequired>
   );
 };
 
