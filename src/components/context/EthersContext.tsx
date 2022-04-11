@@ -1,4 +1,4 @@
-import { createContext, FC, useEffect, useRef, useState } from 'react';
+import { createContext, FC, useEffect, useState } from 'react';
 import { useEthers } from '~/hooks/useEthers';
 import { Closet, EthersContextType, Rat } from '~/types';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
@@ -26,7 +26,6 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isLoggedInBacktalk, setLoggedInBacktalk] = useState(false);
   const etherState = useEthers();
-
   const { loading: authLoading, data: authData } = useCheckAuthQuery();
   const { loading: backtalkAuthLoading, data: backtalkAuthData } =
     useCheckAuthQuery({
@@ -35,64 +34,51 @@ export const EthersContextProvider: FC = ({ children }) => {
 
   useEffect(() => {
     const { signer, connected, network, accounts } = etherState;
+    setLoggedIn(
+      !!(
+        authData?.checkAuth?.role === 'user' &&
+        accounts?.[0] === authData?.checkAuth?.id &&
+        connected &&
+        signer
+      ),
+    );
+    setLoggedInBacktalk(
+      !!(
+        backtalkAuthData?.checkAuth?.role === 'user' &&
+        accounts?.[0] === backtalkAuthData?.checkAuth?.id &&
+        connected &&
+        signer
+      ),
+    );
 
-    const handleCheckAuth = async () => {
-      setLoggedIn(
-        !!(
-          authData?.checkAuth?.role === 'user' &&
-          accounts?.[0] === authData?.checkAuth?.id &&
-          connected &&
-          signer
-        ),
-      );
-      setLoggedInBacktalk(
-        !!(
-          backtalkAuthData?.checkAuth?.role === 'user' &&
-          accounts?.[0] === backtalkAuthData?.checkAuth?.id &&
-          connected &&
-          signer
-        ),
-      );
-    };
-
-    handleCheckAuth();
-
-    (async () => {
-      if (connected && network?.chainId === CHAIN_ID) {
-        try {
-          if (CONTRACT_ADDRESS) {
-            const r = new ethers.Contract(
-              CONTRACT_ADDRESS,
-              RatABI.abi,
-              signer,
-            ) as Rat;
-            setContract(r);
-          }
-
-          if (CLOSET_ADDRESS) {
-            const c = new ethers.Contract(
-              CLOSET_ADDRESS,
-              ClosetABI.abi,
-              signer,
-            ) as Closet;
-            setCloset(c);
-          }
-        } catch (err) {
-          console.error(err);
+    if (connected && network?.chainId === CHAIN_ID) {
+      try {
+        if (CONTRACT_ADDRESS) {
+          const r = new ethers.Contract(
+            CONTRACT_ADDRESS,
+            RatABI.abi,
+            signer,
+          ) as Rat;
+          setContract(r);
         }
-      }
 
-      if (accounts?.[0]) {
-        setSignerAddr(utils.getAddress(accounts[0]));
+        if (CLOSET_ADDRESS) {
+          const c = new ethers.Contract(
+            CLOSET_ADDRESS,
+            ClosetABI.abi,
+            signer,
+          ) as Closet;
+          setCloset(c);
+        }
+      } catch (err) {
+        console.error(err);
       }
-    })();
-  }, [
-    etherState,
-    authData?.checkAuth?.role,
-    authData?.checkAuth?.id,
-    backtalkAuthData?.checkAuth?.role,
-    backtalkAuthData?.checkAuth?.id,
-  ]);
+    }
+
+    if (accounts?.[0]) {
+      setSignerAddr(utils.getAddress(accounts[0]));
+    }
+  }, [etherState, authData?.checkAuth, backtalkAuthData?.checkAuth]);
 
   const connectToMetamask = async () => {
     try {

@@ -27,6 +27,12 @@ const BacktalkLogin = () => {
     }
   }, [handleLogin, off, shouldLogin, signer, signerAddr]);
 
+  useEffect(() => {
+    return () => {
+      off();
+    };
+  }, [off]);
+
   if (loading) {
     return <div>loading...</div>;
   }

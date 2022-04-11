@@ -4,12 +4,14 @@ import { EthersContext } from '~/components/context/EthersContext';
 
 type Props = {
   fallback: ReactElement;
+  isBacktalk?: boolean;
 };
 
-const AuthCookieRequired: FC<Props> = ({ children, fallback }) => {
-  const { isLoggedIn, authLoading } = useContext(EthersContext);
+const AuthCookieRequired: FC<Props> = ({ children, fallback, isBacktalk }) => {
+  const { isLoggedIn, backtalkAuthLoading, isLoggedInBacktalk, authLoading } =
+    useContext(EthersContext);
 
-  if (authLoading) {
+  if (authLoading || backtalkAuthLoading) {
     return (
       <Center py={20}>
         <Text>Loading...</Text>
@@ -17,7 +19,9 @@ const AuthCookieRequired: FC<Props> = ({ children, fallback }) => {
     );
   }
 
-  if (!isLoggedIn) {
+  const showFallback = !isBacktalk ? !isLoggedIn : !isLoggedInBacktalk;
+
+  if (showFallback) {
     return fallback;
   }
 
