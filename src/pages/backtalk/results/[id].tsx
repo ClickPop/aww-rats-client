@@ -1,21 +1,3 @@
-import {
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Progress,
-  Select,
-  Spacer,
-  Text,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-} from '@chakra-ui/react';
 import { LayoutDashboard } from '~/components/backtalk/LayoutDashboard';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';

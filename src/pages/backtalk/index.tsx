@@ -6,7 +6,7 @@ import Homepage from '~/components/backtalk/Homepage';
 
 const BacktalkPage: NextPage = () => {
   return (
-    <AuthCookieRequired fallback={<Homepage />}>
+    <AuthCookieRequired isBacktalk fallback={<Homepage />}>
       <LayoutDashboard>
         <Dashboard />
       </LayoutDashboard>
