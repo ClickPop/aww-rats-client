@@ -1,5 +1,5 @@
 import { Box, Stack } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Link } from '~/components/shared/Link';
 import React from 'react';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk/backtalk-logo.png';

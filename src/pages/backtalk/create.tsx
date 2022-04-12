@@ -8,7 +8,7 @@ import BacktalkLogin from '~/components/access/BacktalkLogin';
 const CreateSurveyPage: NextPage = () => {
   return (
     <LayoutDashboard>
-      <AuthCookieRequired fallback={<BacktalkLogin />}>
+      <AuthCookieRequired isBacktalk fallback={<BacktalkLogin />}>
         <BacktalkSurveyFormContextProvider id={null}>
           <SurveyForm />
         </BacktalkSurveyFormContextProvider>
