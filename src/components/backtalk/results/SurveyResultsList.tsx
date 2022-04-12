@@ -35,7 +35,24 @@ export const SurveyResultsList: FC = () => {
               Wallet Address:
             </Heading>
             <Text mb={3}>{wallet}</Text>
-            {data?.surveys_by_pk?.questions.map((q) =>
+            {response_values.map((response: string, i: number) => (
+              <>
+                <Heading
+                  as='h3'
+                  color='gray.500'
+                  size='xs'
+                  key={question_ids[i]}
+                  mt={2}>
+                  {
+                    data?.surveys_by_pk?.questions.find(
+                      (q) => q.id === question_ids[i],
+                    )?.prompt
+                  }
+                </Heading>
+                <Text key={wallet + response}>{response}</Text>
+              </>
+            ))}
+            {/* {data?.surveys_by_pk?.questions.map((q) =>
               (question_ids as number[])?.findIndex((qid) => qid === q.id) >
               -1 ? (
                 <>
@@ -61,7 +78,7 @@ export const SurveyResultsList: FC = () => {
                   </Text>
                 </>
               ) : null,
-            )}
+            )} */}
           </Box>
         ),
       )}
