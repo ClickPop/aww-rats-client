@@ -12,6 +12,8 @@ import {
   FormLabel,
   Switch,
   Center,
+  Input,
+  Link,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
@@ -35,7 +37,7 @@ export const SurveyResults: FC = () => {
 
   return data?.surveys_by_pk ? (
     <>
-      <Flex align='baseline' my={4}>
+      <Flex align='baseline' mt={4} mb={2}>
         <Heading size='md'>{data.surveys_by_pk.title}</Heading>
         <Spacer />
         <FormControl display='flex' alignItems='center' w={32}>
@@ -62,9 +64,21 @@ export const SurveyResults: FC = () => {
             id='isactive'
           />
         </FormControl>
-        <Button disabled colorScheme='teal' ml={2} size='sm'>
+        <Button disabled colorScheme='teal' ml={2} size='xs'>
           Export
         </Button>
+      </Flex>
+
+      <Flex align='center' mb={4}>
+        <Input value={'localhost:3000/backtalk/survey/'+ data.surveys_by_pk.id} border='none' maxW='auto' p={0} isReadOnly size='sm' />
+        <Button colorScheme='gray' size='xs' ml={4}>
+          Copy
+        </Button>
+        <Link href={`/backtalk/survey/+ data.surveys_by_pk.id`} openInNewTab>
+          <Button size='xs' ml={4}>
+            View
+          </Button>
+        </Link>
       </Flex>
 
       <Grid gap={4} templateColumns='repeat(2, 1fr)'>
