@@ -70,7 +70,7 @@ export const SurveyResults: FC = () => {
           borderRadius={8}
           mb={4}
           p={4}>
-          <Heading as='h2' color='gray.500' size='sm'>
+          <Heading as='h2' color='gray.500' size='xs'>
             Responses
           </Heading>
           <Text fontSize='xl'>
@@ -93,7 +93,7 @@ export const SurveyResults: FC = () => {
           borderRadius={8}
           mb={4}
           p={4}>
-          <Heading as='h2' color='gray.500' size='sm'>
+          <Heading as='h2' color='gray.500' size='xs'>
             Last Response
           </Heading>
           {!!data?.surveys_by_pk?.latest_response && (
