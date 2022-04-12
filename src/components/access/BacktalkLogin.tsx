@@ -17,6 +17,8 @@ const BacktalkLogin = () => {
   const { handleLogin, connectToMetamask } = useConnect<BacktalkLoginMutation>(
     login,
     (res, sa) => sa === res.data?.login?.wallet,
+    'hello',
+    true,
   );
   const [shouldLogin, { on, off }] = useBoolean();
 
