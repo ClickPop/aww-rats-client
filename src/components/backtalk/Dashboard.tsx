@@ -11,6 +11,7 @@ import {
   Td,
   Button,
   Box,
+  Center,
 } from '@chakra-ui/react';
 import { format, compareAsc } from 'date-fns';
 import { Link } from '~/components/shared/Link';
@@ -22,7 +23,7 @@ import { useGetSurveysByWalletQuery } from '~/schema/generated';
 export const Dashboard = () => {
   const { signerAddr } = useContext(EthersContext);
 
-  const { data, error } = useGetSurveysByWalletQuery({
+  const { data, loading } = useGetSurveysByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,
     client: apolloBacktalkClient,
@@ -53,6 +54,10 @@ export const Dashboard = () => {
       ),
     [data?.surveys],
   );
+
+  if (loading) {
+    return <Center>Loading...</Center>;
+  }
 
   return (
     <div>
