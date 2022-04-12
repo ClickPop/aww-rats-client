@@ -19,13 +19,15 @@ export const useConnect = <
   login?: T,
   checkLogin?: (returnData: R, signerAddr: string) => boolean,
   signerMsg?: string,
+  isBacktalk?: boolean,
 ) => {
   const { provider } = useEthers();
   const [addNetworkActive, setAddNetworkActive] = useState<boolean>(false);
   const [chainData, setChainData] = useState<ChainData | null>(null);
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
-  const { signer, signerAddr, setLoggedIn } = useContext(EthersContext);
+  const { signer, signerAddr, setLoggedIn, setLoggedInBacktalk } =
+    useContext(EthersContext);
 
   const handleLogin = async () => {
     if (signer && signerAddr && login) {
@@ -38,7 +40,11 @@ export const useConnect = <
           },
         });
         if (checkLogin && checkLogin(res, signerAddr)) {
-          setLoggedIn(true);
+          if (isBacktalk) {
+            setLoggedInBacktalk(true);
+          } else {
+            setLoggedIn(true);
+          }
         }
       } catch (err) {
         console.error(err);

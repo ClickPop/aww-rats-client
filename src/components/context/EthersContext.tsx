@@ -12,6 +12,7 @@ const defaultEthersContext: EthersContextType = {
   isLoggedIn: false,
   isLoggedInBacktalk: false,
   setLoggedIn: () => {},
+  setLoggedInBacktalk: () => {},
   connectToMetamask: () => undefined,
   authLoading: true,
   backtalkAuthLoading: true,
@@ -101,6 +102,7 @@ export const EthersContextProvider: FC = ({ children }) => {
         setLoggedIn,
         authLoading,
         backtalkAuthLoading,
+        setLoggedInBacktalk,
       }}>
       {children}
     </EthersContext.Provider>

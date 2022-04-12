@@ -81,6 +81,7 @@ export interface EthersContextType extends EthersState {
   isLoggedIn: boolean;
   isLoggedInBacktalk: boolean;
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
+  setLoggedInBacktalk: Dispatch<SetStateAction<boolean>>;
   authLoading: boolean;
   backtalkAuthLoading: boolean;
 }
