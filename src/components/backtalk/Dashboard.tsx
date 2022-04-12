@@ -86,19 +86,25 @@ export const Dashboard = () => {
               {data.surveys.map((survey) => (
                 <Tr key={survey.id}>
                   <Td>
-                    <Link href={`/backtalk/results/${survey.id}`}>{survey.title}</Link>
+                    <Link href={`/backtalk/results/${survey.id}`}>
+                      {survey.title}
+                    </Link>
                   </Td>
                   <Td>
-                    {format(
-                      new Date(latestResponseBySurveyId?.[survey.id].toISOString()),
-                      "eeee, MMMM d, yyyy 'at' H:mm  (z)", ) ??
-                    'None'}
+                    {(latestResponseBySurveyId?.[survey.id] &&
+                      format(
+                        latestResponseBySurveyId?.[survey.id],
+                        "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+                      )) ??
+                      'None'}
                   </Td>
                   <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
                   <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>
                   <Td>
                     <Link href={`/backtalk/results/${survey.id}`}>📈</Link>{' '}
-                    <Link href={`/backtalk/survey/${survey.id}`} openInNewTab>🔗</Link>
+                    <Link href={`/backtalk/survey/${survey.id}`} openInNewTab>
+                      🔗
+                    </Link>
                   </Td>
                 </Tr>
               ))}
