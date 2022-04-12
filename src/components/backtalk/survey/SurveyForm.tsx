@@ -197,7 +197,7 @@ export const SurveyForm = () => {
         <Box>
           <VStack w='100%'>
             {questions?.data?.map((q, i) => (
-              <Box key={q.id ?? `${i}-${q.prompt}`} w='100%'>
+              <Box key={q.id ?? `${i}-${q.prompt}`} w='100%' mb={8}>
                 <HStack justify='space-between'>
                   <Heading as='h2' size='sm' mb={2}>
                     Question {i + 1}

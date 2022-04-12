@@ -55,6 +55,7 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
         type: 'setState',
         payload: {
           ...surveyResult.data.surveys_by_pk,
+          title: surveyResult.data.surveys_by_pk.title,
           owner: signerAddr,
           questions: {
             data: surveyResult.data.surveys_by_pk.questions.map((q) => ({
@@ -63,15 +64,12 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
               is_required: q.is_required,
             })),
           },
-          contract: surveyResult.data.surveys_by_pk.contract
+          contract: surveyResult?.data?.surveys_by_pk?.contract
             ? {
-                data: {
-                  address: surveyResult.data.surveys_by_pk.contract.address,
-                  token_type:
-                    surveyResult.data.surveys_by_pk.contract.token_type,
-                },
+                data: surveyResult?.data?.surveys_by_pk?.contract,
               }
             : undefined,
+          survey_responses: undefined,
         },
       });
       off();

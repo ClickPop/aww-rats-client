@@ -13,7 +13,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { compareAsc } from 'date-fns';
-import Link from 'next/link';
+import { Link } from '~/components/shared/Link';
 import React, { useContext, useMemo } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
@@ -33,13 +33,9 @@ export const Dashboard = () => {
       data?.surveys.reduce<Record<number, Date>>(
         (acc, curr) => ({
           ...acc,
-          [curr.id]: curr.questions.reduce<Date>(
-            (a, c) =>
-              compareAsc(new Date(c.latest_response[0]?.created_at ?? 0), a) < 1
-                ? a
-                : new Date(c.latest_response[0]?.created_at ?? 0),
-            new Date(0),
-          ),
+          [curr.id]: curr.latest_response
+            ? new Date(curr.latest_response)
+            : new Date(0),
         }),
         {},
       ),
@@ -51,11 +47,7 @@ export const Dashboard = () => {
       data?.surveys.reduce<Record<number, number>>(
         (acc, curr) => ({
           ...acc,
-          [curr.id]: Math.max(
-            ...curr.questions.map(
-              (q) => q.responses_aggregate.aggregate?.count ?? 0,
-            ),
-          ),
+          [curr.id]: curr.response_count ?? 0,
         }),
         {},
       ),
@@ -67,10 +59,7 @@ export const Dashboard = () => {
       <Flex align='baseline' my={4}>
         <Heading size='md'>Surveys</Heading>
         <Spacer />
-        <Button colorScheme='teal' size='sm' variant='link'>
-          Public Surveys
-        </Button>
-        <Link href='/backtalk/create' passHref>
+        <Link href='/backtalk/create'>
           <Button colorScheme='teal' ml={2} size='sm'>
             + Survey
           </Button>
@@ -91,33 +80,24 @@ export const Dashboard = () => {
                 <Th>Status</Th>
                 <Th>Visibility</Th>
                 <Th isNumeric>Responses</Th>
+                <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
               {data.surveys.map((survey) => (
-                <Link
-                  key={survey.id}
-                  passHref
-                  href={`/backtalk/results/${survey.id}`}>
-                  <Tr
-                    cursor='pointer'
-                    _hover={{
-                      textDecor: 'underline',
-                      bgColor: '#FAFAFA',
-                      transition: '200ms ease background-color',
-                    }}>
-                    <Td>{survey.title}</Td>
-                    <Td>
-                      {latestResponseBySurveyId?.[survey.id].toISOString() ??
-                        'None'}
-                    </Td>
-                    <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
-                    <Td>{survey.is_public ? 'Public' : 'Private'}</Td>
-                    <Td isNumeric>
-                      {responseCountBySurveyId?.[survey.id] ?? 0}
-                    </Td>
-                  </Tr>
-                </Link>
+                <Tr key={survey.id}>
+                  <Td>{survey.title}</Td>
+                  <Td>
+                    {latestResponseBySurveyId?.[survey.id].toISOString() ??
+                      'None'}
+                  </Td>
+                  <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
+                  <Td>{survey.is_public ? 'Public' : 'Private'}</Td>
+                  <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>
+                  <Td _hover={{ textDecor: 'underline' }}>
+                    <Link href={`/backtalk/results/${survey.id}`}>View</Link>
+                  </Td>
+                </Tr>
               ))}
             </Tbody>
           </Table>

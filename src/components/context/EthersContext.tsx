@@ -5,7 +5,7 @@ import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 import ClosetABI from 'smart-contracts/artifacts/src/contracts/Closet.sol/Closet.json';
 import { CONTRACT_ADDRESS, CHAIN_ID, CLOSET_ADDRESS } from '~/config/env';
 import { ethers, utils } from 'ethers';
-import { useCheckAuthLazyQuery } from '~/schema/generated';
+import { useCheckAuthQuery } from '~/schema/generated';
 import { apolloBacktalkClient } from '~/lib/graphql';
 
 const defaultEthersContext: EthersContextType = {
@@ -26,69 +26,59 @@ export const EthersContextProvider: FC = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isLoggedInBacktalk, setLoggedInBacktalk] = useState(false);
   const etherState = useEthers();
-
-  const [checkAuth, { loading: authLoading }] = useCheckAuthLazyQuery();
-  const [BacktalkAuth, { loading: backtalkAuthLoading }] =
-    useCheckAuthLazyQuery({
+  const { loading: authLoading, data: authData } = useCheckAuthQuery();
+  const { loading: backtalkAuthLoading, data: backtalkAuthData } =
+    useCheckAuthQuery({
       client: apolloBacktalkClient,
     });
 
   useEffect(() => {
     const { signer, connected, network, accounts } = etherState;
+    setLoggedIn(
+      !!(
+        authData?.checkAuth?.role === 'user' &&
+        accounts?.[0] === authData?.checkAuth?.id &&
+        connected &&
+        signer
+      ),
+    );
+    setLoggedInBacktalk(
+      !!(
+        backtalkAuthData?.checkAuth?.role === 'user' &&
+        accounts?.[0] === backtalkAuthData?.checkAuth?.id &&
+        connected &&
+        signer
+      ),
+    );
 
-    const handleCheckAuth = async () => {
-      const auth = await checkAuth();
-      const backtalkAuth = await BacktalkAuth();
-      setLoggedIn(
-        !!(
-          auth.data?.checkAuth?.role === 'user' &&
-          accounts?.[0] === auth.data?.checkAuth?.id &&
-          connected &&
-          signer
-        ),
-      );
-      setLoggedInBacktalk(
-        !!(
-          backtalkAuth.data?.checkAuth?.role === 'user' &&
-          accounts?.[0] === backtalkAuth.data?.checkAuth?.id &&
-          connected &&
-          signer
-        ),
-      );
-    };
-
-    handleCheckAuth();
-
-    (async () => {
-      if (connected && network?.chainId === CHAIN_ID) {
-        try {
-          if (CONTRACT_ADDRESS) {
-            const r = new ethers.Contract(
-              CONTRACT_ADDRESS,
-              RatABI.abi,
-              signer,
-            ) as Rat;
-            setContract(r);
-          }
-
-          if (CLOSET_ADDRESS) {
-            const c = new ethers.Contract(
-              CLOSET_ADDRESS,
-              ClosetABI.abi,
-              signer,
-            ) as Closet;
-            setCloset(c);
-          }
-        } catch (err) {
-          console.error(err);
+    if (connected && network?.chainId === CHAIN_ID) {
+      try {
+        if (CONTRACT_ADDRESS) {
+          const r = new ethers.Contract(
+            CONTRACT_ADDRESS,
+            RatABI.abi,
+            signer,
+          ) as Rat;
+          setContract(r);
         }
-      }
 
-      if (accounts?.[0]) {
-        setSignerAddr(utils.getAddress(accounts[0]));
+        if (CLOSET_ADDRESS) {
+          const c = new ethers.Contract(
+            CLOSET_ADDRESS,
+            ClosetABI.abi,
+            signer,
+          ) as Closet;
+          setCloset(c);
+        }
+      } catch (err) {
+        console.error(err);
       }
-    })();
-  }, [etherState, checkAuth, BacktalkAuth]);
+    }
+
+    if (accounts?.[0]) {
+      setSignerAddr(utils.getAddress(accounts[0]));
+    }
+  }, [etherState, authData?.checkAuth, backtalkAuthData?.checkAuth]);
 
   const connectToMetamask = async () => {
     try {
