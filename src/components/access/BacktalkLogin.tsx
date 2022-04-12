@@ -1,6 +1,7 @@
 import { Button, useBoolean } from '@chakra-ui/react';
 import React, { useContext, useEffect } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
+import { SIGNER_MESSAGE } from '~/config/env';
 import { useConnect } from '~/hooks/useConnect';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import {
@@ -17,7 +18,7 @@ const BacktalkLogin = () => {
   const { handleLogin, connectToMetamask } = useConnect<BacktalkLoginMutation>(
     login,
     (res, sa) => sa === res.data?.login?.wallet,
-    'hello',
+    SIGNER_MESSAGE,
     true,
   );
   const [shouldLogin, { on, off }] = useBoolean();
