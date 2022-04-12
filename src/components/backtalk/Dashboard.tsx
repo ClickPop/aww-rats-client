@@ -12,7 +12,7 @@ import {
   Button,
   Box,
 } from '@chakra-ui/react';
-import { compareAsc } from 'date-fns';
+import { format, compareAsc } from 'date-fns';
 import { Link } from '~/components/shared/Link';
 import React, { useContext, useMemo } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
@@ -78,7 +78,6 @@ export const Dashboard = () => {
                 <Th>Name</Th>
                 <Th>Last Response</Th>
                 <Th>Status</Th>
-                <Th>Visibility</Th>
                 <Th isNumeric>Responses</Th>
                 <Th>Actions</Th>
               </Tr>
@@ -86,16 +85,26 @@ export const Dashboard = () => {
             <Tbody>
               {data.surveys.map((survey) => (
                 <Tr key={survey.id}>
-                  <Td>{survey.title}</Td>
                   <Td>
-                    {latestResponseBySurveyId?.[survey.id].toISOString() ??
+                    <Link href={`/backtalk/results/${survey.id}`}>
+                      {survey.title}
+                    </Link>
+                  </Td>
+                  <Td>
+                    {(latestResponseBySurveyId?.[survey.id] &&
+                      format(
+                        latestResponseBySurveyId?.[survey.id],
+                        "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+                      )) ??
                       'None'}
                   </Td>
                   <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
-                  <Td>{survey.is_public ? 'Public' : 'Private'}</Td>
                   <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>
-                  <Td _hover={{ textDecor: 'underline' }}>
-                    <Link href={`/backtalk/results/${survey.id}`}>View</Link>
+                  <Td>
+                    <Link href={`/backtalk/results/${survey.id}`}>📈</Link>{' '}
+                    <Link href={`/backtalk/survey/${survey.id}`} openInNewTab>
+                      🔗
+                    </Link>
                   </Td>
                 </Tr>
               ))}
