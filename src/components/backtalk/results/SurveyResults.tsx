@@ -11,6 +11,7 @@ import {
   FormControl,
   FormLabel,
   Switch,
+  Center,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
@@ -21,12 +22,16 @@ import { useUpdateSurveyMutation } from '~/schema/generated';
 
 export const SurveyResults: FC = () => {
   const {
-    surveyResult: { data, refetch },
+    surveyResult: { data, loading: surveyLoading, refetch },
   } = useContext(BacktalkSurveyResultContext);
 
   const [updateSurvey, { loading }] = useUpdateSurveyMutation({
     client: apolloBacktalkClient,
   });
+
+  if (surveyLoading) {
+    return <Center>Loading</Center>;
+  }
 
   return data?.surveys_by_pk ? (
     <>
