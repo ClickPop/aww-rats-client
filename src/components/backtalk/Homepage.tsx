@@ -21,13 +21,13 @@ const Homepage = () => {
   return (
     <Box backgroundColor='white' minH='100vh'>
       <Box background='purple.50'>
-        <Flex alignItems='center' maxW='4xl' mx='auto' pb={8} pt={12}>
+        <Flex alignItems='center' maxW='4xl' mx='auto' px={8} pt={12}>
           <Box width='50%'>
             <NextImage
               alt='Backtalk'
-              height='80'
+              height='50'
               src={BacktalkLogo}
-              width='300'
+              width='200'
             />
             <Heading my={4} size='lg'>
               The Web3 Community Feedback Tool
@@ -38,7 +38,7 @@ const Homepage = () => {
             </Text>
             <BacktalkLogin />
           </Box>
-          <Box width='50%' p={12}>
+          <Box width='50%' p={8}>
             <NextImage
               alt='A community of people on the internet'
               src={Characters}
