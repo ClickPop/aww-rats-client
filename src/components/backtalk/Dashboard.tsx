@@ -12,10 +12,11 @@ import {
   Button,
   Box,
   Center,
+  useToast,
 } from '@chakra-ui/react';
 import { format, compareAsc } from 'date-fns';
 import { Link } from '~/components/shared/Link';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
@@ -23,11 +24,23 @@ import { useGetSurveysByWalletQuery } from '~/schema/generated';
 export const Dashboard = () => {
   const { signerAddr } = useContext(EthersContext);
 
-  const { data, loading } = useGetSurveysByWalletQuery({
+  const { data, loading, error } = useGetSurveysByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,
     client: apolloBacktalkClient,
   });
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!loading && error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+      });
+    }
+  }, [error, loading, toast]);
 
   const latestResponseBySurveyId = useMemo(
     () =>

@@ -12,9 +12,10 @@ import {
   FormLabel,
   Switch,
   Center,
+  useToast,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { apolloBacktalkClient } from '~/lib/graphql';
@@ -22,12 +23,38 @@ import { useUpdateSurveyMutation } from '~/schema/generated';
 
 export const SurveyResults: FC = () => {
   const {
-    surveyResult: { data, loading: surveyLoading, refetch },
+    surveyResult: { data, loading: surveyLoading, error: surveyError, refetch },
   } = useContext(BacktalkSurveyResultContext);
 
-  const [updateSurvey, { loading }] = useUpdateSurveyMutation({
+  const [updateSurvey, { loading, error }] = useUpdateSurveyMutation({
     client: apolloBacktalkClient,
   });
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!loading && error) {
+      toast({
+        title: 'Error',
+        description: 'Could not update survey',
+        status: 'error',
+        position: 'bottom-right',
+        isClosable: true,
+      });
+    }
+  }, [error, loading, toast]);
+
+  useEffect(() => {
+    if (!surveyLoading && surveyError) {
+      toast({
+        title: 'Error',
+        description: 'Could not fetch survey',
+        status: 'error',
+        position: 'bottom-right',
+        isClosable: true,
+      });
+    }
+  }, [surveyError, surveyLoading, toast]);
 
   if (surveyLoading) {
     return <Center>Loading</Center>;
