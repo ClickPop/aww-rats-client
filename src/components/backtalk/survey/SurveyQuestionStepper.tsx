@@ -6,9 +6,10 @@ import {
   Progress,
   Text,
   Textarea,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
-import { FC, FormEventHandler, useContext } from 'react';
+import { FC, FormEventHandler, useContext, useEffect } from 'react';
 import { backtalkNewResponseContext } from '~/components/context/BacktalkNewResponse';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import { useCreateResponsesMutation } from '~/schema/generated';
@@ -40,7 +41,6 @@ const getColorFromState = (
 export const SurveyQuestionStepper: FC = () => {
   const {
     surveyResponseData: {
-      contract,
       questions,
       step,
       responses,
@@ -49,10 +49,23 @@ export const SurveyQuestionStepper: FC = () => {
     surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
 
-  const [createResponses, { loading, error, called }] =
-    useCreateResponsesMutation({
-      client: apolloBacktalkClient,
-    });
+  const [createResponses, { loading, error }] = useCreateResponsesMutation({
+    client: apolloBacktalkClient,
+  });
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!loading && error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        position: 'bottom-right',
+        isClosable: true,
+      });
+    }
+  }, [error, loading, toast]);
 
   const noMoreSteps = step === questions?.length;
   const currentQuestion = noMoreSteps ? null : questions?.[step];
