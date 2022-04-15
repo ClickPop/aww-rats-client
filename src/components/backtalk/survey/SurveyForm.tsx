@@ -31,6 +31,9 @@ import React, {
   useState,
 } from 'react';
 import { ActionBar } from '~/components/backtalk/ActionBar';
+import NextImage, { ImageProps } from 'next/image';
+import EthLogo from 'src/assets/images/backtalk/eth-logo.webp';
+import PolygonLogo from 'src/assets/images/backtalk/matic-logo.webp';
 import { BacktalkSurveyFormContext } from '~/components/context/BacktalkSurveyForm';
 import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
@@ -171,17 +174,31 @@ export const SurveyForm = () => {
             onChange={handleContractChange}
             isDisabled={getContractLoading}
           />
+          <RadioGroup my={2} isDisabled>
+            <HStack direction='row'>
+              <Radio value='eth'>
+                <NextImage
+                  alt='ETH Log'
+                  height='16'
+                  src={EthLogo}
+                  width='16'
+                />{' '}
+                ETH Mainnet
+              </Radio>
+              <Radio value='matic'>
+              <NextImage
+                alt='ETH Log'
+                height='16'
+                src={PolygonLogo}
+                width='16'
+              />{' '}
+                Polygon</Radio>
+            </HStack>
+          </RadioGroup>
           <FormHelperText>
             Leave this blank to let anyone with a wallet submit a response.
           </FormHelperText>
         </FormControl>
-        <RadioGroup mb={4} isDisabled>
-          <FormLabel>Contract Chain</FormLabel>
-          <HStack direction='row'>
-            <Radio value='eth'>ETH Mainnet</Radio>
-            <Radio value='matic'>Polygon</Radio>
-          </HStack>
-        </RadioGroup>
         <FormControl mb={8}>
           <Flex as={'span'}>
             <FormLabel htmlFor='maxResponses'>Max Responses</FormLabel>
