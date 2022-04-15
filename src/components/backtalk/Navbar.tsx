@@ -2,7 +2,7 @@ import { Box, Stack } from '@chakra-ui/react';
 import { Link } from '~/components/shared/Link';
 import React from 'react';
 import { Image } from '~/components/shared/Image';
-import BacktalkLogo from 'src/assets/images/backtalk/backtalk-logo.png';
+import BacktalkLogo from 'src/assets/images/backtalk/backtalk-icon.svg';
 
 export const Navbar = () => {
   return (
@@ -13,8 +13,8 @@ export const Navbar = () => {
             <Image
               src={BacktalkLogo}
               alt='BacktalkLogo'
-              height={46}
-              width={58}
+              height={38}
+              width={52}
             />
           </Link>
         </Box>
