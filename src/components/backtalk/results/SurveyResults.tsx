@@ -18,7 +18,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import React, { FC, useContext, useMemo, useEffect } from 'react';
+import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { apolloBacktalkClient } from '~/lib/graphql';

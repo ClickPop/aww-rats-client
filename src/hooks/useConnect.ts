@@ -1,11 +1,61 @@
 import { BaseMutationOptions, FetchResult } from '@apollo/client';
 import { utils } from 'ethers';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
-import { CHAIN_ID, SIGNER_MESSAGE } from '~/config/env';
+import { CHAIN_ID, ETH_CHAIN_ID, SIGNER_MESSAGE } from '~/config/env';
 import { useEthers } from '~/hooks/useEthers';
-import { Exact, LoginMutationOptions } from '~/schema/generated';
-import { ChainCurrency, ChainData, NetworkSwitchError } from '~/types';
+import { Exact, Supported_Chains_Enum } from '~/schema/generated';
+import { ChainData, NetworkSwitchError } from '~/types';
+
+export const chainData: Record<Supported_Chains_Enum, ChainData> = {
+  polygon: {
+    id: 137,
+    name: 'Polygon Mainnet',
+    nativeCurrency: {
+      name: 'Matic',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    rpc: ['https://polygon-rpc.com/'],
+    scan: ['https://polygonscan.com'],
+  },
+  ethereum: {
+    id: 1,
+    name: 'Ethereum Mainnet',
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'Eth',
+      decimals: 18,
+    },
+    rpc: ['https://mainnet.infura.io/v3'],
+    scan: ['https://etherscan.io'],
+  },
+};
+
+export const chainDataByChainId: Record<number, ChainData> = {
+  137: {
+    id: 137,
+    name: 'Polygon Mainnet',
+    nativeCurrency: {
+      name: 'Matic',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    rpc: ['https://polygon-rpc.com/'],
+    scan: ['https://polygonscan.com'],
+  },
+  1: {
+    id: 1,
+    name: 'Ethereum Mainnet',
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'Eth',
+      decimals: 18,
+    },
+    rpc: ['https://mainnet.infura.io/v3'],
+    scan: ['https://etherscan.io'],
+  },
+};
 
 export const useConnect = <
   D,
@@ -22,8 +72,6 @@ export const useConnect = <
   isBacktalk?: boolean,
 ) => {
   const { provider } = useEthers();
-  const [addNetworkActive, setAddNetworkActive] = useState<boolean>(false);
-  const [chainData, setChainData] = useState<ChainData | null>(null);
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
   const { signer, signerAddr, setLoggedIn, setLoggedInBacktalk } =
@@ -51,57 +99,6 @@ export const useConnect = <
       }
     }
   };
-
-  useEffect(() => {
-    let chain_data: ChainData | null = null;
-    let chain_name: string = '';
-    let chain_currency: ChainCurrency | null = null;
-    let chain_rpc: string[] = [];
-    let chain_scan: string[] = [];
-    let active: boolean = true;
-
-    switch (CHAIN_ID) {
-      case 137:
-        chain_name = 'Polygon Mainnet';
-        chain_currency = {
-          name: 'MATIC',
-          symbol: 'MATIC',
-          decimals: 18,
-        };
-        chain_rpc = [
-          'https://polygon-rpc.com/',
-          'https://rpc-mainnet.matic.network/',
-          'https://rpc-mainnet.maticvigil.com/',
-          'https://rpc-mainnet.matic.quiknode.pro/',
-        ];
-        chain_scan = ['https://polygonscan.com/'];
-        break;
-      case 80001:
-        chain_name = 'Polygon Testnet Mumbai';
-        chain_currency = {
-          name: 'MATIC',
-          symbol: 'MATIC',
-          decimals: 18,
-        };
-        chain_rpc = ['https://matic-mumbai.chainstacklabs.com'];
-        chain_scan = ['https://mumbai.polygonscan.com/'];
-        break;
-      default:
-        active = false;
-    }
-
-    setAddNetworkActive(active);
-    chain_data = active
-      ? {
-          id: CHAIN_ID,
-          name: chain_name,
-          nativeCurrency: chain_currency,
-          rpc: chain_rpc,
-          scan: chain_scan,
-        }
-      : null;
-    setChainData(chain_data);
-  }, []);
 
   const parseError = (error: any) => {
     if (typeof error === 'object' && 'code' in error) {
@@ -145,22 +142,23 @@ export const useConnect = <
     }
   };
 
-  const switchAddPolygonNetwork = async () => {
+  const switchAddNetwork = async (network: Supported_Chains_Enum) => {
     setSwitchChainError({
       state: 'active',
-      message: 'Switching to Polygon...',
+      message: `Switching to ${network}...`,
     });
-    if (addNetworkActive && chainData) {
+    const chain = chainData[network];
+    if (chain) {
       const switchParams = [
-        { chainId: utils.hexStripZeros(utils.hexlify(chainData.id)) },
+        { chainId: utils.hexStripZeros(utils.hexlify(chain.id)) },
       ];
       const addParams = [
         {
-          chainId: utils.hexStripZeros(utils.hexlify(chainData.id)),
-          chainName: chainData.name,
-          nativeCurrency: chainData.nativeCurrency,
-          rpcUrls: chainData.rpc,
-          blockExplorerUrls: chainData.scan,
+          chainId: utils.hexStripZeros(utils.hexlify(chain.id)),
+          chainName: chain.name,
+          nativeCurrency: chain.nativeCurrency,
+          rpcUrls: chain.rpc,
+          blockExplorerUrls: chain.scan,
         },
       ];
 
@@ -195,10 +193,8 @@ export const useConnect = <
 
   return {
     connectToMetamask,
-    switchAddPolygonNetwork,
+    switchAddNetwork,
     handleLogin,
-    chainData,
-    addNetworkActive,
     switchChainError,
   };
 };
