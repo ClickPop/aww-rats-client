@@ -19,6 +19,8 @@ import {
   VStack,
   HStack,
   Textarea,
+  Radio,
+  RadioGroup,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
@@ -173,6 +175,13 @@ export const SurveyForm = () => {
             Leave this blank to let anyone with a wallet submit a response.
           </FormHelperText>
         </FormControl>
+        <RadioGroup mb={4} isDisabled>
+          <FormLabel>Contract Chain</FormLabel>
+          <HStack direction='row'>
+            <Radio value='eth'>ETH Mainnet</Radio>
+            <Radio value='matic'>Polygon</Radio>
+          </HStack>
+        </RadioGroup>
         <FormControl mb={8}>
           <Flex as={'span'}>
             <FormLabel htmlFor='maxResponses'>Max Responses</FormLabel>
