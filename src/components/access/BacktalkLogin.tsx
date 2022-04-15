@@ -1,5 +1,5 @@
-import { Button, useBoolean } from '@chakra-ui/react';
-import React, { useContext, useEffect } from 'react';
+import { Box, Button, useBoolean } from '@chakra-ui/react';
+import React, { FC, useContext, useEffect } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
 import { SIGNER_MESSAGE } from '~/config/env';
 import { useConnect } from '~/hooks/useConnect';
@@ -9,7 +9,7 @@ import {
   BacktalkLoginMutation,
 } from '~/schema/generated';
 
-const BacktalkLogin = () => {
+const BacktalkLogin: FC = ({ children }) => {
   const [login, { loading, error }] = useBacktalkLoginMutation({
     client: apolloBacktalkClient,
   });
@@ -45,25 +45,18 @@ const BacktalkLogin = () => {
   }
 
   return !isLoggedInBacktalk || !connected ? (
-    <div>
-      <Button
-        onClick={async () => {
-          if (!connected && typeof window !== 'undefined' && window.ethereum) {
-            on();
-            await connectToMetamask();
-          } else if (!isLoggedInBacktalk) {
-            await handleLogin();
-          }
-        }}
-        background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-        backgroundSize='600% 400%'
-        color='white'
-        _hover={{
-          animation: 'encounterShimmer 4s ease infinite;',
-        }}>
-        Login
-      </Button>
-    </div>
+    <Box
+      as='span'
+      onClick={async () => {
+        if (!connected && typeof window !== 'undefined' && window.ethereum) {
+          on();
+          await connectToMetamask();
+        } else if (!isLoggedInBacktalk) {
+          await handleLogin();
+        }
+      }}>
+      {children}
+    </Box>
   ) : null;
 };
 

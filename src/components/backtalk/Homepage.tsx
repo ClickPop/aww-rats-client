@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Flex,
   Grid,
   GridItem,
@@ -36,7 +37,17 @@ const Homepage = () => {
               Get feedback you can trust from validated members of your
               community.
             </Text>
-            <BacktalkLogin />
+            <BacktalkLogin>
+              <Button
+                background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
+                backgroundSize='600% 400%'
+                color='white'
+                _hover={{
+                  animation: 'encounterShimmer 4s ease infinite;',
+                }}>
+                Login
+              </Button>
+            </BacktalkLogin>
           </Box>
           <Box width='50%' p={8}>
             <NextImage
@@ -204,7 +215,17 @@ const Homepage = () => {
             </List>
           </Box>
 
-          <BacktalkLogin />
+          <BacktalkLogin>
+            <Button
+              background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
+              backgroundSize='600% 400%'
+              color='white'
+              _hover={{
+                animation: 'encounterShimmer 4s ease infinite;',
+              }}>
+              Login
+            </Button>
+          </BacktalkLogin>
         </VStack>
       </Box>
     </Box>
