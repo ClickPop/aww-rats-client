@@ -67,8 +67,7 @@ export const SurveyResults: FC = () => {
     [data?.surveys_by_pk?.id],
   );
 
-  const [value, setValue] = React.useState(surveyLink);
-  const { hasCopied, onCopy } = useClipboard(value);
+  const { hasCopied, onCopy } = useClipboard(surveyLink);
 
   if (surveyLoading) {
     return <Center>Loading</Center>;
