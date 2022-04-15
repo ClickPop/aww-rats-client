@@ -9,6 +9,9 @@ import { ethers } from 'ethers';
 import { getCommonABI } from '~/utils/getCommonABI';
 import { ERC721 } from '~/types';
 import BacktalkLogin from '~/components/access/BacktalkLogin';
+import { useConnect } from '~/hooks/useConnect';
+import { Supported_Chains_Enum } from '~/schema/generated';
+import { CHAIN_ID, ETH_CHAIN_ID } from '~/config/env';
 
 export const SurveyResponse: FC = () => {
   const {
@@ -16,9 +19,10 @@ export const SurveyResponse: FC = () => {
     surveyResponseData: data,
     surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
-  const { connected, isLoggedInBacktalk, signerAddr, provider } =
+  const { connected, isLoggedInBacktalk, signerAddr, provider, network } =
     useContext(EthersContext);
 
+  const { switchAddNetwork } = useConnect();
   useEffect(() => {
     if (
       data?.callerResponses.length > 0 &&
@@ -29,7 +33,23 @@ export const SurveyResponse: FC = () => {
       });
     }
   }, [data, surveyResponseDispatch]);
-
+  const changeNetwork = useMemo(() => {
+    if (network?.chainId) {
+      switch (data.contract?.chain) {
+        case Supported_Chains_Enum.Ethereum:
+          if (network.chainId !== ETH_CHAIN_ID) {
+            return Supported_Chains_Enum.Ethereum;
+          }
+          break;
+        case Supported_Chains_Enum.Polygon:
+          if (network.chainId !== CHAIN_ID) {
+            return Supported_Chains_Enum.Polygon;
+          }
+          break;
+      }
+    }
+    return null;
+  }, [data.contract?.chain, network?.chainId]);
   const surveyEnd = data.step === data?.questions?.length + 1;
 
   const [balData, setBalData] = useState({ loading: false, error: false });
@@ -72,6 +92,18 @@ export const SurveyResponse: FC = () => {
 
   if (balData.error) {
     return <Center>You don&apos;t hold enough tokens!</Center>;
+  }
+
+  if (!!changeNetwork) {
+    return (
+      <Button
+        colorScheme={'purple'}
+        onClick={() => {
+          switchAddNetwork(changeNetwork);
+        }}>
+        Switch to {changeNetwork}
+      </Button>
+    );
   }
 
   if (surveyEnd) {
