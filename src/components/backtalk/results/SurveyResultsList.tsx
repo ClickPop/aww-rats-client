@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, VStack, Heading, Text } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
@@ -84,6 +84,9 @@ export const SurveyResultsList: FC = () => {
       )}
     </>
   ) : (
-    <Box>No Responses</Box>
+    <VStack my={12}>
+      <Heading size='lg'>You don&apos;t have any responses yet!</Heading>
+      <Text>Share your survey to start getting feedback.</Text>
+    </VStack>
   );
 };
