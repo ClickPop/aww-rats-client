@@ -15,9 +15,17 @@ const SurveyPage: NextPage = () => {
       <Head>
         <title>SURVEY_TITLE</title>
         <meta property='og:title' content='SURVEY_TITLE' key='ogtitle' />
-        <meta property='og:description' content='SURVEY_DESCRIPTION' key='ogdescription' />
-        <meta property='og:image' content='/backtalk/images/og-image.png' key='ogimage' />
-        <meta property='og:url' content='SURVEY_URL' key="ogurl" />
+        <meta
+          property='og:description'
+          content='SURVEY_DESCRIPTION'
+          key='ogdescription'
+        />
+        <meta
+          property='og:image'
+          content='/backtalk/images/og-image.png'
+          key='ogimage'
+        />
+        <meta property='og:url' content='SURVEY_URL' key='ogurl' />
 
         <meta name='twitter:card' content='summary' key='twcard' />
       </Head>
