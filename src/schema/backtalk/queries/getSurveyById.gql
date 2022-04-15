@@ -16,6 +16,7 @@ query getSurveyById(
     contract {
       address
       token_type
+      chain
     }
     callerResponses: survey_responses(where: { wallet: { _eq: $wallet } })
       @include(if: $includeMyResponses) {
