@@ -3,7 +3,6 @@ import {
   MORALIS_API_ENDPOINT,
   MORALIS_API_KEY,
   CONTRACT_ADDRESS,
-  CHAIN_ID,
 } from '~/config/env';
 import { MoralisTokensResponse } from '~/types';
 
@@ -16,7 +15,7 @@ export default async function handler(
   }
   try {
     const { wallet } = req.query;
-    const chain: string = CHAIN_ID === 80001 ? 'mumbai' : 'polygon';
+    const chain: string = 'polygon';
     const URL = `${MORALIS_API_ENDPOINT}/${wallet}/nft/${CONTRACT_ADDRESS}/?chain=${chain}&format=decimal`;
     let isHodler = false;
     const moralisResponse: MoralisTokensResponse = await fetch(URL, {

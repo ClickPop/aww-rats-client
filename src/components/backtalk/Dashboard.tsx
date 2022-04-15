@@ -14,7 +14,7 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
-import { format, compareAsc } from 'date-fns';
+import { format } from 'date-fns';
 import { Link } from '~/components/shared/Link';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { EthersContext } from '~/components/context/EthersContext';
