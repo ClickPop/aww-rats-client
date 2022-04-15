@@ -14,9 +14,11 @@ import {
   Center,
   useToast,
   Link,
+  useClipboard,
+  Input,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useMemo, useEffect } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { apolloBacktalkClient } from '~/lib/graphql';
@@ -57,6 +59,17 @@ export const SurveyResults: FC = () => {
     }
   }, [surveyError, surveyLoading, toast]);
 
+  const surveyLink = useMemo(
+    () =>
+      typeof window !== 'undefined' && data?.surveys_by_pk?.id
+        ? `${window.location.host}/backtalk/survey/${data.surveys_by_pk.id}`
+        : '',
+    [data?.surveys_by_pk?.id],
+  );
+
+  const [value, setValue] = React.useState(surveyLink);
+  const { hasCopied, onCopy } = useClipboard(value);
+
   if (surveyLoading) {
     return <Center>Loading</Center>;
   }
@@ -95,9 +108,12 @@ export const SurveyResults: FC = () => {
         </Button>
       </Flex>
       <Flex mb={4} alignItems='center'>
-        <Link
-          href={'https://awwrats.com/backtalk/survey/' + data.surveys_by_pk.id}>
-          {'awwrats.com/backtalk/survey/' + data.surveys_by_pk.id}
+        <Input value={surveyLink} isReadOnly />
+        <Button onClick={onCopy} ml={2} colorScheme='teal' size='sm'>
+          {hasCopied ? 'Copied' : 'Copy'}
+        </Button>
+        <Link href={surveyLink} ml={2} isExternal>
+          View
         </Link>
       </Flex>
       <Grid gap={4} templateColumns='repeat(2, 1fr)'>
