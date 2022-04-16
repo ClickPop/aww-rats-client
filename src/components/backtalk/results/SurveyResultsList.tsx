@@ -16,7 +16,13 @@ export const SurveyResultsList: FC = () => {
         Individual Responses
       </Heading>
       {(data?.surveys_by_pk?.survey_responses ?? []).map(
-        ({ wallet, created_at, response_values, question_ids }) => (
+        ({
+          wallet,
+          created_at,
+          response_values,
+          question_ids,
+          token_count,
+        }) => (
           <Box
             backgroundColor='white'
             border='1px'
@@ -35,6 +41,14 @@ export const SurveyResultsList: FC = () => {
               Wallet Address:
             </Heading>
             <Text mb={3}>{wallet}</Text>
+            {data?.surveys_by_pk?.contract && (
+              <>
+                <Heading as='h3' color='gray.500' size='xs'>
+                  Tokens Owned:
+                </Heading>
+                <Text mb={3}>{token_count}</Text>
+              </>
+            )}
             {response_values.map((response: string, i: number) => (
               <>
                 <Heading

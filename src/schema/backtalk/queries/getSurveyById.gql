@@ -29,6 +29,7 @@ query getSurveyById(
       response_values
       question_ids
       created_at
+      token_count
     }
     questions(order_by: { id: asc }) {
       id
