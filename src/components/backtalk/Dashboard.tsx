@@ -9,6 +9,7 @@ import {
   Th,
   Tbody,
   Td,
+  Text,
   Button,
   Box,
   Center,
@@ -105,14 +106,16 @@ export const Dashboard = () => {
                 <Tr key={survey.id}>
                   <Td>
                     <Link href={`/backtalk/results/${survey.id}`}>
-                      {survey.title}
+                      <Text isTruncated maxW={64}>
+                        {survey.title}
+                      </Text>
                     </Link>
                   </Td>
                   <Td>
                     {(latestResponseBySurveyId?.[survey.id] &&
                       format(
                         latestResponseBySurveyId?.[survey.id],
-                        "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+                        "MM/dd/yy '-' H:mm",
                       )) ??
                       'None'}
                   </Td>
