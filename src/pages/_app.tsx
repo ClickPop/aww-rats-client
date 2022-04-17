@@ -67,6 +67,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       },
       backtalk: {
         background: '#F5F6F8',
+        yellow: '#FEC046',
+        blue: '#00A5FF',
+        red: '#FF7558',
+        green: '#51ECAF',
       },
     },
   });
