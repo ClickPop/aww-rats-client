@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box, BoxProps, Heading, Grid, GridItem } from '@chakra-ui/react';
-import NextImage, { ImageProps } from 'next/image';
+import NextImage from 'next/image';
 
 interface Props extends BoxProps {
   bgcolor?: string;
@@ -42,7 +42,13 @@ export const PromoUnit: FC<Props> = ({
         {imgSrc && (
           <GridItem colSpan={2} pt={{ base: 0, lg: 6 }}>
             <Box maxW='400px' mx='auto' fontSize='0'>
-              <img alt={imgAlt} src={imgSrc} />
+              <NextImage
+                alt={imgAlt}
+                height={640}
+                layout='responsive'
+                src={imgSrc}
+                width={876}
+              />
             </Box>
           </GridItem>
         )}
