@@ -75,10 +75,7 @@ const Homepage = () => {
             </BacktalkLogin>
           </Box>
           <Box width='50%' p={8}>
-            <NextImage
-              alt='A community of people on the internet'
-              src={Characters}
-            />
+            <img src='/backtalk/images/screenshot-homepage.png' alt='Illustration of feedback from an NFT audience.' />
           </Box>
         </Flex>
       </Box>
@@ -118,8 +115,10 @@ const Homepage = () => {
           </Heading>
 
           <PromoUnit
+            imgAlt='A survey asking people how long they have been collecting NFTs'
             imgSrc='/backtalk/images/screenshot-general.png'
-            title='Get Verified feedback'>
+            title='Get Verified feedback'
+          >
             <Text>
               Make sure that the feedback you&apos;re getting from your
               community is actually coming from your community.
@@ -128,6 +127,7 @@ const Homepage = () => {
 
           <PromoUnit
             bgcolor='white'
+            imgAlt='A survey asking people to enter their wallet address for a presale'
             imgSrc='/backtalk/images/screenshot-presale.png'
             title='Pre-sale List Building'>
             <Text>
@@ -139,6 +139,7 @@ const Homepage = () => {
           <PromoUnit
             bgcolor='backtalk.blue'
             color='white'
+            imgAlt='A survey asking people to connect their wallet to verify their response'
             imgSrc='/backtalk/images/screenshot-doa-lite.png'
             title='DIY DAO-lite'>
             <Text>
