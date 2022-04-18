@@ -124,7 +124,10 @@ const Homepage = () => {
               Get feedback and make decisions
           </Heading>
 
-          <PromoUnit title='Verified feedback'>
+          <PromoUnit
+            imgSrc='/backtalk/images/screenshot-general.png'
+            title='Get Verified feedback'
+          >
             <Text>
               Make sure that the feedback you&apos;re getting from your community is actually coming from your community.
             </Text>
@@ -132,6 +135,7 @@ const Homepage = () => {
 
           <PromoUnit
             bgcolor='white'
+            imgSrc='/backtalk/images/screenshot-presale.png'
             title='Pre-sale List Building'
           >
             <Text>
@@ -142,6 +146,7 @@ const Homepage = () => {
           <PromoUnit
             bgcolor='backtalk.blue'
             color='white'
+            imgSrc='/backtalk/images/screenshot-doa-lite.png'
             title='DIY DAO-lite'
           >
             <Text>
