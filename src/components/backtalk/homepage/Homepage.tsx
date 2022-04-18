@@ -29,15 +29,8 @@ const Homepage = () => {
         borderColor='darkAlpha.50'
         position='fixed'
         width='100%'
-        zIndex='100'
-      >
-        <Flex
-          alignItems='end'
-          mx='auto'
-          p={2}
-          pb={4}
-          width='6xl'
-        >
+        zIndex='100'>
+        <Flex alignItems='end' mx='auto' p={2} pb={4} width='6xl'>
           <NextImage
             alt='Backtalk'
             height='50'
@@ -121,25 +114,25 @@ const Homepage = () => {
 
         <VStack align='left' my={16} mx={4} spacing={8}>
           <Heading textAlign='center' mb={4} size='xl'>
-              Get feedback and make decisions
+            Get feedback and make decisions
           </Heading>
 
           <PromoUnit
             imgSrc='/backtalk/images/screenshot-general.png'
-            title='Get Verified feedback'
-          >
+            title='Get Verified feedback'>
             <Text>
-              Make sure that the feedback you&apos;re getting from your community is actually coming from your community.
+              Make sure that the feedback you&apos;re getting from your
+              community is actually coming from your community.
             </Text>
           </PromoUnit>
 
           <PromoUnit
             bgcolor='white'
             imgSrc='/backtalk/images/screenshot-presale.png'
-            title='Pre-sale List Building'
-          >
+            title='Pre-sale List Building'>
             <Text>
-              Gather wallet addresses from interested people to help your new project launch with momentum.
+              Gather wallet addresses from interested people to help your new
+              project launch with momentum.
             </Text>
           </PromoUnit>
 
@@ -147,17 +140,17 @@ const Homepage = () => {
             bgcolor='backtalk.blue'
             color='white'
             imgSrc='/backtalk/images/screenshot-doa-lite.png'
-            title='DIY DAO-lite'
-          >
+            title='DIY DAO-lite'>
             <Text>
-            Give your community voting weight on ideas and initiatives based on the tokens they own.
+              Give your community voting weight on ideas and initiatives based
+              on the tokens they own.
             </Text>
           </PromoUnit>
         </VStack>
 
         <VStack align='left' spacing={8} my={16} mx={4}>
           <Heading textAlign='center' mb={2} size='xl'>
-              Useful features
+            Useful features
           </Heading>
 
           <Grid templateColumns='repeat(2, 1fr)' gap={8}>
@@ -165,8 +158,7 @@ const Homepage = () => {
               <PromoUnit
                 bgcolor='backtalk.red'
                 color='white'
-                title='Get feedback from verified holders'
-              >
+                title='Get feedback from verified holders'>
                 <List>
                   <UnorderedList>
                     <ListItem>
@@ -177,8 +169,8 @@ const Homepage = () => {
                       survey responses over time with a wallet.
                     </ListItem>
                     <ListItem>
-                      <strong>Coming soon:</strong> Capture the amount of tokens a
-                      respondent has when they responded.
+                      <strong>Coming soon:</strong> Capture the amount of tokens
+                      a respondent has when they responded.
                     </ListItem>
                   </UnorderedList>
                 </List>
@@ -188,20 +180,19 @@ const Homepage = () => {
             <GridItem>
               <PromoUnit
                 bgcolor='white'
-                title='Lock Surveys to Specific People'
-              >
+                title='Lock Surveys to Specific People'>
                 <List>
                   <UnorderedList>
                     <ListItem>
                       Limit surveys to holders of tokens on specific contracts.
                     </ListItem>
                     <ListItem>
-                      Cap the number of responses for things like POAPs, pre-sales,
-                      etc.
+                      Cap the number of responses for things like POAPs,
+                      pre-sales, etc.
                     </ListItem>
                     <ListItem>
-                      <strong>Coming soon:</strong> Limit participation to specific
-                      wallets.
+                      <strong>Coming soon:</strong> Limit participation to
+                      specific wallets.
                     </ListItem>
                   </UnorderedList>
                 </List>
@@ -209,10 +200,7 @@ const Homepage = () => {
             </GridItem>
           </Grid>
 
-          <PromoUnit
-            bgcolor='white'
-            title='Easily Explore Community Feedback'
-          >
+          <PromoUnit bgcolor='white' title='Easily Explore Community Feedback'>
             <List>
               <UnorderedList>
                 <ListItem>
