@@ -15,7 +15,6 @@ import {
 } from '@chakra-ui/react';
 import NextImage, { ImageProps } from 'next/image';
 import BacktalkLogo from 'src/assets/images/backtalk/backtalk-chunky.svg';
-import Characters from 'src/assets/images/backtalk/characters.png';
 import AwwRatsLogo from '~/assets/images/aww-rats-logo.png';
 import BacktalkLogin from '~/components/access/BacktalkLogin';
 import { PromoUnit } from '~/components/backtalk/homepage/PromoUnit';
@@ -52,33 +51,37 @@ const Homepage = () => {
         </Flex>
       </Flex>
 
-      <Box>
-        <Flex alignItems='center' maxW='6xl' mx='auto' px={4} pt={24}>
-          <Box width='50%' fontSize='2xl'>
-            <Heading my={4} size='2xl' lineHeight='1.3' fontWeight='900'>
-              The Web3 Community Feedback Tool
-            </Heading>
-            <Text mb={4}>
-              Get feedback you can trust from validated members of your
-              community.
-            </Text>
-            <BacktalkLogin>
-              <Button
-                background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-                backgroundSize='600% 400%'
-                color='white'
-                _hover={{
-                  animation: 'encounterShimmer 4s ease infinite;',
-                }}>
-                Login
-              </Button>
-            </BacktalkLogin>
-          </Box>
-          <Box width='50%' p={8}>
-            <img src='/backtalk/images/screenshot-homepage.png' alt='Illustration of feedback from an NFT audience.' />
-          </Box>
-        </Flex>
-      </Box>
+      <Grid alignItems='center' maxW='6xl' mx='auto' templateColumns='repeat(2, 1fr)' px={4} pt={24} gap={8}>
+        <GridItem fontSize='2xl'>
+          <Heading my={4} size='2xl' lineHeight='1.3' fontWeight='900'>
+            The Web3 Community Feedback Tool
+          </Heading>
+          <Text mb={4}>
+            Get feedback you can trust from validated members of your
+            community.
+          </Text>
+          <BacktalkLogin>
+            <Button
+              background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
+              backgroundSize='600% 400%'
+              color='white'
+              _hover={{
+                animation: 'encounterShimmer 4s ease infinite;',
+              }}>
+              Login
+            </Button>
+          </BacktalkLogin>
+        </GridItem>
+        <GridItem p={8}>
+          <NextImage
+            alt='Illustration of feedback from an NFT audience.'
+            height='100%'
+            layout='responsive'
+            src='/backtalk/images/screenshot-homepage.png'
+            width='100%'
+          />
+        </GridItem>
+      </Grid>
 
       <Box maxW='6xl' mx='auto' pb={8}>
         <VStack mt={12} mb={4}>
