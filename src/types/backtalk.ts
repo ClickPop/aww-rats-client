@@ -3,6 +3,7 @@ import {
   GetSurveyByIdQuery,
   Questions_Insert_Input,
   ResponseInput,
+  Supported_Chains_Enum,
   Surveys_Insert_Input,
 } from '~/schema/generated';
 
@@ -43,4 +44,5 @@ export type SurveyFormAction =
   | { type: 'addContract'; payload: Contracts_Insert_Input }
   | { type: 'addContractAddress'; payload: string }
   | { type: 'updateMaxResponses'; payload: number | null }
-  | { type: 'editDescription'; payload: string };
+  | { type: 'editDescription'; payload: string }
+  | { type: 'editChain'; payload: Supported_Chains_Enum };
