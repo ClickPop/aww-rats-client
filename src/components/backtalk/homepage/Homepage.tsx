@@ -87,11 +87,6 @@ const Homepage = () => {
 
         <Grid templateColumns='repeat(3, 1fr)' gap={12} mb={24}>
           <GridItem alignSelf='center'>
-            <NextImage
-              src={AwwRatsLogo}
-              alt='Aww, Rats! Logo'
-              placeholder='blur'
-            />
           </GridItem>
           <GridItem alignSelf='center'>
             <NextImage
@@ -101,11 +96,6 @@ const Homepage = () => {
             />
           </GridItem>
           <GridItem alignSelf='center'>
-            <NextImage
-              src={AwwRatsLogo}
-              alt='Aww, Rats! Logo'
-              placeholder='blur'
-            />
           </GridItem>
         </Grid>
 
