@@ -51,14 +51,20 @@ const Homepage = () => {
         </Flex>
       </Flex>
 
-      <Grid alignItems='center' maxW='6xl' mx='auto' templateColumns='repeat(2, 1fr)' px={4} pt={24} gap={8}>
+      <Grid
+        alignItems='center'
+        maxW='6xl'
+        mx='auto'
+        templateColumns='repeat(2, 1fr)'
+        px={4}
+        pt={24}
+        gap={8}>
         <GridItem fontSize='2xl'>
           <Heading my={4} size='2xl' lineHeight='1.3' fontWeight='900'>
             The Web3 Community Feedback Tool
           </Heading>
           <Text mb={4}>
-            Get feedback you can trust from validated members of your
-            community.
+            Get feedback you can trust from validated members of your community.
           </Text>
           <BacktalkLogin>
             <Button
@@ -89,8 +95,7 @@ const Homepage = () => {
         </VStack>
 
         <Grid templateColumns='repeat(3, 1fr)' gap={12} mb={24}>
-          <GridItem alignSelf='center'>
-          </GridItem>
+          <GridItem alignSelf='center'></GridItem>
           <GridItem alignSelf='center'>
             <NextImage
               src={AwwRatsLogo}
@@ -98,8 +103,7 @@ const Homepage = () => {
               placeholder='blur'
             />
           </GridItem>
-          <GridItem alignSelf='center'>
-          </GridItem>
+          <GridItem alignSelf='center'></GridItem>
         </Grid>
 
         <VStack align='left' my={16} mx={4} spacing={8}>
@@ -110,8 +114,7 @@ const Homepage = () => {
           <PromoUnit
             imgAlt='A survey asking people how long they have been collecting NFTs'
             imgSrc='/backtalk/images/screenshot-general.png'
-            title='Get Verified feedback'
-          >
+            title='Get Verified feedback'>
             <Text>
               Make sure that the feedback you&apos;re getting from your
               community is actually coming from your community.

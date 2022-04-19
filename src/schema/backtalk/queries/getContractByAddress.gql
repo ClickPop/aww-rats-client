@@ -3,5 +3,6 @@ query getContractByAddress($address: String!) {
     address
     token_type
     token_ids
+    chain
   }
 }
