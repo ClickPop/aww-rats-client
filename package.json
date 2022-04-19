@@ -23,6 +23,8 @@
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@google-cloud/storage": "^5.18.1",
+    "ag-grid-community": "^27.1.0",
+    "ag-grid-react": "^27.1.0",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",

@@ -18,11 +18,15 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import React, { FC, useContext, useEffect, useMemo } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import { useUpdateSurveyMutation } from '~/schema/generated';
+import { AgGridReact } from 'ag-grid-react';
+
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 export const SurveyResults: FC = () => {
   const {
@@ -58,6 +62,20 @@ export const SurveyResults: FC = () => {
       });
     }
   }, [surveyError, surveyLoading, toast]);
+
+  const rowData = useMemo(() =>
+    (data?.surveys_by_pk?.survey_responses ?? []).map(
+      ({ wallet, created_at }) => (
+      {
+        'Wallet Address': wallet,
+        'Date': created_at
+      }
+    )), []);
+
+  const [columnDefs] = useState([
+    { field: 'Wallet Address', sortable: true, pinned: 'left' },
+    { field: 'Date', sortable: true, filter: 'agDateColumnFilter' }
+  ])
 
   const surveyLink = useMemo(
     () =>
@@ -160,6 +178,13 @@ export const SurveyResults: FC = () => {
         </GridItem>
       </Grid>
       <SurveyResultsList />
+
+      <div className="ag-theme-alpine" style={{height: 400, width: '100%'}}>
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={columnDefs}>
+        </AgGridReact>
+      </div>
     </>
   ) : (
     <Box>Survey Not Found</Box>
