@@ -143,6 +143,7 @@ export const SurveyResponse: FC = () => {
       {data.step < 0 ? (
         <Box>
           {data.description && <Text mb={4}>{data.description}</Text>}
+          <Text mb={4}>Created by: {data.owner}</Text>
           {connected && isLoggedInBacktalk ? (
             <Button
               colorScheme='gray'

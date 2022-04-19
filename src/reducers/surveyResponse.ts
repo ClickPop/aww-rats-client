@@ -15,6 +15,7 @@ export const defaultSurveyResponseState: SurveyResponseState = {
   step: 0,
   title: '',
   callerResponses: [],
+  owner: '',
 };
 
 const hasExistingResponse = (state: SurveyResponseState, question_id: number) =>
