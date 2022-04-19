@@ -82,8 +82,12 @@ export const SurveyResponse: FC = () => {
     getBal();
   }, [data.contract, isLoggedInBacktalk, provider, signerAddr]);
 
-  if (loading || balData.loading) {
+  if (loading && data.id === -1) {
     return <Center h='100%'>Loading</Center>;
+  }
+
+  if (balData.loading) {
+    return <Center h='100%'>Checking Token Balance...</Center>;
   }
 
   if (data.id === -1) {

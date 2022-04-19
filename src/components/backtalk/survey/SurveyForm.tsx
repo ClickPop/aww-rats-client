@@ -21,6 +21,7 @@ import {
   Textarea,
   Radio,
   RadioGroup,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
@@ -39,6 +40,7 @@ import { EthersContext } from '~/components/context/EthersContext';
 import { apolloBacktalkClient } from '~/lib/graphql';
 import {
   Question_Type_Enum,
+  Supported_Chains_Enum,
   Token_Types_Enum,
   useCreateSurveyMutation,
   useGetContractByAddressLazyQuery,
@@ -68,6 +70,14 @@ export const SurveyForm = () => {
 
   const [createSurvey, { loading }] = useCreateSurveyMutation({
     client: apolloBacktalkClient,
+  });
+
+  const [contractExists, setContractExists] = useState<{
+    exists: boolean;
+    chain?: Supported_Chains_Enum;
+  }>({
+    exists: false,
+    chain: undefined,
   });
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -109,6 +119,14 @@ export const SurveyForm = () => {
           payload: res.data.contracts_by_pk.address,
         });
       }
+      setContractExists({
+        exists: !!res?.data?.contracts_by_pk,
+        chain: res?.data?.contracts_by_pk?.chain,
+      });
+    }
+
+    if (!val) {
+      setContractExists({ exists: false, chain: undefined });
     }
 
     setError((err) => ({
@@ -174,23 +192,44 @@ export const SurveyForm = () => {
             onChange={handleContractChange}
             isDisabled={getContractLoading}
           />
-          <RadioGroup my={2} isDisabled>
-            <HStack direction='row'>
-              <Radio value='eth'>
-                <NextImage alt='ETH Log' height='16' src={EthLogo} width='16' />{' '}
-                ETH Mainnet
-              </Radio>
-              <Radio value='matic'>
-                <NextImage
-                  alt='ETH Log'
-                  height='16'
-                  src={PolygonLogo}
-                  width='16'
-                />{' '}
-                Polygon
-              </Radio>
-            </HStack>
-          </RadioGroup>
+          <Tooltip
+            label='Contract already exists'
+            isDisabled={!contract_address || !!contract}
+            placement='bottom-start'>
+            <RadioGroup
+              my={2}
+              isDisabled={!!contract_address || !contract || !!error.contract}
+              onChange={(e) => {
+                surveyDataDispatch({
+                  type: 'editChain',
+                  payload: e as Supported_Chains_Enum,
+                });
+              }}
+              value={
+                surveyData.contract?.data.chain ?? contractExists.chain ?? ''
+              }>
+              <HStack direction='row'>
+                <Radio value={Supported_Chains_Enum.Ethereum}>
+                  <NextImage
+                    alt='ETH Log'
+                    height='16'
+                    src={EthLogo}
+                    width='16'
+                  />{' '}
+                  ETH Mainnet
+                </Radio>
+                <Radio value={Supported_Chains_Enum.Polygon}>
+                  <NextImage
+                    alt='ETH Log'
+                    height='16'
+                    src={PolygonLogo}
+                    width='16'
+                  />{' '}
+                  Polygon
+                </Radio>
+              </HStack>
+            </RadioGroup>
+          </Tooltip>
           <FormHelperText>
             Leave this blank to let anyone with a wallet submit a response.
           </FormHelperText>
