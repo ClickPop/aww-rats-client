@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   Center,
+  FormControl,
+  FormLabel,
   HStack,
   Progress,
   Text,
@@ -41,6 +43,7 @@ const getColorFromState = (
 export const SurveyQuestionStepper: FC = () => {
   const {
     surveyResponseData: {
+      id,
       questions,
       step,
       responses,
@@ -76,7 +79,10 @@ export const SurveyQuestionStepper: FC = () => {
     e.preventDefault();
     await createResponses({
       variables: {
-        responseInput: responses,
+        responseInput: {
+          survey_id: id,
+          responses,
+        },
       },
     });
     surveyResponseDispatch({ type: 'endSurvey' });
@@ -101,11 +107,15 @@ export const SurveyQuestionStepper: FC = () => {
           />
         </VStack>
         {currentQuestion && (
-          <>
-            <Text pb={2} textAlign='left'>
+          <FormControl isRequired={!!currentQuestion.is_required}>
+            <FormLabel
+              htmlFor={`${currentQuestion.id}-response`}
+              pb={2}
+              textAlign='left'>
               {currentQuestion.prompt}
-            </Text>
+            </FormLabel>
             <Textarea
+              id={`${currentQuestion.id}-response`}
               value={response_content ?? ''}
               onChange={(e) =>
                 surveyResponseDispatch({
@@ -122,7 +132,7 @@ export const SurveyQuestionStepper: FC = () => {
               color={getColorFromState(freeResponseState)}>
               {response_content?.length ?? 0} / 280
             </Text>
-          </>
+          </FormControl>
         )}
         {noMoreSteps &&
           questions
@@ -165,7 +175,10 @@ export const SurveyQuestionStepper: FC = () => {
                 color: 'black',
               }}
               onClick={() => surveyResponseDispatch({ type: 'nextStep' })}
-              disabled={freeResponseState === 'error'}>
+              disabled={
+                freeResponseState === 'error' ||
+                !!(currentQuestion?.is_required && !response_content)
+              }>
               Next
             </Button>
           )}

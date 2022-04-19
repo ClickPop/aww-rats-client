@@ -8,9 +8,9 @@ import {
 } from '~/schema/generated';
 
 export type ResponseState = Required<
-  Pick<ResponseInput, 'response_content' | 'question_id'>
+  Pick<ResponseInput['responses'][0], 'response_content' | 'question_id'>
 > &
-  Pick<ResponseInput, 'response_option_id'>;
+  Pick<ResponseInput['responses'][0], 'response_option_id'>;
 
 export interface SurveyResponseState
   extends Exclude<GetSurveyByIdQuery['surveys_by_pk'], null | undefined> {
