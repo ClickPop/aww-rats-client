@@ -177,22 +177,18 @@ export const SurveyForm = () => {
           <RadioGroup my={2} isDisabled>
             <HStack direction='row'>
               <Radio value='eth'>
-                <NextImage
-                  alt='ETH Log'
-                  height='16'
-                  src={EthLogo}
-                  width='16'
-                />{' '}
+                <NextImage alt='ETH Log' height='16' src={EthLogo} width='16' />{' '}
                 ETH Mainnet
               </Radio>
               <Radio value='matic'>
-              <NextImage
-                alt='ETH Log'
-                height='16'
-                src={PolygonLogo}
-                width='16'
-              />{' '}
-                Polygon</Radio>
+                <NextImage
+                  alt='ETH Log'
+                  height='16'
+                  src={PolygonLogo}
+                  width='16'
+                />{' '}
+                Polygon
+              </Radio>
             </HStack>
           </RadioGroup>
           <FormHelperText>
