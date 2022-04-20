@@ -1,6 +1,5 @@
-import { Box, Button, Center, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Text, Link } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { Link } from '~/components/shared/Link';
 import { Emoji } from '~/components/shared/Emoji';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
 import { backtalkNewResponseContext } from '~/components/context/BacktalkNewResponse';
@@ -142,8 +141,13 @@ export const SurveyResponse: FC = () => {
       </Heading>
       {data.step < 0 ? (
         <Box>
+          <Text isTruncated maxWidth='60%' fontSize='xs' fontWeight='bold' color='purple.200' mb={4}>
+            Created by{' '}
+              <Link href={data?.contract?.chain == 'ethereum' ? 'https://etherscan.io/address/'+data.owner : 'https://polygonscan.com/address/'+data.owner} isExternal>
+                {data.owner}
+              </Link>
+            </Text>
           {data.description && <Text mb={4}>{data.description}</Text>}
-          <Text mb={4}>Created by: {data.owner}</Text>
           {connected && isLoggedInBacktalk ? (
             <Button
               colorScheme='gray'
