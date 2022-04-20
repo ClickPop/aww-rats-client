@@ -141,12 +141,24 @@ export const SurveyResponse: FC = () => {
       </Heading>
       {data.step < 0 ? (
         <Box>
-          <Text isTruncated maxWidth='60%' fontSize='xs' fontWeight='bold' color='purple.200' mb={4}>
+          <Text
+            isTruncated
+            maxWidth='60%'
+            fontSize='xs'
+            fontWeight='bold'
+            color='purple.200'
+            mb={4}>
             Created by{' '}
-              <Link href={data?.contract?.chain == 'ethereum' ? 'https://etherscan.io/address/'+data.owner : 'https://polygonscan.com/address/'+data.owner} isExternal>
-                {data.owner}
-              </Link>
-            </Text>
+            <Link
+              href={
+                data?.contract?.chain == 'ethereum'
+                  ? 'https://etherscan.io/address/' + data.owner
+                  : 'https://polygonscan.com/address/' + data.owner
+              }
+              isExternal>
+              {data.owner}
+            </Link>
+          </Text>
           {data.description && <Text mb={4}>{data.description}</Text>}
           {connected && isLoggedInBacktalk ? (
             <Button
