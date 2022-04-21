@@ -28,6 +28,7 @@ import React, {
   ChangeEventHandler,
   FormEventHandler,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -54,6 +55,7 @@ export const SurveyForm = () => {
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
+  const [maxResponses, setMaxResponses] = useState(100);
   const { title, questions, contract, contract_address } = surveyData;
   const [prompt, setPrompt] = useState<{
     index: number;
@@ -79,6 +81,13 @@ export const SurveyForm = () => {
     exists: false,
     chain: undefined,
   });
+
+  useEffect(() => {
+    surveyDataDispatch({
+      type: 'updateMaxResponses',
+      payload: hasMaxResponses ? maxResponses : null,
+    });
+  }, [hasMaxResponses, maxResponses, surveyDataDispatch]);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -247,7 +256,9 @@ export const SurveyForm = () => {
             isDisabled={!hasMaxResponses}
             defaultValue={100}
             max={10000}
-            min={0}>
+            min={0}
+            value={maxResponses}
+            onChange={(e) => setMaxResponses(Number(e))}>
             <NumberInputField id='amount' />
             <NumberInputStepper>
               <NumberIncrementStepper />
