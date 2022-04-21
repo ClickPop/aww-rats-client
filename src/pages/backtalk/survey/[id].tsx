@@ -20,21 +20,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let surveyData: null | GetSurveyByIdQueryResult['data'] = null;
   if (ctx.params?.id && typeof ctx.params.id === 'string') {
     try {
-      const auth = await apolloBacktalkClient.query<
-        CheckAuthQueryResult['data'],
-        CheckAuthQueryVariables
-      >({
-        query: CheckAuthDocument,
-        fetchPolicy: 'no-cache',
-        context: {
-          headers: {
-            Cookie: checkCookie(ctx)
-              ? `backtalk-wallet=${ctx.req.cookies['backtalk-wallet']}`
-              : undefined,
-          },
-        },
-      });
-
       const res = await apolloBacktalkClient.query<
         GetSurveyByIdQueryResult['data'],
         GetSurveyByIdQueryVariables
@@ -42,15 +27,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         query: GetSurveyByIdDocument,
         variables: {
           id: Number(ctx.params.id),
-          includeMyResponses: !!auth.data?.checkAuth.id,
-          wallet: auth.data?.checkAuth.id,
-        },
-        context: {
-          headers: {
-            Cookie: checkCookie(ctx)
-              ? `backtalk-wallet=${ctx.req.cookies['backtalk-wallet']}`
-              : undefined,
-          },
         },
       });
       if (res.data) {
@@ -105,7 +81,7 @@ const SurveyPage: NextPage<Props> = ({ surveyData, host }) => {
         <meta name='twitter:card' content='summary' key='twcard' />
       </Head>
       <LayoutSurvey>
-        <BacktalkNewResponseContextProvider survey={surveyData} id={surveyId}>
+        <BacktalkNewResponseContextProvider id={surveyId}>
           <SurveyWrapper>
             <SurveyResponse />
           </SurveyWrapper>

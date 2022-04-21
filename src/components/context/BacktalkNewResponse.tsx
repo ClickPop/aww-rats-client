@@ -20,7 +20,6 @@ import { SurveyResponseAction, SurveyResponseState } from '~/types';
 
 type Props = {
   id: number | null;
-  survey?: null | GetSurveyByIdQueryResult['data'];
 };
 
 type DefaultContext = {
@@ -40,7 +39,6 @@ export const backtalkNewResponseContext = createContext(defaultContext);
 export const BacktalkNewResponseContextProvider: FC<Props> = ({
   children,
   id,
-  survey,
 }) => {
   const { signerAddr } = useContext(EthersContext);
   const {
@@ -59,16 +57,7 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
 
   const [surveyState, surveyResponseDispatch] = useReducer(
     surveyResponseReducer,
-    {
-      ...defaultSurveyResponseState,
-      ...{
-        ...(survey?.surveys_by_pk ?? {}),
-        step:
-          (survey?.surveys_by_pk?.callerResponses?.length ?? 0) > 1
-            ? (survey?.surveys_by_pk?.questions?.length ?? 0) + 1
-            : -1,
-      },
-    },
+    defaultSurveyResponseState,
   );
 
   useEffect(() => {
