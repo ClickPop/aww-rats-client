@@ -97,6 +97,14 @@ export const SurveyResponse: FC = () => {
     return <Center>You don&apos;t hold enough tokens!</Center>;
   }
 
+  if (
+    typeof data?.response_count === 'number' &&
+    typeof data?.max_responses === 'number' &&
+    data?.response_count >= data?.max_responses
+  ) {
+    return <Center>Max Responses Reached... Better luck next time!</Center>;
+  }
+
   if (!!changeNetwork) {
     return (
       <Button

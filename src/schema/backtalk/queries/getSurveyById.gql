@@ -12,7 +12,7 @@ query getSurveyById(
     is_public
     max_responses
     owner
-    response_count @include(if: $includeResponses)
+    response_count
     latest_response @include(if: $includeResponses)
     contract {
       address
