@@ -1,4 +1,4 @@
-import { Box, Button, Center, Heading, Text, Link } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Text, Link, VStack } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
@@ -11,6 +11,8 @@ import BacktalkLogin from '~/components/access/BacktalkLogin';
 import { useConnect } from '~/hooks/useConnect';
 import { Supported_Chains_Enum } from '~/schema/generated';
 import { CHAIN_ID, ETH_CHAIN_ID } from '~/config/env';
+import { Image } from '~/components/shared/Image';
+import BacktalkLogo from 'src/assets/images/backtalk/backtalk-icon.svg';
 
 export const SurveyResponse: FC = () => {
   const {
@@ -102,7 +104,38 @@ export const SurveyResponse: FC = () => {
     typeof data?.max_responses === 'number' &&
     data?.response_count >= data?.max_responses
   ) {
-    return <Center>Max Responses Reached... Better luck next time!</Center>;
+    return (
+      <VStack>
+        <Image
+          src={BacktalkLogo}
+          alt='BacktalkLogo'
+          height={38}
+          width={52}
+        />
+        <Heading size='lg'>
+          Uh oh! You&apos;re NGMI
+        </Heading>
+        <Text textAlign='center' fontSize='lg' pb={4}>
+          This survey already has the maximum number&nbsp;of&nbsp;responses.
+        </Text>
+        <Text textAlign='center' fontSize='lg'>
+          Want to make a web3 survey of your own?
+        </Text>
+        <Link href='/backtalk'>
+          <Button
+            colorScheme='gray'
+            mt={4}
+            size='md'
+            variant='outline'
+            _hover={{
+              backgroundColor: 'gray.200',
+              color: 'black',
+            }}>
+            Make one now
+          </Button>
+        </Link>
+      </VStack>
+    );
   }
 
   if (!!changeNetwork) {
