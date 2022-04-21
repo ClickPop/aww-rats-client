@@ -69,6 +69,40 @@ export const SurveyResults: FC = () => {
 
   const { hasCopied, onCopy } = useClipboard(surveyLink);
 
+  const handleDataExport = () => {
+    const headers = `Wallet,Date,${
+      data?.surveys_by_pk?.contract ? 'Tokens,' : ''
+    }${data?.surveys_by_pk?.questions.map((q) => q.prompt).join(',')}`;
+    const rows =
+      data?.surveys_by_pk?.survey_responses
+        ?.filter((r) => r.wallet !== null)
+        ?.map(
+          (r) =>
+            `${r.wallet},${
+              '"' +
+              format(
+                new Date(r.created_at),
+                "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+              ) +
+              '"'
+            },${
+              r.token_count !== null ? r.token_count + ',' : ''
+            }${data?.surveys_by_pk?.questions.map((q) => {
+              const idx = r.question_ids.findIndex(
+                (q_id: number) => q_id === q.id,
+              );
+              return idx > -1 ? r.response_values[idx] : ' ';
+            })}`,
+        ) ?? [];
+    const csv = [headers, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'csv' });
+    const a = document.createElement('a');
+    a.download = `backtalk-survey-${data?.surveys_by_pk?.id}.csv`;
+    a.href = window.URL.createObjectURL(blob);
+    a.click();
+    a.remove();
+  };
+
   if (surveyLoading) {
     return <Center>Loading</Center>;
   }
@@ -102,7 +136,7 @@ export const SurveyResults: FC = () => {
             id='isactive'
           />
         </FormControl>
-        <Button disabled colorScheme='teal' ml={2} size='xs'>
+        <Button onClick={handleDataExport} colorScheme='teal' ml={2} size='xs'>
           Export
         </Button>
       </Flex>
