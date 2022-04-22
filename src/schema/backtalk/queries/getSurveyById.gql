@@ -36,6 +36,11 @@ query getSurveyById(
       id
       prompt
       is_required
+      question_type
+      options {
+        id
+        content
+      }
     }
   }
 }

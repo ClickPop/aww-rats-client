@@ -27,6 +27,10 @@ export type SurveyResponseAction =
   | { type: 'nextStep' }
   | { type: 'previousStep' }
   | { type: 'updateCurrentResponseFreeForm'; payload: string }
+  | {
+      type: 'updateCurrentResponseMultipleChoice';
+      payload: { id: number; content: string };
+    }
   | { type: 'startSurvey' }
   | { type: 'endSurvey' };
 

@@ -6,6 +6,9 @@ import {
   FormLabel,
   HStack,
   Progress,
+  Radio,
+  RadioGroup,
+  Stack,
   Text,
   Textarea,
   useToast,
@@ -14,7 +17,10 @@ import {
 import { FC, FormEventHandler, useContext, useEffect } from 'react';
 import { backtalkNewResponseContext } from '~/components/context/BacktalkNewResponse';
 import { apolloBacktalkClient } from '~/lib/graphql';
-import { useCreateResponsesMutation } from '~/schema/generated';
+import {
+  Question_Type_Enum,
+  useCreateResponsesMutation,
+} from '~/schema/generated';
 
 const getFreeResponseState = (length: number) => {
   if (length < 240) {
@@ -47,7 +53,7 @@ export const SurveyQuestionStepper: FC = () => {
       questions,
       step,
       responses,
-      currentResponse: { response_content },
+      currentResponse: { response_content, response_option_id },
     },
     surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
@@ -114,24 +120,53 @@ export const SurveyQuestionStepper: FC = () => {
               textAlign='left'>
               {currentQuestion.prompt}
             </FormLabel>
-            <Textarea
-              id={`${currentQuestion.id}-response`}
-              value={response_content ?? ''}
-              onChange={(e) =>
-                surveyResponseDispatch({
-                  type: 'updateCurrentResponseFreeForm',
-                  payload: e.currentTarget.value,
-                })
-              }
-              resize='none'
-              isInvalid={freeResponseState === 'error'}
-            />
-            <Text
-              alignSelf='end'
-              fontSize={'xs'}
-              color={getColorFromState(freeResponseState)}>
-              {response_content?.length ?? 0} / 280
-            </Text>
+            {currentQuestion.question_type ===
+            Question_Type_Enum.FreeResponse ? (
+              <>
+                <Textarea
+                  id={`${currentQuestion.id}-response`}
+                  value={response_content ?? ''}
+                  onChange={(e) =>
+                    surveyResponseDispatch({
+                      type: 'updateCurrentResponseFreeForm',
+                      payload: e.currentTarget.value,
+                    })
+                  }
+                  resize='none'
+                  isInvalid={freeResponseState === 'error'}
+                />
+                <Text
+                  alignSelf='end'
+                  fontSize={'xs'}
+                  color={getColorFromState(freeResponseState)}>
+                  {response_content?.length ?? 0} / 280
+                </Text>
+              </>
+            ) : (
+              <>
+                <RadioGroup>
+                  <Stack>
+                    {currentQuestion.options.map(({ id, content }) => (
+                      <Radio
+                        key={id}
+                        isChecked={response_option_id === id}
+                        onChange={(e) =>
+                          e.currentTarget.checked &&
+                          surveyResponseDispatch({
+                            type: 'updateCurrentResponseMultipleChoice',
+                            payload: {
+                              id,
+                              content,
+                            },
+                          })
+                        }>
+                        {content}
+                      </Radio>
+                    ))}
+                  </Stack>
+                </RadioGroup>
+              </>
+            )}
           </FormControl>
         )}
         {noMoreSteps &&
@@ -192,6 +227,7 @@ export const SurveyQuestionStepper: FC = () => {
                 backgroundColor: 'gray.200',
                 color: 'black',
               }}
+              isDisabled={responses.every((r) => !r.response_content)}
               type='submit'
               isLoading={loading}>
               Submit
