@@ -93,6 +93,15 @@ export const surveyResponseReducer = (
           response_content: action.payload,
         },
       };
+    case 'updateCurrentResponseMultipleChoice':
+      return {
+        ...state,
+        currentResponse: {
+          ...state.currentResponse,
+          response_content: action.payload.content,
+          response_option_id: action.payload.id,
+        },
+      };
     default:
       return state;
   }
