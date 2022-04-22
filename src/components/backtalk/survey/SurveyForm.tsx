@@ -22,6 +22,9 @@ import {
   Radio,
   RadioGroup,
   Tooltip,
+  Stack,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
@@ -29,11 +32,10 @@ import React, {
   FormEventHandler,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import { ActionBar } from '~/components/backtalk/ActionBar';
-import NextImage, { ImageProps } from 'next/image';
+import NextImage from 'next/image';
 import EthLogo from 'src/assets/images/backtalk/eth-logo.webp';
 import PolygonLogo from 'src/assets/images/backtalk/matic-logo.webp';
 import { BacktalkSurveyFormContext } from '~/components/context/BacktalkSurveyForm';
@@ -60,6 +62,11 @@ export const SurveyForm = () => {
   const [prompt, setPrompt] = useState<{
     index: number;
     prompt: string;
+  } | null>(null);
+  const [option, setOption] = useState<{
+    index: number;
+    question_index: number;
+    content: string;
   } | null>(null);
   const [error, setError] = useState<{ contract: boolean }>({
     contract: false,
@@ -94,7 +101,38 @@ export const SurveyForm = () => {
     if (signerAddr) {
       const res = await createSurvey({
         variables: {
-          surveyInput: { ...surveyData, is_active: true, owner: signerAddr },
+          surveyInput: {
+            ...surveyData,
+            is_active: true,
+            owner: signerAddr,
+            questions: surveyData.questions
+              ? {
+                  ...surveyData.questions,
+                  data: surveyData.questions.data.map((q, i) => ({
+                    ...q,
+                    prompt:
+                      prompt && prompt.index === i && prompt.prompt
+                        ? prompt.prompt
+                        : q.prompt,
+                    options: q.options
+                      ? {
+                          ...q.options,
+                          data: q.options.data.map((o, idx) => ({
+                            ...o,
+                            content:
+                              option &&
+                              option.question_index === i &&
+                              option.index === idx &&
+                              option.content
+                                ? option.content
+                                : o.content,
+                          })),
+                        }
+                      : undefined,
+                  })),
+                }
+              : undefined,
+          },
         },
       });
       if (res.data?.insert_surveys_one) {
@@ -148,7 +186,23 @@ export const SurveyForm = () => {
     !!title &&
     (questions?.data.length ?? 0) > 0 &&
     !!questions?.data.some((q) => q.is_required) &&
-    !!questions?.data.every((q) => !!q.prompt) &&
+    !!questions?.data.every(
+      (q, i) => !!q.prompt || (prompt && prompt.index === i && prompt.prompt),
+    ) &&
+    !!questions.data
+      .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
+      .every(
+        (q, i) =>
+          (q.options?.data.length ?? 0) >= 2 &&
+          q.options?.data.every(
+            (o, idx) =>
+              !!o.content ||
+              (option &&
+                option.index === i &&
+                option.question_index === idx &&
+                option.content),
+          ),
+      ) &&
     !error.contract;
 
   return (
@@ -286,9 +340,24 @@ export const SurveyForm = () => {
                 </HStack>
                 <FormControl mb={4}>
                   <FormLabel htmlFor='questionType'>Question Type</FormLabel>
-                  <Select id='questionType' disabled>
-                    <option>Free Response</option>
-                    <option>Multiple Choice</option>
+                  <Select
+                    id='questionType'
+                    onChange={(e) => {
+                      const val = e.currentTarget.value as Question_Type_Enum;
+                      surveyDataDispatch({
+                        type: 'editQuestionType',
+                        payload: {
+                          index: i,
+                          questionType: val,
+                        },
+                      });
+                    }}>
+                    <option value={Question_Type_Enum.FreeResponse}>
+                      Free Response
+                    </option>
+                    <option value={Question_Type_Enum.MultipleChoice}>
+                      Multiple Choice
+                    </option>
                   </Select>
                 </FormControl>
                 <FormControl mb={2}>
@@ -307,13 +376,10 @@ export const SurveyForm = () => {
                     }
                     onBlur={(e) => {
                       surveyDataDispatch({
-                        type: 'editQuestion',
+                        type: 'editQuestionPrompt',
                         payload: {
                           index: i,
-                          question: {
-                            ...q,
-                            prompt: e.currentTarget.value,
-                          },
+                          prompt: e.currentTarget.value,
                         },
                       });
 
@@ -322,21 +388,91 @@ export const SurveyForm = () => {
                   />
                 </FormControl>
                 <Checkbox
+                  mb={4}
                   isChecked={q.is_required ?? false}
                   onChange={(e) =>
                     surveyDataDispatch({
-                      type: 'editQuestion',
+                      type: 'editQuestionRequired',
                       payload: {
                         index: i,
-                        question: {
-                          ...q,
-                          is_required: e.currentTarget.checked,
-                        },
+                        required: e.currentTarget.checked,
                       },
                     })
                   }>
                   Required
                 </Checkbox>
+                {q.question_type === Question_Type_Enum.MultipleChoice && (
+                  <FormControl>
+                    <FormLabel>Choices</FormLabel>
+                    <Stack>
+                      {q.options?.data.map((o, idx) => (
+                        <InputGroup key={(o.content ?? '') + idx}>
+                          <Input
+                            value={
+                              option?.index === idx &&
+                              option.question_index === i
+                                ? option.content
+                                : o.content ?? ''
+                            }
+                            onChange={(e) =>
+                              setOption({
+                                index: idx,
+                                question_index: i,
+                                content: e.currentTarget.value,
+                              })
+                            }
+                            onFocus={(e) =>
+                              setOption({
+                                index: idx,
+                                question_index: i,
+                                content: e.currentTarget.value,
+                              })
+                            }
+                            onBlur={(e) => {
+                              surveyDataDispatch({
+                                type: 'editQuestionOption',
+                                payload: {
+                                  question_index: i,
+                                  option_index: idx,
+                                  content: e.currentTarget.value,
+                                },
+                              });
+                              setOption(null);
+                            }}
+                          />
+                          <InputRightElement w='fit-content'>
+                            <Button
+                              onClick={() =>
+                                surveyDataDispatch({
+                                  type: 'deleteQuestionOption',
+                                  payload: {
+                                    question_index: i,
+                                    option_index: idx,
+                                  },
+                                })
+                              }
+                              isDisabled={(q.options?.data.length ?? 0) < 3}
+                              h='80%'
+                              w='90%'>
+                              Delete
+                            </Button>
+                          </InputRightElement>
+                        </InputGroup>
+                      ))}
+                      <Button
+                        onClick={() =>
+                          surveyDataDispatch({
+                            type: 'addQuestionOption',
+                            payload: {
+                              index: i,
+                            },
+                          })
+                        }>
+                        New Choice
+                      </Button>
+                    </Stack>
+                  </FormControl>
+                )}
               </Box>
             ))}
           </VStack>
