@@ -52,6 +52,9 @@ const handleSequentialResponse = (
   response_content:
     state.responses.find((r) => r.question_id === state.questions[newStep]?.id)
       ?.response_content ?? '',
+  response_option_id: state.responses.find(
+    (r) => r.question_id === state.questions[newStep]?.id,
+  )?.response_option_id,
 });
 
 export const surveyResponseReducer = (
