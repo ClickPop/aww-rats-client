@@ -52,6 +52,9 @@ const handleSequentialResponse = (
   response_content:
     state.responses.find((r) => r.question_id === state.questions[newStep]?.id)
       ?.response_content ?? '',
+  response_option_id: state.responses.find(
+    (r) => r.question_id === state.questions[newStep]?.id,
+  )?.response_option_id,
 });
 
 export const surveyResponseReducer = (
@@ -91,6 +94,15 @@ export const surveyResponseReducer = (
         currentResponse: {
           ...state.currentResponse,
           response_content: action.payload,
+        },
+      };
+    case 'updateCurrentResponseMultipleChoice':
+      return {
+        ...state,
+        currentResponse: {
+          ...state.currentResponse,
+          response_content: action.payload.content,
+          response_option_id: action.payload.id,
         },
       };
     default:
