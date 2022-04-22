@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { EthersContextProvider } from '~/components/context/EthersContext';
 import { apolloClient } from '~/lib/graphql';
 import '~/styles/index.scss';
+import 'feeder-react-feedback/dist/feeder-react-feedback.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
 function MyApp({ Component, pageProps }: AppProps) {
