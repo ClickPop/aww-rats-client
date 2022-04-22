@@ -3,6 +3,7 @@ import {
   Contracts_Update_Column,
   Questions_Constraint,
   Questions_Update_Column,
+  Question_Type_Enum,
   Token_Types_Enum,
 } from '~/schema/generated';
 import { SurveyFormAction, SurveyFormState } from '~/types';
@@ -89,14 +90,117 @@ export const surveyFormReducer = (
           data: [...(state.questions?.data ?? []), action.payload],
         },
       };
-    case 'editQuestion':
+    case 'editQuestionPrompt':
       return {
         ...state,
         questions: {
           ...state.questions,
           data:
             state.questions?.data?.map((q, i) =>
-              i === action.payload.index ? action.payload.question : q,
+              i === action.payload.index
+                ? { ...q, prompt: action.payload.prompt }
+                : q,
+            ) ?? [],
+        },
+      };
+    case 'editQuestionRequired':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.index
+                ? { ...q, is_required: action.payload.required }
+                : q,
+            ) ?? [],
+        },
+      };
+    case 'editQuestionType':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.index
+                ? {
+                    ...q,
+                    question_type: action.payload.questionType,
+                    options:
+                      action.payload.questionType ===
+                      Question_Type_Enum.MultipleChoice
+                        ? {
+                            data: [{}, {}],
+                          }
+                        : undefined,
+                  }
+                : q,
+            ) ?? [],
+        },
+      };
+    case 'addQuestionOption':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.index
+                ? {
+                    ...q,
+                    options: {
+                      ...(q.options ?? {}),
+                      data: [...(q.options?.data ?? []), {}],
+                    },
+                  }
+                : q,
+            ) ?? [],
+        },
+      };
+    case 'deleteQuestionOption':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.question_index
+                ? {
+                    ...q,
+                    options: {
+                      ...(q.options ?? {}),
+                      data:
+                        q.options?.data.filter(
+                          (_, idx) => idx !== action.payload.option_index,
+                        ) ?? [],
+                    },
+                  }
+                : q,
+            ) ?? [],
+        },
+      };
+    case 'editQuestionOption':
+      return {
+        ...state,
+        questions: {
+          ...state.questions,
+          data:
+            state.questions?.data?.map((q, i) =>
+              i === action.payload.question_index
+                ? {
+                    ...q,
+                    options: {
+                      ...(q.options ?? {}),
+                      data:
+                        q.options?.data.map((o, idx) =>
+                          idx === action.payload.option_index
+                            ? { ...o, content: action.payload.content }
+                            : o,
+                        ) ?? [],
+                    },
+                  }
+                : q,
             ) ?? [],
         },
       };
