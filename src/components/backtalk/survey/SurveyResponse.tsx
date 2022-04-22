@@ -1,4 +1,12 @@
-import { Box, Button, Center, Heading, Text, Link, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Text,
+  Link,
+  VStack,
+} from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
@@ -106,15 +114,8 @@ export const SurveyResponse: FC = () => {
   ) {
     return (
       <VStack>
-        <Image
-          src={BacktalkLogo}
-          alt='BacktalkLogo'
-          height={38}
-          width={52}
-        />
-        <Heading size='lg'>
-          Uh oh! You&apos;re NGMI
-        </Heading>
+        <Image src={BacktalkLogo} alt='BacktalkLogo' height={38} width={52} />
+        <Heading size='lg'>Uh oh! You&apos;re NGMI</Heading>
         <Text textAlign='center' fontSize='lg' pb={4}>
           This survey already has the maximum number&nbsp;of&nbsp;responses.
         </Text>

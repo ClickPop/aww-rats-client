@@ -1,7 +1,10 @@
 import {
   Contracts_Insert_Input,
   GetSurveyByIdQuery,
+  Options_Arr_Rel_Insert_Input,
+  Options_Insert_Input,
   Questions_Insert_Input,
+  Question_Type_Enum,
   ResponseInput,
   Supported_Chains_Enum,
   Surveys_Insert_Input,
@@ -38,11 +41,32 @@ export type SurveyFormAction =
   | { type: 'addQuestion'; payload: Questions_Insert_Input }
   | { type: 'deleteQuestion'; payload: number }
   | {
-      type: 'editQuestion';
-      payload: { question: Questions_Insert_Input; index: number };
+      type: 'editQuestionPrompt';
+      payload: { prompt: string; index: number };
+    }
+  | {
+      type: 'editQuestionRequired';
+      payload: { required: boolean; index: number };
+    }
+  | {
+      type: 'editQuestionType';
+      payload: { questionType: Question_Type_Enum; index: number };
     }
   | { type: 'addContract'; payload: Contracts_Insert_Input }
   | { type: 'addContractAddress'; payload: string }
   | { type: 'updateMaxResponses'; payload: number | null }
   | { type: 'editDescription'; payload: string }
-  | { type: 'editChain'; payload: Supported_Chains_Enum };
+  | { type: 'editChain'; payload: Supported_Chains_Enum }
+  | { type: 'addQuestionOption'; payload: { index: number } }
+  | {
+      type: 'deleteQuestionOption';
+      payload: { question_index: number; option_index: number };
+    }
+  | {
+      type: 'editQuestionOption';
+      payload: {
+        question_index: number;
+        option_index: number;
+        content: string;
+      };
+    };
