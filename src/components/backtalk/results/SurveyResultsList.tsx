@@ -12,7 +12,7 @@ export const SurveyResultsList: FC = () => {
 
   return data?.surveys_by_pk?.response_count > 0 ? (
     <>
-      <Heading as='h2' mb={4} size='sm'>
+      <Heading as='h2' my={4} size='md'>
         Individual Responses
       </Heading>
       {(data?.surveys_by_pk?.survey_responses ?? []).map(
@@ -31,30 +31,30 @@ export const SurveyResultsList: FC = () => {
             key={wallet}
             mb={4}
             p={4}>
-            <Heading as='h3' color='gray.500' mb={4} size='xs'>
+            <Text mb={4} fontWeight='600'>
               {format(
                 new Date(created_at),
                 "'📅' eeee, MMMM d, yyyy 'at 🕐' H:mm  (z)",
               )}
-            </Heading>
-            <Heading as='h3' color='gray.500' size='xs'>
+            </Text>
+            <Text color='gray.500' fontSize='xs' fontWeight='700'>
               Wallet Address:
-            </Heading>
-            <Text mb={3}>{wallet}</Text>
+            </Text>
+            <Text mb={4}>{wallet}</Text>
             {data?.surveys_by_pk?.contract && (
               <>
-                <Heading as='h3' color='gray.500' size='xs'>
+                <Text color='gray.500' fontSize='xs' fontWeight='700'>
                   Tokens Owned:
-                </Heading>
+                </Text>
                 <Text mb={3}>{token_count}</Text>
               </>
             )}
             {response_values.map((response: string, i: number) => (
               <>
-                <Heading
-                  as='h3'
+                <Text
                   color='gray.500'
-                  size='xs'
+                  fontSize='xs'
+                  fontWeight='700'
                   key={question_ids[i]}
                   mt={2}>
                   {
@@ -62,8 +62,8 @@ export const SurveyResultsList: FC = () => {
                       (q) => q.id === question_ids[i],
                     )?.prompt
                   }
-                </Heading>
-                <Text key={wallet + response}>{response}</Text>
+                </Text>
+                <Text key={wallet + response} mb={4}>{response}</Text>
               </>
             ))}
             {/* {data?.surveys_by_pk?.questions.map((q) =>
