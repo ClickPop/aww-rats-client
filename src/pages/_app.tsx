@@ -6,9 +6,14 @@ import { apolloClient } from '~/lib/graphql';
 import '~/styles/index.scss';
 import 'feeder-react-feedback/dist/feeder-react-feedback.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import '@fontsource/vollkorn/500.css';
+import '@fontsource/vollkorn/700.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const theme = extendTheme({
+    fonts: {
+      heading: 'Vollkorn, serif',
+    },
     colors: {
       pickRat: {
         500: '#FFFFFF',

@@ -109,7 +109,7 @@ export const SurveyResults: FC = () => {
 
   return data?.surveys_by_pk ? (
     <>
-      <Flex align='baseline' my={2}>
+      <Flex align='baseline' my={4}>
         <Heading size='md'>{data.surveys_by_pk.title}</Heading>
         <Spacer />
         <FormControl display='flex' alignItems='center' w={32}>
@@ -157,9 +157,9 @@ export const SurveyResults: FC = () => {
           borderRadius={8}
           mb={4}
           p={4}>
-          <Heading as='h2' color='gray.500' size='xs'>
+          <Text color='gray.500' fontSize='xs' fontWeight='700'>
             Responses
-          </Heading>
+          </Text>
           <Text fontSize='xl'>
             {!!data.surveys_by_pk.max_responses
               ? `${data?.surveys_by_pk?.response_count}/${data.surveys_by_pk.max_responses}`
@@ -180,9 +180,9 @@ export const SurveyResults: FC = () => {
           borderRadius={8}
           mb={4}
           p={4}>
-          <Heading as='h2' color='gray.500' size='xs'>
+          <Text color='gray.500' fontSize='xs' fontWeight='700'>
             Last Response
-          </Heading>
+          </Text>
           {!!data?.surveys_by_pk?.latest_response && (
             <Text fontSize='xl'>
               {format(
