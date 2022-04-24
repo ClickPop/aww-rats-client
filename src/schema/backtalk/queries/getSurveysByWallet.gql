@@ -25,8 +25,7 @@ query getSurveysByWallet(
     }
     survey_responses(limit: $responseLimit, offset: $responseOffset) {
       wallet
-      response_values
-      question_ids
+      question_responses
     }
     questions(order_by: { id: asc }) {
       id
