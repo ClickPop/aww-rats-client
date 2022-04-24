@@ -56,9 +56,9 @@ const Homepage = () => {
         maxW='6xl'
         mx='auto'
         mb={12}
-        templateColumns={{base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)'}}
+        templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
         px={4}
-        pt={{base: 20, lg: 24}}
+        pt={{ base: 20, lg: 24 }}
         gap={8}>
         <GridItem fontSize='2xl'>
           <Heading my={4} size='2xl' lineHeight='1.3' fontWeight='900'>
@@ -97,10 +97,9 @@ const Homepage = () => {
           </VStack>
 
           <Grid
-            templateColumns={{base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)'}}
+            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
             gap={12}
-            mb={4}
-          >
+            mb={4}>
             <GridItem alignSelf='center'></GridItem>
             <GridItem alignSelf='center'>
               <NextImage
@@ -160,9 +159,8 @@ const Homepage = () => {
           </Heading>
 
           <Grid
-            templateColumns={{base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)'}}
-            gap={8}
-          >
+            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
+            gap={8}>
             <GridItem>
               <PromoUnit
                 bgcolor='backtalk.red'

@@ -137,13 +137,18 @@ export const Dashboard = () => {
         </TableContainer>
       ) : (
         <Box fontSize='lg'>
-          <Heading size='xl' mt={6} mb={4}>Hey there!</Heading>
+          <Heading size='xl' mt={6} mb={4}>
+            Hey there!
+          </Heading>
           <Text mb={2}>
             You don&apos;t have any surveys yet. Make a survey to:
           </Text>
           <UnorderedList ml={8}>
             <ListItem>Build a pre-sale list.</ListItem>
-            <ListItem>Run a community ballot initiative to make a decision for your project.</ListItem>
+            <ListItem>
+              Run a community ballot initiative to make a decision for your
+              project.
+            </ListItem>
             <ListItem>Get to know your audience.</ListItem>
           </UnorderedList>
         </Box>
