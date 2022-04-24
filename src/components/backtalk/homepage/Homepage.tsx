@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import NextImage, { ImageProps } from 'next/image';
-import BacktalkLogo from 'src/assets/images/backtalk/backtalk-chunky.svg';
+import BacktalkLogo from 'src/assets/images/backtalk/backtalk-logo.svg';
 import AwwRatsLogo from '~/assets/images/aww-rats-logo.png';
 import BacktalkLogin from '~/components/access/BacktalkLogin';
 import { PromoUnit } from '~/components/backtalk/homepage/PromoUnit';
@@ -32,7 +32,7 @@ const Homepage = () => {
         <Flex alignItems='end' mx='auto' p={2} pb={4} width='6xl'>
           <NextImage
             alt='Backtalk'
-            height='50'
+            height='40'
             src={BacktalkLogo}
             width='200'
           />
@@ -55,6 +55,7 @@ const Homepage = () => {
         alignItems='center'
         maxW='6xl'
         mx='auto'
+        mb={12}
         templateColumns='repeat(2, 1fr)'
         px={4}
         pt={24}
@@ -89,23 +90,27 @@ const Homepage = () => {
         </GridItem>
       </Grid>
 
+      <Box background='gray.700'>
+        <Box maxW='6xl' mx='auto' px={4} py={12}>
+          <VStack mb={4} color='gray.100' fontSize='lg'>
+            <Text>Used by communities like:</Text>
+          </VStack>
+
+          <Grid templateColumns='repeat(3, 1fr)' gap={12} mb={4}>
+            <GridItem alignSelf='center'></GridItem>
+            <GridItem alignSelf='center'>
+              <NextImage
+                src={AwwRatsLogo}
+                alt='Aww, Rats! Logo'
+                placeholder='blur'
+              />
+            </GridItem>
+            <GridItem alignSelf='center'></GridItem>
+          </Grid>
+        </Box>
+      </Box>
+
       <Box maxW='6xl' mx='auto' pb={8}>
-        <VStack mt={12} mb={4}>
-          <Text>Used by communities like:</Text>
-        </VStack>
-
-        <Grid templateColumns='repeat(3, 1fr)' gap={12} mb={24}>
-          <GridItem alignSelf='center'></GridItem>
-          <GridItem alignSelf='center'>
-            <NextImage
-              src={AwwRatsLogo}
-              alt='Aww, Rats! Logo'
-              placeholder='blur'
-            />
-          </GridItem>
-          <GridItem alignSelf='center'></GridItem>
-        </Grid>
-
         <VStack align='left' my={16} mx={4} spacing={8}>
           <Heading textAlign='center' mb={4} size='xl'>
             Get feedback and make decisions

@@ -1555,6 +1555,11 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
+"@fontsource/vollkorn@^4.5.6":
+  version "4.5.6"
+  resolved "https://registry.yarnpkg.com/@fontsource/vollkorn/-/vollkorn-4.5.6.tgz#b1c97b40ff95c45b60cef491881a7066ff07c954"
+  integrity sha512-1IBBJM4Tj2UZ7fzoJEfHBY/oOqkyVzynFbX/Hdl3smDYB7Zw8BwcGBNHIT1alyZi2aI/9ir3cI/mynBSVUJ8Cw==
+
 "@google-cloud/common@^3.8.1":
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-3.9.0.tgz#d93e62d13e66edacfad1cd25b20fdbbc11d9f6dd"
