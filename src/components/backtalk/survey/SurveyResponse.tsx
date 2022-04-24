@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Heading,
   Text,
   Link,
   VStack,
@@ -115,7 +114,7 @@ export const SurveyResponse: FC = () => {
     return (
       <VStack>
         <Image src={BacktalkLogo} alt='BacktalkLogo' height={38} width={52} />
-        <Heading size='lg'>Uh oh! You&apos;re NGMI</Heading>
+        <Text as='h1' mb={2} fontSize='xl' fontWeight='700'>Uh oh! You&apos;re NGMI</Text>
         <Text textAlign='center' fontSize='lg' pb={4}>
           This survey already has the maximum number&nbsp;of&nbsp;responses.
         </Text>
@@ -154,9 +153,9 @@ export const SurveyResponse: FC = () => {
   if (surveyEnd) {
     return (
       <>
-        <Heading as='h1' mb={2} size='md'>
+        <Text as='h1' mb={2} fontSize='xl' fontWeight='700'>
           Woo-hoo! <Emoji aria-label='Party'>🎉</Emoji>
-        </Heading>
+        </Text>
         <Text mb={2}>Thanks so much for your feedback for {data.title}.</Text>
         <Text>Want to make a web3 survey of your own?</Text>
         <Link href='/backtalk'>
@@ -178,9 +177,9 @@ export const SurveyResponse: FC = () => {
 
   return (
     <>
-      <Heading as='h1' mb={2} size='md'>
+      <Text as='h1' mb={2} fontSize='xl' fontWeight='700'>
         {data.title}
-      </Heading>
+      </Text>
       {data.step < 0 ? (
         <Box>
           <Text

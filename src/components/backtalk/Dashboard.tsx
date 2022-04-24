@@ -79,7 +79,7 @@ export const Dashboard = () => {
   return (
     <div>
       <Flex align='baseline' my={4}>
-        <Heading size='md'>Surveys</Heading>
+        <Heading size='lg'>Surveys</Heading>
         <Spacer />
         <Link href='/backtalk/create'>
           <Button colorScheme='teal' ml={2} size='sm'>
