@@ -88,7 +88,7 @@ export const SurveyResults: FC = () => {
             },${
               r.token_count !== null ? r.token_count + ',' : ''
             }${data?.surveys_by_pk?.questions.map((q) => {
-              const response = r.question_responses[`${q.id}`];
+              const response = r.question_responses[`${q.id}`].response;
               return response ?? ' ';
             })}`,
         ) ?? [];
