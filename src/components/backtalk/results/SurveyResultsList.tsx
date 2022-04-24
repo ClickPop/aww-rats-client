@@ -8,21 +8,13 @@ export const SurveyResultsList: FC = () => {
     surveyResult: { data },
   } = useContext(BacktalkSurveyResultContext);
 
-  console.log(data);
-
   return data?.surveys_by_pk?.response_count > 0 ? (
     <>
       <Heading as='h2' my={4} size='md'>
         Individual Responses
       </Heading>
       {(data?.surveys_by_pk?.survey_responses ?? []).map(
-        ({
-          wallet,
-          created_at,
-          response_values,
-          question_ids,
-          token_count,
-        }) => (
+        ({ wallet, created_at, question_responses, token_count }) => (
           <Box
             backgroundColor='white'
             border='1px'
@@ -49,52 +41,22 @@ export const SurveyResultsList: FC = () => {
                 <Text mb={3}>{token_count}</Text>
               </>
             )}
-            {response_values.map((response: string, i: number) => (
-              <>
-                <Text
-                  color='gray.500'
-                  fontSize='xs'
-                  fontWeight='700'
-                  key={question_ids[i]}
-                  mt={2}>
-                  {
-                    data?.surveys_by_pk?.questions.find(
-                      (q) => q.id === question_ids[i],
-                    )?.prompt
-                  }
-                </Text>
-                <Text key={wallet + response} mb={4}>
-                  {response}
-                </Text>
-              </>
-            ))}
-            {/* {data?.surveys_by_pk?.questions.map((q) =>
-              (question_ids as number[])?.findIndex((qid) => qid === q.id) >
-              -1 ? (
-                <>
-                  <Heading as='h3' color='gray.500' size='xs' key={q.id} mt={2}>
-                    {q.prompt}
-                  </Heading>
-                  <Text
-                    key={
-                      wallet +
-                      response_values[
-                        (question_ids as number[])?.findIndex(
-                          (qid) => qid === q.id,
-                        )
-                      ]
-                    }>
+            {Object.entries(question_responses).map(
+              ([question_id, response]: [string, unknown]) => (
+                <Box key={question_id}>
+                  <Heading as='h3' color='gray.500' size='xs' mt={2}>
                     {
-                      response_values[
-                        (question_ids as number[])?.findIndex(
-                          (qid) => qid === q.id,
-                        )
-                      ]
+                      data?.surveys_by_pk?.questions.find(
+                        (q) => `${q.id}` === question_id,
+                      )?.prompt
                     }
+                  </Heading>
+                  <Text key={wallet + (response as string)}>
+                    {response as string}
                   </Text>
-                </>
-              ) : null,
-            )} */}
+                </Box>
+              ),
+            )}
           </Box>
         ),
       )}

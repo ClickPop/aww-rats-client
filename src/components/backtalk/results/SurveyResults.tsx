@@ -88,10 +88,8 @@ export const SurveyResults: FC = () => {
             },${
               r.token_count !== null ? r.token_count + ',' : ''
             }${data?.surveys_by_pk?.questions.map((q) => {
-              const idx = r.question_ids.findIndex(
-                (q_id: number) => q_id === q.id,
-              );
-              return idx > -1 ? r.response_values[idx] : ' ';
+              const response = r.question_responses[`${q.id}`];
+              return response ?? ' ';
             })}`,
         ) ?? [];
     const csv = [headers, ...rows].join('\n');

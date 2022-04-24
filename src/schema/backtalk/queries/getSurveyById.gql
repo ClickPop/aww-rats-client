@@ -22,13 +22,11 @@ query getSurveyById(
     callerResponses: survey_responses(where: { wallet: { _eq: $wallet } })
       @include(if: $includeMyResponses) {
       wallet
-      response_values
-      question_ids
+      question_responses
     }
     survey_responses @include(if: $includeResponses) {
       wallet
-      response_values
-      question_ids
+      question_responses
       created_at
       token_count
     }
