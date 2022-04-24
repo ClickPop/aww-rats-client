@@ -51,8 +51,9 @@ export const SurveyResultsList: FC = () => {
                       )?.prompt
                     }
                   </Heading>
-                  <Text key={wallet + (response as string)}>
-                    {response as string}
+                  <Text
+                    key={wallet + (response as { response: string }).response}>
+                    {(response as { response: string }).response}
                   </Text>
                 </Box>
               ),
