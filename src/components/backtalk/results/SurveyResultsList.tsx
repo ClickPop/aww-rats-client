@@ -63,7 +63,9 @@ export const SurveyResultsList: FC = () => {
                     )?.prompt
                   }
                 </Text>
-                <Text key={wallet + response} mb={4}>{response}</Text>
+                <Text key={wallet + response} mb={4}>
+                  {response}
+                </Text>
               </>
             ))}
             {/* {data?.surveys_by_pk?.questions.map((q) =>

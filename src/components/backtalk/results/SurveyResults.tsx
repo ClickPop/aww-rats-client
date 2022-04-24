@@ -149,10 +149,9 @@ export const SurveyResults: FC = () => {
           View
         </Link>
       </Flex>
-      <Grid 
+      <Grid
         gap={4}
-        templateColumns={{base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)'}}
-      >
+        templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}>
         <GridItem
           backgroundColor='white'
           border='1px'
@@ -197,8 +196,6 @@ export const SurveyResults: FC = () => {
       <SurveyResultsList />
     </Box>
   ) : (
-    <Box px={2}>
-      Survey Not Found
-    </Box>
+    <Box px={2}>Survey Not Found</Box>
   );
 };
