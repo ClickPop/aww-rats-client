@@ -108,7 +108,7 @@ export const SurveyResults: FC = () => {
   }
 
   return data?.surveys_by_pk ? (
-    <>
+    <Box px={2}>
       <Flex align='baseline' my={4}>
         <Heading size='md'>{data.surveys_by_pk.title}</Heading>
         <Spacer />
@@ -149,13 +149,15 @@ export const SurveyResults: FC = () => {
           View
         </Link>
       </Flex>
-      <Grid gap={4} templateColumns='repeat(2, 1fr)'>
+      <Grid 
+        gap={4}
+        templateColumns={{base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)'}}
+      >
         <GridItem
           backgroundColor='white'
           border='1px'
           borderColor='gray.200'
           borderRadius={8}
-          mb={4}
           p={4}>
           <Text color='gray.500' fontSize='xs' fontWeight='700'>
             Responses
@@ -178,7 +180,6 @@ export const SurveyResults: FC = () => {
           border='1px'
           borderColor='gray.200'
           borderRadius={8}
-          mb={4}
           p={4}>
           <Text color='gray.500' fontSize='xs' fontWeight='700'>
             Last Response
@@ -194,8 +195,10 @@ export const SurveyResults: FC = () => {
         </GridItem>
       </Grid>
       <SurveyResultsList />
-    </>
+    </Box>
   ) : (
-    <Box>Survey Not Found</Box>
+    <Box px={2}>
+      Survey Not Found
+    </Box>
   );
 };
