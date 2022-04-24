@@ -41,23 +41,23 @@ export const SurveyResultsList: FC = () => {
                 <Text mb={3}>{token_count}</Text>
               </>
             )}
-            {Object.entries(question_responses).map(
-              ([question_id, response]: [string, unknown]) => (
-                <Box key={question_id}>
-                  <Heading as='h3' color='gray.500' size='xs' mt={2}>
-                    {
-                      data?.surveys_by_pk?.questions.find(
-                        (q) => `${q.id}` === question_id,
-                      )?.prompt
-                    }
-                  </Heading>
-                  <Text
-                    key={wallet + (response as { response: string }).response}>
-                    {(response as { response: string }).response}
-                  </Text>
-                </Box>
-              ),
-            )}
+            {question_responses &&
+              Object.entries(question_responses).map(
+                ([question_id, response]) => (
+                  <Box key={question_id}>
+                    <Heading as='h3' color='gray.500' size='xs' mt={2}>
+                      {
+                        data?.surveys_by_pk?.questions.find(
+                          (q) => `${q.id}` === question_id,
+                        )?.prompt
+                      }
+                    </Heading>
+                    <Text key={wallet + response.response}>
+                      {response.response}
+                    </Text>
+                  </Box>
+                ),
+              )}
           </Box>
         ),
       )}
