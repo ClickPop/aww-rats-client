@@ -21,7 +21,6 @@ import {
   Textarea,
   Radio,
   RadioGroup,
-  Tooltip,
   Stack,
   InputGroup,
   InputRightElement,
@@ -46,19 +45,23 @@ import {
   Supported_Chains_Enum,
   Token_Types_Enum,
   useCreateSurveyMutation,
-  useGetContractByAddressLazyQuery,
 } from '~/schema/generated';
 import { utils } from 'ethers';
 
 export const SurveyForm = () => {
   const { push } = useRouter();
   const { signerAddr } = useContext(EthersContext);
-  const [hasMaxResponses, { toggle }] = useBoolean(false);
+  const [hasMaxResponses, { toggle: toggleMaxResponses }] = useBoolean(false);
+  const [hasContracts, { toggle: toggleContracts }] = useBoolean(false);
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
   const [maxResponses, setMaxResponses] = useState(100);
-  const { title, questions, contract, contract_address } = surveyData;
+  const { title, questions, contracts } = surveyData;
+  const [contractAddress, setContractAddress] = useState<{
+    index: number;
+    address: string;
+  } | null>(null);
   const [prompt, setPrompt] = useState<{
     index: number;
     prompt: string;
@@ -72,21 +75,8 @@ export const SurveyForm = () => {
     contract: false,
   });
 
-  const [getContractByAddress, { loading: getContractLoading }] =
-    useGetContractByAddressLazyQuery({
-      client: apolloBacktalkClient,
-    });
-
   const [createSurvey, { loading }] = useCreateSurveyMutation({
     client: apolloBacktalkClient,
-  });
-
-  const [contractExists, setContractExists] = useState<{
-    exists: boolean;
-    chain?: Supported_Chains_Enum;
-  }>({
-    exists: false,
-    chain: undefined,
   });
 
   useEffect(() => {
@@ -105,6 +95,16 @@ export const SurveyForm = () => {
             ...surveyData,
             is_active: true,
             owner: signerAddr,
+            contracts: surveyData.contracts
+              ? {
+                  ...surveyData.contracts,
+                  data: surveyData.contracts.data.map((c, i) =>
+                    contractAddress?.index === i
+                      ? { ...c, address: contractAddress.address }
+                      : c,
+                  ),
+                }
+              : undefined,
             questions: surveyData.questions
               ? {
                   ...surveyData.questions,
@@ -147,33 +147,11 @@ export const SurveyForm = () => {
     const val = e.currentTarget.value;
     const isAddress = !!(val && utils.isAddress(val));
 
-    surveyDataDispatch({
-      type: 'addContract',
-      payload: {
-        address: val || null,
-        token_type: val ? Token_Types_Enum.Erc721 : undefined,
-      },
-    });
-
-    if (isAddress) {
-      const res = await getContractByAddress({
-        variables: { address: val },
+    if (contractAddress) {
+      setContractAddress({
+        index: contractAddress.index,
+        address: val,
       });
-
-      if (res?.data?.contracts_by_pk) {
-        surveyDataDispatch({
-          type: 'addContractAddress',
-          payload: res.data.contracts_by_pk.address,
-        });
-      }
-      setContractExists({
-        exists: !!res?.data?.contracts_by_pk,
-        chain: res?.data?.contracts_by_pk?.chain,
-      });
-    }
-
-    if (!val) {
-      setContractExists({ exists: false, chain: undefined });
     }
 
     setError((err) => ({
@@ -181,6 +159,12 @@ export const SurveyForm = () => {
       contract: !val ? false : !isAddress,
     }));
   };
+
+  useEffect(() => {
+    if (!hasContracts) {
+      surveyDataDispatch({ type: 'deleteContracts' });
+    }
+  }, [hasContracts, surveyDataDispatch]);
 
   const validForm =
     !!title &&
@@ -248,51 +232,102 @@ export const SurveyForm = () => {
           />
         </FormControl>
         <FormControl mb={4} isInvalid={error.contract}>
-          <FormLabel htmlFor='contract'>Limit to Contract</FormLabel>
-          <Input
-            id='contract'
-            value={contract_address ?? contract?.data.address ?? ''}
-            onChange={handleContractChange}
-            isDisabled={getContractLoading}
-          />
-          <Tooltip
-            label='Contract already exists'
-            isDisabled={!contract_address || !!contract}
-            placement='bottom-start'>
-            <RadioGroup
-              my={2}
-              isDisabled={!!contract_address || !contract || !!error.contract}
-              onChange={(e) => {
-                surveyDataDispatch({
-                  type: 'editChain',
-                  payload: e as Supported_Chains_Enum,
-                });
-              }}
-              value={
-                surveyData.contract?.data.chain ?? contractExists.chain ?? ''
-              }>
-              <HStack direction='row'>
-                <Radio value={Supported_Chains_Enum.Ethereum}>
-                  <NextImage
-                    alt='ETH Log'
-                    height='16'
-                    src={EthLogo}
-                    width='16'
-                  />{' '}
-                  ETH Mainnet
-                </Radio>
-                <Radio value={Supported_Chains_Enum.Polygon}>
-                  <NextImage
-                    alt='ETH Log'
-                    height='16'
-                    src={PolygonLogo}
-                    width='16'
-                  />{' '}
-                  Polygon
-                </Radio>
-              </HStack>
-            </RadioGroup>
-          </Tooltip>
+          <Flex as='span'>
+            <FormLabel htmlFor='contract'>Limit to Contract</FormLabel>
+            <Switch
+              id='limit-responses'
+              isChecked={hasContracts}
+              onChange={toggleContracts}
+            />
+          </Flex>
+          {hasContracts &&
+            contracts?.data.map((contract, i) => (
+              <>
+                <InputGroup>
+                  <Input
+                    id='contract'
+                    value={
+                      contractAddress?.index === i
+                        ? contractAddress.address
+                        : contract?.address ?? ''
+                    }
+                    onFocus={() =>
+                      setContractAddress({
+                        index: i,
+                        address: contract?.address ?? '',
+                      })
+                    }
+                    onBlur={() => {
+                      if (contractAddress) {
+                        surveyDataDispatch({
+                          type: 'editContractAddress',
+                          payload: contractAddress,
+                        });
+                      }
+                      setContractAddress(null);
+                    }}
+                    onChange={handleContractChange}
+                  />
+                  <InputRightElement w='fit-content'>
+                    <Button
+                      w='90%'
+                      h='85%'
+                      onClick={() =>
+                        surveyDataDispatch({
+                          type: 'deleteContract',
+                          payload: i,
+                        })
+                      }>
+                      Delete
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                <RadioGroup
+                  my={2}
+                  isDisabled={
+                    (contractAddress?.index === i
+                      ? !contractAddress.address
+                      : !contract?.address) || !!error.contract
+                  }
+                  defaultValue={Supported_Chains_Enum.Ethereum}
+                  onChange={(e) => {
+                    surveyDataDispatch({
+                      type: 'editChain',
+                      payload: {
+                        chain: e as Supported_Chains_Enum,
+                        index: i,
+                      },
+                    });
+                  }}
+                  value={contract.chain ?? ''}>
+                  <HStack direction='row'>
+                    <Radio value={Supported_Chains_Enum.Ethereum}>
+                      <NextImage
+                        alt='ETH Log'
+                        height='16'
+                        src={EthLogo}
+                        width='16'
+                      />{' '}
+                      ETH Mainnet
+                    </Radio>
+                    <Radio value={Supported_Chains_Enum.Polygon}>
+                      <NextImage
+                        alt='ETH Log'
+                        height='16'
+                        src={PolygonLogo}
+                        width='16'
+                      />{' '}
+                      Polygon
+                    </Radio>
+                  </HStack>
+                </RadioGroup>
+              </>
+            ))}
+          <Button
+            isDisabled={!hasContracts}
+            onClick={() => surveyDataDispatch({ type: 'addContract' })}>
+            Add Contract
+          </Button>
           <FormHelperText>
             Leave this blank to let anyone with a wallet submit a response.
           </FormHelperText>
@@ -303,7 +338,7 @@ export const SurveyForm = () => {
             <Switch
               id='limit-responses'
               isChecked={hasMaxResponses}
-              onChange={toggle}
+              onChange={toggleMaxResponses}
             />
           </Flex>
           <NumberInput

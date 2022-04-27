@@ -64,9 +64,9 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
               is_required: q.is_required,
             })),
           },
-          contract: surveyResult?.data?.surveys_by_pk?.contract
+          contracts: surveyResult?.data?.surveys_by_pk?.contracts
             ? {
-                data: surveyResult?.data?.surveys_by_pk?.contract,
+                data: surveyResult?.data?.surveys_by_pk?.contracts,
               }
             : undefined,
           survey_responses: undefined,

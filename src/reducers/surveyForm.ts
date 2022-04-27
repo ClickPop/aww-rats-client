@@ -1,9 +1,6 @@
 import {
-  Contracts_Constraint,
-  Contracts_Update_Column,
-  Questions_Constraint,
-  Questions_Update_Column,
   Question_Type_Enum,
+  Supported_Chains_Enum,
   Token_Types_Enum,
 } from '~/schema/generated';
 import { SurveyFormAction, SurveyFormState } from '~/types';
@@ -12,13 +9,6 @@ export const defaultSurveyFormState: SurveyFormState = {
   title: '',
   questions: {
     data: [],
-    on_conflict: {
-      constraint: Questions_Constraint.QuestionsPkey,
-      update_columns: [
-        Questions_Update_Column.Prompt,
-        Questions_Update_Column.IsRequired,
-      ],
-    },
   },
   owner: '',
 };
@@ -41,36 +31,60 @@ export const surveyFormReducer = (
     case 'editChain':
       return {
         ...state,
-        contract: state?.contract
+        contracts: state?.contracts
           ? {
-              ...state.contract,
-              data: { ...state.contract.data, chain: action.payload },
+              data: state.contracts.data.map((c, i) =>
+                i === action.payload.index
+                  ? { ...c, chain: action.payload.chain }
+                  : c,
+              ),
             }
           : undefined,
       };
     case 'addContract': {
       return {
         ...state,
-        contract_address: undefined,
-        contract: action.payload.address
-          ? {
-              data: {
-                address: action.payload.address,
-                token_type: Token_Types_Enum.Erc721,
-              },
-              on_conflict: {
-                constraint: Contracts_Constraint.ContractsPkey,
-                update_columns: [Contracts_Update_Column.Address],
-              },
-            }
-          : undefined,
+        contracts: {
+          data: [
+            ...(state.contracts?.data ?? []),
+            {
+              address: '',
+              token_type: Token_Types_Enum.Erc721,
+              chain: Supported_Chains_Enum.Ethereum,
+            },
+          ],
+        },
       };
     }
-    case 'addContractAddress': {
+    case 'deleteContract': {
       return {
         ...state,
-        contract_address: action.payload,
-        contract: undefined,
+        contracts: {
+          data: (state.contracts?.data ?? []).filter(
+            (_, i) => i !== action.payload,
+          ),
+        },
+      };
+    }
+    case 'deleteContracts': {
+      return {
+        ...state,
+        contracts: undefined,
+      };
+    }
+    case 'editContractAddress': {
+      return {
+        ...state,
+        contracts: state?.contracts
+          ? {
+              ...state.contracts,
+              data: state.contracts.data.map((c, i) =>
+                i === action.payload.index
+                  ? { ...c, address: action.payload.address }
+                  : c,
+              ),
+            }
+          : undefined,
       };
     }
     case 'deleteQuestion':
