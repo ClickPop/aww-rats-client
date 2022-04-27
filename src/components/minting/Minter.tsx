@@ -44,9 +44,8 @@ export const Minter = () => {
     'loading',
   );
   const [mintingError, setMintingError] = useState('');
-  const [tokenId, setTokenId] = useState('');
 
-  const { contract, connectToMetamask } = useContext(EthersContext);
+  const { contract } = useContext(EthersContext);
 
   useEffect(() => {
     const setupContract = async () => {
@@ -103,7 +102,6 @@ export const Minter = () => {
         const tokenId = tx?.events
           ?.find((e) => e.args?.['tokenId'])
           ?.args?.['tokenId'].toString() as string;
-        setTokenId(tokenId);
         return tokenId;
       };
 

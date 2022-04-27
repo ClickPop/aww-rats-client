@@ -13,7 +13,6 @@ const defaultEthersContext: EthersContextType = {
   isLoggedInBacktalk: false,
   setLoggedIn: () => {},
   setLoggedInBacktalk: () => {},
-  connectToMetamask: () => undefined,
   authLoading: true,
   backtalkAuthLoading: true,
 };
@@ -81,20 +80,11 @@ export const EthersContextProvider: FC = ({ children }) => {
     }
   }, [etherState, authData?.checkAuth, backtalkAuthData?.checkAuth]);
 
-  const connectToMetamask = async () => {
-    try {
-      await etherState.provider?.send('eth_requestAccounts', []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <EthersContext.Provider
       value={{
         ...etherState,
         contract,
-        connectToMetamask,
         signerAddr,
         closet,
         isLoggedIn,
