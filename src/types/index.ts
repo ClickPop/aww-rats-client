@@ -81,7 +81,6 @@ export type RatWithMeta = {
 export interface EthersContextType extends EthersState {
   contract?: Rat;
   closet?: Closet;
-  connectToMetamask: () => void;
   signerAddr?: string;
   isLoggedIn: boolean;
   isLoggedInBacktalk: boolean;
