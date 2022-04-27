@@ -56,11 +56,16 @@ export type SurveyFormAction =
       type: 'editQuestionType';
       payload: { questionType: Question_Type_Enum; index: number };
     }
-  | { type: 'addContract'; payload: Contracts_Insert_Input }
-  | { type: 'addContractAddress'; payload: string }
+  | { type: 'addContract' }
+  | { type: 'deleteContract'; payload: number }
+  | { type: 'deleteContracts' }
+  | { type: 'editContractAddress'; payload: { address: string; index: number } }
   | { type: 'updateMaxResponses'; payload: number | null }
   | { type: 'editDescription'; payload: string }
-  | { type: 'editChain'; payload: Supported_Chains_Enum }
+  | {
+      type: 'editChain';
+      payload: { chain: Supported_Chains_Enum; index: number };
+    }
   | { type: 'addQuestionOption'; payload: { index: number } }
   | {
       type: 'deleteQuestionOption';

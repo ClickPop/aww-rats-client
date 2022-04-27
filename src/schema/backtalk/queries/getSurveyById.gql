@@ -14,7 +14,7 @@ query getSurveyById(
     owner
     response_count
     latest_response @include(if: $includeResponses)
-    contract {
+    contracts {
       address
       token_type
       chain

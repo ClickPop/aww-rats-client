@@ -1,4 +1,15 @@
-import { Box, Button, Center, Text, Link, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Text,
+  Link,
+  VStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
 import { SurveyQuestionStepper } from '~/components/backtalk/survey/SurveyQuestionStepper';
@@ -20,10 +31,14 @@ export const SurveyResponse: FC = () => {
     surveyResponseData: data,
     surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
-  const { connected, isLoggedInBacktalk, signerAddr, provider, network } =
-    useContext(EthersContext);
+  const {
+    connected,
+    isLoggedInBacktalk,
+    signerAddr,
+    polyProvider,
+    ethProvider,
+  } = useContext(EthersContext);
 
-  const { switchAddNetwork } = useConnect();
   useEffect(() => {
     if (
       data?.callerResponses.length > 0 &&
@@ -34,54 +49,48 @@ export const SurveyResponse: FC = () => {
       });
     }
   }, [data, surveyResponseDispatch]);
-  const changeNetwork = useMemo(() => {
-    if (network?.chainId) {
-      switch (data.contract?.chain) {
-        case Supported_Chains_Enum.Ethereum:
-          if (network.chainId !== ETH_CHAIN_ID) {
-            return Supported_Chains_Enum.Ethereum;
-          }
-          break;
-        case Supported_Chains_Enum.Polygon:
-          if (network.chainId !== CHAIN_ID) {
-            return Supported_Chains_Enum.Polygon;
-          }
-          break;
-      }
-    }
-    return null;
-  }, [data.contract?.chain, network?.chainId]);
   const surveyEnd = data.step === data?.questions?.length + 1;
 
   const [balData, setBalData] = useState({ loading: false, error: false });
 
   useEffect(() => {
     const getBal = async () => {
-      if (
-        data.contract?.address &&
-        data.contract.token_type &&
-        provider &&
-        signerAddr &&
-        isLoggedInBacktalk
-      ) {
-        setBalData((bd) => ({ ...bd, loading: true }));
-        try {
-          const contract = new ethers.Contract(
-            data.contract.address,
-            getCommonABI(data.contract.token_type),
-            provider,
-          ) as ERC721;
-          const bal = await contract.balanceOf(signerAddr);
-          setBalData((bd) => ({ ...bd, error: bal.lt(1) }));
-        } catch (err) {
-          console.error(err);
+      setBalData((bd) => ({ ...bd, loading: true }));
+      for (const contract of data.contracts ?? []) {
+        if (
+          contract?.address &&
+          contract.token_type &&
+          ethProvider &&
+          polyProvider &&
+          signerAddr &&
+          isLoggedInBacktalk
+        ) {
+          try {
+            const token = new ethers.Contract(
+              contract.address,
+              getCommonABI(contract.token_type),
+              contract.chain === Supported_Chains_Enum.Ethereum
+                ? ethProvider
+                : polyProvider,
+            ) as ERC721;
+            const bal = await token.balanceOf(signerAddr);
+            setBalData((bd) => ({ ...bd, error: bal.lt(1) }));
+          } catch (err) {
+            console.error(err);
+          }
         }
-        setBalData((bd) => ({ ...bd, loading: false }));
       }
+      setBalData((bd) => ({ ...bd, loading: false }));
     };
 
     getBal();
-  }, [data.contract, isLoggedInBacktalk, provider, signerAddr]);
+  }, [
+    data.contracts,
+    ethProvider,
+    isLoggedInBacktalk,
+    polyProvider,
+    signerAddr,
+  ]);
 
   if (loading && data.id === -1) {
     return <Center h='100%'>Loading</Center>;
@@ -133,18 +142,6 @@ export const SurveyResponse: FC = () => {
     );
   }
 
-  if (!!changeNetwork) {
-    return (
-      <Button
-        colorScheme={'purple'}
-        onClick={() => {
-          switchAddNetwork(changeNetwork);
-        }}>
-        Switch to {changeNetwork}
-      </Button>
-    );
-  }
-
   if (surveyEnd) {
     return (
       <>
@@ -177,7 +174,8 @@ export const SurveyResponse: FC = () => {
       </Text>
       {data.step < 0 ? (
         <Box>
-          <Text
+          <Box
+            as='span'
             isTruncated
             maxWidth='60%'
             fontSize='xs'
@@ -185,16 +183,21 @@ export const SurveyResponse: FC = () => {
             color='purple.200'
             mb={4}>
             Created by{' '}
-            <Link
-              href={
-                data?.contract?.chain == 'ethereum'
-                  ? 'https://etherscan.io/address/' + data.owner
-                  : 'https://polygonscan.com/address/' + data.owner
-              }
-              isExternal>
-              {data.owner}
-            </Link>
-          </Text>
+            <Menu>
+              <MenuButton>{data.owner}</MenuButton>
+              <MenuList>
+                {['etherscan.io', 'polygonscan.com'].map((scan) => (
+                  <MenuItem key={scan} color='black'>
+                    <Link
+                      href={`https://${scan}/address/${data.owner}`}
+                      isExternal>
+                      View on {scan}
+                    </Link>
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          </Box>
           {data.description && <Text mb={4}>{data.description}</Text>}
           {connected && isLoggedInBacktalk ? (
             <Button

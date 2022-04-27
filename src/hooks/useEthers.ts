@@ -12,6 +12,14 @@ export const useEthers: UseEthersHook = () => {
   let [ethState, setEthState] = useState<EthersState>({ connected: false });
 
   useEffect(() => {
+    const ethProvider = new ethers.providers.JsonRpcProvider(
+      'https://mainnet.infura.io/v3/',
+      1,
+    );
+    const polyProvider = new ethers.providers.JsonRpcProvider(
+      'https://polygon-rpc.com/',
+      137,
+    );
     if (typeof window != 'undefined' && window.ethereum && !ethState.provider) {
       const provider = new ethers.providers.Web3Provider(
         window.ethereum,
@@ -35,6 +43,8 @@ export const useEthers: UseEthersHook = () => {
         ...s,
         provider,
         signer,
+        ethProvider,
+        polyProvider,
       }));
     }
 
