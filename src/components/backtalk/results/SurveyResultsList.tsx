@@ -33,14 +33,17 @@ export const SurveyResultsList: FC = () => {
               Wallet Address:
             </Text>
             <Text mb={4}>{wallet}</Text>
-            {data?.surveys_by_pk?.contract && (
-              <>
-                <Text color='gray.500' fontSize='xs' fontWeight='700'>
-                  Tokens Owned:
-                </Text>
-                <Text mb={3}>{token_count}</Text>
-              </>
-            )}
+            <Text color='gray.500' fontSize='xs' fontWeight='700'>
+              Tokens Owned:
+            </Text>
+            {data?.surveys_by_pk?.contracts.map((contract) => (
+              <Text mb={3} key={contract.address}>
+                {(data?.surveys_by_pk?.contracts?.length ?? 0) > 1
+                  ? contract.address + ': '
+                  : ''}
+                {token_count[contract.address]}
+              </Text>
+            ))}
             {question_responses &&
               Object.entries(question_responses).map(
                 ([question_id, response]) => (

@@ -70,9 +70,12 @@ export const SurveyResults: FC = () => {
   const { hasCopied, onCopy } = useClipboard(surveyLink);
 
   const handleDataExport = () => {
-    const headers = `Wallet,Date,${
-      data?.surveys_by_pk?.contract ? 'Tokens,' : ''
-    }${data?.surveys_by_pk?.questions.map((q) => q.prompt).join(',')}`;
+    const headers = `Wallet,Date,${data?.surveys_by_pk?.contracts
+      .map((c) => `Tokens for ${c.address}`)
+      .join()}${
+      data?.surveys_by_pk?.contracts.length ? ',' : ''
+    }${data?.surveys_by_pk?.questions.map((q) => q.prompt).join()}`;
+
     const rows =
       data?.surveys_by_pk?.survey_responses
         ?.filter((r) => r.wallet !== null)
@@ -85,8 +88,10 @@ export const SurveyResults: FC = () => {
                 "eeee, MMMM d, yyyy 'at' H:mm  (z)",
               ) +
               '"'
-            },${
-              r.token_count !== null ? r.token_count + ',' : ''
+            },${data?.surveys_by_pk?.contracts
+              .map((c) => r.token_count[c.address])
+              .join()}${
+              data?.surveys_by_pk?.contracts.length ? ',' : ''
             }${data?.surveys_by_pk?.questions.map((q) => {
               const response = r.question_responses?.[`${q.id}`].response;
               return response ?? ' ';

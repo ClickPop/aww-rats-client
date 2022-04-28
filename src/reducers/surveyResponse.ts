@@ -12,6 +12,7 @@ export const defaultSurveyResponseState: SurveyResponseState = {
   id: -1,
   questions: [],
   responses: [],
+  contracts: [],
   step: 0,
   title: '',
   callerResponses: [],

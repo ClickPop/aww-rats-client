@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo, FC } from 'react';
-import { useEthers } from '~/hooks/useEthers';
+import React, { useEffect, useState, FC, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Rat } from '~/types';
-import { RPC_URL, CHAIN_ID, CONTRACT_ADDRESS } from '~/config/env';
+import { CONTRACT_ADDRESS } from '~/config/env';
 import RatABI from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
+import { EthersContext } from '~/components/context/EthersContext';
 
 interface Props {
   className?: string;
@@ -12,23 +12,16 @@ interface Props {
 export const RatPackSize: FC<Props> = ({ className, ...props }) => {
   const [ratPackSize, setRatPackSize] = useState<number>(0);
   const [maxRatPackSize, setMaxRatPackSize] = useState<number>(990);
-  const roProvider = useMemo(
-    () =>
-      new ethers.providers.JsonRpcProvider(
-        RPC_URL,
-        ethers.providers.getNetwork(CHAIN_ID),
-      ),
-    [],
-  );
+  const { polyProvider } = useContext(EthersContext);
 
   useEffect(() => {
     (async () => {
-      if (CONTRACT_ADDRESS && roProvider) {
+      if (CONTRACT_ADDRESS && polyProvider) {
         try {
           const cro = new ethers.Contract(
             CONTRACT_ADDRESS,
             RatABI.abi,
-            roProvider,
+            polyProvider,
           ) as Rat;
           cro.maxTokens().then((maxTokens: number) => {
             if (maxTokens) {
@@ -45,7 +38,7 @@ export const RatPackSize: FC<Props> = ({ className, ...props }) => {
         }
       }
     })();
-  }, [roProvider]);
+  }, [polyProvider]);
 
   if (ratPackSize > 0 && ratPackSize < maxRatPackSize) {
     return (

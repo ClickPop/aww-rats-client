@@ -19,7 +19,7 @@ query getSurveysByWallet(
     max_responses
     response_count
     latest_response
-    contract {
+    contracts {
       address
       token_type
     }

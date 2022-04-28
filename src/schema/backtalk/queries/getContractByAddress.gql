@@ -1,8 +1,0 @@
-query getContractByAddress($address: String!) {
-  contracts_by_pk(address: $address) {
-    address
-    token_type
-    token_ids
-    chain
-  }
-}
