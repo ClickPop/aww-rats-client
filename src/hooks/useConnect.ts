@@ -134,11 +134,12 @@ export const useConnect = <
       }
     }
   };
-  const connectToMetamask = async () => {
+  const connectToMetamask = async (): Promise<string[] | null> => {
     try {
-      await provider?.send('eth_requestAccounts', []);
+      return (await provider?.send('eth_requestAccounts', [])) ?? null;
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
