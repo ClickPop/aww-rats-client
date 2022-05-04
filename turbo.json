@@ -3,7 +3,7 @@
   "baseBranch": "origin/development",
   "pipeline": {
     "build": {
-      "dependsOn": ["^codegen", "^compile", "^lint"],
+      "dependsOn": ["codegen", "^compile", "lint"],
       "outputs": [
         ".next/**"
       ]
