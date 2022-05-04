@@ -5,3 +5,4 @@ constructor-args.js
 !.openzeppelin/unknown-80001.json
 !.openzeppelin/unknown-137.json
 initial-tokens.json
+.env

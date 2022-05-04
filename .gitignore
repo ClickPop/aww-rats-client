@@ -44,3 +44,5 @@ smart-contracts/tokens.example.json
 
 # TurboRepo
 .turbo
+
+/**/tsconfig.tsbuildinfo
