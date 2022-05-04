@@ -8,9 +8,10 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { GameIcon } from '~/components/game/Icons';
 import { Stat } from '~/components/game/Stat';
 import { RatSelector } from '~/components/game/rats/RatSelector';
-import { GameIconTypes } from '~/types/game';
+import { Rattribute, EncounterType, GameIconTypes } from '~/types/game';
 import { Image } from '~/components/shared/Image';
 import { Encounter_Types_Enum, Rattributes_Enum } from '~/schema/generated';
 import { StaticImageData } from 'next/image';

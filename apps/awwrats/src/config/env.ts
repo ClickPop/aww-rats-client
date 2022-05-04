@@ -73,12 +73,6 @@ export const IPFSGateways = [
 
 export const HASURA_BASE_URL = process.env.NEXT_PUBLIC_HASURA_BASE_URL ?? '';
 export const HASURA_ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET ?? '';
-export const BACKTALK_HASURA_BASE_URL =
-  process.env.NEXT_PUBLIC_BACKTALK_HASURA_BASE_URL ?? '';
-export const BACKTALK_HASURA_ADMIN_SECRET =
-  process.env.BACKTALK_HASURA_ADMIN_SECRET ?? '';
 export const SIGNER_MESSAGE = process.env.NEXT_PUBLIC_SIGNER_MESSAGE ?? '';
 
 export const AUTH_URL = process.env.AUTH_URL ?? 'http://localhost:5002/auth';
-
-export const FEEDER_ID = process.env.NEXT_PUBLIC_FEEDER_ID ?? '';

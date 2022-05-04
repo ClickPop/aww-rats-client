@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import React, { ChangeEventHandler, useState } from 'react';
-import { Link } from 'common/components/shared/Link';
+import { Link } from '~/components/shared/Link';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import { AspectRatio } from '@chakra-ui/react';
 import { Metadata, OpenSeaAttribute } from '~/types';

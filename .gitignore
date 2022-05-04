@@ -31,6 +31,7 @@
 
 # vercel
 /**/.vercel
+gcloud-key.json
 
 # Local Files
 smart-contracts/rat.json
@@ -39,6 +40,7 @@ smart-contracts/testnet-tokens.json
 smart-contracts/tokens.json
 smart-contracts/tokens.example.json
 
+<<<<<<< HEAD
 /**/generated.ts
 /**/gcloud-key.json
 
@@ -46,3 +48,16 @@ smart-contracts/tokens.example.json
 .turbo
 
 /**/tsconfig.tsbuildinfo
+=======
+generated.ts
+src/schema/apollo.ts
+src/schema/requests.ts
+graphql.schema.json
+
+tsconfig.tsbuildinfo
+<<<<<<< HEAD
+=======
+
+gcloud-key.json
+>>>>>>> development
+>>>>>>> development

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Image } from '~/components/shared/Image';
-import { Link } from 'common/components/shared/Link';
+import { Link } from '~/components/shared/Link';
 
 export const Community = () => {
   return (

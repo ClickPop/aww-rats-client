@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { BoxProps, Box } from '@chakra-ui/react';
 import { Image } from '~/components/shared/Image';
+import { RatType } from '~/types/game';
 import { PickRatButton } from './PickRatButton';
 import { Rat_Types_Enum } from '~/schema/generated';
 import { StaticImageData } from 'next/image';

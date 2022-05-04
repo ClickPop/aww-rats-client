@@ -1,13 +1,6 @@
 import type { NextPage } from 'next';
 import { RatRaceLayout } from '~/components/layout/RatRaceLayout';
-import {
-  Box,
-  ListItem,
-  UnorderedList,
-  VStack,
-  Text,
-  Button,
-} from '@chakra-ui/react';
+import { Box, ListItem, UnorderedList, VStack, Text } from '@chakra-ui/react';
 import { SoloEncounterList } from '~/components/game/solo-encounters/SoloEncounterList';
 import { TutorialVideo } from '~/components/game/shared/TutorialVideo';
 import { GameContextProvider } from '~/components/context/GameContext';
@@ -43,16 +36,7 @@ const GamePage: NextPage = () => {
                 px={4}
                 rounded='xl'>
                 <Image alt='The Rat Race' height='200px' src={RatRace} />
-                <Login>
-                  <Button
-                    background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-                    backgroundSize='600% 400%'
-                    _hover={{
-                      animation: 'encounterShimmer 4s ease infinite;',
-                    }}>
-                    Login
-                  </Button>
-                </Login>
+                <Login />
                 <Box
                   textAlign='left'
                   bg='darkAlpha.500'

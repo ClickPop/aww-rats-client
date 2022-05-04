@@ -1,4 +1,4 @@
-import { Button, Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { Image } from '~/components/shared/Image';
 import { GameAdminContextProvider } from '~/components/context/GameAdminContext';
@@ -21,16 +21,7 @@ export const Admin = () => {
     return (
       <VStack alignItems='center' maxW='100vw'>
         <Image src={RatRace} alt='The Rat Race' />
-        <Login>
-          <Button
-            background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-            backgroundSize='600% 400%'
-            _hover={{
-              animation: 'encounterShimmer 4s ease infinite;',
-            }}>
-            Login
-          </Button>
-        </Login>
+        <Login />
       </VStack>
     );
   }
