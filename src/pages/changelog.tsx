@@ -6,7 +6,7 @@ import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 const ChangelogPage: NextPage = () => {
   return (
     <LayoutNoFooter className='min-h-screen bg-gray-800 text-white'>
-      <Changelog/>
+      <Changelog />
     </LayoutNoFooter>
   );
 };
