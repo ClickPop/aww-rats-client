@@ -1,0 +1,54 @@
+.rr {
+    &Page {
+        &--sewer {
+            &-blueGray {
+                background:
+                    linear-gradient(-45deg, #1C1E3B, #2d3058);
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
+            &-green {    
+                background:
+                    linear-gradient(#5aeaaf,#5aeaaf) top left,
+                    url('/rat-race/images/bg-sewer-bottom.png') bottom right,
+                    url('/rat-race/images/bg-sewer-top.png') top left,
+                    linear-gradient(#bebebe,#bebebe) top left;
+                background-blend-mode:
+                    multiply,
+                    normal,
+                    normal,
+                    normal;
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
+            &-red {
+                background:
+                    linear-gradient(#ff625d,#ff625d) top left multiply,
+                    url('/rat-race/images/bg-sewer-bottom.png') bottom right normal,
+                    url('/rat-race/images/bg-sewer-top.png') top left normal,
+                    linear-gradient(#bebebe,#bebebe) top left normal;
+                background-blend-mode:
+                    multiply,
+                    normal,
+                    normal,
+                    normal;
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+        }
+    }
+}
+
+@keyframes encounterShimmer {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

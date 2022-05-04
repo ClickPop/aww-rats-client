@@ -1,11 +1,12 @@
 {
-    "trailingComma": "all",
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": true,
-    "arrowParens": "always",
-    "bracketSpacing": true,
-    "jsxSingleQuote": true,
-    "htmlWhitespaceSensitivity": "css",
-    "bracketSameLine": true
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "jsxSingleQuote": true,
+  "htmlWhitespaceSensitivity": "css",
+  "bracketSameLine": true,
+  "plugins": ["prettier-plugin-solidity"]
 }

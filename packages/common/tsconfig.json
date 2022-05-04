@@ -1,0 +1,15 @@
+{
+  "extends": "tsconfig/next.json",
+  "compilerOptions": {
+    "lib": ["ES2015", "DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "target": "ES6",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "common/*": ["./*"]
+    },
+    "noEmit": true
+  },
+  "include": ["/**/*.ts"]
+}

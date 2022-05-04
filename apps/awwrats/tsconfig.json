@@ -1,0 +1,22 @@
+{
+  "extends": "tsconfig/next.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "common/*": [
+        "./node_modules/common/*"
+      ]
+    },
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "node_modules/common"
+  ],
+  "exclude": ["node_modules", ".next", ".turbo"]
+}

@@ -1,0 +1,6 @@
+{
+    "eslint.workingDirectories": [
+        "./apps/awwrats",
+        "./apps/backtalk",
+    ]
+}
