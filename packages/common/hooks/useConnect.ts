@@ -1,10 +1,10 @@
-import { BaseMutationOptions, FetchResult } from '@apollo/client';
+import { FetchResult } from '@apollo/client';
 import { utils } from 'ethers';
 import { useContext, useState } from 'react';
-import { EthersContext } from 'components/context/EthersContext';
-import { SIGNER_MESSAGE } from 'env';
+import { EthersContext } from 'common/components/context/EthersContext';
+import { SIGNER_MESSAGE } from 'common/env';
 import { useEthers } from './useEthers';
-import { ChainData, NetworkSwitchError, Exact, Mutation } from 'types';
+import { ChainData, NetworkSwitchError, Mutation } from 'types';
 
 export enum Supported_Chains_Enum {
   polygon = 'polygon',
