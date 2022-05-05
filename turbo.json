@@ -1,0 +1,51 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "baseBranch": "origin/development",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["codegen", "^compile", "lint"],
+      "outputs": [
+        ".next/**"
+      ]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "format": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["^codegen", "watch"]
+    },
+    "check-types": {
+      "outputs": []
+    },
+    "compile": {
+      "inputs": ["src/contracts/**/*"],
+      "outputs": [
+        "artifacts/**/*",
+        ".openzeppelin/**/*",
+        "cache/**/*",
+        "src/types/typechain/**/*"
+      ]
+    },
+    "watch": {
+      "inputs": ["src/contracts/**/*"],
+      "outputs": [
+        "artifacts/**/*",
+        ".openzeppelin/**/*",
+        "cache/**/*",
+        "src/types/typechain/**/*"
+      ]
+    },
+    "codegen": {
+      "inputs": [
+        "src/schema/**/*.gql"
+      ],
+      "outputs": [
+        "src/schema/generated.ts"
+      ]
+    }
+  }
+}

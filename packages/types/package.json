@@ -1,0 +1,24 @@
+{
+  "name": "types",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/client": "^3.6.2",
+    "@ethersproject/providers": "^5.0.0",
+    "abort-controller": "^3.0.0",
+    "ethers": "^5.4.6",
+    "google-protobuf": "^3.20.1",
+    "graphql": "^16.4.0",
+    "node-fetch": "2.6.7",
+    "react": "17.0.2",
+    "smart-contracts": "workspace:*"
+  }
+}
