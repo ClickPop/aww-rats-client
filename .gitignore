@@ -33,14 +33,16 @@
 /**/.vercel
 gcloud-key.json
 
-# Local Files
-smart-contracts/rat.json
-smart-contracts/rat.png
-smart-contracts/testnet-tokens.json
-smart-contracts/tokens.json
-smart-contracts/tokens.example.json
+# smart-contracts
+/**/cache/
+/**/artifacts/
+/**/constructor-args.js
+/**/.openzeppelin/unknown-*.json
+/**/!.openzeppelin/unknown-80001.json
+/**/!.openzeppelin/unknown-137.json
+/**/initial-tokens.json
+/**/.env
 
-<<<<<<< HEAD
 /**/generated.ts
 /**/gcloud-key.json
 
@@ -48,16 +50,5 @@ smart-contracts/tokens.example.json
 .turbo
 
 /**/tsconfig.tsbuildinfo
-=======
-generated.ts
-src/schema/apollo.ts
-src/schema/requests.ts
-graphql.schema.json
 
 tsconfig.tsbuildinfo
-<<<<<<< HEAD
-=======
-
-gcloud-key.json
->>>>>>> development
->>>>>>> development
