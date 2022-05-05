@@ -9,7 +9,7 @@ import 'tsconfig-paths/register';
 import 'hardhat-watcher';
 import '@openzeppelin/hardhat-upgrades';
 
-import { promises } from 'fs';
+import { promises, readFileSync, createReadStream } from 'fs';
 const { readFile, writeFile } = promises;
 import { HardhatUserConfig, task, types } from 'hardhat/config';
 import {
@@ -22,7 +22,10 @@ import {
   ETHERSCAN_API_KEY,
   DEFAULT_TOKEN_URI,
   CLOSET_ADDRESS,
+  IPFS_API_KEY,
+  IPFS_API_SECRET,
 } from './src/config/env';
+import FormData from 'form-data';
 import { ContractFactory } from '@ethersproject/contracts';
 import { parseEther } from '@ethersproject/units';
 import axios from 'axios';
@@ -32,6 +35,7 @@ import path from 'path';
 import { Closet } from './src/types';
 import inquirer from 'inquirer';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { createHash } from 'crypto';
 
 const ratLoader = (msg: string, interval?: number) => {
   process.stdout.write(`🐀            ${msg}`);
@@ -257,6 +261,97 @@ task('update-cost', 'Update the cost of minting a token in ether')
         .setCost(hre.ethers.utils.parseEther(`${cost}`))
         .then((t) => t.wait());
       console.log('Transaction Hash:', tx.transactionHash);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+task('migrate-rat', 'Migrate a rat from old contract to new one')
+  .addPositionalParam('metadataPath', 'Relative path to the metadata file')
+  .addPositionalParam('imagePath', 'Relative path to the image to upload')
+  .addPositionalParam('birthday', "The rat's birthday", '', types.string)
+  .setAction(async ({ metadataPath, imagePath, birthday }, hre) => {
+    try {
+      const interval = ratLoader('Migrating rat to new contract');
+      const [signer] = await hre.ethers.getSigners();
+      const Rat = await hre.ethers.getContractFactory('Rat', signer);
+      const Weth = await hre.ethers.getContractFactory('ERC20', signer);
+      const rat = Rat.attach(CONTRACT_ADDRESS ?? '');
+      const weth = Weth.attach(WETH_CONTRACT_ADDRESS ?? '');
+      await weth.approve(rat.address, await rat.cost());
+      const img = readFileSync(imagePath);
+      const hash = createHash('md5').update(img).digest('hex');
+      const image = createReadStream(imagePath);
+      const imageForm = new FormData();
+      imageForm.append('file', image);
+      imageForm.append(
+        'pinataMetadata',
+        JSON.stringify({ name: `${hash}.png` }),
+      );
+      const headers = {
+        pinata_api_key: IPFS_API_KEY,
+        pinata_secret_api_key: IPFS_API_SECRET,
+      };
+      const imageRes = await axios.post(
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        imageForm,
+        {
+          maxBodyLength: Infinity,
+          headers: {
+            ...headers,
+            'Content-Type': `multipart/form-data; boundary=${imageForm.getBoundary()}`,
+          },
+        },
+      );
+      console.log(' Image IPFS data', imageRes.data);
+      const metaBuffer = readFileSync(metadataPath);
+      const meta = JSON.parse(metaBuffer.toString());
+      // @ts-ignore
+      meta.image = `ipfs://${imageRes.data.IpfsHash}`;
+      if (birthday) {
+        const birthdayUnix = Math.round(new Date(birthday).getTime() / 1000);
+        meta.attributes.push({
+          trait_type: 'birthday',
+          display_type: 'date',
+          value: birthdayUnix,
+        });
+      }
+      const body = {
+        pinataContent: meta,
+        pinataMetadata: {
+          name: `${hash}.json`,
+        },
+      };
+      const metaRes = await axios.post(
+        'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        body,
+        {
+          maxBodyLength: Infinity,
+          headers: {
+            ...headers,
+            'Content-Type': `application/json`,
+          },
+        },
+      );
+      console.log(' Metadata IPFS data', metaRes.data);
+      const ratTx = await rat.createToken().then((t) => t.wait());
+      const tokenId = ratTx.events?.find((e) => e.args?.['tokenId'])?.args?.[
+        'tokenId'
+      ] as BigNumber;
+      console.log(' Token minted. Token Id:', tokenId.toString());
+      if (tokenId) {
+        const uriTx = await rat
+          .storeAsset(
+            tokenId,
+            // @ts-ignore
+            `ipfs://${metaRes.data.IpfsHash}`,
+          )
+          .then((t) => t.wait());
+        if (uriTx) {
+          console.log(' New token URI', await rat.tokenURI(tokenId));
+        }
+      }
+      clearInterval(interval);
     } catch (err) {
       console.error(err);
     }
