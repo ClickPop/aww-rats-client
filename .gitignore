@@ -1,54 +1,54 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/**/node_modules/**
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+/**/coverage
 
 # next.js
-/.next/
-/out/
+/**/.next/**
+/**/out/**
 
 # production
-/build
+/**/build/**
 
 # misc
-.DS_Store
-*.pem
+/**/.DS_Store
+/**/*.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+/**/npm-debug.log*
+/**/yarn-debug.log*
+/**/yarn-error.log*
+/**/.pnpm-error.log*
+/**/.pnpm-debug.log*
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+/**/.env.*
 
 # vercel
-.vercel
+/**/.vercel
 gcloud-key.json
 
-# Local Files
-smart-contracts/rat.json
-smart-contracts/rat.png
-smart-contracts/testnet-tokens.json
-smart-contracts/tokens.json
-smart-contracts/tokens.example.json
+# smart-contracts
+/**/cache/
+/**/artifacts/
+/**/constructor-args.js
+/**/.openzeppelin/unknown-*.json
+/**/!.openzeppelin/unknown-80001.json
+/**/!.openzeppelin/unknown-137.json
+/**/initial-tokens.json
+/**/.env
 
-generated.ts
-src/schema/apollo.ts
-src/schema/requests.ts
-graphql.schema.json
+/**/generated.ts
+/**/gcloud-key.json
+
+# TurboRepo
+.turbo
+
+/**/tsconfig.tsbuildinfo
 
 tsconfig.tsbuildinfo
-<<<<<<< HEAD
-=======
-
-gcloud-key.json
->>>>>>> development
