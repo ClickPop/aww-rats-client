@@ -38,7 +38,7 @@ export type EthersState = {
   signer?: JsonRpcSigner;
   network?: providers.Network;
   connected?: boolean;
-  accounts?: string[];
+  signerAddr?: string;
   ethProvider?: JsonRpcProvider;
   polyProvider?: JsonRpcProvider;
 };

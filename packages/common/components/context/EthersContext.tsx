@@ -25,43 +25,28 @@ const defaultEthersContext: EthersContextType = {
 export const EthersContext = createContext(defaultEthersContext);
 
 export const EthersContextProvider = ({ children, checkAuth }: Props) => {
-  const [signerAddr, setSignerAddr] = useState('');
   const [isLoggedIn, setLoggedIn] = useState(false);
   const etherState = useEthers();
-  const { loading: authLoading, data: authData, refetch } = checkAuth();
+  const { loading: authLoading, data: authData } = checkAuth({
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
-    const recheck = () => {
-      if (authLoading) {
-        console.log('refetch');
-        refetch();
-      }
-    };
-    const timeout = setTimeout(recheck, 3000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [authLoading, refetch]);
-  useEffect(() => {
-    const { signer, connected, accounts } = etherState;
+    const { signer, connected, signerAddr } = etherState;
     setLoggedIn(
       !!(
         authData?.checkAuth?.role === 'user' &&
-        accounts?.[0] === authData?.checkAuth?.id &&
+        signerAddr === authData?.checkAuth?.id &&
         connected &&
-        signer
+        !!signer
       ),
     );
-
-    if (accounts?.[0]) {
-      setSignerAddr(utils.getAddress(accounts[0]));
-    }
   }, [etherState, authData?.checkAuth]);
 
   return (
     <EthersContext.Provider
       value={{
         ...etherState,
-        signerAddr,
         isLoggedIn,
         setLoggedIn,
         authLoading,

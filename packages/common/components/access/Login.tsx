@@ -1,5 +1,5 @@
-import { Box, useBoolean } from '@chakra-ui/react';
-import { ReactNode, useContext, useEffect } from 'react';
+import { Box } from '@chakra-ui/react';
+import { ReactNode, useContext } from 'react';
 import { EthersContext } from '../../components/context/EthersContext';
 import { SIGNER_MESSAGE } from '../../env';
 import { useConnect } from '../../hooks/useConnect';
@@ -31,27 +31,12 @@ const Login = <
   error,
   checkFunc,
 }: Props<D, R, T>) => {
-  const { connected, isLoggedIn, signer, signerAddr } =
-    useContext(EthersContext);
+  const { connected, isLoggedIn } = useContext(EthersContext);
   const { handleLogin, connectToMetamask } = useConnect<D, R, T>(
     login,
     checkFunc,
     SIGNER_MESSAGE,
   );
-  const [shouldLogin, { on, off }] = useBoolean();
-
-  useEffect(() => {
-    if (shouldLogin && signerAddr && signer) {
-      handleLogin();
-      off();
-    }
-  }, [handleLogin, off, shouldLogin, signer, signerAddr]);
-
-  useEffect(() => {
-    return () => {
-      off();
-    };
-  }, [off]);
 
   if (loading) {
     return <div>loading...</div>;
@@ -66,8 +51,11 @@ const Login = <
       as='span'
       onClick={async () => {
         if (!connected && typeof window !== 'undefined' && window.ethereum) {
-          on();
-          await connectToMetamask();
+          const connection = await connectToMetamask();
+          if (connection?.addr) {
+            console.log('handle', connection);
+            handleLogin(connection.addr);
+          }
         } else if (!isLoggedIn) {
           await handleLogin();
         }

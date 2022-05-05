@@ -11,7 +11,7 @@
   "types": "src/types/index.ts",
   "scripts": {
     "compile": "hardhat compile",
-    "watch": "hardhat watch compilation",
+    "dev": "hardhat watch compilation",
     "setup-local": "hardhat run ./src/scripts/SetupLocal.ts --network localhost",
     "test": "hardhat test",
     "handleUnhatchedRats": "hardhat run ./src/scripts/HandleUnhatchedRats.ts --network polygon"
