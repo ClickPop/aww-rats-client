@@ -5,6 +5,7 @@ import { EthersContext } from 'common/components/context/EthersContext';
 import { SIGNER_MESSAGE } from 'common/env';
 import { useEthers } from './useEthers';
 import { ChainData, NetworkSwitchError, Mutation } from 'types';
+import { JsonRpcSigner } from 'common/../smart-contracts/node_modules/@ethersproject/providers/lib';
 
 export enum Supported_Chains_Enum {
   polygon = 'polygon',
@@ -70,9 +71,12 @@ export const useConnect = <
   checkLogin?: (returnData: R, signerAddr: string) => boolean,
   signerMsg?: string,
 ): {
-  connectToMetamask: () => Promise<string[] | null>;
+  connectToMetamask: () => Promise<{
+    addr?: string;
+    sig?: JsonRpcSigner;
+  } | null>;
   switchAddNetwork: (network: Supported_Chains_Enum) => Promise<void>;
-  handleLogin: () => Promise<void>;
+  handleLogin: (wallet?: string) => Promise<void>;
   switchChainError: NetworkSwitchError | null;
 } => {
   const { provider } = useEthers();
@@ -80,17 +84,19 @@ export const useConnect = <
     useState<NetworkSwitchError | null>(null);
   const { signer, signerAddr, setLoggedIn } = useContext(EthersContext);
 
-  const handleLogin = async () => {
-    if (signer && signerAddr && login) {
+  const handleLogin = async (wallet?: string, sig?: JsonRpcSigner) => {
+    if ((signer || sig) && (signerAddr || wallet) && login) {
+      const addr = wallet ?? signerAddr!;
+      const s = sig ?? signer!;
       try {
-        const msg = await signer.signMessage(signerMsg ?? SIGNER_MESSAGE);
+        const msg = await s.signMessage(signerMsg ?? SIGNER_MESSAGE);
         const res = await login({
           variables: {
-            wallet: signerAddr,
+            wallet: addr,
             msg,
           },
         });
-        if (checkLogin && checkLogin(res, signerAddr)) {
+        if (checkLogin && checkLogin(res, addr)) {
           setLoggedIn(true);
         }
       } catch (err) {
@@ -133,9 +139,14 @@ export const useConnect = <
       }
     }
   };
-  const connectToMetamask = async (): Promise<string[] | null> => {
+  const connectToMetamask = async () => {
     try {
-      return (await provider?.send('eth_requestAccounts', [])) ?? null;
+      const accounts = await provider?.send('eth_requestAccounts', []);
+      const sig = provider?.getSigner();
+      return {
+        addr: accounts?.length > 0 ? utils.getAddress(accounts[0]) : undefined,
+        sig,
+      };
     } catch (err) {
       console.error(err);
       return null;

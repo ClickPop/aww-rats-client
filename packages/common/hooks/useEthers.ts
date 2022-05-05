@@ -1,11 +1,31 @@
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { useEffect, useState } from 'react';
 import { EthersState, UseEthersHook } from 'types';
 
 export const useEthers: UseEthersHook = () => {
   let [ethState, setEthState] = useState<EthersState>({ connected: false });
-
   useEffect(() => {
+    setEthState((s) => ({
+      ...s,
+      signerAddr: window.ethereum.selectedAddress
+        ? utils.getAddress(window.ethereum.selectedAddress)
+        : undefined,
+      connected: !!window.ethereum.selectedAddress,
+    }));
+  }, []);
+  useEffect(() => {
+    let handleChange = true;
+    const handleAccountsChanged = () => {
+      if (handleChange) {
+        setEthState((s) => ({
+          ...s,
+          connected: !!window.ethereum.selectedAddress,
+          signerAddr: window.ethereum.selectedAddress
+            ? utils.getAddress(window.ethereum.selectedAddress)
+            : undefined,
+        }));
+      }
+    };
     const ethProvider = new ethers.providers.JsonRpcProvider(
       'https://mainnet.infura.io/v3/',
       1,
@@ -22,9 +42,13 @@ export const useEthers: UseEthersHook = () => {
       provider.on('network', (network) => {
         setEthState((s) => ({ ...s, network }));
       });
-      window.ethereum.on('accountsChanged', (accounts: string[]) => {
-        setEthState((s) => ({ ...s, connected: !!accounts, accounts }));
-      });
+      if (window.ethereum.listeners('accountsChanged').length > 0) {
+        window.ethereum.removeListener(
+          'accountsChanged',
+          handleAccountsChanged,
+        );
+      }
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
       const signer = provider.getSigner();
       provider.listAccounts().then(async (accounts: string[]) => {
         setEthState((s) => ({
@@ -43,6 +67,7 @@ export const useEthers: UseEthersHook = () => {
     }
 
     return () => {
+      handleChange = false;
       ethState.provider?.removeAllListeners();
     };
   }, [ethState.provider]);
