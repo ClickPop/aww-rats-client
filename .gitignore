@@ -52,3 +52,4 @@ gcloud-key.json
 /**/tsconfig.tsbuildinfo
 
 tsconfig.tsbuildinfo
+node_modules
