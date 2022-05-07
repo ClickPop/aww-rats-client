@@ -55,7 +55,7 @@ const Login = <
           const connection = await connectToMetamask();
           if (connection?.addr && connection?.sig) {
             console.log('handle', connection);
-            handleLogin(connection.addr, connection.sig);
+            await handleLogin(connection.addr, connection.sig);
           }
         } else if (!isLoggedIn && signerAddr && signer) {
           await handleLogin(signerAddr, signer);
