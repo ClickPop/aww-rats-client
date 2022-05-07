@@ -1,11 +1,24 @@
 import { FetchResult } from '@apollo/client';
-import { utils } from 'ethers';
+import { utils, ethers } from 'ethers';
 import { useContext, useState } from 'react';
 import { EthersContext } from 'common/components/context/EthersContext';
 import { SIGNER_MESSAGE } from 'common/env';
-import { useEthers } from './useEthers';
 import { ChainData, NetworkSwitchError, Mutation } from 'types';
-import { JsonRpcSigner } from 'common/../smart-contracts/node_modules/@ethersproject/providers/lib';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import Web3Modal from 'web3modal';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      rpc: {
+        1: 'https://mainnet.infura.io/v3/',
+        137: 'https://polygon-rpc.com/',
+      },
+    },
+  },
+};
 
 export enum Supported_Chains_Enum {
   polygon = 'polygon',
@@ -76,27 +89,26 @@ export const useConnect = <
     sig?: JsonRpcSigner;
   } | null>;
   switchAddNetwork: (network: Supported_Chains_Enum) => Promise<void>;
-  handleLogin: (wallet?: string) => Promise<void>;
+  handleLogin: (wallet: string, sig: JsonRpcSigner) => Promise<void>;
   switchChainError: NetworkSwitchError | null;
 } => {
-  const { provider } = useEthers();
   const [switchChainError, setSwitchChainError] =
     useState<NetworkSwitchError | null>(null);
-  const { signer, signerAddr, setLoggedIn } = useContext(EthersContext);
+  const { setLoggedIn, provider, setEthState } = useContext(EthersContext);
 
-  const handleLogin = async (wallet?: string, sig?: JsonRpcSigner) => {
-    if ((signer || sig) && (signerAddr || wallet) && login) {
-      const addr = wallet ?? signerAddr!;
-      const s = sig ?? signer!;
+  const handleLogin = async (wallet: string, sig: JsonRpcSigner) => {
+    if (sig && wallet && login) {
       try {
-        const msg = await s.signMessage(signerMsg ?? SIGNER_MESSAGE);
+        console.log('premsg', signerMsg ?? SIGNER_MESSAGE);
+        const msg = await sig.signMessage(signerMsg ?? SIGNER_MESSAGE);
+        console.log('msg', msg);
         const res = await login({
           variables: {
-            wallet: addr,
+            wallet,
             msg,
           },
         });
-        if (checkLogin && checkLogin(res, addr)) {
+        if (checkLogin && checkLogin(res, wallet)) {
           setLoggedIn(true);
         }
       } catch (err) {
@@ -141,11 +153,16 @@ export const useConnect = <
   };
   const connectToMetamask = async () => {
     try {
-      const accounts = await provider?.send('eth_requestAccounts', []);
-      const sig = provider?.getSigner();
+      const web3Modal = new Web3Modal({
+        providerOptions,
+      });
+      const newProvider = await web3Modal?.connect();
+      const web3Provider = new ethers.providers.Web3Provider(newProvider);
+      setEthState((s) => ({ ...s, provider: web3Provider }));
+      const sig = web3Provider.getSigner();
       return {
-        addr: accounts?.length > 0 ? utils.getAddress(accounts[0]) : undefined,
         sig,
+        addr: await sig.getAddress(),
       };
     } catch (err) {
       console.error(err);

@@ -31,7 +31,15 @@ export interface ReducerAction {
   payload?: unknown;
 }
 
-export type UseEthersHook = () => EthersState;
+export type UseEthersHook = () => [
+  EthersState,
+  Dispatch<SetStateAction<EthersState>>,
+];
+
+export enum ProviderType {
+  metamask = 'metamask',
+  walletConnect = 'walletConnect',
+}
 
 export type EthersState = {
   provider?: Web3Provider;
@@ -41,6 +49,7 @@ export type EthersState = {
   signerAddr?: string;
   ethProvider?: JsonRpcProvider;
   polyProvider?: JsonRpcProvider;
+  providerType?: ProviderType;
 };
 
 export interface EthersContextType extends EthersState {
@@ -48,6 +57,7 @@ export interface EthersContextType extends EthersState {
   isLoggedIn: boolean;
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
   authLoading: boolean;
+  setEthState: Dispatch<SetStateAction<EthersState>>;
 }
 
 export interface NetworkSwitchError {

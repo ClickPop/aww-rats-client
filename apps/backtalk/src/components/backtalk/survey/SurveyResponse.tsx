@@ -62,9 +62,9 @@ export const SurveyResponse: FC = () => {
             const token = new ethers.Contract(
               contract.address,
               getCommonABI(contract.token_type),
-              contract.chain === Supported_Chains_Enum.Ethereum
+              (contract.chain === Supported_Chains_Enum.Ethereum
                 ? ethProvider
-                : polyProvider,
+                : polyProvider) as unknown as ethers.providers.Provider,
             ) as ERC721;
             const bal = await token.balanceOf(signerAddr);
             setBalData((bd) => ({ ...bd, error: bal.lt(1) }));

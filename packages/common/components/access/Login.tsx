@@ -31,7 +31,8 @@ const Login = <
   error,
   checkFunc,
 }: Props<D, R, T>) => {
-  const { connected, isLoggedIn } = useContext(EthersContext);
+  const { connected, isLoggedIn, signer, signerAddr } =
+    useContext(EthersContext);
   const { handleLogin, connectToMetamask } = useConnect<D, R, T>(
     login,
     checkFunc,
@@ -50,14 +51,14 @@ const Login = <
     <Box
       as='span'
       onClick={async () => {
-        if (!connected && typeof window !== 'undefined' && window.ethereum) {
+        if (!connected) {
           const connection = await connectToMetamask();
-          if (connection?.addr) {
+          if (connection?.addr && connection?.sig) {
             console.log('handle', connection);
-            handleLogin(connection.addr);
+            handleLogin(connection.addr, connection.sig);
           }
-        } else if (!isLoggedIn) {
-          await handleLogin();
+        } else if (!isLoggedIn && signerAddr && signer) {
+          await handleLogin(signerAddr, signer);
         }
       }}>
       {children}

@@ -1,30 +1,27 @@
+import { Web3Provider } from 'common/../smart-contracts/node_modules/@ethersproject/providers/lib';
 import { ethers, utils } from 'ethers';
 import { useEffect, useState } from 'react';
 import { EthersState, UseEthersHook } from 'types';
 
 export const useEthers: UseEthersHook = () => {
-  let [ethState, setEthState] = useState<EthersState>({ connected: false });
+  const [ethState, setEthState] = useState<EthersState>({ connected: false });
+
   useEffect(() => {
-    setEthState((s) => ({
-      ...s,
-      signerAddr: window.ethereum.selectedAddress
-        ? utils.getAddress(window.ethereum.selectedAddress)
-        : undefined,
-      connected: !!window.ethereum.selectedAddress,
-    }));
-  }, []);
-  useEffect(() => {
+    const provider = ethState.provider;
+    const web3Provider = ethState.provider?.provider as unknown as Web3Provider;
     let handleChange = true;
-    const handleAccountsChanged = () => {
+    const handleAccountsChanged = (accounts: string[]) => {
       if (handleChange) {
+        const addr = accounts.length > 0 ? accounts[0] : undefined;
         setEthState((s) => ({
           ...s,
-          connected: !!window.ethereum.selectedAddress,
-          signerAddr: window.ethereum.selectedAddress
-            ? utils.getAddress(window.ethereum.selectedAddress)
-            : undefined,
+          connected: !!addr,
+          signerAddr: addr ? utils.getAddress(addr) : undefined,
         }));
       }
+    };
+    const handleDisconnect = () => {
+      setEthState({ connected: false });
     };
     const ethProvider = new ethers.providers.JsonRpcProvider(
       'https://mainnet.infura.io/v3/',
@@ -34,27 +31,20 @@ export const useEthers: UseEthersHook = () => {
       'https://polygon-rpc.com/',
       137,
     );
-    if (typeof window != 'undefined' && window.ethereum && !ethState.provider) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum,
-        'any',
-      );
-      provider.on('network', (network) => {
+
+    if (provider && web3Provider) {
+      provider.on('network', (network: ethers.providers.Network) => {
         setEthState((s) => ({ ...s, network }));
       });
-      if (window.ethereum.listeners('accountsChanged').length > 0) {
-        window.ethereum.removeListener(
-          'accountsChanged',
-          handleAccountsChanged,
-        );
-      }
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      web3Provider.on('disconnect', handleDisconnect);
+      web3Provider.on('accountsChanged', handleAccountsChanged);
       const signer = provider.getSigner();
       provider.listAccounts().then(async (accounts: string[]) => {
+        const signerAddr = accounts.length > 0 ? accounts[0] : undefined;
         setEthState((s) => ({
           ...s,
-          accounts: accounts,
           connected: accounts.length > 0,
+          signerAddr: signerAddr,
         }));
       });
       setEthState((s) => ({
@@ -68,9 +58,10 @@ export const useEthers: UseEthersHook = () => {
 
     return () => {
       handleChange = false;
-      ethState.provider?.removeAllListeners();
+      provider?.removeAllListeners();
+      web3Provider?.removeAllListeners();
     };
   }, [ethState.provider]);
 
-  return ethState;
+  return [ethState, setEthState];
 };

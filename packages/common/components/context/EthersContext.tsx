@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useEthers } from 'common/hooks/useEthers';
 import { EthersContextType, Exact } from 'types';
-import { utils } from 'ethers';
 import { QueryResult, QueryHookOptions } from '@apollo/client';
 
 type CheckAuthQuery = {
@@ -19,14 +18,16 @@ interface Props {
 const defaultEthersContext: EthersContextType = {
   isLoggedIn: false,
   setLoggedIn: () => {},
+  setEthState: () => {},
   authLoading: true,
 };
 
 export const EthersContext = createContext(defaultEthersContext);
 
 export const EthersContextProvider = ({ children, checkAuth }: Props) => {
+  const [etherState, setEthState] = useEthers();
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const etherState = useEthers();
+
   const { loading: authLoading, data: authData } = checkAuth({
     fetchPolicy: 'network-only',
   });
@@ -50,6 +51,7 @@ export const EthersContextProvider = ({ children, checkAuth }: Props) => {
         isLoggedIn,
         setLoggedIn,
         authLoading,
+        setEthState,
       }}>
       {children}
     </EthersContext.Provider>

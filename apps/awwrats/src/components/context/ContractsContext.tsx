@@ -1,5 +1,4 @@
 import { createContext, FC, useContext, useMemo } from 'react';
-import { useEthers } from 'common/hooks/useEthers';
 import { Closet__factory, Rat__factory, Closet, Rat } from 'types';
 import { CONTRACT_ADDRESS, CLOSET_ADDRESS } from '~/config/env';
 import { EthersContext } from 'common/components/context/EthersContext';
