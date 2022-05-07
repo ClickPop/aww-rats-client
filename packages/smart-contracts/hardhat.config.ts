@@ -651,7 +651,7 @@ task('add-closet-items', 'Add new closet token')
               if (meta) {
                 const filepath = path.join(
                   __dirname,
-                  '..',
+                  '../../apps/awwrats',
                   'public',
                   'closet',
                   hre.network.name === 'polygon' ? 'tokens' : 'test-tokens',
