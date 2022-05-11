@@ -7,7 +7,6 @@ import {
   GetClosetDataSubscription,
   GetRatsSubscription,
 } from '~/schema/generated';
-import { EthersState } from 'types';
 export * from '~/types/game';
 
 export interface ReducerAction {
@@ -60,7 +59,7 @@ export type RatWithMeta = {
   meta: Metadata;
 };
 
-export interface EthersContextType extends EthersState {
+export interface EthersContextType {
   contract?: Rat;
   closet?: Closet;
   signerAddr?: string;

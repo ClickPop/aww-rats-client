@@ -18,6 +18,7 @@
     "@emotion/styled": "^11",
     "@ethersproject/providers": "^5.0.0",
     "@google-cloud/storage": "^5.18.1",
+    "@rainbow-me/rainbowkit": "^0.1.0",
     "@walletconnect/web3-provider": "^1.7.8",
     "ethers": "^5.4.6",
     "framer-motion": "^6",
@@ -28,6 +29,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-is": "^18.1.0",
+    "wagmi": "^0.3.4",
     "web3modal": "^1.9.7",
     "ws": "^8.5.0"
   },

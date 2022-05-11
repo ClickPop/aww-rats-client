@@ -4,13 +4,14 @@ import Head from 'next/head';
 import { LayoutNoFooter } from '~/components/layout/LayoutNoFooter';
 import dynamic from 'next/dynamic';
 import { EthersContext } from 'common/components/context/EthersContext';
-import { Connect } from '~/components/shared/Connect';
+import Login from 'common/components/access/Login';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 const Den = dynamic(() => import('~/components/den/Den'), {
   ssr: false,
 });
 
 const DenPage: NextPage = () => {
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const [hodler, setHodler] = useState<Boolean | null>();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const DenPage: NextPage = () => {
       {!signerAddr ? (
         <div className='h-screen pt-60'>
           <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>
-            <Connect />
+            <Login />
           </div>
         </div>
       ) : hodler === false ? (

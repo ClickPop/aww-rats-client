@@ -18,19 +18,28 @@ import { EthersContext } from 'common/components/context/EthersContext';
 import { ethers } from 'ethers';
 import { getCommonABI } from '~/utils/getCommonABI';
 import { ERC721 } from 'types';
-import Login from '~/components/access/Login';
+import Login from 'common/components/access/Login';
 import { Supported_Chains_Enum } from '~/schema/generated';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk-icon.svg';
+import { useAccount, useConnect, useProvider } from 'wagmi';
 
 export const SurveyResponse: FC = () => {
   const {
-    surveyFetchState: { loading, error },
+    surveyFetchState: { loading },
     surveyResponseData: data,
     surveyResponseDispatch,
   } = useContext(backtalkNewResponseContext);
-  const { connected, isLoggedIn, signerAddr, polyProvider, ethProvider } =
-    useContext(EthersContext);
+  const { isLoggedIn } = useContext(EthersContext);
+
+  const ethProvider = useProvider({ chainId: 1 });
+  const polyProvider = useProvider({ chainId: 137 });
+
+  const { isConnected: connected } = useConnect();
+  console.log(connected);
+  const { data: account } = useAccount();
+
+  const signerAddr = account?.address;
 
   useEffect(() => {
     if (
@@ -79,6 +88,8 @@ export const SurveyResponse: FC = () => {
     getBal();
   }, [data.contracts, ethProvider, isLoggedIn, polyProvider, signerAddr]);
 
+  console.log(data);
+
   if (loading && data.id === -1) {
     return <Center h='100%'>Loading</Center>;
   }
@@ -87,7 +98,7 @@ export const SurveyResponse: FC = () => {
     return <Center h='100%'>Checking Token Balance...</Center>;
   }
 
-  if (data.id === -1) {
+  if (connected && data.id === -1) {
     return <Center>Survey Not Found</Center>;
   }
 

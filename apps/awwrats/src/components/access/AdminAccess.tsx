@@ -1,15 +1,15 @@
 import { Center } from '@chakra-ui/react';
 import React, { FC, useContext } from 'react';
 import { EthersContext } from 'common/components/context/EthersContext';
-import { Connect } from '~/components/shared/Connect';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import Login from 'common/components/access/Login';
 
 const AdminAccess: FC = ({ children }) => {
-  const { signerAddr } = useContext(EthersContext);
-
+  const signerAddr = useSignerAddress();
   if (!signerAddr) {
     return (
       <Center py={20}>
-        <Connect />
+        <Login />
       </Center>
     );
   }

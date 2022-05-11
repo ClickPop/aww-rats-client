@@ -30,6 +30,7 @@ import {
   useGetRatsSubscription,
 } from '~/schema/generated';
 import { ContractsContext } from '~/components/context/ContractsContext';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -54,14 +55,17 @@ const defaultClosetContext: ClosetContextType = {
 export const ClosetContext = createContext(defaultClosetContext);
 export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const { closet, rat } = useContext(ContractsContext);
-
-  const { data: closetData, loading: closetLoading } =
-    useGetClosetDataSubscription({
-      variables: { id: signerAddr! },
-      skip: !signerAddr,
-    });
+  const {
+    data: closetData,
+    loading: closetLoading,
+    error,
+  } = useGetClosetDataSubscription({
+    variables: { id: signerAddr! },
+    skip: !signerAddr,
+  });
+  console.log(closetData, error);
   const { data: ratData, loading: ratsLoading } = useGetRatsSubscription({
     variables: { id: signerAddr! },
     skip: !signerAddr,

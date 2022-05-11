@@ -8,7 +8,7 @@ import { SelectedEncounter } from '~/components/game/SelectedEncounter';
 import AuthCookieRequired from 'common/components/access/AuthCookieRequired';
 import { PlayerStats } from '~/components/game/player/PlayerStats';
 import { AttemptEncounterButton } from '~/components/game/shared/AttemptEncounterButton';
-import Login from '~/components/access/Login';
+import Login from 'common/components/access/Login';
 import { RattributePill } from '~/components/game/rats/RattributePill';
 import { Image } from '~/components/shared/Image';
 import RatRace from '~/assets/svg/RatRace.svg';

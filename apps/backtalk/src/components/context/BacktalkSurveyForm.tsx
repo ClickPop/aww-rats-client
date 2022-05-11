@@ -14,6 +14,7 @@ import {
 } from '~/reducers/surveyForm';
 import { useGetSurveyByIdQuery } from '~/schema/generated';
 import { SurveyFormAction, SurveyFormState } from '~/types';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 type Props = {
   id: number | null;
@@ -36,7 +37,7 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
   id,
 }) => {
   const [shouldUpdateReducer, { off }] = useBoolean(true);
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const surveyResult = useGetSurveyByIdQuery({
     variables: { id: id! },
     skip: id === null,

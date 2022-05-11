@@ -45,10 +45,11 @@ import {
   useCreateSurveyMutation,
 } from '~/schema/generated';
 import { utils } from 'ethers';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 export const SurveyForm = () => {
   const { push } = useRouter();
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const [hasMaxResponses, { toggle: toggleMaxResponses }] = useBoolean(false);
   const [hasContracts, { toggle: toggleContracts }] = useBoolean(false);
   const { surveyData, surveyDataDispatch } = useContext(

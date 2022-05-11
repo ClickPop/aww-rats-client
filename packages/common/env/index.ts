@@ -5,3 +5,4 @@ export const POLYGON_RPC_URL =
   process.env.NEXT_PUBLIC_POLYGON_RPC_URL ?? 'wss://polygon-rpc.com/';
 export const MAINNET_RPC_URL =
   process.env.NEXT_PUBLIC_MAINNET_RPC_URL ?? 'wss://mainnet.infura.io/v3/';
+export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID ?? '';

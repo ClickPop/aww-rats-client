@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import {
   GeneratorResponse,
@@ -7,21 +7,17 @@ import {
   OpenSeaAttribute,
 } from '~/types';
 import { ERC20__factory } from 'types';
-import {
-  ALLOWED_WALLETS,
-  CHAIN_ID,
-  CONTRACT_ADDRESS,
-  OPEN_MINTING,
-  RAT_EGG_BLUR,
-} from '~/config/env';
-import { Connect } from '~/components/shared/Connect';
+import { CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image';
 import { RatPackSize } from '~/components/minting/RatPackSize';
 import { format } from 'date-fns';
 import { EthersContext } from 'common/components/context/EthersContext';
+import Login from 'common/components/access/Login';
 import { formatEther } from '@ethersproject/units';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { ContractsContext } from '~/components/context/ContractsContext';
+import { useContractRead, useNetwork, useProvider, useSigner } from 'wagmi';
+import RatJSON from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 
 type MintAndGenerateData = {
   tokenId?: string | null;
@@ -29,8 +25,7 @@ type MintAndGenerateData = {
 };
 
 export const Minter = () => {
-  const { provider, signer, network, connected } = useContext(EthersContext);
-  const [ethCost, setEthCost] = useState(0);
+  const { connected } = useContext(EthersContext);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const [mintTx, setMintTx] = useState('');
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(
@@ -38,28 +33,35 @@ export const Minter = () => {
   );
   const [imageURL, setImageURL] = useState('');
   const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
-  const [access, setAccess] = useState<'loading' | 'granted' | 'denied'>(
-    'loading',
-  );
   const [mintingError, setMintingError] = useState('');
+  const network = useNetwork();
+  const { data: canMint } = useContractRead(
+    { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
+    'canMint',
+  );
+  const { data: cost } = useContractRead(
+    { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
+    'cost',
+  );
+
+  const ethCost = useMemo(
+    () =>
+      cost !== undefined
+        ? parseFloat(formatEther(cost as unknown as number))
+        : 0,
+    [cost],
+  );
 
   const { rat } = useContext(ContractsContext);
 
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+
   useEffect(() => {
-    const setupContract = async () => {
-      if (rat) {
-        rat.cost().then((cost) => {
-          setEthCost(parseFloat(formatEther(cost)));
-        });
-        rat.canMint().then((canMint) => {
-          if (!canMint) {
-            setMintingError('Minting is currently closed.');
-          }
-        });
-      }
-    };
-    setupContract();
-  }, [rat]);
+    if (!canMint) {
+      setMintingError('Minting is currently closed.');
+    }
+  }, [canMint]);
 
   const handleMintAndGenerate = async (
     skip?: LOADING_STATE[],
@@ -281,35 +283,8 @@ export const Minter = () => {
     }
   };
 
-  useEffect(() => {
-    const checkAccess = async () => {
-      const addr = await signer?.getAddress();
-      if (addr) {
-        setAccess(
-          ALLOWED_WALLETS?.includes(addr.toLowerCase()) ? 'granted' : 'denied',
-        );
-      }
-    };
-    checkAccess();
-  });
-
-  if (!connected || network?.chainId !== CHAIN_ID) {
-    return <Connect />;
-  }
-
-  if (!OPEN_MINTING && access === 'denied') {
-    return (
-      <p className='text-lg mb-8'>
-        We&apos;re going to be minting soon. Join{' '}
-        <a
-          href='https://discord.gg/awwrats'
-          target='_blank'
-          rel='noopener noreferrer nofollow'>
-          the Discord
-        </a>{' '}
-        so you know when we&apos;re going to launch!
-      </p>
-    );
+  if (!connected || network?.activeChain?.id !== CHAIN_ID) {
+    return <Login chain={CHAIN_ID} />;
   }
 
   if (mintingError) {
@@ -322,7 +297,7 @@ export const Minter = () => {
 
   return (
     <>
-      {(loading || access === 'loading') && <CheeseLoader className='w-10' />}
+      {loading && <CheeseLoader className='w-10' />}
       {loading === 'APPROVAL' && (
         <>
           <p className='px-4 py-2'>
@@ -357,7 +332,7 @@ export const Minter = () => {
             <button
               className='rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
               onClick={async () => {
-                await handleMintAndGenerate();
+                // await handleMintAndGenerate();
                 setLoading(null);
               }}>
               <span className='px-4 py-3 inline-block border-r-2 border-black'>
@@ -445,7 +420,7 @@ export const Minter = () => {
                       <div
                         className='mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1'
                         key={attr.trait_type ?? attr.value}>
-                        {displayRattributes(attr)}
+                        {/* {displayRattributes(attr)} */}
                       </div>
                     ))}
                   </div>

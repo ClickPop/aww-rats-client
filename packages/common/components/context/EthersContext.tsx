@@ -1,57 +1,59 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import { useEthers } from 'common/hooks/useEthers';
-import { EthersContextType, Exact } from 'types';
-import { QueryResult, QueryHookOptions } from '@apollo/client';
+import { createContext, ReactNode, useMemo } from 'react';
+import {
+  CheckAuth,
+  CheckLogin,
+  EthersContextType,
+  LoginQueryVariables,
+} from 'types';
+import { MutationTuple, MutationHookOptions } from '@apollo/client';
+import { useAuth } from '../../hooks/useAuth';
+import { useAccount } from 'wagmi';
 
-type CheckAuthQuery = {
-  checkAuth: { role: string; id?: string | null | undefined };
-};
-type CheckAuthQueryVariables = Exact<{ [key: string]: never }>;
-
-interface Props {
+interface Props<
+  D extends {
+    login?: Record<string, unknown> | null | undefined;
+  },
+> {
   children: ReactNode | null;
-  checkAuth: (
-    baseOptions?: QueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>,
-  ) => QueryResult<CheckAuthQuery, CheckAuthQueryVariables>;
+  checkAuth: CheckAuth;
+  useLogin: (
+    baseOptions?: MutationHookOptions<D, LoginQueryVariables>,
+  ) => MutationTuple<D, LoginQueryVariables>;
+  checkFunc: CheckLogin<D>;
 }
 
 const defaultEthersContext: EthersContextType = {
   isLoggedIn: false,
   setLoggedIn: () => {},
-  setEthState: () => {},
   authLoading: true,
+  handleLogin: async () => {},
+  connected: false,
 };
 
 export const EthersContext = createContext(defaultEthersContext);
 
-export const EthersContextProvider = ({ children, checkAuth }: Props) => {
-  const [etherState, setEthState] = useEthers();
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const { loading: authLoading, data: authData } = checkAuth({
-    fetchPolicy: 'network-only',
-  });
-
-  useEffect(() => {
-    const { signer, connected, signerAddr } = etherState;
-    setLoggedIn(
-      !!(
-        authData?.checkAuth?.role === 'user' &&
-        signerAddr === authData?.checkAuth?.id &&
-        connected &&
-        !!signer
-      ),
-    );
-  }, [etherState, authData?.checkAuth]);
+export const EthersContextProvider = <
+  D extends {
+    login?: Record<string, unknown> | null | undefined;
+  },
+>({
+  children,
+  checkAuth,
+  useLogin,
+  checkFunc,
+}: Props<D>) => {
+  const [login, { loading: authLoading, error: authError }] = useLogin();
+  const authState = useAuth<D>(checkAuth, login, checkFunc);
+  const { data: account } = useAccount();
+  const connected = useMemo(() => !!account?.address, [account]);
 
   return (
     <EthersContext.Provider
       value={{
-        ...etherState,
-        isLoggedIn,
-        setLoggedIn,
+        ...authState,
         authLoading,
-        setEthState,
+        authError,
+        connected,
       }}>
       {children}
     </EthersContext.Provider>
