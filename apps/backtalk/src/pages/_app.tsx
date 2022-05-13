@@ -8,7 +8,12 @@ import 'feeder-react-feedback/dist/feeder-react-feedback.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import '@fontsource/vollkorn/500.css';
 import '@fontsource/vollkorn/700.css';
-import { useCheckAuthQuery } from '~/schema/generated';
+import {
+  useCheckAuthQuery,
+  useBacktalkLoginMutation,
+  BacktalkLoginMutation,
+} from '~/schema/generated';
+import { Web3Wrapper } from 'common/components/access/Web3Wrapper';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const theme = extendTheme({
@@ -110,9 +115,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         {client && (
           <ApolloProvider client={client}>
-            <EthersContextProvider checkAuth={useCheckAuthQuery}>
-              <Component {...pageProps} />
-            </EthersContextProvider>
+            <Web3Wrapper>
+              <EthersContextProvider<BacktalkLoginMutation>
+                checkAuth={useCheckAuthQuery}
+                useLogin={useBacktalkLoginMutation}
+                checkFunc={(d, s) => d.data?.login?.wallet === s}>
+                <Component {...pageProps} />
+              </EthersContextProvider>
+            </Web3Wrapper>
           </ApolloProvider>
         )}
       </ChakraProvider>

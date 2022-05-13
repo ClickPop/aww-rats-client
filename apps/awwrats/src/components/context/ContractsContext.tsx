@@ -1,8 +1,8 @@
 import { createContext, FC, useContext, useMemo } from 'react';
-import { useEthers } from 'common/hooks/useEthers';
 import { Closet__factory, Rat__factory, Closet, Rat } from 'types';
 import { CONTRACT_ADDRESS, CLOSET_ADDRESS } from '~/config/env';
 import { EthersContext } from 'common/components/context/EthersContext';
+import { useContractRead, useSigner } from 'wagmi';
 
 type ContractsContext = {
   closet?: Closet;
@@ -14,8 +14,7 @@ const defaultContext: ContractsContext = {};
 export const ContractsContext = createContext(defaultContext);
 
 export const ContractsContextProvider: FC = ({ children }) => {
-  const { signer } = useContext(EthersContext);
-
+  const { data: signer } = useSigner();
   const closet = useMemo(() => {
     if (signer && CLOSET_ADDRESS) {
       const factory = new Closet__factory(signer);

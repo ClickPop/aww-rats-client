@@ -6,7 +6,7 @@ import {
   useEffect,
   useReducer,
 } from 'react';
-import { EthersContext } from 'common/components/context/EthersContext';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import {
   defaultSurveyResponseState,
   surveyResponseReducer,
@@ -39,7 +39,7 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
   children,
   id,
 }) => {
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const {
     data: surveyData,
     error: getSurveyError,
@@ -48,7 +48,7 @@ export const BacktalkNewResponseContextProvider: FC<Props> = ({
     variables: {
       id: id!,
       includeMyResponses: true,
-      wallet: signerAddr,
+      wallet: signerAddr ?? '',
     },
     skip: !id,
   });

@@ -18,6 +18,7 @@ import {
   Rat_Types_Enum,
 } from '~/schema/generated';
 import { getCachedRatUrl } from '~/utils/getCachedImageUrl';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 export type RatSlot = {
   rat?: GetRatsByWalletQuery['rats'][0];
@@ -63,7 +64,8 @@ export const GameContext = createContext<defaultContext>({
 });
 
 export const GameContextProvider: FC = ({ children }) => {
-  const { signerAddr, isLoggedIn } = useContext(EthersContext);
+  const { isLoggedIn } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const ratResult = useGetRatsByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,

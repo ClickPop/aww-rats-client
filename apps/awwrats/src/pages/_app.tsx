@@ -2,13 +2,14 @@ import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { EthersContextProvider } from 'common/components/context/EthersContext';
+import { Web3Wrapper } from 'common/components/access/Web3Wrapper';
 import { client } from '~/lib/graphql';
 import '~/styles/index.scss';
 import 'feeder-react-feedback/dist/feeder-react-feedback.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import '@fontsource/vollkorn/500.css';
 import '@fontsource/vollkorn/700.css';
-import { useCheckAuthQuery } from '~/schema/generated';
+import { useCheckAuthQuery, useLoginMutation } from '~/schema/generated';
 import { HASURA_BASE_URL } from '~/config/env';
 import { ContractsContextProvider } from '~/components/context/ContractsContext';
 
@@ -112,11 +113,16 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <ChakraProvider theme={theme}>
         <ApolloProvider client={client}>
-          <EthersContextProvider checkAuth={useCheckAuthQuery}>
-            <ContractsContextProvider>
-              <Component {...pageProps} />
-            </ContractsContextProvider>
-          </EthersContextProvider>
+          <Web3Wrapper>
+            <EthersContextProvider
+              checkAuth={useCheckAuthQuery}
+              useLogin={useLoginMutation}
+              checkFunc={(rd, s) => rd.data?.login?.id === s}>
+              <ContractsContextProvider>
+                <Component {...pageProps} />
+              </ContractsContextProvider>
+            </EthersContextProvider>
+          </Web3Wrapper>
         </ApolloProvider>
       </ChakraProvider>
     </>

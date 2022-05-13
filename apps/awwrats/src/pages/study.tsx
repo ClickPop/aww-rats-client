@@ -9,11 +9,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import router from 'next/router';
 import { BigNumber } from 'ethers';
 import { EthersContext } from 'common/components/context/EthersContext';
-import { Connect } from '~/components/shared/Connect';
 import { ContractsContext } from '~/components/context/ContractsContext';
+import Login from 'common/components/access/Login';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { useSigner } from 'wagmi';
 
 const StudyPage: NextPage = () => {
-  const { signer, signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
+  const { data: signer } = useSigner();
   const { rat } = useContext(ContractsContext);
   const [signerTokenCount, setSignerTokenCount] = useState<number | null>(0);
   const [loading, setLoading] = useState({
@@ -79,7 +82,7 @@ const StudyPage: NextPage = () => {
                 The study is for rats only. Connect your wallet with a rat token
                 to start learning.
               </p>
-              <Connect />
+              <Login />
             </div>
           ) : typeof signerTokenCount === 'number' && signerTokenCount <= 0 ? (
             <div className='bg-light p-4 rounded-md text-black w-fit mx-auto'>

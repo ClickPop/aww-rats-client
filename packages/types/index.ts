@@ -1,22 +1,13 @@
-import {
-  Web3Provider,
-  JsonRpcProvider,
-  JsonRpcSigner,
-} from '@ethersproject/providers';
-import { providers } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { Dispatch, SetStateAction } from 'react';
 import {
-  BaseMutationOptions,
   FetchResult,
   MutationFunctionOptions,
+  QueryHookOptions,
+  QueryResult,
+  ApolloError,
 } from '@apollo/client';
 export * from 'smart-contracts/src/types';
-
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
 
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
@@ -31,23 +22,20 @@ export interface ReducerAction {
   payload?: unknown;
 }
 
-export type UseEthersHook = () => EthersState;
+export enum ProviderType {
+  metamask = 'metamask',
+  walletConnect = 'walletConnect',
+}
 
-export type EthersState = {
-  provider?: Web3Provider;
-  signer?: JsonRpcSigner;
-  network?: providers.Network;
-  connected?: boolean;
-  signerAddr?: string;
-  ethProvider?: JsonRpcProvider;
-  polyProvider?: JsonRpcProvider;
-};
-
-export interface EthersContextType extends EthersState {
-  signerAddr?: string;
+export interface EthersContextType {
   isLoggedIn: boolean;
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
   authLoading: boolean;
+  authError?: ApolloError;
+  ethProvider?: JsonRpcProvider;
+  polyProvider?: JsonRpcProvider;
+  handleLogin: () => Promise<void>;
+  connected: boolean;
 }
 
 export interface NetworkSwitchError {
@@ -69,3 +57,37 @@ export interface ChainData {
   rpc: string[] | string;
   scan: string[] | string;
 }
+
+type CheckAuthQuery = {
+  checkAuth: { role: string; id?: string | null | undefined };
+};
+type CheckAuthQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LoginQueryVariables = Exact<{
+  wallet: string;
+  msg: string;
+}>;
+
+export type LoginReturnVal = {
+  login?: Record<string, unknown> | null | undefined;
+};
+
+export type CheckAuth = (
+  baseOptions?: QueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>,
+) => QueryResult<CheckAuthQuery, CheckAuthQueryVariables>;
+
+export type CheckLogin<D> = (
+  returnData: FetchResult<D>,
+  signerAddr: string,
+) => boolean;
+
+export type UseAuthHook = <D extends LoginReturnVal>(
+  checkAuth: CheckAuth,
+  login: Mutation<D, FetchResult<D>>,
+  checkLogin: CheckLogin<D>,
+  signerMsg?: string,
+) => {
+  handleLogin: () => Promise<void>;
+  isLoggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+};
