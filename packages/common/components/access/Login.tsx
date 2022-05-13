@@ -14,7 +14,7 @@ const Login: FC<Props> = ({ login, chain }) => {
   const { data: account } = useAccount();
   const network = useNetwork();
 
-  if (chain && network?.activeChain?.id !== chain) {
+  if (chain && !!account?.connector?.chains?.find((c) => c.id === chain)) {
     return (
       <Button
         onClick={() =>

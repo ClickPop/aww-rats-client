@@ -39,6 +39,8 @@ export const Minter = () => {
     { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
     'canMint',
   );
+
+  console.log(canMint);
   const { data: cost } = useContractRead(
     { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
     'cost',
@@ -332,7 +334,7 @@ export const Minter = () => {
             <button
               className='rounded-md bg-gray-800 hover:bg-gray-700 duration-300 text-light font-bold'
               onClick={async () => {
-                // await handleMintAndGenerate();
+                await handleMintAndGenerate();
                 setLoading(null);
               }}>
               <span className='px-4 py-3 inline-block border-r-2 border-black'>
@@ -420,7 +422,7 @@ export const Minter = () => {
                       <div
                         className='mt-4 bg-blue-100 border border-solid border-blue-400 rounded-md px-2 py-1'
                         key={attr.trait_type ?? attr.value}>
-                        {/* {displayRattributes(attr)} */}
+                        {displayRattributes(attr)}
                       </div>
                     ))}
                   </div>
