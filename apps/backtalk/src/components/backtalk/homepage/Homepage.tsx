@@ -16,7 +16,7 @@ import {
 import NextImage from 'next/image';
 import BacktalkLogo from 'src/assets/images/backtalk-logo.svg';
 import AwwRatsLogo from '~/assets/images/aww-rats-logo.png';
-import BacktalkLogin from '~/components/access/Login';
+import BacktalkLogin from 'common/components/access/Login';
 import { PromoUnit } from '~/components/backtalk/homepage/PromoUnit';
 
 const Homepage = () => {
@@ -37,17 +37,7 @@ const Homepage = () => {
             width='200'
           />
           <Spacer />
-          <BacktalkLogin>
-            <Button
-              background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-              backgroundSize='600% 400%'
-              color='white'
-              _hover={{
-                animation: 'encounterShimmer 4s ease infinite;',
-              }}>
-              Login
-            </Button>
-          </BacktalkLogin>
+          <BacktalkLogin login />
         </Flex>
       </Flex>
 
@@ -67,17 +57,7 @@ const Homepage = () => {
           <Text mb={4}>
             Get feedback you can trust from validated members of your community.
           </Text>
-          <BacktalkLogin>
-            <Button
-              background='linear-gradient(-45deg, var(--chakra-colors-pink-500), var(--chakra-colors-red-500), var(--chakra-colors-blue-500), var(--chakra-colors-purple-500))'
-              backgroundSize='600% 400%'
-              color='white'
-              _hover={{
-                animation: 'encounterShimmer 4s ease infinite;',
-              }}>
-              Login
-            </Button>
-          </BacktalkLogin>
+          <BacktalkLogin login />
         </GridItem>
         <GridItem p={8}>
           <NextImage

@@ -6,10 +6,11 @@ import { ClosetItemList } from '~/components/closet/ClosetItemList';
 import { ClosetMirror } from '~/components/closet/ClosetMirror';
 import { EthersContext } from 'common/components/context/EthersContext';
 import { CHAIN_ID } from '~/config/env';
+import { useNetwork } from 'wagmi';
 
 const Closet = () => {
   const { currentRat, loading, canvas } = useContext(ClosetContext);
-  const { provider } = useContext(EthersContext);
+  const network = useNetwork();
   return (
     <div className='max-w-7xl mx-auto pt-20 pb-4'>
       <div className='text-white text-center mb-4'>
@@ -47,9 +48,7 @@ const Closet = () => {
               <CheeseLoader className='w-20 h-20' />
             </div>
           )}
-          {provider && provider?.network?.chainId === CHAIN_ID && (
-            <ClosetItemList />
-          )}
+          {network?.activeChain?.id === CHAIN_ID && <ClosetItemList />}
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ER
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { GetClosetDataSubscription } from '~/schema/generated';
 import { ContractsContext } from '~/components/context/ContractsContext';
+import { useProvider, useSigner } from 'wagmi';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 type Props = {
   piece: GetClosetDataSubscription['closet_pieces'][0];
@@ -23,7 +25,9 @@ export const ClosetMintButton: FC<Props> = ({
   noMaxTokens,
   noWalletMax,
 }) => {
-  const { signer, provider, signerAddr } = useContext(EthersContext);
+  const { data: signer } = useSigner();
+  const provider = useProvider();
+  const signerAddr = useSignerAddress();
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const { closet } = useContext(ContractsContext);
 

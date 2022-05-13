@@ -23,9 +23,12 @@ import { Link } from 'common/components/shared/Link';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { EthersContext } from 'common/components/context/EthersContext';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
+import { useAccount } from 'wagmi';
 
 export const Dashboard = () => {
-  const { signerAddr } = useContext(EthersContext);
+  const { data: account } = useAccount();
+
+  const signerAddr = account?.address;
 
   const { data, loading, error } = useGetSurveysByWalletQuery({
     variables: { wallet: signerAddr! },

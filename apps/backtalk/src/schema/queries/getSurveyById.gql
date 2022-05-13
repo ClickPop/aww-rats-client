@@ -19,7 +19,7 @@ query getSurveyById(
       token_type
       chain
     }
-    callerResponses: survey_responses(where: { wallet: { _eq: $wallet } })
+    callerResponses: survey_responses(where: {_and: [{ wallet: { _is_null: false } }, { wallet: { _eq: $wallet } }]})
       @include(if: $includeMyResponses) {
       wallet
       question_responses

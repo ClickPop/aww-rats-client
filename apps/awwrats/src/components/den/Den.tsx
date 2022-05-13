@@ -25,6 +25,7 @@ import DeleteIcon from '~/assets/svg/delete-icon.svg';
 import { v4 as uuidv4 } from 'uuid';
 import { svgToPng } from '~/utils/svgToPng';
 import Select from 'react-select';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 
 type SelectOption = {
   value: string;
@@ -115,7 +116,7 @@ const Den = () => {
   const [tokens, setTokens] = useState<ParsedMoralisTokenMeta[]>([]);
   const [tokensOptions, setTokensOptions] = useState<SelectOption[]>([]);
   const [tokensStatus, setTokensStatus] = useState<string>('idle');
-  const { signerAddr } = useContext(EthersContext);
+  const signerAddr = useSignerAddress();
   const deleteIcon = useRef(
     (() => {
       const img = document.createElement('img');

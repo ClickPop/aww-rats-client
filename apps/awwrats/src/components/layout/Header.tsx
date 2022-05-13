@@ -8,6 +8,7 @@ import { OpenSeaLogo } from '~/components/shared/svg/OpenSeaLogo';
 import { TwitterLogo } from '~/components/shared/svg/TwitterLogo';
 import { DiscordLogo } from '~/components/shared/svg/DiscordLogo';
 import { MenuLink } from '~/components/shared/MenuLink';
+import Login from 'common/components/access/Login';
 
 export const Header = () => {
   return (
@@ -62,6 +63,7 @@ export const Header = () => {
             <DiscordLogo width={24} height={24} />
           </MenuLink>
         </div>
+        <Login />
       </div>
     </div>
   );

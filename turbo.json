@@ -16,21 +16,13 @@
     },
     "dev": {
       "cache": false,
-      "dependsOn": ["^codegen", "watch"]
+      "dependsOn": ["codegen", "^compile"]
     },
     "check-types": {
+      "dependsOn": ["codegen", "^compile"],
       "outputs": []
     },
     "compile": {
-      "inputs": ["src/contracts/**/*"],
-      "outputs": [
-        "artifacts/**/*",
-        ".openzeppelin/**/*",
-        "cache/**/*",
-        "src/types/typechain/**/*"
-      ]
-    },
-    "watch": {
       "inputs": ["src/contracts/**/*"],
       "outputs": [
         "artifacts/**/*",
