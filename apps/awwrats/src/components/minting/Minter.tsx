@@ -40,7 +40,6 @@ export const Minter = () => {
     'canMint',
   );
 
-  console.log(canMint);
   const { data: cost } = useContractRead(
     { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
     'cost',
