@@ -283,8 +283,6 @@ const Minter = () => {
     }
   };
 
-  console.log(connected, network);
-
   if (!connected || network?.activeChain?.id !== CHAIN_ID) {
     return <Login chain={CHAIN_ID} />;
   }
