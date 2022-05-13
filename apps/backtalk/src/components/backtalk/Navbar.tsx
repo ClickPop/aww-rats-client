@@ -2,7 +2,7 @@ import { Link } from 'common/components/shared/Link';
 import React from 'react';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk-icon.svg';
-import BacktalkLogin from 'common/components/access/Login';
+import Login from 'common/components/access/Login';
 import { Box, HStack } from '@chakra-ui/react';
 
 export const Navbar = () => {
@@ -19,7 +19,7 @@ export const Navbar = () => {
             />
           </Link>
         </Box>
-        <BacktalkLogin login />
+        <Login login />
       </HStack>
     </Box>
   );

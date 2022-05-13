@@ -9,8 +9,11 @@ import rat04 from '~/assets/images/rats/rat-04.png';
 import rat05 from '~/assets/images/rats/rat-05.png';
 import rat06 from '~/assets/images/rats/rat-06.png';
 import rat07 from '~/assets/images/rats/rat-07.png';
-import { Minter } from '~/components/minting/Minter';
+const Minter = dynamic(() => import('~/components/minting/Minter'), {
+  ssr: false,
+});
 import { Promo } from '~/components/index/promo/Promo';
+import dynamic from 'next/dynamic';
 
 export const Hero = () => {
   return (

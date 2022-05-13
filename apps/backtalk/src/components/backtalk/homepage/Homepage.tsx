@@ -16,7 +16,7 @@ import {
 import NextImage from 'next/image';
 import BacktalkLogo from 'src/assets/images/backtalk-logo.svg';
 import AwwRatsLogo from '~/assets/images/aww-rats-logo.png';
-import BacktalkLogin from 'common/components/access/Login';
+import Login from 'common/components/access/Login';
 import { PromoUnit } from '~/components/backtalk/homepage/PromoUnit';
 
 const Homepage = () => {
@@ -37,7 +37,7 @@ const Homepage = () => {
             width='200'
           />
           <Spacer />
-          <BacktalkLogin login />
+          <Login login />
         </Flex>
       </Flex>
 
@@ -57,7 +57,7 @@ const Homepage = () => {
           <Text mb={4}>
             Get feedback you can trust from validated members of your community.
           </Text>
-          <BacktalkLogin login />
+          <Login login />
         </GridItem>
         <GridItem p={8}>
           <NextImage
