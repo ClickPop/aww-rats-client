@@ -24,7 +24,7 @@ type MintAndGenerateData = {
   rat?: GeneratorResponse | null;
 };
 
-export const Minter = () => {
+const Minter = () => {
   const { connected } = useContext(EthersContext);
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const [mintTx, setMintTx] = useState('');
@@ -225,7 +225,6 @@ export const Minter = () => {
           }
         }
         console.error(err);
-        console.log({ err });
       };
 
       let tokenId = data?.tokenId;
@@ -284,6 +283,8 @@ export const Minter = () => {
     }
   };
 
+  console.log(connected, network);
+
   if (!connected || network?.activeChain?.id !== CHAIN_ID) {
     return <Login chain={CHAIN_ID} />;
   }
@@ -295,6 +296,8 @@ export const Minter = () => {
       </div>
     );
   }
+
+  console.log(ethCost);
 
   return (
     <>
@@ -434,3 +437,5 @@ export const Minter = () => {
     </>
   );
 };
+
+export default Minter;
