@@ -36,7 +36,6 @@ export const SurveyResponse: FC = () => {
   const polyProvider = useProvider({ chainId: 137 });
 
   const { isConnected: connected } = useConnect();
-  console.log(connected);
   const { data: account } = useAccount();
 
   const signerAddr = account?.address;
@@ -216,24 +215,9 @@ export const SurveyResponse: FC = () => {
               Start
             </Button>
           ) : (
-            <Login>
-              <Button
-                colorScheme='gray'
-                mt={4}
-                size='md'
-                variant='outline'
-                width='100%'
-                _hover={{
-                  backgroundColor: 'gray.200',
-                  color: 'black',
-                }}
-                isLoading={loading}>
-                <Emoji mr='0.5ch' aria-label='Electrical Plug'>
-                  🔌{' '}
-                </Emoji>{' '}
-                Connect
-              </Button>
-            </Login>
+            <Box as='span' color='black'>
+              <Login login />
+            </Box>
           )}
         </Box>
       ) : (
