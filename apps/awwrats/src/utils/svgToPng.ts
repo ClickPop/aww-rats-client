@@ -5,7 +5,6 @@ export const svgToPng = (svgDataURI: string): Promise<string> =>
     let img: HTMLImageElement;
     let bounds: number = 2048;
 
-    console.log(svgDataURI);
     img = new Image();
     img.src = svgDataURI;
     img.width = bounds;
