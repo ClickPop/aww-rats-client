@@ -87,8 +87,6 @@ export const SurveyResponse: FC = () => {
     getBal();
   }, [data.contracts, ethProvider, isLoggedIn, polyProvider, signerAddr]);
 
-  console.log(data);
-
   if (loading && data.id === -1) {
     return <Center h='100%'>Loading</Center>;
   }
