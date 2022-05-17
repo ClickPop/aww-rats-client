@@ -59,7 +59,7 @@ export const SurveyResults: FC = () => {
   const surveyLink = useMemo(
     () =>
       typeof window !== 'undefined' && data?.surveys_by_pk?.id
-        ? `${window.location.host}/backtalk/survey/${data.surveys_by_pk.id}`
+        ? `${window.location.host}/survey/${data.surveys_by_pk.id}`
         : '',
     [data?.surveys_by_pk?.id],
   );
