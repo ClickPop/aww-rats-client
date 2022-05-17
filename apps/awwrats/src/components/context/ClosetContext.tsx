@@ -65,7 +65,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
     variables: { id: signerAddr! },
     skip: !signerAddr,
   });
-  console.log(closetData, error);
   const { data: ratData, loading: ratsLoading } = useGetRatsSubscription({
     variables: { id: signerAddr! },
     skip: !signerAddr,
@@ -112,7 +111,6 @@ export const ClosetContextProvider: FC = ({ children }) => {
         }
 
         if (val.startsWith('data:')) {
-          console.log(val);
           return val;
         }
 

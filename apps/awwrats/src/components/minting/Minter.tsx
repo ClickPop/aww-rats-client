@@ -295,8 +295,6 @@ const Minter = () => {
     );
   }
 
-  console.log(ethCost);
-
   return (
     <>
       {loading && <CheeseLoader className='w-10' />}

@@ -3,10 +3,16 @@
   "baseBranch": "origin/development",
   "pipeline": {
     "build": {
-      "dependsOn": ["codegen", "^compile", "lint"],
+      "dependsOn": ["codegen", "^compile", "lint", "$NEXT_PUBLIC_SIGNER_MESSAGE", "$NEXT_PUBLIC_INFURA_ID", "$HASURA_ADMIN_SECRET", "$NEXT_PUBLIC_HASURA_BASE_URL"],
       "outputs": [
         ".next/**"
       ]
+    },
+    "awwrats#build": {
+      "dependsOn": ["$GENERATOR_URL", "$NEXT_PUBLIC_CONTRACT_ADDRESS", "$NEXT_PUBLIC_CLOSET_ADDRESS", "$NEXT_PUBLIC_CHAIN_ID", "$NEXT_PUBLIC_RPC_URL", "$GCP_PRIVATE_KEY", "$GCP_CLIENT_EMAIL", "$MORALIS_API_KEY", "$NEXT_PUBLIC_OPEN_MINTING"]
+    },
+    "backtalk#build": {
+      "dependsOn": ["$NEXT_PUBLIC_FEEDER_ID"]
     },
     "lint": {
       "outputs": []
