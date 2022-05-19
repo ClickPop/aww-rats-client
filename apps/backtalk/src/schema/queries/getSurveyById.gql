@@ -38,6 +38,11 @@ query getSurveyById(
       options {
         id
         content
+        responses_aggregate {
+          aggregate {
+            count
+          }
+        }
       }
     }
   }

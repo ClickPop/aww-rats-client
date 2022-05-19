@@ -22,6 +22,7 @@ import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { useUpdateSurveyMutation } from '~/schema/generated';
+import { VictoryBar, VictoryLabel } from 'victory';
 
 export const SurveyResults: FC = () => {
   const {
@@ -31,6 +32,20 @@ export const SurveyResults: FC = () => {
   const [updateSurvey, { loading, error }] = useUpdateSurveyMutation();
 
   const toast = useToast();
+
+  const multiChoiceData = useMemo(
+    () =>
+      data?.surveys_by_pk?.questions.map((q) => ({
+        ...q,
+        options: q.options.map((o) => ({
+          y: o.responses_aggregate.aggregate?.count ?? 0,
+          label: o.content,
+        })),
+      })),
+    [data?.surveys_by_pk?.questions],
+  );
+
+  console.log(multiChoiceData);
 
   useEffect(() => {
     if (!loading && error) {
@@ -192,6 +207,31 @@ export const SurveyResults: FC = () => {
             </Text>
           )}
         </GridItem>
+        {multiChoiceData && (
+          <GridItem
+            backgroundColor='white'
+            border='1px'
+            borderColor='gray.200'
+            borderRadius={8}
+            colSpan={2}
+            p={4}>
+            {multiChoiceData.map((q) => (
+              <VictoryBar
+                key={q.id}
+                data={q.options.map((o) => ({ ...o, y: o.y * 100 }))}
+                horizontal
+                labelComponent={
+                  <VictoryLabel
+                    textAnchor='start'
+                    verticalAnchor='middle'
+                    x={40}
+                    dy={20}
+                  />
+                }
+              />
+            ))}
+          </GridItem>
+        )}
       </Grid>
       <SurveyResultsList />
     </Box>
