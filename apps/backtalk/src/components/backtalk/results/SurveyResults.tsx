@@ -16,6 +16,8 @@ import {
   Link,
   useClipboard,
   Input,
+  HStack,
+  VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
@@ -25,7 +27,6 @@ import {
   Question_Type_Enum,
   useUpdateSurveyMutation,
 } from '~/schema/generated';
-import { VictoryBar, VictoryLabel } from 'victory';
 
 export const SurveyResults: FC = () => {
   const {
@@ -43,7 +44,7 @@ export const SurveyResults: FC = () => {
         .map((q) => ({
           ...q,
           options: q.options.map((o) => ({
-            y: o.responses_aggregate.aggregate?.count ?? 0,
+            x: o.responses_aggregate.aggregate?.count ?? 0,
             label: o.content,
           })),
         })),
@@ -220,21 +221,29 @@ export const SurveyResults: FC = () => {
             borderRadius={8}
             colSpan={2}
             p={4}>
-            {multiChoiceData.map((q) => (
-              <VictoryBar
-                key={q.id}
-                data={q.options.map((o) => ({ ...o, y: o.y * 100 }))}
-                horizontal
-                labelComponent={
-                  <VictoryLabel
-                    textAnchor='start'
-                    verticalAnchor='middle'
-                    x={40}
-                    dy={20}
-                  />
-                }
-              />
-            ))}
+            <HStack h='100%'>
+              <VStack h='100%' flexGrow={0}>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
+                  )),
+                )}
+              </VStack>
+              <VStack flexGrow={1} h='100%'>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Progress
+                      w='100%'
+                      key={`${q.id}-${o.x}`}
+                      flexGrow={1}
+                      min={0}
+                      max={q.responses_aggregate.aggregate?.count ?? 0}
+                      value={o.x}
+                    />
+                  )),
+                )}
+              </VStack>
+            </HStack>
           </GridItem>
         )}
       </Grid>
