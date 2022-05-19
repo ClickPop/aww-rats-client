@@ -21,7 +21,10 @@ import { format } from 'date-fns';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
-import { useUpdateSurveyMutation } from '~/schema/generated';
+import {
+  Question_Type_Enum,
+  useUpdateSurveyMutation,
+} from '~/schema/generated';
 import { VictoryBar, VictoryLabel } from 'victory';
 
 export const SurveyResults: FC = () => {
@@ -35,13 +38,15 @@ export const SurveyResults: FC = () => {
 
   const multiChoiceData = useMemo(
     () =>
-      data?.surveys_by_pk?.questions.map((q) => ({
-        ...q,
-        options: q.options.map((o) => ({
-          y: o.responses_aggregate.aggregate?.count ?? 0,
-          label: o.content,
+      data?.surveys_by_pk?.questions
+        .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
+        .map((q) => ({
+          ...q,
+          options: q.options.map((o) => ({
+            y: o.responses_aggregate.aggregate?.count ?? 0,
+            label: o.content,
+          })),
         })),
-      })),
     [data?.surveys_by_pk?.questions],
   );
 
@@ -207,7 +212,7 @@ export const SurveyResults: FC = () => {
             </Text>
           )}
         </GridItem>
-        {multiChoiceData && (
+        {multiChoiceData && multiChoiceData.length > 0 && (
           <GridItem
             backgroundColor='white'
             border='1px'
