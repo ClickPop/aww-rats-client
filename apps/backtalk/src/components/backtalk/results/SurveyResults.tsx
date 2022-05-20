@@ -26,7 +26,13 @@ import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurvey
 import {
   Question_Type_Enum,
   useUpdateSurveyMutation,
+  Questions,
+  GetSurveyByIdQuery,
 } from '~/schema/generated';
+
+interface QuestionOptions extends Pick<Questions, 'id'> {
+  options: { x: number | null; label: string }[];
+}
 
 export const SurveyResults: FC = () => {
   const {
@@ -42,16 +48,18 @@ export const SurveyResults: FC = () => {
       data?.surveys_by_pk?.questions
         .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
         .map((q) => ({
-          ...q,
+          id: q.id,
+          responses_aggregate: q.responses_aggregate,
           options: q.options.map((o) => ({
-            x: o.responses_aggregate.aggregate?.count ?? 0,
+            x: q.responses_aggregate.aggregate?.count
+              ? o?.responses_aggregate?.aggregate?.count
+              : null,
             label: o.content,
           })),
-        })),
+        }))
+        .filter((q) => q.options.every((o) => o.x !== null)),
     [data?.surveys_by_pk?.questions],
   );
-
-  console.log(multiChoiceData);
 
   useEffect(() => {
     if (!loading && error) {
@@ -242,7 +250,7 @@ export const SurveyResults: FC = () => {
                       flexGrow={1}
                       min={0}
                       max={q.responses_aggregate.aggregate?.count ?? 0}
-                      value={o.x}
+                      value={o.x ?? 0}
                     />
                   )),
                 )}
