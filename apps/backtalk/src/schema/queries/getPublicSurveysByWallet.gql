@@ -1,0 +1,19 @@
+query getPublicSurveysByWallet(
+  $wallet: String!
+  $surveyLimit: Int = 20
+  $surveyOffset: Int = 0
+) {
+  surveys(
+    where: {_and: [{ owner: { _eq: $wallet } }, {is_public: {_eq: true}}]}
+    order_by: { id: desc }
+    limit: $surveyLimit
+    offset: $surveyOffset
+  ) {
+    id
+    title
+    is_active
+    is_public
+    response_count
+    latest_response
+  }
+}
