@@ -22,8 +22,13 @@ import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
 import { useUpdateSurveyMutation } from '~/schema/generated';
+import { hashids } from '~/utils/hash-ids';
 
-export const SurveyResults: FC = () => {
+type Props = {
+  host?: string;
+};
+
+export const SurveyResults: FC<Props> = ({ host }) => {
   const {
     surveyResult: { data, loading: surveyLoading, error: surveyError, refetch },
   } = useContext(BacktalkSurveyResultContext);
@@ -57,10 +62,7 @@ export const SurveyResults: FC = () => {
   }, [surveyError, surveyLoading, toast]);
 
   const surveyLink = useMemo(
-    () =>
-      typeof window !== 'undefined' && data?.surveys_by_pk?.id
-        ? `${window.location.host}/survey/${data.surveys_by_pk.id}`
-        : '',
+    () => `/survey/${hashids.encode(data?.surveys_by_pk?.id ?? -1)}`,
     [data?.surveys_by_pk?.id],
   );
 
@@ -141,7 +143,7 @@ export const SurveyResults: FC = () => {
         </Button>
       </Flex>
       <Flex mb={4} alignItems='center'>
-        <Input value={surveyLink} isReadOnly />
+        <Input value={`${host}${surveyLink}`} isReadOnly />
         <Button onClick={onCopy} ml={2} colorScheme='teal' size='sm'>
           {hasCopied ? 'Copied' : 'Copy'}
         </Button>

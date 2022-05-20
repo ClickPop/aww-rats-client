@@ -24,6 +24,7 @@ import React, { useContext, useEffect, useMemo } from 'react';
 import { EthersContext } from 'common/components/context/EthersContext';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
 import { useAccount } from 'wagmi';
+import { hashids } from '~/utils/hash-ids';
 
 export const Dashboard = () => {
   const { data: account } = useAccount();
@@ -109,7 +110,7 @@ export const Dashboard = () => {
               {data.surveys.map((survey) => (
                 <Tr key={survey.id}>
                   <Td>
-                    <Link href={`/results/${survey.id}`}>
+                    <Link href={`/results/${hashids.encode(survey.id)}`}>
                       <Text isTruncated maxW={64}>
                         {survey.title}
                       </Text>
@@ -126,8 +127,12 @@ export const Dashboard = () => {
                   <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
                   <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>
                   <Td>
-                    <Link href={`/results/${survey.id}`}>📈</Link>{' '}
-                    <Link href={`/survey/${survey.id}`} openInNewTab>
+                    <Link href={`/results/${hashids.encode(survey.id)}`}>
+                      📈
+                    </Link>{' '}
+                    <Link
+                      href={`/survey/${hashids.encode(survey.id)}`}
+                      openInNewTab>
                       🔗
                     </Link>
                   </Td>
