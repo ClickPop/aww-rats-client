@@ -49,9 +49,9 @@ export const SurveyResults: FC = () => {
         .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
         .map((q) => ({
           id: q.id,
-          responses_aggregate: q.responses_aggregate,
+          responses_aggregate: q?.responses_aggregate,
           options: q.options.map((o) => ({
-            x: q.responses_aggregate.aggregate?.count
+            x: q?.responses_aggregate?.aggregate?.count
               ? o?.responses_aggregate?.aggregate?.count
               : null,
             label: o.content,
