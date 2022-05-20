@@ -189,8 +189,10 @@ export const SurveyResults: FC = () => {
           </Text>
           {!!data.surveys_by_pk.max_responses && (
             <Progress
+              colorScheme='purple'
               value={data?.surveys_by_pk?.response_count}
               max={data.surveys_by_pk.max_responses}
+              borderRadius={2}
             />
           )}
         </GridItem>
@@ -233,6 +235,8 @@ export const SurveyResults: FC = () => {
                 {multiChoiceData.map((q) =>
                   q.options.map((o) => (
                     <Progress
+                      borderRadius={2}
+                      colorScheme='purple'
                       w='100%'
                       key={`${q.id}-${o.x}`}
                       flexGrow={1}
