@@ -45,7 +45,6 @@ const WalletPage: NextPage = () => {
     <LayoutDashboard>
       <Center
         mt={4}
-        p={3}
         bgColor='white'
         border='1px solid'
         borderColor='gray.200'
