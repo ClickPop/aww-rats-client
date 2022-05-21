@@ -90,4 +90,5 @@ export type UseAuthHook = <D extends LoginReturnVal>(
   handleLogin: () => Promise<void>;
   isLoggedIn: boolean;
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
+  authLoading: boolean;
 };

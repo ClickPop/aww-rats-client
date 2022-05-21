@@ -53,5 +53,6 @@ export const useAuth: UseAuthHook = (
     handleLogin,
     isLoggedIn,
     setLoggedIn,
+    authLoading,
   };
 };

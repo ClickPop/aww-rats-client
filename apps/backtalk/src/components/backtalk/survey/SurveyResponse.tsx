@@ -9,7 +9,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  AspectRatio,
+  HStack,
 } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
@@ -24,6 +24,7 @@ import { Supported_Chains_Enum } from '~/schema/generated';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk-icon.svg';
 import { useAccount, useConnect, useProvider } from 'wagmi';
+import { css, Global } from '@emotion/react';
 
 export const SurveyResponse: FC = () => {
   const {
@@ -194,17 +195,29 @@ export const SurveyResponse: FC = () => {
       </Text>
       {data.step < 0 ? (
         <Box>
-          <Box
+          <HStack
             as='span'
-            isTruncated
-            maxWidth='60%'
+            maxW='100%'
             fontSize='xs'
             fontWeight='bold'
             color='purple.200'
-            mb={4}>
-            Created by{' '}
+            mb={4}
+            alignItems='flex-start'
+            isTruncated
+            css={css`
+              button.test span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            `}>
+            <Text>Created by</Text>
             <Menu>
-              <MenuButton>{data.owner}</MenuButton>
+              <MenuButton
+                className='test'
+                marginInline='0.5ch !important'
+                isTruncated>
+                {data.owner}
+              </MenuButton>
               <MenuList>
                 {['etherscan.io', 'polygonscan.com'].map((scan) => (
                   <MenuItem key={scan} color='black'>
@@ -222,7 +235,7 @@ export const SurveyResponse: FC = () => {
                 </MenuItem>
               </MenuList>
             </Menu>
-          </Box>
+          </HStack>
           {data.description && <Text mb={4}>{data.description}</Text>}
           {connected && isLoggedIn ? (
             <Button
