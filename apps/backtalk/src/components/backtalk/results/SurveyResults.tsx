@@ -16,13 +16,24 @@ import {
   Link,
   useClipboard,
   Input,
+  HStack,
+  VStack,
 } from '@chakra-ui/react';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
-import { useUpdateSurveyMutation } from '~/schema/generated';
+import {
+  Question_Type_Enum,
+  useUpdateSurveyMutation,
+  Questions,
+  GetSurveyByIdQuery,
+} from '~/schema/generated';
+
+interface QuestionOptions extends Pick<Questions, 'id'> {
+  options: { x: number | null; label: string }[];
+}
 
 export const SurveyResults: FC = () => {
   const {
@@ -36,6 +47,24 @@ export const SurveyResults: FC = () => {
   const isOwner = data?.surveys_by_pk?.owner === signerAddr;
 
   const toast = useToast();
+
+  const multiChoiceData = useMemo(
+    () =>
+      data?.surveys_by_pk?.questions
+        .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
+        .map((q) => ({
+          id: q.id,
+          responses_aggregate: q?.responses_aggregate,
+          options: q.options.map((o) => ({
+            x: q?.responses_aggregate?.aggregate?.count
+              ? o?.responses_aggregate?.aggregate?.count
+              : null,
+            label: o.content,
+          })),
+        }))
+        .filter((q) => q.options.every((o) => o.x !== null)),
+    [data?.surveys_by_pk?.questions],
+  );
 
   useEffect(() => {
     if (!loading && error) {
@@ -209,8 +238,10 @@ export const SurveyResults: FC = () => {
           </Text>
           {!!data.surveys_by_pk.max_responses && (
             <Progress
+              colorScheme='purple'
               value={data?.surveys_by_pk?.response_count}
               max={data.surveys_by_pk.max_responses}
+              borderRadius={2}
             />
           )}
         </GridItem>
@@ -233,6 +264,41 @@ export const SurveyResults: FC = () => {
             </Text>
           )}
         </GridItem>
+        {multiChoiceData && multiChoiceData.length > 0 && (
+          <GridItem
+            backgroundColor='white'
+            border='1px'
+            borderColor='gray.200'
+            borderRadius={8}
+            colSpan={2}
+            p={4}>
+            <HStack h='100%'>
+              <VStack h='100%' flexGrow={0}>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
+                  )),
+                )}
+              </VStack>
+              <VStack flexGrow={1} h='100%'>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Progress
+                      borderRadius={2}
+                      colorScheme='purple'
+                      w='100%'
+                      key={`${q.id}-${o.x}`}
+                      flexGrow={1}
+                      min={0}
+                      max={q.responses_aggregate.aggregate?.count ?? 0}
+                      value={o.x ?? 0}
+                    />
+                  )),
+                )}
+              </VStack>
+            </HStack>
+          </GridItem>
+        )}
       </Grid>
       <SurveyResultsList />
     </Box>
