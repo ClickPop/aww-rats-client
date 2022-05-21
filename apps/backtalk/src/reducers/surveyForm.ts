@@ -218,6 +218,16 @@ export const surveyFormReducer = (
             ) ?? [],
         },
       };
+    case 'addImage':
+      return {
+        ...state,
+        image_id: action.payload,
+      };
+    case 'deleteImage':
+      return {
+        ...state,
+        image_id: undefined,
+      };
     default:
       return state;
   }
