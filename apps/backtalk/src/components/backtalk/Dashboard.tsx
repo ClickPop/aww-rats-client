@@ -2,7 +2,6 @@ import {
   Flex,
   Heading,
   UnorderedList,
-  List,
   ListItem,
   Spacer,
   TableContainer,
@@ -18,10 +17,9 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
+import { format, isEqual } from 'date-fns';
 import { Link } from 'common/components/shared/Link';
-import React, { useContext, useEffect, useMemo } from 'react';
-import { EthersContext } from 'common/components/context/EthersContext';
+import React, { useEffect, useMemo } from 'react';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
 import { useAccount } from 'wagmi';
 import { hashids } from '~/utils/hash-ids';
@@ -50,12 +48,12 @@ export const Dashboard = () => {
 
   const latestResponseBySurveyId = useMemo(
     () =>
-      data?.surveys.reduce<Record<number, Date>>(
+      data?.surveys.reduce<Record<number, Date | undefined>>(
         (acc, curr) => ({
           ...acc,
           [curr.id]: curr.latest_response
             ? new Date(curr.latest_response)
-            : new Date(0),
+            : undefined,
         }),
         {},
       ),
@@ -117,12 +115,12 @@ export const Dashboard = () => {
                     </Link>
                   </Td>
                   <Td>
-                    {(latestResponseBySurveyId?.[survey.id] &&
-                      format(
-                        latestResponseBySurveyId?.[survey.id],
-                        "MM/dd/yy '-' H:mm",
-                      )) ??
-                      'None'}
+                    {latestResponseBySurveyId?.[survey.id]
+                      ? format(
+                          latestResponseBySurveyId[survey.id] as Date,
+                          "MM/dd/yy '-' H:mm",
+                        )
+                      : 'None'}
                   </Td>
                   <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
                   <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>

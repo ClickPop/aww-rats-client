@@ -35,9 +35,19 @@ query getSurveyById(
       prompt
       is_required
       question_type
+      responses_aggregate {
+        aggregate {
+          count
+        }
+      }
       options {
         id
         content
+        responses_aggregate {
+          aggregate {
+            count
+          }
+        }
       }
     }
   }

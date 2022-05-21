@@ -16,13 +16,19 @@ import {
   Link,
   useClipboard,
   Input,
+  HStack,
+  VStack,
 } from '@chakra-ui/react';
+import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
-import { useUpdateSurveyMutation } from '~/schema/generated';
 import { hashids } from '~/utils/hash-ids';
+import {
+  Question_Type_Enum,
+  useUpdateSurveyMutation,
+} from '~/schema/generated';
 
 type Props = {
   host?: string;
@@ -35,7 +41,29 @@ export const SurveyResults: FC<Props> = ({ host }) => {
 
   const [updateSurvey, { loading, error }] = useUpdateSurveyMutation();
 
+  const signerAddr = useSignerAddress();
+
+  const isOwner = data?.surveys_by_pk?.owner === signerAddr;
+
   const toast = useToast();
+
+  const multiChoiceData = useMemo(
+    () =>
+      data?.surveys_by_pk?.questions
+        .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
+        .map((q) => ({
+          id: q.id,
+          responses_aggregate: q?.responses_aggregate,
+          options: q.options.map((o) => ({
+            x: q?.responses_aggregate?.aggregate?.count
+              ? o?.responses_aggregate?.aggregate?.count
+              : null,
+            label: o.content,
+          })),
+        }))
+        .filter((q) => q.options.every((o) => o.x !== null)),
+    [data?.surveys_by_pk?.questions],
+  );
 
   useEffect(() => {
     if (!loading && error) {
@@ -109,38 +137,74 @@ export const SurveyResults: FC<Props> = ({ host }) => {
     return <Center>Loading</Center>;
   }
 
+  if (!data?.surveys_by_pk?.is_public && !isOwner) {
+    return <Center>Survey is not public</Center>;
+  }
+
   return data?.surveys_by_pk ? (
     <Box px={2}>
       <Flex align='baseline' my={4}>
         <Heading size='md'>{data.surveys_by_pk.title}</Heading>
         <Spacer />
-        <FormControl display='flex' alignItems='center' w={32}>
-          <FormLabel htmlFor='isactive' mb='0'>
-            Activate
-          </FormLabel>
-          <Switch
-            isChecked={data?.surveys_by_pk.is_active ?? false}
-            onChange={async (e) => {
-              if (data.surveys_by_pk?.id) {
-                await updateSurvey({
-                  variables: {
-                    id: data.surveys_by_pk?.id,
-                    surveyInput: {
-                      is_active: e.currentTarget.checked,
-                    },
-                  },
-                });
+        {isOwner && (
+          <>
+            <FormControl display='flex' alignItems='center' w={32}>
+              <FormLabel htmlFor='isactive' mb='0'>
+                Activate
+              </FormLabel>
+              <Switch
+                isChecked={data?.surveys_by_pk.is_active ?? false}
+                onChange={async (e) => {
+                  if (data.surveys_by_pk?.id) {
+                    await updateSurvey({
+                      variables: {
+                        id: data.surveys_by_pk?.id,
+                        surveyInput: {
+                          is_active: e.currentTarget.checked,
+                        },
+                      },
+                    });
 
-                await refetch();
-              }
-            }}
-            isDisabled={loading}
-            id='isactive'
-          />
-        </FormControl>
-        <Button onClick={handleDataExport} colorScheme='teal' ml={2} size='xs'>
-          Export
-        </Button>
+                    await refetch();
+                  }
+                }}
+                isDisabled={loading}
+                id='isactive'
+              />
+            </FormControl>
+            <FormControl display='flex' alignItems='center' w={32}>
+              <FormLabel htmlFor='ispublic' mb='0'>
+                Public
+              </FormLabel>
+              <Switch
+                isChecked={data?.surveys_by_pk.is_public ?? false}
+                onChange={async (e) => {
+                  if (data.surveys_by_pk?.id) {
+                    await updateSurvey({
+                      variables: {
+                        id: data.surveys_by_pk?.id,
+                        surveyInput: {
+                          is_public: e.currentTarget.checked,
+                        },
+                      },
+                    });
+
+                    await refetch();
+                  }
+                }}
+                isDisabled={loading}
+                id='ispublic'
+              />
+            </FormControl>
+            <Button
+              onClick={handleDataExport}
+              colorScheme='teal'
+              ml={2}
+              size='xs'>
+              Export
+            </Button>
+          </>
+        )}
       </Flex>
       <Flex mb={4} alignItems='center'>
         <Input value={`${host}${surveyLink}`} isReadOnly />
@@ -170,8 +234,10 @@ export const SurveyResults: FC<Props> = ({ host }) => {
           </Text>
           {!!data.surveys_by_pk.max_responses && (
             <Progress
+              colorScheme='purple'
               value={data?.surveys_by_pk?.response_count}
               max={data.surveys_by_pk.max_responses}
+              borderRadius={2}
             />
           )}
         </GridItem>
@@ -194,6 +260,41 @@ export const SurveyResults: FC<Props> = ({ host }) => {
             </Text>
           )}
         </GridItem>
+        {multiChoiceData && multiChoiceData.length > 0 && (
+          <GridItem
+            backgroundColor='white'
+            border='1px'
+            borderColor='gray.200'
+            borderRadius={8}
+            colSpan={2}
+            p={4}>
+            <HStack h='100%'>
+              <VStack h='100%' flexGrow={0}>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
+                  )),
+                )}
+              </VStack>
+              <VStack flexGrow={1} h='100%'>
+                {multiChoiceData.map((q) =>
+                  q.options.map((o) => (
+                    <Progress
+                      borderRadius={2}
+                      colorScheme='purple'
+                      w='100%'
+                      key={`${q.id}-${o.x}`}
+                      flexGrow={1}
+                      min={0}
+                      max={q.responses_aggregate.aggregate?.count ?? 0}
+                      value={o.x ?? 0}
+                    />
+                  )),
+                )}
+              </VStack>
+            </HStack>
+          </GridItem>
+        )}
       </Grid>
       <SurveyResultsList />
     </Box>
