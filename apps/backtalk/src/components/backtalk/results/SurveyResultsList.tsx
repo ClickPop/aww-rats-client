@@ -1,4 +1,4 @@
-import { Box, VStack, Heading, Text } from '@chakra-ui/react';
+import { Box, Link, VStack, Heading, Text } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import React, { FC, useContext } from 'react';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
@@ -32,7 +32,11 @@ export const SurveyResultsList: FC = () => {
             <Text color='gray.500' fontSize='xs' fontWeight='700'>
               Wallet Address:
             </Text>
-            <Text mb={4}>{wallet}</Text>
+            <Text mb={4}>
+              <Link href={`https://opensea.io/{wallet}`} ml={2} isExternal>
+                {wallet}
+              </Link>
+            </Text>
             <Text color='gray.500' fontSize='xs' fontWeight='700'>
               Tokens Owned:
             </Text>
