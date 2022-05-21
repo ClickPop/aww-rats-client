@@ -69,6 +69,11 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
               }
             : undefined,
           survey_responses: undefined,
+          survey_image: surveyResult?.data?.surveys_by_pk?.survey_image
+            ? {
+                data: surveyResult?.data?.surveys_by_pk?.survey_image,
+              }
+            : undefined,
         },
       });
       off();

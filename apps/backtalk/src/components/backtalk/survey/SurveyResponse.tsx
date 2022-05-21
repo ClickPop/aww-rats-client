@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  AspectRatio,
 } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
@@ -161,9 +162,33 @@ export const SurveyResponse: FC = () => {
       </>
     );
   }
-
+  console.log(data?.survey_image?.url);
   return (
-    <>
+    <Box mt={!!data?.survey_image?.url ? 16 : 0} position='relative'>
+      {!!data?.survey_image?.url && (
+        <Box
+          bg='purple.800'
+          w={150}
+          h={150}
+          p={2}
+          position='absolute'
+          overflow='hidden'
+          rounded='full'
+          left='50%'
+          top='-150px'
+          transform='translateX(-50%)'>
+          <Box
+            rounded='full'
+            overflow='hidden'
+            width={125}
+            height={125}
+            mx='auto'
+            mt='5%'
+            position='relative'>
+            <Image src={data?.survey_image?.url ?? ''} layout='fill' />
+          </Box>
+        </Box>
+      )}
       <Text as='h1' mb={2} fontSize='xl' fontWeight='700'>
         {data.title}
       </Text>
@@ -190,6 +215,11 @@ export const SurveyResponse: FC = () => {
                     </Link>
                   </MenuItem>
                 ))}
+                <MenuItem color='black'>
+                  <Link href={`https://opensea.io/${data.owner}`} isExternal>
+                    View on opensea.io
+                  </Link>
+                </MenuItem>
               </MenuList>
             </Menu>
           </Box>
@@ -221,6 +251,6 @@ export const SurveyResponse: FC = () => {
       ) : (
         <SurveyQuestionStepper />
       )}
-    </>
+    </Box>
   );
 };

@@ -50,5 +50,8 @@ query getSurveyById(
         }
       }
     }
+    survey_image {
+      url
+    }
   }
 }
