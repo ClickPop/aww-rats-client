@@ -9,14 +9,9 @@ const NotFoundPage: NextPage = () => {
     <LayoutDashboard>
       <VStack>
         <Box py={12}>
-          <Image
-            src={fourohfour}
-            alt='404'
-          />
+          <Image src={fourohfour} alt='404' />
         </Box>
-        <Heading size='lg'>
-          Uh oh, looks like this doesn&apos;t exist.
-        </Heading>
+        <Heading size='lg'>Uh oh, looks like this doesn&apos;t exist.</Heading>
       </VStack>
     </LayoutDashboard>
   );
