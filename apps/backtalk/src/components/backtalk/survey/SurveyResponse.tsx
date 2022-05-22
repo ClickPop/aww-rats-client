@@ -22,7 +22,7 @@ import Login from 'common/components/access/Login';
 import { Supported_Chains_Enum } from '~/schema/generated';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk-icon.svg';
-import { useAccount, useConnect, useProvider } from 'wagmi';
+import { useAccount, useProvider } from 'wagmi';
 
 export const SurveyResponse: FC = () => {
   const {
@@ -35,7 +35,6 @@ export const SurveyResponse: FC = () => {
   const ethProvider = useProvider({ chainId: 1 });
   const polyProvider = useProvider({ chainId: 137 });
 
-  const { isConnected: connected } = useConnect();
   const { data: account } = useAccount();
 
   const signerAddr = account?.address;
@@ -95,7 +94,7 @@ export const SurveyResponse: FC = () => {
     return <Center h='100%'>Checking Token Balance...</Center>;
   }
 
-  if (connected && data.id === -1) {
+  if (!!signerAddr && data.id === -1) {
     return <Center>Survey Not Found</Center>;
   }
 
@@ -194,7 +193,7 @@ export const SurveyResponse: FC = () => {
             </Menu>
           </Box>
           {data.description && <Text mb={4}>{data.description}</Text>}
-          {connected && isLoggedIn ? (
+          {!!signerAddr && isLoggedIn ? (
             <Button
               colorScheme='gray'
               mt={4}
