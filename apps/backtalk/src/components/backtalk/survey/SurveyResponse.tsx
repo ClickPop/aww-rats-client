@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  HStack,
 } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Emoji } from '~/components/shared/Emoji';
@@ -22,7 +23,8 @@ import Login from 'common/components/access/Login';
 import { Supported_Chains_Enum } from '~/schema/generated';
 import { Image } from '~/components/shared/Image';
 import BacktalkLogo from 'src/assets/images/backtalk-icon.svg';
-import { useAccount, useProvider } from 'wagmi';
+import { useAccount, useConnect, useProvider } from 'wagmi';
+import { css, Global } from '@emotion/react';
 
 export const SurveyResponse: FC = () => {
   const {
@@ -160,25 +162,61 @@ export const SurveyResponse: FC = () => {
       </>
     );
   }
-
+  console.log(data?.survey_image?.url);
   return (
-    <>
+    <Box mt={!!data?.survey_image?.url ? 16 : 0} position='relative'>
+      {!!data?.survey_image?.url && (
+        <Box
+          bg='purple.800'
+          w={140}
+          h={140}
+          p={2}
+          position='absolute'
+          overflow='hidden'
+          rounded='full'
+          left='50%'
+          top='-140px'
+          transform='translateX(-50%)'>
+          <Box
+            rounded='full'
+            overflow='hidden'
+            width={120}
+            height={120}
+            mx='auto'
+            mt='1%'
+            position='relative'>
+            <Image src={data?.survey_image?.url ?? ''} layout='fill' />
+          </Box>
+        </Box>
+      )}
       <Text as='h1' mb={2} fontSize='xl' fontWeight='700'>
         {data.title}
       </Text>
       {data.step < 0 ? (
         <Box>
-          <Box
+          <HStack
             as='span'
-            isTruncated
-            maxWidth='60%'
+            maxW='100%'
             fontSize='xs'
             fontWeight='bold'
             color='purple.200'
-            mb={4}>
-            Created by{' '}
+            mb={4}
+            alignItems='flex-start'
+            isTruncated
+            css={css`
+              button.test span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            `}>
+            <Text>Created by</Text>
             <Menu>
-              <MenuButton>{data.owner}</MenuButton>
+              <MenuButton
+                className='test'
+                marginInline='0.5ch !important'
+                isTruncated>
+                {data.owner}
+              </MenuButton>
               <MenuList>
                 {['etherscan.io', 'polygonscan.com'].map((scan) => (
                   <MenuItem key={scan} color='black'>
@@ -189,9 +227,14 @@ export const SurveyResponse: FC = () => {
                     </Link>
                   </MenuItem>
                 ))}
+                <MenuItem color='black'>
+                  <Link href={`https://opensea.io/${data.owner}`} isExternal>
+                    View on opensea.io
+                  </Link>
+                </MenuItem>
               </MenuList>
             </Menu>
-          </Box>
+          </HStack>
           {data.description && <Text mb={4}>{data.description}</Text>}
           {!!signerAddr && isLoggedIn ? (
             <Button
@@ -220,6 +263,6 @@ export const SurveyResponse: FC = () => {
       ) : (
         <SurveyQuestionStepper />
       )}
-    </>
+    </Box>
   );
 };

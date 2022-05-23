@@ -42,7 +42,7 @@ export const EthersContextProvider = <
   useLogin,
   checkFunc,
 }: Props<D>) => {
-  const [login, { loading: authLoading, error: authError }] = useLogin();
+  const [login, { loading: loginLoading, error: authError }] = useLogin();
   const authState = useAuth<D>(checkAuth, login, checkFunc);
   const { data: account } = useAccount();
   const connected = useMemo(() => !!account?.address, [account]);
@@ -51,7 +51,7 @@ export const EthersContextProvider = <
     <EthersContext.Provider
       value={{
         ...authState,
-        authLoading,
+        authLoading: authState.authLoading || loginLoading,
         authError,
         connected,
       }}>

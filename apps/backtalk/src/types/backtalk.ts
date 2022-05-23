@@ -39,6 +39,8 @@ export type SurveyFormAction =
   | { type: 'setState'; payload: SurveyFormState }
   | { type: 'editTitle'; payload: string }
   | { type: 'editActive'; payload: boolean }
+  | { type: 'addImage'; payload: number }
+  | { type: 'deleteImage' }
   | { type: 'addQuestion'; payload: Questions_Insert_Input }
   | { type: 'deleteQuestion'; payload: number }
   | {
