@@ -24,6 +24,17 @@ import {
   Stack,
   InputGroup,
   InputRightElement,
+  Modal,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Grid,
+  GridItem,
+  AspectRatio,
+  Center,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, {
@@ -31,6 +42,7 @@ import React, {
   FormEventHandler,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { ActionBar } from '~/components/backtalk/ActionBar';
@@ -43,15 +55,18 @@ import {
   Question_Type_Enum,
   Supported_Chains_Enum,
   useCreateSurveyMutation,
+  useGetImagesByWalletQuery,
 } from '~/schema/generated';
 import { utils } from 'ethers';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { Image } from '~/components/shared/Image';
 
 export const SurveyForm = () => {
   const { push } = useRouter();
   const signerAddr = useSignerAddress();
   const [hasMaxResponses, { toggle: toggleMaxResponses }] = useBoolean(false);
   const [hasContracts, { toggle: toggleContracts }] = useBoolean(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
@@ -75,6 +90,24 @@ export const SurveyForm = () => {
   });
 
   const [createSurvey, { loading }] = useCreateSurveyMutation();
+  const {
+    data: imageData,
+    loading: imageLoading,
+    error: imageError,
+  } = useGetImagesByWalletQuery({
+    variables: {
+      wallet: signerAddr!,
+    },
+    skip: !signerAddr,
+  });
+
+  const imageUrl = useMemo(
+    () =>
+      imageData?.survey_images?.find(
+        (image) => image.id === surveyData?.image_id,
+      ),
+    [imageData?.survey_images, surveyData?.image_id],
+  );
 
   useEffect(() => {
     surveyDataDispatch({
@@ -228,6 +261,71 @@ export const SurveyForm = () => {
             resize='none'
           />
         </FormControl>
+        <Box mb={4}>
+          {!!surveyData?.image_id && !!imageUrl ? (
+            <AspectRatio rounded='full' w='200px' overflow='hidden' ratio={1}>
+              <Box width='100%' h='100%' position='relative'>
+                <Image src={imageUrl.url} layout='fill' />
+                <Center
+                  position='absolute'
+                  width='100%'
+                  height='100%'
+                  onClick={() => surveyDataDispatch({ type: 'deleteImage' })}
+                  opacity='0%'
+                  _hover={{ opacity: '100%' }}
+                  bg='rgba(100, 100, 100, 0.8)'
+                  color='white'
+                  transition='opacity 100ms ease'
+                  cursor='pointer'>
+                  Remove Image
+                </Center>
+              </Box>
+            </AspectRatio>
+          ) : (
+            <Button onClick={onOpen}>Add Image</Button>
+          )}
+        </Box>
+        <Modal onClose={onClose} isOpen={isOpen} size='xl'>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Choose an Image...</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody maxH={{ base: '100vh', sm: '50vh' }} overflow='scroll'>
+              <Grid
+                gap={4}
+                templateColumns={{
+                  base: 'repeat(2, 1fr)',
+                  sm: 'repeat(3, 1fr)',
+                }}>
+                {imageData?.survey_images?.map((image) => (
+                  <AspectRatio
+                    rounded='full'
+                    overflow='hidden'
+                    key={`image-${image.id}`}
+                    ratio={1}>
+                    <GridItem
+                      width='100%'
+                      h='100%'
+                      position='relative'
+                      cursor='pointer'>
+                      <Image
+                        onClick={() => {
+                          surveyDataDispatch({
+                            type: 'addImage',
+                            payload: image.id,
+                          });
+                          onClose();
+                        }}
+                        src={image.url}
+                        layout='fill'
+                      />
+                    </GridItem>
+                  </AspectRatio>
+                ))}
+              </Grid>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
         <FormControl mb={4} isInvalid={error.contract}>
           <Flex as='span'>
             <FormLabel htmlFor='contract'>Limit to Contract</FormLabel>

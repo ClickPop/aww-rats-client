@@ -33,7 +33,7 @@ export const SurveyResultsList: FC = () => {
               Wallet Address:
             </Text>
             <Text mb={4}>
-              <Link href={`https://opensea.io/{wallet}`} ml={2} isExternal>
+              <Link href={`https://opensea.io/${wallet}`} ml={2} isExternal>
                 {wallet}
               </Link>
             </Text>

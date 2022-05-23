@@ -18,9 +18,18 @@ import {
   Input,
   HStack,
   VStack,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  PopoverFooter,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { SurveyResultsList } from '~/components/backtalk/results/SurveyResultsList';
 import { BacktalkSurveyResultContext } from '~/components/context/BacktalkSurveyResults';
@@ -28,6 +37,7 @@ import { hashids } from '~/utils/hash-ids';
 import {
   Question_Type_Enum,
   useUpdateSurveyMutation,
+  useDeleteSurveyMutation,
 } from '~/schema/generated';
 
 type Props = {
@@ -40,12 +50,18 @@ export const SurveyResults: FC<Props> = ({ host }) => {
   } = useContext(BacktalkSurveyResultContext);
 
   const [updateSurvey, { loading, error }] = useUpdateSurveyMutation();
+  const [deleteSurvey, { loading: deleteLoading, error: deleteError }] =
+    useDeleteSurveyMutation();
+
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
   const signerAddr = useSignerAddress();
 
   const isOwner = data?.surveys_by_pk?.owner === signerAddr;
 
   const toast = useToast();
+
+  const { push } = useRouter();
 
   const multiChoiceData = useMemo(
     () =>
@@ -203,6 +219,42 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               size='xs'>
               Export
             </Button>
+            <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+              <PopoverTrigger>
+                <Button ml={2} colorScheme='red' size='xs'>
+                  Delete
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverBody>
+                  <Text>Are you sure you want to delete this survey?</Text>
+                  <Text fontWeight='bold'>This cannot be undone!</Text>
+                </PopoverBody>
+                <PopoverFooter>
+                  <HStack justifyContent='end'>
+                    <Button onClick={onClose} colorScheme='red' size='xs'>
+                      No
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        if (data?.surveys_by_pk?.id) {
+                          await deleteSurvey({
+                            variables: {
+                              id: data.surveys_by_pk.id,
+                            },
+                          });
+                          push('/');
+                        }
+                      }}
+                      isLoading={deleteLoading}
+                      colorScheme='teal'
+                      size='xs'>
+                      Yes
+                    </Button>
+                  </HStack>
+                </PopoverFooter>
+              </PopoverContent>
+            </Popover>
           </>
         )}
       </Flex>

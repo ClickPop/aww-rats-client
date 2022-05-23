@@ -26,10 +26,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           id: Number(hashids.decode(ctx.params.id)[0]),
         },
       });
-      if (res.data) {
+      if (res.data?.surveys_by_pk) {
         surveyData = res.data;
+      } else {
+        return {
+          notFound: true,
+        };
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   }
   return {
     props: {

@@ -1,0 +1,6 @@
+query GetImagesByWallet($wallet: String!) {
+  survey_images(where: {_or: [{owner: {_eq: $wallet}}, {owner: {_is_null: true}}]}) {
+    id
+    url
+  }
+}
