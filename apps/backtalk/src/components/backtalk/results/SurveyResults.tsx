@@ -26,6 +26,7 @@ import {
   PopoverBody,
   PopoverFooter,
   useDisclosure,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
@@ -69,6 +70,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
         .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
         .map((q) => ({
           id: q.id,
+          prompt: q.prompt,
           responses_aggregate: q?.responses_aggregate,
           options: q.options.map((o) => ({
             x: q?.responses_aggregate?.aggregate?.count
@@ -312,41 +314,60 @@ export const SurveyResults: FC<Props> = ({ host }) => {
             </Text>
           )}
         </GridItem>
-        {multiChoiceData && multiChoiceData.length > 0 && (
-          <GridItem
-            backgroundColor='white'
-            border='1px'
-            borderColor='gray.200'
-            borderRadius={8}
-            colSpan={2}
-            p={4}>
-            <HStack h='100%'>
-              <VStack h='100%' flexGrow={0}>
-                {multiChoiceData.map((q) =>
-                  q.options.map((o) => (
-                    <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
-                  )),
-                )}
+        {multiChoiceData &&
+          multiChoiceData.length > 0 &&
+          multiChoiceData.map((q) => (
+            <GridItem
+              backgroundColor='white'
+              border='1px'
+              borderColor='gray.200'
+              borderRadius={8}
+              colSpan={2}
+              key={`${q.id}-chart`}
+              p={4}>
+              <VStack w='100%' h='100%'>
+                <Text color='gray.500' fontSize='xs' fontWeight='700' w='full'>
+                  {q.prompt}
+                </Text>
+                <HStack w='100%' h='100%'>
+                  <VStack h='100%' flexGrow={0}>
+                    {q.options.map((o) => (
+                      <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
+                    ))}
+                  </VStack>
+                  <VStack flexGrow={1} h='100%'>
+                    {q.options.map((o) => (
+                      <Box
+                        key={`${q.id}-${o.x}`}
+                        w='100%'
+                        flexGrow={1}
+                        position='relative'>
+                        <Progress
+                          borderRadius={2}
+                          h='100%'
+                          colorScheme='purple'
+                          min={0}
+                          max={q.responses_aggregate.aggregate?.count ?? 0}
+                          value={o.x ?? 0}
+                        />
+                        <Box
+                          position='absolute'
+                          right={0}
+                          top={0}
+                          px={2}
+                          borderRadius={2}
+                          bg='darkAlpha.100'
+                          color='white'
+                          fontWeight='bold'>
+                          {o.x}
+                        </Box>
+                      </Box>
+                    ))}
+                  </VStack>
+                </HStack>
               </VStack>
-              <VStack flexGrow={1} h='100%'>
-                {multiChoiceData.map((q) =>
-                  q.options.map((o) => (
-                    <Progress
-                      borderRadius={2}
-                      colorScheme='purple'
-                      w='100%'
-                      key={`${q.id}-${o.x}`}
-                      flexGrow={1}
-                      min={0}
-                      max={q.responses_aggregate.aggregate?.count ?? 0}
-                      value={o.x ?? 0}
-                    />
-                  )),
-                )}
-              </VStack>
-            </HStack>
-          </GridItem>
-        )}
+            </GridItem>
+          ))}
       </Grid>
       <SurveyResultsList />
     </Box>

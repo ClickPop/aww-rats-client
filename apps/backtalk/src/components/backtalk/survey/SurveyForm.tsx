@@ -60,6 +60,7 @@ import {
 import { utils } from 'ethers';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { Image } from '~/components/shared/Image';
+import { hashids } from '~/utils/hash-ids';
 
 export const SurveyForm = () => {
   const { push } = useRouter();
@@ -166,7 +167,7 @@ export const SurveyForm = () => {
         },
       });
       if (res.data?.insert_surveys_one) {
-        push(`/results/${res.data.insert_surveys_one.id}`);
+        push(`/results/${hashids.encode(res.data.insert_surveys_one.id)}`);
       }
     }
   };

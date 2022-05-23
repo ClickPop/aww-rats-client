@@ -10,7 +10,7 @@ export const SurveyResultsList: FC = () => {
 
   return data?.surveys_by_pk?.response_count > 0 ? (
     <>
-      <Heading as='h2' my={4} size='md'>
+      <Heading as='h2' mt={6} mb={4} size='md'>
         Individual Responses
       </Heading>
       {(data?.surveys_by_pk?.survey_responses ?? []).map(
