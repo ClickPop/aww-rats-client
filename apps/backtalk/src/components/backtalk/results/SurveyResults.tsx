@@ -70,6 +70,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
         .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
         .map((q) => ({
           id: q.id,
+          prompt: q.prompt,
           responses_aggregate: q?.responses_aggregate,
           options: q.options.map((o) => ({
             x: q?.responses_aggregate?.aggregate?.count
@@ -313,25 +314,25 @@ export const SurveyResults: FC<Props> = ({ host }) => {
             </Text>
           )}
         </GridItem>
-        {multiChoiceData && multiChoiceData.length > 0 && (
-          <GridItem
-            backgroundColor='white'
-            border='1px'
-            borderColor='gray.200'
-            borderRadius={8}
-            colSpan={2}
-            p={4}>
-            <HStack h='100%'>
-              <VStack h='100%' flexGrow={0}>
-                {multiChoiceData.map((q) =>
-                  q.options.map((o) => (
+        {multiChoiceData &&
+          multiChoiceData.length > 0 &&
+          multiChoiceData.map((q) => (
+            <GridItem
+              backgroundColor='white'
+              border='1px'
+              borderColor='gray.200'
+              borderRadius={8}
+              colSpan={2}
+              p={4}>
+              <Text>{q.prompt}</Text>
+              <HStack h='100%'>
+                <VStack h='100%' flexGrow={0}>
+                  {q.options.map((o) => (
                     <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
-                  )),
-                )}
-              </VStack>
-              <VStack flexGrow={1} h='100%'>
-                {multiChoiceData.map((q) =>
-                  q.options.map((o) => (
+                  ))}
+                </VStack>
+                <VStack flexGrow={1} h='100%'>
+                  {q.options.map((o) => (
                     <Box
                       key={`${q.id}-${o.x}`}
                       w='100%'
@@ -357,12 +358,11 @@ export const SurveyResults: FC<Props> = ({ host }) => {
                         {o.x}
                       </Box>
                     </Box>
-                  )),
-                )}
-              </VStack>
-            </HStack>
-          </GridItem>
-        )}
+                  ))}
+                </VStack>
+              </HStack>
+            </GridItem>
+          ))}
       </Grid>
       <SurveyResultsList />
     </Box>
