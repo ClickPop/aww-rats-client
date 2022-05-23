@@ -169,22 +169,22 @@ export const SurveyResponse: FC = () => {
       {!!data?.survey_image?.url && (
         <Box
           bg='purple.800'
-          w={150}
-          h={150}
+          w={140}
+          h={140}
           p={2}
           position='absolute'
           overflow='hidden'
           rounded='full'
           left='50%'
-          top='-150px'
+          top='-140px'
           transform='translateX(-50%)'>
           <Box
             rounded='full'
             overflow='hidden'
-            width={125}
-            height={125}
+            width={120}
+            height={120}
             mx='auto'
-            mt='5%'
+            mt='1%'
             position='relative'>
             <Image src={data?.survey_image?.url ?? ''} layout='fill' />
           </Box>
