@@ -324,43 +324,45 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               borderRadius={8}
               colSpan={2}
               p={4}>
-              <Text>{q.prompt}</Text>
-              <HStack h='100%'>
-                <VStack h='100%' flexGrow={0}>
-                  {q.options.map((o) => (
-                    <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
-                  ))}
-                </VStack>
-                <VStack flexGrow={1} h='100%'>
-                  {q.options.map((o) => (
-                    <Box
-                      key={`${q.id}-${o.x}`}
-                      w='100%'
-                      flexGrow={1}
-                      position='relative'>
-                      <Progress
-                        borderRadius={2}
-                        h='100%'
-                        colorScheme='purple'
-                        min={0}
-                        max={q.responses_aggregate.aggregate?.count ?? 0}
-                        value={o.x ?? 0}
-                      />
+              <VStack w='100%' h='100%'>
+                <Text>{q.prompt}</Text>
+                <HStack w='100%' h='100%'>
+                  <VStack h='100%' flexGrow={0}>
+                    {q.options.map((o) => (
+                      <Text key={`${q.id}-${o.label}`}>{o.label}</Text>
+                    ))}
+                  </VStack>
+                  <VStack flexGrow={1} h='100%'>
+                    {q.options.map((o) => (
                       <Box
-                        position='absolute'
-                        right={0}
-                        top={0}
-                        px={2}
-                        borderRadius={2}
-                        bg='darkAlpha.100'
-                        color='white'
-                        fontWeight='bold'>
-                        {o.x}
+                        key={`${q.id}-${o.x}`}
+                        w='100%'
+                        flexGrow={1}
+                        position='relative'>
+                        <Progress
+                          borderRadius={2}
+                          h='100%'
+                          colorScheme='purple'
+                          min={0}
+                          max={q.responses_aggregate.aggregate?.count ?? 0}
+                          value={o.x ?? 0}
+                        />
+                        <Box
+                          position='absolute'
+                          right={0}
+                          top={0}
+                          px={2}
+                          borderRadius={2}
+                          bg='darkAlpha.100'
+                          color='white'
+                          fontWeight='bold'>
+                          {o.x}
+                        </Box>
                       </Box>
-                    </Box>
-                  ))}
-                </VStack>
-              </HStack>
+                    ))}
+                  </VStack>
+                </HStack>
+              </VStack>
             </GridItem>
           ))}
       </Grid>
