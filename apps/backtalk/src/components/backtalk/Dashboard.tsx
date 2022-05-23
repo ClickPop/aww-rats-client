@@ -31,8 +31,9 @@ export const Dashboard = () => {
   const { data, loading, error } = useGetSurveysByWalletQuery({
     variables: { wallet: signerAddr! },
     skip: !signerAddr,
+    fetchPolicy: 'network-only',
   });
-
+  console.log(data);
   const toast = useToast();
 
   useEffect(() => {
