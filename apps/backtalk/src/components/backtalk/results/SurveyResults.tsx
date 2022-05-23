@@ -26,6 +26,7 @@ import {
   PopoverBody,
   PopoverFooter,
   useDisclosure,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
@@ -331,16 +332,31 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               <VStack flexGrow={1} h='100%'>
                 {multiChoiceData.map((q) =>
                   q.options.map((o) => (
-                    <Progress
-                      borderRadius={2}
-                      colorScheme='purple'
-                      w='100%'
+                    <Box
                       key={`${q.id}-${o.x}`}
+                      w='100%'
                       flexGrow={1}
-                      min={0}
-                      max={q.responses_aggregate.aggregate?.count ?? 0}
-                      value={o.x ?? 0}
-                    />
+                      position='relative'>
+                      <Progress
+                        borderRadius={2}
+                        h='100%'
+                        colorScheme='purple'
+                        min={0}
+                        max={q.responses_aggregate.aggregate?.count ?? 0}
+                        value={o.x ?? 0}
+                      />
+                      <Box
+                        position='absolute'
+                        left={0}
+                        top={0}
+                        px={2}
+                        borderRadius={2}
+                        bg='gray'
+                        color='white'
+                        fontWeight='bold'>
+                        {o.x}
+                      </Box>
+                    </Box>
                   )),
                 )}
               </VStack>

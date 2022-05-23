@@ -14,17 +14,15 @@ import { format } from 'date-fns';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { LayoutDashboard } from '~/components/backtalk/LayoutDashboard';
-import {
-  useGetPublicSurveysByWalletQuery,
-  useGetSurveysByWalletQuery,
-} from '~/schema/generated';
+import { useGetSurveysByWalletQuery } from '~/schema/generated';
+import { SurveyList } from '~/components/backtalk/SurveyList';
 
 const WalletPage: NextPage = () => {
   const {
     query: { wallet },
   } = useRouter();
 
-  const { data, loading, error } = useGetPublicSurveysByWalletQuery({
+  const { data, loading, error } = useGetSurveysByWalletQuery({
     variables: {
       wallet: wallet as string,
     },
@@ -43,50 +41,8 @@ const WalletPage: NextPage = () => {
 
   return (
     <LayoutDashboard>
-      <Center
-        mt={4}
-        bgColor='white'
-        border='1px solid'
-        borderColor='gray.200'
-        borderRadius={12}>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              {data?.surveys?.some((s) => s.latest_response) && (
-                <Th>Latest Response</Th>
-              )}
-              <Th isNumeric>Responses</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data?.surveys.map((survey, i) => (
-              <Tr key={survey.id}>
-                <Td
-                  border={i === data?.surveys.length - 1 ? 'none' : undefined}
-                  _hover={{ textDecoration: 'underline' }}>
-                  <Link as={NextLink} href={`/results/${survey.id}`}>
-                    {survey.title}
-                  </Link>
-                </Td>
-                <Td
-                  border={i === data?.surveys.length - 1 ? 'none' : undefined}>
-                  {survey?.latest_response
-                    ? format(
-                        new Date(survey.latest_response),
-                        "eeee, MMMM d, yyyy 'at' H:mm  (z)",
-                      )
-                    : 'None'}
-                </Td>
-                <Td
-                  border={i === data?.surveys.length - 1 ? 'none' : undefined}
-                  isNumeric>
-                  {survey.response_count}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+      <Center>
+        <SurveyList surveys={data?.surveys ?? []} />
       </Center>
     </LayoutDashboard>
   );

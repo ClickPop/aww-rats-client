@@ -23,6 +23,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
 import { useAccount } from 'wagmi';
 import { hashids } from '~/utils/hash-ids';
+import { SurveyList } from '~/components/backtalk/SurveyList';
 
 export const Dashboard = () => {
   const { data: account } = useAccount();
@@ -34,7 +35,7 @@ export const Dashboard = () => {
     skip: !signerAddr,
     fetchPolicy: 'network-only',
   });
-  console.log(data);
+
   const toast = useToast();
 
   useEffect(() => {
@@ -47,38 +48,12 @@ export const Dashboard = () => {
     }
   }, [error, loading, toast]);
 
-  const latestResponseBySurveyId = useMemo(
-    () =>
-      data?.surveys.reduce<Record<number, Date | undefined>>(
-        (acc, curr) => ({
-          ...acc,
-          [curr.id]: curr.latest_response
-            ? new Date(curr.latest_response)
-            : undefined,
-        }),
-        {},
-      ),
-    [data?.surveys],
-  );
-
-  const responseCountBySurveyId = useMemo(
-    () =>
-      data?.surveys.reduce<Record<number, number>>(
-        (acc, curr) => ({
-          ...acc,
-          [curr.id]: curr.response_count ?? 0,
-        }),
-        {},
-      ),
-    [data?.surveys],
-  );
-
   if (loading) {
     return <Center>Loading...</Center>;
   }
 
   return (
-    <div>
+    <>
       <Flex align='baseline' my={4}>
         <Heading size='lg'>Surveys</Heading>
         <Spacer />
@@ -90,56 +65,7 @@ export const Dashboard = () => {
       </Flex>
 
       {data?.surveys && data.surveys.length > 0 ? (
-        <TableContainer
-          backgroundColor='white'
-          border='1px'
-          borderColor='gray.200'
-          borderRadius={8}>
-          <Table variant='simple'>
-            <Thead>
-              <Tr textTransform='uppercase'>
-                <Th>Name</Th>
-                <Th>Last Response</Th>
-                <Th>Status</Th>
-                <Th isNumeric>Responses</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.surveys.map((survey) => (
-                <Tr key={survey.id}>
-                  <Td>
-                    <Link href={`/results/${hashids.encode(survey.id)}`}>
-                      <Text isTruncated maxW={64}>
-                        {survey.title}
-                      </Text>
-                    </Link>
-                  </Td>
-                  <Td>
-                    {latestResponseBySurveyId?.[survey.id]
-                      ? format(
-                          latestResponseBySurveyId[survey.id] as Date,
-                          "MM/dd/yy '-' H:mm",
-                        )
-                      : 'None'}
-                  </Td>
-                  <Td>{survey.is_active ? 'Active' : 'Inactive'}</Td>
-                  <Td isNumeric>{responseCountBySurveyId?.[survey.id] ?? 0}</Td>
-                  <Td>
-                    <Link href={`/results/${hashids.encode(survey.id)}`}>
-                      📈
-                    </Link>{' '}
-                    <Link
-                      href={`/survey/${hashids.encode(survey.id)}`}
-                      openInNewTab>
-                      🔗
-                    </Link>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <SurveyList surveys={data.surveys} showActions />
       ) : (
         <Box fontSize='lg'>
           <Heading size='xl' mt={6} mb={4}>
@@ -158,6 +84,6 @@ export const Dashboard = () => {
           </UnorderedList>
         </Box>
       )}
-    </div>
+    </>
   );
 };
