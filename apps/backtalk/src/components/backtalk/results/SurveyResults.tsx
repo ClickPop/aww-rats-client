@@ -347,11 +347,11 @@ export const SurveyResults: FC<Props> = ({ host }) => {
                       />
                       <Box
                         position='absolute'
-                        left={0}
+                        right={0}
                         top={0}
                         px={2}
                         borderRadius={2}
-                        bg='gray'
+                        bg='darkAlpha.100'
                         color='white'
                         fontWeight='bold'>
                         {o.x}
