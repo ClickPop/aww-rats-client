@@ -1,4 +1,4 @@
-lockfileVersion: 5.4
+lockfileVersion: 5.3
 
 importers:
 
@@ -193,6 +193,7 @@ importers:
       graphql-request: ^3.7.0
       graphql-tag: ^2.12.6
       graphql-ws: ^5.8.1
+      hashids: ^2.2.10
       js-confetti: ^0.10.2
       jsdom: ^18.1.1
       lodash.debounce: ^4.0.8
@@ -239,6 +240,7 @@ importers:
       graphql-request: 3.7.0_graphql@15.8.0
       graphql-tag: 2.12.6_graphql@15.8.0
       graphql-ws: 5.8.1_graphql@15.8.0
+      hashids: 2.2.10
       js-confetti: 0.10.2
       jsdom: 18.1.1
       lodash.debounce: 4.0.8
@@ -10229,6 +10231,10 @@ packages:
     dependencies:
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
+
+  /hashids/2.2.10:
+    resolution: {integrity: sha512-nXnYums7F8B5Y+GSThutLPlKMaamW1yjWNZVt0WModiJfdjaDZHnhYTWblS+h1OoBx3yjwiBwxldPP3nIbFSSA==}
+    dev: false
 
   /he/1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}

@@ -11,6 +11,7 @@ import {
   GetSurveyByIdQueryVariables,
 } from '~/schema/generated';
 import { client } from '~/lib/graphql';
+import { hashids } from '~/utils/hash-ids';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let surveyData: null | GetSurveyByIdQueryResult['data'] = null;
@@ -22,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       >({
         query: GetSurveyByIdDocument,
         variables: {
-          id: Number(ctx.params.id),
+          id: Number(hashids.decode(ctx.params.id)[0]),
         },
       });
       if (res.data?.surveys_by_pk) {
@@ -50,8 +51,6 @@ type Props = {
 };
 
 const SurveyPage: NextPage<Props> = ({ surveyData, host }) => {
-  const { query } = useRouter();
-  const surveyId = typeof query.id === 'string' ? parseInt(query.id, 10) : null;
   const { asPath } = useRouter();
   return (
     <>
@@ -83,7 +82,8 @@ const SurveyPage: NextPage<Props> = ({ surveyData, host }) => {
         <meta name='twitter:card' content='summary' key='twcard' />
       </Head>
       <LayoutSurvey>
-        <BacktalkNewResponseContextProvider id={surveyId}>
+        <BacktalkNewResponseContextProvider
+          id={surveyData?.surveys_by_pk?.id ?? null}>
           <SurveyWrapper>
             <SurveyResponse />
           </SurveyWrapper>
