@@ -25,10 +25,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           id: Number(ctx.params.id),
         },
       });
-      if (res.data) {
+      if (res.data?.surveys_by_pk) {
         surveyData = res.data;
+      } else {
+        return {
+          notFound: true,
+        };
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   }
   return {
     props: {
