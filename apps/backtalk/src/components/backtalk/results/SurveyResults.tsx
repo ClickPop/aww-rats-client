@@ -323,9 +323,12 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               borderColor='gray.200'
               borderRadius={8}
               colSpan={2}
+              key={`${q.id}-chart`}
               p={4}>
               <VStack w='100%' h='100%'>
-                <Text>{q.prompt}</Text>
+                <Text color='gray.500' fontSize='xs' fontWeight='700' w='full'>
+                  {q.prompt}
+                </Text>
                 <HStack w='100%' h='100%'>
                   <VStack h='100%' flexGrow={0}>
                     {q.options.map((o) => (
