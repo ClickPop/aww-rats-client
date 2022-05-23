@@ -1,0 +1,5 @@
+mutation DeleteSurvey($id: Int!) {
+  delete_surveys_by_pk(id: $id) {
+    id
+  }
+}

@@ -8,7 +8,7 @@ export const SurveyWrapper: FC = ({ children }) => {
       boxShadow='dark-lg'
       borderRadius='xl'
       color='white'
-      my={8}
+      my={16}
       p={5}>
       {children}
     </Box>

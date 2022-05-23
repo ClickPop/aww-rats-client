@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Login: FC<Props> = ({ login, chain }) => {
-  const { handleLogin, isLoggedIn } = useContext(EthersContext);
+  const { handleLogin, isLoggedIn, authLoading } = useContext(EthersContext);
   const { data: account } = useAccount();
   const network = useNetwork();
 
@@ -26,7 +26,11 @@ const Login: FC<Props> = ({ login, chain }) => {
   }
 
   if (login && account && !isLoggedIn) {
-    return <Button onClick={handleLogin}>Login</Button>;
+    return (
+      <Button isLoading={authLoading} onClick={handleLogin}>
+        Login
+      </Button>
+    );
   }
 
   return (
