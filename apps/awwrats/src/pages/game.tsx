@@ -36,7 +36,7 @@ const GamePage: NextPage = () => {
                 px={4}
                 rounded='xl'>
                 <Image alt='The Rat Race' height='200px' src={RatRace} />
-                <Login />
+                <Login login />
                 <Box
                   textAlign='left'
                   bg='darkAlpha.500'
