@@ -7,8 +7,15 @@ import './Closet.sol';
 contract Closet2 is Closet {
   string public test;
 
-  function version() public pure virtual override returns (string memory) {
-    return '2.0';
+  function loadCloset(uint8 limit, uint8 offset)
+    public
+    view
+    virtual
+    override
+    returns (ClosetToken[] memory)
+  {
+    ClosetToken[] memory tokens = new ClosetToken[](limit < 1 ? offset : limit);
+    return tokens;
   }
 
   function setTest(string memory _test) public onlyOwner {
@@ -18,10 +25,6 @@ contract Closet2 is Closet {
 
 contract Closet3 is Closet2 {
   string public anotherTest;
-
-  function version() public pure virtual override returns (string memory) {
-    return '3.0';
-  }
 
   function setAnotherTest(string memory _test) public onlyOwner {
     anotherTest = _test;

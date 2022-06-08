@@ -33,6 +33,35 @@ struct Ban {
   string reason;
 }
 
+struct ClosetToken {
+  uint256 id;
+  uint256 supply;
+  uint256 amount;
+  Token token;
+}
+
+library ClosetLibrary {
+  function _compareStrings(string memory str1, string memory str2)
+    internal
+    pure
+    returns (bool)
+  {
+    return keccak256(bytes(str1)) == keccak256(bytes(str2));
+  }
+
+  function trimClosetTokenArray(uint256 length, ClosetToken[] memory tokens)
+    internal
+    pure
+    returns (ClosetToken[] memory)
+  {
+    ClosetToken[] memory trimmedTokens = new ClosetToken[](length);
+    for (uint256 i = 0; i < length; i++) {
+      trimmedTokens[i] = tokens[i];
+    }
+    return trimmedTokens;
+  }
+}
+
 contract Closet is
   Initializable,
   ERC1155SupplyUpgradeable,
@@ -135,73 +164,33 @@ contract Closet is
   }
 
   /** Read Only Methods */
+  function loadCloset(uint8 limit, uint8 offset)
+    public
+    view
+    virtual
+    returns (ClosetToken[] memory)
+  {
+    ClosetToken[] memory tokens = new ClosetToken[](limit);
+    uint256 totalTokens = 0;
+    for (uint256 i = 0; i < limit; i++) {
+      uint256 id = existingTokenIds[i + offset];
+      uint256 bal = balanceOf(_msgSender(), id);
+      uint256 supply = totalSupply(id);
+      Token memory token = idToToken[id];
+      if (token.active || bal > 0) {
+        tokens[i] = ClosetToken(id, supply, bal, token);
+        totalTokens++;
+      }
+    }
+    return ClosetLibrary.trimClosetTokenArray(totalTokens, tokens);
+  }
+
   function getAllTokenIds() public view virtual returns (uint256[] memory) {
     return existingTokenIds;
   }
 
-  function getAllTokens() public view virtual returns (TokenWithId[] memory) {
-    TokenWithId[] memory tokens = new TokenWithId[](existingTokenIds.length);
-    for (uint256 i = 0; i < existingTokenIds.length; i++) {
-      tokens[i] = TokenWithId(
-        existingTokenIds[i],
-        idToToken[existingTokenIds[i]]
-      );
-    }
-    return tokens;
-  }
-
-  function getActiveTokens()
-    public
-    view
-    virtual
-    returns (TokenWithId[] memory)
-  {
-    TokenWithId[] memory tokens = getAllTokens();
-    uint256 activeTokenCount = 0;
-
-    for (uint256 i = 0; i < tokens.length; i++) {
-      if (tokens[i].token.active) {
-        activeTokenCount++;
-      }
-    }
-    TokenWithId[] memory activeTokens = new TokenWithId[](activeTokenCount);
-    activeTokenCount = 0;
-    for (uint256 i = 0; i < tokens.length; i++) {
-      if (tokens[i].token.active) {
-        activeTokens[activeTokenCount] = tokens[i];
-        activeTokenCount++;
-      }
-    }
-    return activeTokens;
-  }
-
-  function getTokensByWallet(address wallet)
-    public
-    view
-    virtual
-    returns (UserToken[] memory)
-  {
-    UserToken[] memory userTokens = new UserToken[](existingTokenIds.length);
-    uint256 tokensCount = 0;
-    for (uint256 i = 0; i < existingTokenIds.length; i++) {
-      if (balanceOf(wallet, existingTokenIds[i]) > 0) {
-        userTokens[tokensCount] = UserToken(
-          existingTokenIds[i],
-          balanceOf(wallet, existingTokenIds[i]),
-          idToToken[existingTokenIds[i]]
-        );
-        tokensCount++;
-      }
-    }
-    return userTokens;
-  }
-
   function getTokenById(uint256 id) public view virtual returns (Token memory) {
     return idToToken[id];
-  }
-
-  function version() public pure virtual returns (string memory) {
-    return '1.0';
   }
 
   /** Admin */
@@ -209,7 +198,10 @@ contract Closet is
     for (uint256 j = 0; j < tokens.length; j++) {
       for (uint256 i = 0; i < existingTokenIds.length; i++) {
         require(
-          !_compareStrings(idToToken[existingTokenIds[i]].name, tokens[j].name),
+          !ClosetLibrary._compareStrings(
+            idToToken[existingTokenIds[i]].name,
+            tokens[j].name
+          ),
           'Token already exists'
         );
       }
@@ -249,7 +241,10 @@ contract Closet is
     virtual
     onlyOwner
   {
-    require(!_compareStrings(reason, ''), 'Reason cannot be empty');
+    require(
+      !ClosetLibrary._compareStrings(reason, ''),
+      'Reason cannot be empty'
+    );
     walletBans[wallet] = Ban(true, reason);
     emit WalletBanned(wallet, reason);
   }
@@ -317,7 +312,7 @@ contract Closet is
 
   modifier tokenExists(uint256 tokenId) virtual {
     require(
-      !_compareStrings(idToToken[tokenId].name, ''),
+      !ClosetLibrary._compareStrings(idToToken[tokenId].name, ''),
       'Token ID does not exist'
     );
     _;
@@ -440,15 +435,6 @@ contract Closet is
   {
     idToToken[token.id] = token.token;
     emit TokenTypeChanged(token.id, token.token);
-  }
-
-  function _compareStrings(string memory str1, string memory str2)
-    internal
-    pure
-    virtual
-    returns (bool)
-  {
-    return keccak256(bytes(str1)) == keccak256(bytes(str2));
   }
 
   /** Overrides */

@@ -19,6 +19,7 @@ import {
   RAT_CLOSET_PLACEHOLDER,
   LAYER_ORDER,
   RAT_PIECES_PREFIX,
+  CLOSET_ADDRESS,
 } from '~/config/env';
 import { fabric } from 'fabric';
 import { SingleValue } from 'react-select';
@@ -31,6 +32,9 @@ import {
 } from '~/schema/generated';
 import { ContractsContext } from '~/components/context/ContractsContext';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { useContractRead } from 'wagmi';
+import { Closet__factory, Closet } from 'types';
+import { Metadata } from '~/types';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -57,6 +61,30 @@ export const ClosetContextProvider: FC = ({ children }) => {
   const [canvas, setCanvas] = useState<CombinedCanvasNullable>(null);
   const signerAddr = useSignerAddress();
   const { closet, rat } = useContext(ContractsContext);
+  const [closetMeta, setClosetMeta] = useState<Record<string, unknown>[]>([]);
+  const { data, isLoading } = useContractRead(
+    {
+      addressOrName: CLOSET_ADDRESS ?? '',
+      contractInterface: Closet__factory.abi,
+    },
+    'loadCloset',
+  );
+
+  useEffect(() => {
+    async function loadCloset() {
+      const d = data as Awaited<ReturnType<Closet['loadCloset']>> | undefined;
+      if (d) {
+        const promises = d.map((t) =>
+          fetch(`/closet/tokens/${t.id.toString()}`).then((r) => r.json()),
+        ) as Promise<Metadata>[];
+        const tokens = await Promise.all(promises);
+        console.log(tokens);
+      }
+    }
+
+    loadCloset();
+  }, [data]);
+
   const {
     data: closetData,
     loading: closetLoading,
@@ -93,6 +121,14 @@ export const ClosetContextProvider: FC = ({ children }) => {
   useEffect(() => {
     setLoading((l) => ({ ...l, data: closetLoading }));
   }, [closetLoading]);
+
+  useEffect(() => {
+    const loadCloset = async () => {
+      const c = closet?.loadCloset(0, 0);
+    };
+
+    loadCloset();
+  }, [closet]);
 
   const handleChangeRat = useCallback(
     async (select: SingleValue<SelectRat>) => {

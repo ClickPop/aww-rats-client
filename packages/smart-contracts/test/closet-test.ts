@@ -4,10 +4,12 @@ import { parseEther } from '@ethersproject/units';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import chai, { expect } from 'chai';
 import { solidity } from 'ethereum-waffle';
+import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot';
 import { ethers, upgrades } from 'hardhat';
 import { Closet, Closet2, Closet3, MockERC20 } from '~/types';
 
 chai.use(solidity);
+chai.use(jestSnapshotPlugin());
 
 const checkEvents = (
   tx: ContractReceipt,
@@ -47,7 +49,6 @@ describe('Closet', () => {
       .transfer(user2.address, ethers.utils.parseEther('10'))
       .then((t) => t.wait());
     initialBalOwner = await weth.balanceOf(owner.address);
-    initialBalUser = await weth.balanceOf(user.address);
     const Closet = await ethers.getContractFactory('Closet', owner);
     contract = (await upgrades
       .deployProxy(Closet, [], { kind: 'uups' })
@@ -736,60 +737,16 @@ describe('Closet', () => {
         .and.to.include(2);
     });
 
-    it('should get all tokens', async () => {
-      const tokens = await contract.getAllTokens();
-      expect(tokens).to.have.length(4);
-      const [sweater, hat, revShare, shirt] = tokens;
-      expect(sweater.id.toNumber()).to.eq(1);
-      expect(sweater.token.name).to.eq('sweater');
-      expect(sweater.token.cost).to.eq(parseEther('0.002'));
-      expect(sweater.token.maxTokens).to.eq(BigNumber.from(100));
-      expect(sweater.token.active).to.eq(true);
-      expect(sweater.token.maxPerWallet.toNumber()).to.eq(0);
-      expect(sweater.token.revShareAddress).to.eq(owner.address);
-      expect(sweater.token.revShareAmount)
-        .to.have.length(2)
-        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
-      expect(hat.id.toNumber()).to.eq(2);
-      expect(hat.token.name).to.eq('hat');
-      expect(hat.token.cost).to.eq(parseEther('0.001'));
-      expect(hat.token.maxTokens).to.eq(BigNumber.from(1));
-      expect(hat.token.active).to.eq(true);
-      expect(hat.token.maxPerWallet.toNumber()).to.eq(0);
-      expect(hat.token.revShareAddress).to.eq(owner.address);
-      expect(hat.token.revShareAmount)
-        .to.have.length(2)
-        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
-      expect(revShare.id.toNumber()).to.eq(3);
-      expect(revShare.token.name).to.eq('revShare');
-      expect(revShare.token.cost).to.eq(parseEther('0.005'));
-      expect(revShare.token.maxTokens).to.eq(BigNumber.from(10));
-      expect(revShare.token.active).to.eq(true);
-      expect(revShare.token.maxPerWallet.toNumber()).to.eq(1);
-      expect(revShare.token.revShareAddress).to.eq(user3.address);
-      expect(revShare.token.revShareAmount)
-        .to.have.length(2)
-        .and.to.deep.eq([BigNumber.from(4), BigNumber.from(5)]);
-      expect(shirt.id.toNumber()).to.eq(4);
-      expect(shirt.token.name).to.eq('shirt');
-      expect(shirt.token.cost).to.eq(parseEther('0.001'));
-      expect(shirt.token.maxTokens).to.eq(BigNumber.from(0));
-      expect(shirt.token.active).to.eq(false);
-      expect(shirt.token.maxPerWallet.toNumber()).to.eq(0);
-      expect(shirt.token.revShareAddress).to.eq(owner.address);
-      expect(shirt.token.revShareAmount)
-        .to.have.length(2)
-        .and.to.deep.eq([BigNumber.from(1), BigNumber.from(1)]);
-    });
-
-    it('should get all active tokens', async () => {
-      const tokens = await contract.getActiveTokens();
-      expect(tokens).to.have.length(3);
-      expect(tokens.map((token) => token.token.name)).to.deep.eq([
-        'sweater',
-        'hat',
-        'revShare',
-      ]);
+    it('should load closet data', async () => {
+      const closet = await contract.loadCloset(3, 0);
+      expect(closet).to.have.length(3);
+      expect(closet).toMatchSnapshot();
+      const closet2 = await contract.loadCloset(2, 0);
+      expect(closet2).to.have.length(2);
+      expect(closet2).toMatchSnapshot();
+      const closet3 = await contract.loadCloset(1, 1);
+      expect(closet3).to.have.length(1);
+      expect(closet3).toMatchSnapshot();
     });
   });
 
@@ -799,14 +756,12 @@ describe('Closet', () => {
       const closet2 = (await upgrades
         .upgradeProxy(contract.address, Closet2)
         .then((c) => c.deployed())) as Closet2;
-      expect(await closet2.version()).to.be.eq('2.0');
 
       const Closet3 = await ethers.getContractFactory('Closet3', owner);
       const closet3 = (await upgrades
         .upgradeProxy(closet2.address, Closet3)
         .then((c) => c.deployed())) as Closet3;
 
-      expect(await closet3.version()).to.be.eq('3.0');
       await closet3.setTest('test').then((t) => t.wait());
       expect(await closet3.test()).to.be.eq('test');
       await closet3.setAnotherTest('test').then((t) => t.wait());

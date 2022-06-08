@@ -8,6 +8,7 @@ import '@nomiclabs/hardhat-ethers';
 import 'tsconfig-paths/register';
 import 'hardhat-watcher';
 import '@openzeppelin/hardhat-upgrades';
+import 'hardhat-contract-sizer';
 
 import { promises, readFileSync, createReadStream } from 'fs';
 const { readFile, writeFile } = promises;
@@ -197,7 +198,6 @@ task('upgrade-closet', 'Upgrade closet contract').setAction(async (_, hre) => {
     }
     const oldCloset = Closet.attach(CLOSET_ADDRESS);
     console.log(oldCloset.address);
-    console.log(await oldCloset.version());
     const closet = (await hre.upgrades
       .upgradeProxy(oldCloset, Closet)
       .then((c) => c.deployed())) as Closet;
@@ -548,9 +548,6 @@ task('add-closet-items', 'Add new closet token')
             tx.transactionHash
           }. Token ID's: ${JSON.stringify(tokenIds)}`,
         );
-      } else {
-        const tokens = await closet.getAllTokens();
-        tokenIds = tokens.map((t) => ({ [t.token.name]: t.id.toString() }));
       }
       if (tokenIds && (includeMeta || onlyMeta)) {
         console.log('Generating meta files');
@@ -732,39 +729,26 @@ task(
           ids.map((id) => id.toString()),
         );
         break;
-      case 'getAllTokens':
-        const tokens = await closet.getAllTokens();
+      case 'loadCloset':
+        const { limit, offset }: { limit: number; offset: number } =
+          await inquirer.prompt([
+            {
+              name: 'limit',
+              type: 'number',
+              message: 'Please enter the number of tokens to return:',
+            },
+            {
+              name: 'offset',
+              type: 'number',
+              message: 'Please enter the number of tokens to skip:',
+            },
+          ]);
+        const tokens = await closet.loadCloset(limit, offset);
         console.log(
           `${method}:`,
-          tokens.map(({ id, token }) => ({
+          tokens.map(({ id, supply, amount, token }) => ({
             id: id.toString(),
-            token: formatToken(token, hre),
-          })),
-        );
-        break;
-      case 'getActiveTokens':
-        const activeTokens = await closet.getActiveTokens();
-        console.log(
-          `${method}:`,
-          activeTokens.map(({ id, token }) => ({
-            id: id.toString(),
-            token: formatToken(token, hre),
-          })),
-        );
-        break;
-      case 'getTokensByWallet':
-        const { wallet }: { wallet: string } = await inquirer.prompt([
-          {
-            name: 'wallet',
-            message: 'What is the wallet you want to check?',
-            validate: (input: string) => hre.ethers.utils.isAddress(input),
-          },
-        ]);
-        const walletTokens = await closet.getTokensByWallet(wallet);
-        console.log(
-          `${method}:`,
-          walletTokens.map(({ id, token, amount }) => ({
-            id: id.toString(),
+            supply: supply.toString(),
             amount: amount.toString(),
             token: formatToken(token, hre),
           })),
@@ -969,13 +953,10 @@ task('closet-promo-mint', 'Mint and transfer tokens')
       }
       const weth = Weth.attach(await closet.erc20());
       console.log('Checking ERC20 allowance');
-      const totalCost = (await closet.getAllTokens())
-        .filter((t) => ids.includes(t.id.toString()))
-        .map((t) =>
-          t.token.cost.mul(
-            amnts.length > 1 ? ids.find((id) => t.id.eq(id)) ?? 0 : 1,
-          ),
-        )
+      const totalCost = (
+        await Promise.all(ids.map((id) => closet.getTokenById(id)))
+      )
+        .map((token, i) => token.cost.mul(amnts.length > 1 ? amnts[i] ?? 0 : 1))
         .reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
         .mul(ids.length)
         .mul(addresses.length);
@@ -1103,7 +1084,7 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 100,
+        runs: 50,
       },
     },
   },

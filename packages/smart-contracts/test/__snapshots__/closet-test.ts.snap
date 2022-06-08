@@ -1,0 +1,262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Closet Public methods should load closet data 1`] = `
+Array [
+  Array [
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x06",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    Array [
+      "sweater",
+      Object {
+        "hex": "0x071afd498d0000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x64",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x00",
+        "type": "BigNumber",
+      },
+      true,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      Array [
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+  Array [
+    Object {
+      "hex": "0x02",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Array [
+      "hat",
+      Object {
+        "hex": "0x038d7ea4c68000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x01",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x00",
+        "type": "BigNumber",
+      },
+      true,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      Array [
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+  Array [
+    Object {
+      "hex": "0x03",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x02",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Array [
+      "revShare",
+      Object {
+        "hex": "0x11c37937e08000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x0a",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x01",
+        "type": "BigNumber",
+      },
+      true,
+      "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      Array [
+        Object {
+          "hex": "0x04",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x05",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`Closet Public methods should load closet data 2`] = `
+Array [
+  Array [
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x06",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    Array [
+      "sweater",
+      Object {
+        "hex": "0x071afd498d0000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x64",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x00",
+        "type": "BigNumber",
+      },
+      true,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      Array [
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+  Array [
+    Object {
+      "hex": "0x02",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Array [
+      "hat",
+      Object {
+        "hex": "0x038d7ea4c68000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x01",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x00",
+        "type": "BigNumber",
+      },
+      true,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      Array [
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`Closet Public methods should load closet data 3`] = `
+Array [
+  Array [
+    Object {
+      "hex": "0x02",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+    Array [
+      "hat",
+      Object {
+        "hex": "0x038d7ea4c68000",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x01",
+        "type": "BigNumber",
+      },
+      Object {
+        "hex": "0x00",
+        "type": "BigNumber",
+      },
+      true,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      Array [
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+        Object {
+          "hex": "0x01",
+          "type": "BigNumber",
+        },
+      ],
+    ],
+  ],
+]
+`;
