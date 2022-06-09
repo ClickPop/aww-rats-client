@@ -105,9 +105,10 @@ export const SurveyResponse: FC = () => {
   }
 
   if (
-    typeof data?.response_count === 'number' &&
-    typeof data?.max_responses === 'number' &&
-    data?.response_count >= data?.max_responses
+    (data && !data?.is_active) ||
+    (typeof data.response_count === 'number' &&
+      typeof data.max_responses === 'number' &&
+      data?.response_count >= data?.max_responses)
   ) {
     return (
       <VStack>
@@ -116,7 +117,9 @@ export const SurveyResponse: FC = () => {
           Uh oh! You&apos;re NGMI
         </Text>
         <Text textAlign='center' fontSize='lg' pb={4}>
-          This survey already has the maximum number&nbsp;of&nbsp;responses.
+          {data.is_active
+            ? 'This survey already has the maximum number&nbsp;of&nbsp;responses.'
+            : 'This survey is closed.'}
         </Text>
         <Text textAlign='center' fontSize='lg'>
           Want to make a web3 survey of your own?
@@ -185,7 +188,11 @@ export const SurveyResponse: FC = () => {
             mx='auto'
             mt='1%'
             position='relative'>
-            <Image src={data?.survey_image?.url ?? ''} layout='fill' />
+            <Image
+              src={data?.survey_image?.url ?? ''}
+              layout='fill'
+              alt='Survey Logo'
+            />
           </Box>
         </Box>
       )}
