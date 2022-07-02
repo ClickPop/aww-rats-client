@@ -36,7 +36,6 @@ import {
   AspectRatio,
   Center,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import React, {
   ChangeEventHandler,
   FormEventHandler,
@@ -50,27 +49,50 @@ import NextImage from 'next/image';
 import EthLogo from 'src/assets/images/eth-logo.webp';
 import PolygonLogo from 'src/assets/images/matic-logo.webp';
 import { BacktalkSurveyFormContext } from '~/components/context/BacktalkSurveyForm';
-import { EthersContext } from 'common/components/context/EthersContext';
 import {
   Question_Type_Enum,
   Supported_Chains_Enum,
-  useCreateSurveyMutation,
   useGetImagesByWalletQuery,
 } from '~/schema/generated';
 import { utils } from 'ethers';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { Image } from '~/components/shared/Image';
-import { hashids } from '~/utils/hash-ids';
+import { SurveyFormState } from '~/types';
 
-export const SurveyForm = () => {
-  const { push } = useRouter();
+export interface CallBackArgs extends SurveyFormState {
+  signerAddr: string | undefined;
+  contractAddress: {
+    index: number;
+    address: string;
+  } | null;
+  prompt: {
+    index: number;
+    prompt: string;
+  } | null;
+  option: {
+    index: number;
+    question_index: number;
+    content: string;
+  } | null;
+}
+interface Props {
+  onSubmit: (data: CallBackArgs) => void;
+  isLoading: boolean;
+}
+export const SurveyForm = ({
+  onSubmit: onSubmitCallBack,
+  isLoading,
+}: Props) => {
   const signerAddr = useSignerAddress();
-  const [hasMaxResponses, { toggle: toggleMaxResponses }] = useBoolean(false);
-  const [hasContracts, { toggle: toggleContracts }] = useBoolean(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
+  const [hasMaxResponses, { toggle: toggleMaxResponses, on: onMaxResponse }] =
+    useBoolean(false);
+  const [hasContracts, { toggle: toggleContracts }] = useBoolean(
+    Boolean(surveyData.contracts),
+  );
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [maxResponses, setMaxResponses] = useState(100);
   const { title, questions, contracts } = surveyData;
   const [contractAddress, setContractAddress] = useState<{
@@ -90,12 +112,7 @@ export const SurveyForm = () => {
     contract: false,
   });
 
-  const [createSurvey, { loading }] = useCreateSurveyMutation();
-  const {
-    data: imageData,
-    loading: imageLoading,
-    error: imageError,
-  } = useGetImagesByWalletQuery({
+  const { data: imageData } = useGetImagesByWalletQuery({
     variables: {
       wallet: signerAddr!,
     },
@@ -105,9 +122,16 @@ export const SurveyForm = () => {
   const imageUrl = useMemo(
     () =>
       imageData?.survey_images?.find(
-        (image) => image.id === surveyData?.image_id,
+        //url is added because image id is missing when BacktalkSurveyFormContext is loaded form existing data for editing
+        (image) =>
+          image.id === surveyData?.image_id ||
+          image.url === surveyData.survey_image?.data.url,
       ),
-    [imageData?.survey_images, surveyData?.image_id],
+    [
+      imageData?.survey_images,
+      surveyData?.image_id,
+      surveyData.survey_image?.data.url,
+    ],
   );
 
   useEffect(() => {
@@ -119,58 +143,21 @@ export const SurveyForm = () => {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (signerAddr) {
-      const res = await createSurvey({
-        variables: {
-          surveyInput: {
-            ...surveyData,
-            is_active: true,
-            owner: signerAddr,
-            contracts: surveyData.contracts
-              ? {
-                  ...surveyData.contracts,
-                  data: surveyData.contracts.data.map((c, i) =>
-                    contractAddress?.index === i
-                      ? { ...c, address: contractAddress.address }
-                      : c,
-                  ),
-                }
-              : undefined,
-            questions: surveyData.questions
-              ? {
-                  ...surveyData.questions,
-                  data: surveyData.questions.data.map((q, i) => ({
-                    ...q,
-                    prompt:
-                      prompt && prompt.index === i && prompt.prompt
-                        ? prompt.prompt
-                        : q.prompt,
-                    options: q.options
-                      ? {
-                          ...q.options,
-                          data: q.options.data.map((o, idx) => ({
-                            ...o,
-                            content:
-                              option &&
-                              option.question_index === i &&
-                              option.index === idx &&
-                              option.content
-                                ? option.content
-                                : o.content,
-                          })),
-                        }
-                      : undefined,
-                  })),
-                }
-              : undefined,
-          },
-        },
-      });
-      if (res.data?.insert_surveys_one) {
-        push(`/results/${hashids.encode(res.data.insert_surveys_one.id)}`);
-      }
-    }
+    onSubmitCallBack({
+      ...surveyData,
+      signerAddr,
+      contractAddress,
+      prompt,
+      option,
+    });
   };
+
+  useEffect(() => {
+    if (surveyData?.max_responses) {
+      setMaxResponses(surveyData.max_responses);
+      onMaxResponse();
+    }
+  }, [surveyData?.max_responses, onMaxResponse]);
 
   const handleContractChange: ChangeEventHandler<HTMLInputElement> = async (
     e,
@@ -208,7 +195,7 @@ export const SurveyForm = () => {
       .filter((q) => q.question_type === Question_Type_Enum.MultipleChoice)
       .every(
         (q, i) =>
-          (q.options?.data.length ?? 0) >= 2 &&
+          (q.options?.data?.length ?? 0) >= 2 &&
           q.options?.data.every(
             (o, idx) =>
               !!o.content ||
@@ -263,10 +250,15 @@ export const SurveyForm = () => {
           />
         </FormControl>
         <Box mb={4}>
-          {!!surveyData?.image_id && !!imageUrl ? (
+          {imageUrl?.url ? (
             <AspectRatio rounded='full' w='200px' overflow='hidden' ratio={1}>
               <Box width='100%' h='100%' position='relative'>
-                <Image src={imageUrl.url} layout='fill' />
+                <Image
+                  id='image'
+                  src={imageUrl.url}
+                  layout='fill'
+                  alt='Survey image'
+                />
                 <Center
                   position='absolute'
                   width='100%'
@@ -473,6 +465,7 @@ export const SurveyForm = () => {
                   <FormLabel htmlFor='questionType'>Question Type</FormLabel>
                   <Select
                     id='questionType'
+                    value={q.question_type || undefined}
                     onChange={(e) => {
                       const val = e.currentTarget.value as Question_Type_Enum;
                       surveyDataDispatch({
@@ -536,7 +529,7 @@ export const SurveyForm = () => {
                   <FormControl>
                     <FormLabel>Choices</FormLabel>
                     <Stack>
-                      {q.options?.data.map((o, idx) => (
+                      {q.options?.data?.map((o, idx) => (
                         <InputGroup key={(o.content ?? '') + idx}>
                           <Input
                             value={
@@ -632,7 +625,7 @@ export const SurveyForm = () => {
           type='submit'
           name='submit'
           isDisabled={!validForm}
-          isLoading={loading}>
+          isLoading={isLoading}>
           Publish
         </Button>
       </ActionBar>
