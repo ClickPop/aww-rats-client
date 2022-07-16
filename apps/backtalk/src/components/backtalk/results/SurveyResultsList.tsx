@@ -26,7 +26,7 @@ export const SurveyResultsList: FC = () => {
             <Text mb={4} fontWeight='600'>
               {format(
                 new Date(created_at),
-                "'📅' eeee, MMMM d, yyyy 'at 🕐' H:mm  (z)",
+                "'📅' eeee, MMMM d, yyyy 'at 🕐' H:mm:ss",
               )}
             </Text>
             <Text color='gray.500' fontSize='xs' fontWeight='700'>
