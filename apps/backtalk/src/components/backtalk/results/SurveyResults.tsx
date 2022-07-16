@@ -127,12 +127,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
         ?.map(
           (r) =>
             `${r.wallet},${
-              '"' +
-              format(
-                new Date(r.created_at),
-                "eeee, MMMM d, yyyy 'at' H:mm  (z)",
-              ) +
-              '"'
+              '"' + format(new Date(r.created_at), 'dd/MM/yyyy, H:mm:ss') + '"'
             },${data?.surveys_by_pk?.contracts
               .map((c) => r.token_count[c.address])
               .join()}${
@@ -309,7 +304,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
             <Text fontSize='xl'>
               {format(
                 new Date(data.surveys_by_pk.latest_response),
-                "eeee, MMMM d, yyyy 'at' H:mm  (z)",
+                "eeee, MMMM d, yyyy 'at' H:mm:ss",
               )}
             </Text>
           )}
