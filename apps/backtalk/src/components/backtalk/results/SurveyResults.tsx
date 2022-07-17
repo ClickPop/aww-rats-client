@@ -133,8 +133,8 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               .join()}${
               data?.surveys_by_pk?.contracts.length ? ',' : ''
             }${data?.surveys_by_pk?.questions.map((q) => {
-              const response = r.question_responses?.[`${q.id}`].response;
-              return response ?? ' ';
+              const response = r.question_responses?.[`${q.id}`]?.response;
+              return response ?? '';
             })}`,
         ) ?? [];
     const csv = [headers, ...rows].join('\n');
