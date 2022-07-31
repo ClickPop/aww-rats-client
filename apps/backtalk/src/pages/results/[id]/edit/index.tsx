@@ -1,6 +1,5 @@
 import { LayoutDashboard } from '~/components/backtalk/LayoutDashboard';
 import { GetServerSideProps, NextPage } from 'next';
-import { SurveyForm } from '~/components/backtalk/survey/SurveyForm';
 import { BacktalkSurveyFormContextProvider } from '~/components/context/BacktalkSurveyForm';
 import AuthCookieRequired from 'common/components/access/AuthCookieRequired';
 import Login from 'common/components/access/Login';

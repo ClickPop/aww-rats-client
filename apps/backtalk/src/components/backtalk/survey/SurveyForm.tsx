@@ -57,61 +57,33 @@ import {
 import { utils } from 'ethers';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { Image } from '~/components/shared/Image';
-import { SurveyFormState } from '~/types';
+import { SurveyFormData } from '~/types';
 
-export interface CallBackArgs extends SurveyFormState {
-  signerAddr: string | undefined;
-  contractAddress: {
-    index: number;
-    address: string;
-  } | null;
-  prompt: {
-    index: number;
-    prompt: string;
-  } | null;
-  option: {
-    index: number;
-    question_index: number;
-    content: string;
-  } | null;
-}
 interface Props {
-  onSubmit: (data: CallBackArgs) => void;
+  onSubmit: (data: SurveyFormData) => void;
   isLoading: boolean;
 }
-export const SurveyForm = ({
-  onSubmit: onSubmitCallBack,
-  isLoading,
-}: Props) => {
+const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
   const signerAddr = useSignerAddress();
   const { surveyData, surveyDataDispatch } = useContext(
     BacktalkSurveyFormContext,
   );
+  const { title, questions, contracts } = surveyData;
   const [hasMaxResponses, { toggle: toggleMaxResponses, on: onMaxResponse }] =
     useBoolean(false);
-  const [hasContracts, { toggle: toggleContracts }] = useBoolean(
-    Boolean(surveyData.contracts),
-  );
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [hasContracts, { toggle: toggleContracts, on: onHasContracts }] =
+    useBoolean(Boolean(false));
+
   const [maxResponses, setMaxResponses] = useState(100);
-  const { title, questions, contracts } = surveyData;
-  const [contractAddress, setContractAddress] = useState<{
-    index: number;
-    address: string;
-  } | null>(null);
-  const [prompt, setPrompt] = useState<{
-    index: number;
-    prompt: string;
-  } | null>(null);
-  const [option, setOption] = useState<{
-    index: number;
-    question_index: number;
-    content: string;
-  } | null>(null);
+  const [contractAddress, setContractAddress] =
+    useState<SurveyFormData['contractAddress']>(null);
+  const [prompt, setPrompt] = useState<SurveyFormData['prompt']>(null);
+  const [option, setOption] = useState<SurveyFormData['option']>(null);
   const [error, setError] = useState<{ contract: boolean }>({
     contract: false,
   });
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: imageData } = useGetImagesByWalletQuery({
     variables: {
       wallet: signerAddr!,
@@ -122,24 +94,10 @@ export const SurveyForm = ({
   const imageUrl = useMemo(
     () =>
       imageData?.survey_images?.find(
-        //url is added because image id is missing when BacktalkSurveyFormContext is loaded form existing data for editing
-        (image) =>
-          image.id === surveyData?.image_id ||
-          image.url === surveyData.survey_image?.data.url,
+        (image) => image.id === surveyData?.image_id,
       ),
-    [
-      imageData?.survey_images,
-      surveyData?.image_id,
-      surveyData.survey_image?.data.url,
-    ],
+    [imageData?.survey_images, surveyData?.image_id],
   );
-
-  useEffect(() => {
-    surveyDataDispatch({
-      type: 'updateMaxResponses',
-      payload: hasMaxResponses ? maxResponses : null,
-    });
-  }, [hasMaxResponses, maxResponses, surveyDataDispatch]);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -151,13 +109,6 @@ export const SurveyForm = ({
       option,
     });
   };
-
-  useEffect(() => {
-    if (surveyData?.max_responses) {
-      setMaxResponses(surveyData.max_responses);
-      onMaxResponse();
-    }
-  }, [surveyData?.max_responses, onMaxResponse]);
 
   const handleContractChange: ChangeEventHandler<HTMLInputElement> = async (
     e,
@@ -171,18 +122,11 @@ export const SurveyForm = ({
         address: val,
       });
     }
-
     setError((err) => ({
       ...err,
       contract: !val ? false : !isAddress,
     }));
   };
-
-  useEffect(() => {
-    if (!hasContracts) {
-      surveyDataDispatch({ type: 'deleteContracts' });
-    }
-  }, [hasContracts, surveyDataDispatch]);
 
   const validForm =
     !!title &&
@@ -206,6 +150,52 @@ export const SurveyForm = ({
           ),
       ) &&
     !error.contract;
+
+  useEffect(() => {
+    if (surveyData.survey_image?.data.url) {
+      const initialImage = imageData?.survey_images?.find(
+        (image) => image.url === surveyData.survey_image?.data.url,
+      );
+      surveyDataDispatch({
+        type: 'addImage',
+        payload: initialImage?.id,
+      });
+    }
+  }, [
+    imageData?.survey_images,
+    surveyData.survey_image?.data.url,
+    surveyDataDispatch,
+  ]);
+
+  useEffect(() => {
+    surveyDataDispatch({
+      type: 'updateMaxResponses',
+      payload: hasMaxResponses ? maxResponses : null,
+    });
+  }, [hasMaxResponses, maxResponses, surveyDataDispatch]);
+
+  useEffect(() => {
+    if (surveyData?.max_responses) {
+      setMaxResponses(surveyData.max_responses);
+      onMaxResponse();
+    }
+  }, [surveyData?.max_responses, onMaxResponse]);
+
+  useEffect(() => {
+    if (!hasContracts) {
+      surveyDataDispatch({ type: 'deleteContracts' });
+    }
+  }, [hasContracts, surveyDataDispatch]);
+
+  useEffect(() => {
+    if (surveyData.contracts) {
+      onHasContracts();
+    }
+  }, [onHasContracts, surveyData.contracts]);
+
+  useEffect(() => {
+    console.log(Boolean(surveyData.contracts), hasContracts);
+  }, [surveyData, hasContracts]);
 
   return (
     <form onSubmit={onSubmit}>
@@ -309,6 +299,7 @@ export const SurveyForm = ({
                           });
                           onClose();
                         }}
+                        alt=''
                         src={image.url}
                         layout='fill'
                       />
@@ -632,3 +623,5 @@ export const SurveyForm = ({
     </form>
   );
 };
+
+export default SurveyForm;

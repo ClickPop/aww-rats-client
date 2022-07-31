@@ -78,3 +78,20 @@ export type SurveyFormAction =
         content: string;
       };
     };
+
+export interface SurveyFormData extends SurveyFormState {
+  signerAddr: string | undefined;
+  contractAddress: {
+    index: number;
+    address: string;
+  } | null;
+  prompt: {
+    index: number;
+    prompt: string;
+  } | null;
+  option: {
+    index: number;
+    question_index: number;
+    content: string;
+  } | null;
+}
