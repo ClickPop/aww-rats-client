@@ -94,9 +94,15 @@ const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
   const imageUrl = useMemo(
     () =>
       imageData?.survey_images?.find(
-        (image) => image.id === surveyData?.image_id,
+        (image) =>
+          image.id === surveyData?.image_id ||
+          image.url === surveyData.survey_image?.data.url,
       ),
-    [imageData?.survey_images, surveyData?.image_id],
+    [
+      imageData?.survey_images,
+      surveyData?.image_id,
+      surveyData.survey_image?.data.url,
+    ],
   );
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -150,22 +156,6 @@ const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
           ),
       ) &&
     !error.contract;
-
-  useEffect(() => {
-    if (surveyData.survey_image?.data.url) {
-      const initialImage = imageData?.survey_images?.find(
-        (image) => image.url === surveyData.survey_image?.data.url,
-      );
-      surveyDataDispatch({
-        type: 'addImage',
-        payload: initialImage?.id,
-      });
-    }
-  }, [
-    imageData?.survey_images,
-    surveyData.survey_image?.data.url,
-    surveyDataDispatch,
-  ]);
 
   useEffect(() => {
     surveyDataDispatch({
