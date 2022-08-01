@@ -50,6 +50,8 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
 
   useEffect(() => {
     if (surveyResult.data?.surveys_by_pk && signerAddr && shouldUpdateReducer) {
+      console.log('dd', surveyResult);
+
       surveyDataDispatch({
         type: 'setState',
         payload: {
@@ -61,6 +63,8 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
               id: q.id,
               prompt: q.prompt,
               is_required: q.is_required,
+              question_type: q.question_type,
+              options: { data: q?.options || [] },
             })),
           },
           contracts: surveyResult?.data?.surveys_by_pk?.contracts
@@ -78,7 +82,7 @@ export const BacktalkSurveyFormContextProvider: FC<Props> = ({
       });
       off();
     }
-  }, [off, shouldUpdateReducer, signerAddr, surveyResult.data?.surveys_by_pk]);
+  }, [off, shouldUpdateReducer, signerAddr, surveyResult]);
 
   return (
     <BacktalkSurveyFormContext.Provider
