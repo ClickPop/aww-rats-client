@@ -59,20 +59,19 @@ import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { Image } from '~/components/shared/Image';
 import { SurveyFormData } from '~/types';
 
-interface Props {
-  onSubmit: (data: SurveyFormData) => void;
-  isLoading: boolean;
-}
-const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
+const SurveyForm = () => {
   const signerAddr = useSignerAddress();
-  const { surveyData, surveyDataDispatch } = useContext(
-    BacktalkSurveyFormContext,
-  );
+  const {
+    surveyData,
+    surveyDataDispatch,
+    onSubmit: onSubmitCallBack,
+    upsertStatus: { loading: isLoading },
+  } = useContext(BacktalkSurveyFormContext);
   const { title, questions, contracts } = surveyData;
   const [hasMaxResponses, { toggle: toggleMaxResponses, on: onMaxResponse }] =
     useBoolean(false);
   const [hasContracts, { toggle: toggleContracts, on: onHasContracts }] =
-    useBoolean(Boolean(false));
+    useBoolean(false);
 
   const [maxResponses, setMaxResponses] = useState(100);
   const [contractAddress, setContractAddress] =
@@ -107,13 +106,19 @@ const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    onSubmitCallBack({
+    const data = {
       ...surveyData,
+      __typename: undefined,
+      response_count: undefined,
+      response_tokens: undefined,
+      survey_responses: undefined,
       signerAddr,
       contractAddress,
       prompt,
       option,
-    });
+    };
+
+    onSubmitCallBack(data);
   };
 
   const handleContractChange: ChangeEventHandler<HTMLInputElement> = async (
@@ -178,14 +183,10 @@ const SurveyForm = ({ onSubmit: onSubmitCallBack, isLoading }: Props) => {
   }, [hasContracts, surveyDataDispatch]);
 
   useEffect(() => {
-    if (surveyData.contracts) {
+    if (surveyData.contracts && surveyData.contracts.data.length > 0) {
       onHasContracts();
     }
   }, [onHasContracts, surveyData.contracts]);
-
-  useEffect(() => {
-    console.log(Boolean(surveyData.contracts), hasContracts);
-  }, [surveyData, hasContracts]);
 
   return (
     <form onSubmit={onSubmit}>

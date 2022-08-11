@@ -63,7 +63,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
 
   const toast = useToast();
 
-  const { push, asPath } = useRouter();
+  const { push } = useRouter();
 
   const multiChoiceData = useMemo(
     () =>
@@ -217,7 +217,8 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               size='xs'>
               Export
             </Button>
-            <NextLink href={`${asPath}/edit`}>
+            <NextLink
+              href={`/edit/${hashids.encode(data?.surveys_by_pk?.id ?? -1)}`}>
               <Button colorScheme='teal' ml={2} size='xs'>
                 Edit
               </Button>

@@ -1,0 +1,8 @@
+mutation upsertSurvey($surveyInput: surveys_insert_input!) {
+  insert_surveys_one(object: $surveyInput, on_conflict: {constraint: surveys_pkey, update_columns: [title, description, max_responses, image_id, is_active, is_public]}) {
+    questions {
+      id
+    }
+    id
+  }
+}

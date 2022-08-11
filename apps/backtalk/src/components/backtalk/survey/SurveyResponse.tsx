@@ -165,7 +165,7 @@ export const SurveyResponse: FC = () => {
       </>
     );
   }
-  console.log(data?.survey_image?.url);
+
   return (
     <Box mt={!!data?.survey_image?.url ? 16 : 0} position='relative'>
       {!!data?.survey_image?.url && (
