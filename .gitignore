@@ -42,7 +42,6 @@ gcloud-key.json
 /**/!.openzeppelin/unknown-137.json
 /**/initial-tokens.json
 /**/.env
-/**/src/types/typechain/
 /**/generated.ts
 /**/gcloud-key.json
 
