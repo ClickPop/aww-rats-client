@@ -112,7 +112,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
     [data?.surveys_by_pk?.id],
   );
 
-  const { hasCopied, onCopy } = useClipboard(surveyLink);
+  const { hasCopied, onCopy } = useClipboard(`${host}`+surveyLink);
 
   const handleDataExport = () => {
     const headers = `Wallet,Date,${data?.surveys_by_pk?.contracts
