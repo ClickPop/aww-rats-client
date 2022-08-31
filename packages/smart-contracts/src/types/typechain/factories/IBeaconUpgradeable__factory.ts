@@ -2,26 +2,26 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import { Provider } from '@ethersproject/providers';
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
 import type {
   IBeaconUpgradeable,
   IBeaconUpgradeableInterface,
-} from '../IBeaconUpgradeable';
+} from "../IBeaconUpgradeable";
 
 const _abi = [
   {
     inputs: [],
-    name: 'implementation',
+    name: "implementation",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
 ];
 
@@ -32,7 +32,7 @@ export class IBeaconUpgradeable__factory {
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider,
+    signerOrProvider: Signer | Provider
   ): IBeaconUpgradeable {
     return new Contract(address, _abi, signerOrProvider) as IBeaconUpgradeable;
   }
