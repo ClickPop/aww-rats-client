@@ -44,7 +44,7 @@ gcloud-key.json
 /**/.env
 /**/generated.ts
 /**/gcloud-key.json
-
+/**/temp/
 # TurboRepo
 .turbo
 
