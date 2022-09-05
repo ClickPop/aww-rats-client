@@ -22,7 +22,6 @@ import {
 } from '~/config/env';
 import { fabric } from 'fabric';
 import { SingleValue } from 'react-select';
-import { EthersContext } from 'common/components/context/EthersContext';
 import { closetCartReducer } from '~/reducers/closetCart';
 import {
   useGetClosetDataSubscription,
@@ -31,6 +30,7 @@ import {
 } from '~/schema/generated';
 import { ContractsContext } from '~/components/context/ContractsContext';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { useBoolean } from '@chakra-ui/react';
 
 const defaultClosetContext: ClosetContextType = {
   canvas: null,
@@ -69,6 +69,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
     variables: { id: signerAddr! },
     skip: !signerAddr,
   });
+  // const [closetLoading, {toggle: toggleClosetLoading}] = useBoolean(true);
   const [currentRat, setCurrentRat] = useState<CachedRat | null>(null);
   const [oldClothes, setOldClothes] = useState<Map<string, string>>(new Map());
   const [hidePiece, setHidePiece] = useState<Record<string, boolean>>({});
@@ -93,6 +94,34 @@ export const ClosetContextProvider: FC = ({ children }) => {
   useEffect(() => {
     setLoading((l) => ({ ...l, data: closetLoading }));
   }, [closetLoading]);
+
+  useEffect(() => {
+    const loadCloset = async () => {
+      if (closet && signerAddr) {
+        console.time('loadCloset');
+        const activeTokens = await closet.getActiveTokens();
+        console.timeLog('loadCloset', 'active tokens');
+        const userTokens = await closet
+          .getTokensByWallet(signerAddr)
+          .then((tokens) => tokens.filter((t) => t.amount.gt(0)));
+        console.timeLog('loadCloset', 'user tokens');
+        const allTokens = [...activeTokens, ...userTokens];
+        const tokenIds = Array.from(
+          new Set(allTokens.map((t) => t.id.toString())),
+        );
+        const promises = tokenIds.map((id) =>
+          fetch(`https://www.awwrats.com/closet/tokens/${id}.json`).then(
+            (res) => res.json(),
+          ),
+        );
+        const meta = await Promise.all(promises);
+        console.log(meta);
+        console.timeEnd('loadCloset');
+      }
+    };
+
+    loadCloset();
+  }, [closet, signerAddr]);
 
   const handleChangeRat = useCallback(
     async (select: SingleValue<SelectRat>) => {
