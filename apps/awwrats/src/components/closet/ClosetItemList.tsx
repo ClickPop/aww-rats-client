@@ -2,42 +2,28 @@ import React, { useContext, useMemo, useState } from 'react';
 import Select from 'react-select';
 import { ClosetItem } from '~/components/closet/ClosetItem';
 import { ClosetContext } from '~/components/context/ClosetContext';
-import { ReactSelectOption } from '~/types';
+import {
+  FilterShowEnum,
+  FilterTypeEnum,
+  ReactSelectOption,
+  TokenWithMeta,
+} from '~/types';
 import { titleCase } from '~/utils/string';
 import type { MouseEvent } from 'react';
 import { GetRatsSubscription } from '~/schema/generated';
 
 export const ClosetItemList = () => {
-  enum FilterShowEnum {
-    All = 'all',
-    Owned = 'owned',
-    Unowned = 'unowned',
-  }
-  enum FilterTypeEnum {
-    All = 'all',
-    Background = 'background',
-    Tail = 'tail',
-    Ears = 'ears',
-    Pet = 'pet',
-    Hand = 'hand',
-    Color = 'color',
-    Markings = 'markings',
-    Head = 'head',
-    Generation = 'generation',
-    Snout = 'snout',
-    Torso = 'torso',
-    Shirt = 'shirt',
-    Eyes = 'eyes',
-    Glasses = 'glasses',
-    Accessory = 'accessory',
-    Hat = 'hat',
-  }
-  const { loading, closetPieces, sponsoredPieces } = useContext(ClosetContext);
+  const { loading, closetPieces } = useContext(ClosetContext);
   const [filterShow, setFilterShow] = useState<FilterShowEnum>(
     FilterShowEnum.All,
   );
   const [filterType, setFilterType] = useState<FilterTypeEnum>(
     FilterTypeEnum.All,
+  );
+
+  const sponsoredPieces = useMemo(
+    () => closetPieces.get('sponsored'),
+    [closetPieces],
   );
 
   const activeButton =
@@ -55,48 +41,32 @@ export const ClosetItemList = () => {
     }
   };
 
-  const filterShowMethod = (
-    piece: typeof closetPieces[0],
-    state: FilterShowEnum,
-  ) => {
+  const filterShowMethod = (piece: TokenWithMeta, state: FilterShowEnum) => {
     switch (state) {
       case FilterShowEnum.Unowned:
-        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? false : true;
+        return (piece.amount.toNumber() ?? 0) > 0 ? false : true;
       case FilterShowEnum.Owned:
-        return (piece.owned.aggregate?.sum?.amount ?? 0) > 0 ? true : false;
+        return (piece.amount.toNumber() ?? 0) > 0 ? true : false;
       case FilterShowEnum.All:
       default:
         return true;
     }
   };
 
-  const piecesByType = useMemo(
-    () =>
-      closetPieces.reduce((acc, curr) => {
-        const pieceType = curr.piece_type;
-        if (pieceType) {
-          return {
-            ...acc,
-            [pieceType]: [...(acc[pieceType] ?? []), curr],
-          };
-        }
-        return acc;
-      }, {} as Record<string, typeof closetPieces>),
-    [closetPieces],
-  );
-
   const pieceTypes = useMemo(() => {
-    let pieceTypes = Object.keys(piecesByType).sort();
+    let pieceTypes = Array.from(closetPieces.keys())
+      .filter((k) => k !== 'sponsored')
+      .sort();
     let pieceTypeOptions: ReactSelectOption[] = pieceTypes.map((pieceType) => ({
       label: titleCase(pieceType),
       value: pieceType,
     }));
     return pieceTypeOptions;
-  }, [piecesByType]);
+  }, [closetPieces]);
 
   return (
     <div>
-      {!loading.data && (
+      {!loading.closet && (
         <div className='filters flex space-x-4'>
           <div className='inline-flex rounded-md shadow-sm' role='group'>
             <button
@@ -159,11 +129,11 @@ export const ClosetItemList = () => {
 
       <div
         className={`flex flex-col w-full ${
-          loading.data
+          loading.closet
             ? 'opacity-0 pointer-events-none overflow-hidden'
             : 'opacity-1 pointer-events-auto'
         }`}>
-        {Object.values(sponsoredPieces).length > 0 &&
+        {Array.from(sponsoredPieces?.values() ?? []).length > 0 &&
           filterType === FilterTypeEnum.All && (
             <div>
               <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
@@ -186,45 +156,51 @@ export const ClosetItemList = () => {
               </p>
 
               <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                {sponsoredPieces
+                {Array.from(sponsoredPieces?.values() ?? [])
                   .filter((a) => filterShowMethod(a, filterShow))
                   .map((piece) => (
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
-                      pieceType={
-                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
-                      }
+                      pieceType={String(
+                        piece.meta.attributes.find(
+                          (a) => a.trait_type === 'Piece Type',
+                        )?.value!,
+                      )}
                     />
                   ))}
               </div>
             </div>
           )}
-        {Object.entries(piecesByType).map(([pieceType, pieces]) =>
-          filterType === FilterTypeEnum.All || filterType === pieceType ? (
-            <div key={pieceType}>
-              <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
-                {pieceType}
-              </h3>
+        {Array.from(closetPieces)
+          .filter(([pieceType]) => pieceType.toLowerCase() !== 'sponsored')
+          .map(([pieceType, pieces]) =>
+            filterType === FilterTypeEnum.All || filterType === pieceType ? (
+              <div key={pieceType}>
+                <h3 className='mt-4 mb-1 text-white bold capitalize text-xl'>
+                  {pieceType}
+                </h3>
 
-              <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                {pieces
-                  .filter((a) => filterShowMethod(a, filterShow))
-                  .map((piece) => (
-                    <ClosetItem
-                      key={piece.id.toString()}
-                      piece={piece}
-                      pieceType={
-                        piece.piece_type as keyof GetRatsSubscription['rats'][0]
-                      }
-                    />
-                  ))}
+                <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                  {Array.from(pieces.values())
+                    .filter((a) => filterShowMethod(a, filterShow))
+                    .map((piece) => (
+                      <ClosetItem
+                        key={piece.id.toString()}
+                        piece={piece}
+                        pieceType={
+                          piece.meta.attributes.find(
+                            (a) => a.trait_type === 'Piece Type',
+                          )?.value as string
+                        }
+                      />
+                    ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            ''
-          ),
-        )}
+            ) : (
+              ''
+            ),
+          )}
       </div>
     </div>
   );

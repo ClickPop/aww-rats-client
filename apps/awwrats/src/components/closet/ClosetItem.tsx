@@ -1,40 +1,50 @@
 import { ethers } from 'ethers';
-import React, { useContext, FC } from 'react';
+import React, { useContext, FC, useMemo } from 'react';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { Image } from '~/components/shared/Image';
 import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
 import { Link } from 'common/components/shared/Link';
-import {
-  GetClosetDataSubscription,
-  GetRatsSubscription,
-} from '~/schema/generated';
+import { PieceTypeUnion, TokenWithMeta } from '~/types';
 
 type Props = {
-  piece: GetClosetDataSubscription['closet_pieces'][0];
-  pieceType: keyof GetRatsSubscription['rats'][0];
+  piece: TokenWithMeta;
+  pieceType: string;
 };
 
 export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const { currentRat, tryOnClothes } = useContext(ClosetContext);
 
-  const minted = piece.minted.aggregate?.sum?.amount ?? 0;
-  const owned = piece.owned.aggregate?.sum?.amount ?? 0;
+  const minted = piece.minted.toNumber();
+  const owned = piece.amount.toNumber();
+  const maxTokens = piece.token.maxTokens.toNumber();
+  const maxTokensPerWallet = piece.token.maxPerWallet.toNumber();
 
-  const ownedItem = (piece.owned.aggregate?.sum?.amount ?? 0) > 0;
-  const tokenMaxReached = piece.max_tokens <= minted;
-  const noMaxTokens = piece.max_tokens === 0;
-  const walletMaxReached = piece.max_per_wallet <= owned;
-  const noWalletMax = piece.max_per_wallet === 0;
+  const ownedItem = owned > 0;
+  const tokenMaxReached = maxTokens <= minted;
+  const noMaxTokens = maxTokens === 0;
+  const walletMaxReached = maxTokensPerWallet <= owned;
+  const noWalletMax = maxTokensPerWallet === 0;
 
-  const selected = currentRat?.[pieceType] === piece.id;
+  const selected =
+    currentRat?.[pieceType as keyof typeof currentRat] === piece.id.toString();
 
-  if (!ownedItem && !piece.active) {
+  const sponsorName = useMemo(
+    () =>
+      piece.meta.attributes.find((a) => a.trait_type === 'Sponsor')?.value ??
+      null,
+    [piece.meta.attributes],
+  );
+  const sponsorURL = useMemo(
+    () =>
+      piece.meta.attributes.find((a) => a.trait_type === 'Sponsor URL')
+        ?.value ?? null,
+    [piece.meta.attributes],
+  );
+
+  if (!ownedItem && !piece.token.active) {
     return null;
   }
-
-  const sponsorName = piece.sponsor;
-  const sponsorURL = piece.sponsor_url;
 
   return (
     <div
@@ -43,7 +53,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden relative`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
-          src={`/closet/image-thumbnails/${piece.image
+          src={`/closet/image-thumbnails/${piece.meta.image
             .split('/')
             .slice(-1)[0]
             .replace('.png', '.webp')}`}
@@ -54,7 +64,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           }`}
           onClick={() => {
             if (ownedItem) {
-              tryOnClothes(pieceType, piece.id);
+              tryOnClothes(pieceType as PieceTypeUnion, piece.id.toString());
             }
           }}
         />
@@ -71,7 +81,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         <div className='px-2'>
           <div className='text-gray-400'>Name</div>
           <h5>
-            {piece.name}{' '}
+            {piece.meta.name}{' '}
             {sponsorName && sponsorURL && (
               <div>
                 by{' '}
@@ -90,14 +100,14 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
           <div className='text-gray-400'>Price</div>
           <div className='font-bold'>
             <Image src={PolyEthIcon} className='w-2 mr-1 inline-block' alt='' />
-            {ethers.utils.formatEther(piece.cost)}
+            {ethers.utils.formatEther(piece.token.cost)}
           </div>
         </div>
       </div>
 
-      {piece.max_tokens > 0 && (
+      {maxTokens > 0 && (
         <div className='px-2 py-2 border-t border-gray-800'>
-          {piece.max_tokens - minted} / {piece.max_tokens} left
+          {maxTokens - minted} / {maxTokens} left
         </div>
       )}
 

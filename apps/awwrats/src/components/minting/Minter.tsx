@@ -35,15 +35,17 @@ const Minter = () => {
   const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
   const [mintingError, setMintingError] = useState('');
   const network = useNetwork();
-  const { data: canMint } = useContractRead(
-    { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
-    'canMint',
-  );
+  const { data: canMint } = useContractRead({
+    addressOrName: CONTRACT_ADDRESS ?? '',
+    contractInterface: RatJSON.abi,
+    functionName: 'canMint',
+  });
 
-  const { data: cost } = useContractRead(
-    { addressOrName: CONTRACT_ADDRESS ?? '', contractInterface: RatJSON.abi },
-    'cost',
-  );
+  const { data: cost } = useContractRead({
+    addressOrName: CONTRACT_ADDRESS ?? '',
+    contractInterface: RatJSON.abi,
+    functionName: 'cost',
+  });
 
   const ethCost = useMemo(
     () =>
@@ -283,7 +285,7 @@ const Minter = () => {
     }
   };
 
-  if (!connected || network?.activeChain?.id !== CHAIN_ID) {
+  if (!connected || network?.chain?.id !== CHAIN_ID) {
     return <Login chain={CHAIN_ID} />;
   }
 

@@ -7,6 +7,7 @@ import {
   GetClosetDataSubscription,
   GetRatsSubscription,
 } from '~/schema/generated';
+import { UserTokenStructOutput } from 'smart-contracts/src/types/typechain/src/contracts/Closet';
 export * from '~/types/game';
 
 export interface ReducerAction {
@@ -75,18 +76,14 @@ export interface ClosetContextType {
   canvas: CombinedCanvasNullable;
   setCanvas: Dispatch<SetStateAction<CombinedCanvasNullable>>;
   loading: ClosetLoading;
-  rats: Array<GetRatsSubscription['rats'][0] | null>;
-  currentRat: GetRatsSubscription['rats'][0] | null;
+  rats: Array<RatToken>;
+  currentRat: RatToken | null;
   hidePiece: Record<string, boolean>;
   setHidePiece: Dispatch<SetStateAction<Record<string, boolean>>>;
   cart: ClosetCartState;
   cartDispatch: Dispatch<ClosetCartAction>;
-  tryOnClothes: (
-    pieceType: keyof GetRatsSubscription['rats'][0],
-    piece: string,
-  ) => void;
-  closetPieces: GetClosetDataSubscription['closet_pieces'];
-  sponsoredPieces: GetClosetDataSubscription['closet_pieces'];
+  tryOnClothes: (pieceType: PieceTypeUnion, piece: string) => void;
+  closetPieces: Map<string, Map<string, TokenWithMeta>>;
   handleChangeRat: (rat: SingleValue<SelectRat>) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
 }
@@ -148,7 +145,8 @@ export interface SimplifiedMetadata {
 }
 
 export interface ClosetLoading {
-  data: boolean;
+  rats: boolean;
+  closet: boolean;
   mirror: boolean;
 }
 
@@ -164,40 +162,65 @@ export type ClosetCartAction =
   | { type: 'changeAmount'; payload: ClosetCartItem }
   | { type: 'clearCart' };
 
-export type ClosetToken = {
-  name: string;
-  cost: BigNumber;
-  maxTokens: BigNumber;
-  maxPerWallet: BigNumber;
-  active: boolean;
-  revShareAddress: string;
-  revShareAmount: [BigNumber, BigNumber];
-};
-
-export type ClosetTokenWithId = {
-  id: BigNumber;
-  token: ClosetToken;
-};
-
-export interface ClosetUserToken extends ClosetTokenWithId {
-  amount: BigNumber;
+export enum FilterShowEnum {
+  All = 'all',
+  Owned = 'owned',
+  Unowned = 'unowned',
 }
 
-export interface ClosetTokenWithMeta extends ClosetTokenWithId {
-  tokenMeta: Metadata;
+export enum FilterTypeEnum {
+  All = 'all',
+  Background = 'background',
+  Tail = 'tail',
+  Ears = 'ears',
+  Pet = 'pet',
+  Hand = 'hand',
+  Color = 'color',
+  Markings = 'markings',
+  Head = 'head',
+  Generation = 'generation',
+  Snout = 'snout',
+  Torso = 'torso',
+  Shirt = 'shirt',
+  Eyes = 'eyes',
+  Glasses = 'glasses',
+  Accessory = 'accessory',
+  Hat = 'hat',
 }
 
-export interface ClosetUserTokenWithMeta extends ClosetUserToken {
-  tokenMeta: Metadata;
-}
+export type PieceTypeUnion =
+  | 'background'
+  | 'tail'
+  | 'ears'
+  | 'pet'
+  | 'hand'
+  | 'color'
+  | 'markings'
+  | 'generation'
+  | 'snout'
+  | 'torso'
+  | 'shirt'
+  | 'eyes'
+  | 'glasses'
+  | 'hat';
+
+export type PieceTypes = Exclude<FilterTypeEnum, typeof FilterTypeEnum.All>;
 
 export type RattributeUnion = 'cuteness' | 'cunning' | 'rattitude';
-export type CachedRat = GetRatsSubscription['rats'][0];
+export interface TokenWithMeta extends UserTokenStructOutput {
+  meta: Metadata;
+  minted: BigNumber;
+}
+
+export type RatToken = Pick<Metadata, 'name' | 'image' | 'description'> & {
+  id: string;
+} & Record<PieceTypeUnion, string | undefined> &
+  Record<RattributeUnion, number>;
 
 export type SelectRat = {
   label: string;
   value: string;
-  rat: CachedRat;
+  rat: RatToken;
 };
 
 export interface NetworkSwitchError {
