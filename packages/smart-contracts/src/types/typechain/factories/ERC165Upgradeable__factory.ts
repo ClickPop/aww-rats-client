@@ -2,32 +2,32 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import { Provider } from '@ethersproject/providers';
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
 import type {
   ERC165Upgradeable,
   ERC165UpgradeableInterface,
-} from '../ERC165Upgradeable';
+} from "../ERC165Upgradeable";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'bytes4',
-        name: 'interfaceId',
-        type: 'bytes4',
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
       },
     ],
-    name: 'supportsInterface',
+    name: "supportsInterface",
     outputs: [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
 ];
 
@@ -38,7 +38,7 @@ export class ERC165Upgradeable__factory {
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider,
+    signerOrProvider: Signer | Provider
   ): ERC165Upgradeable {
     return new Contract(address, _abi, signerOrProvider) as ERC165Upgradeable;
   }
