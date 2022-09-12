@@ -7,7 +7,7 @@ import {
   UserTokenStructOutput,
 } from 'smart-contracts/src/types/typechain/src/contracts/Closet';
 import { ContractsContext } from '~/components/context/ContractsContext';
-import { TokenWithMeta, Metadata } from '~/types';
+import { ClosetTokenWithMeta, Metadata } from '~/types';
 
 const isToken = (arg: any): arg is TokenStructOutput =>
   typeof arg === 'object' &&
@@ -30,11 +30,28 @@ export const useLoadCloset = () => {
   const signerAddr = useSignerAddress();
   const { closet } = useContext(ContractsContext);
   const [closetPieces, setClosetPieces] = useState<
-    Map<string, Map<string, TokenWithMeta>>
+    Map<string, Map<string, ClosetTokenWithMeta>>
   >(new Map());
   const [closetLoaded, setClosetLoaded] = useState(false);
   const [closetLoading, setClosetLoading] = useState(false);
   const [closetError, setClosetError] = useState<Error | null>(null);
+
+  const itemMinted = (pieceType: string, piece: string) => {
+    setClosetPieces((curr) => {
+      const token = curr.get(pieceType)?.get(piece);
+      console.log(pieceType, piece, token, curr);
+      if (!!token) {
+        token.amount = token.amount.add(1);
+        token[1] = token[1].add(1);
+        token.minted = token.minted.add(1);
+        curr.get(pieceType)?.set(piece, token);
+        if (curr.get('sponsored')?.has(piece)) {
+          curr.get('sponsored')?.set(piece, token);
+        }
+      }
+      return new Map(curr);
+    });
+  };
 
   useEffect(() => {
     const loadCloset = async () => {
@@ -77,11 +94,24 @@ export const useLoadCloset = () => {
                 .then((res) => res.json() as Promise<Metadata>)
                 .then((meta) => {
                   const token = tokenMap.get(id);
-                  let tmp = {} as TokenWithMeta;
+                  let tmp = {} as ClosetTokenWithMeta;
                   Object.assign(tmp, token);
                   if (!!token) {
                     tmp.minted = minted.get(id) ?? BigNumber.from(0);
-                    tmp.meta = meta;
+                    tmp.name = meta.name;
+                    tmp.image = meta.image;
+                    tmp.description = meta.description;
+                    meta.attributes.forEach((a) => {
+                      if (a.trait_type) {
+                        //HACK: I am not sure why it considers the value type of this key to be `never`
+                        //@ts-ignore
+                        tmp[
+                          a.trait_type
+                            .toLowerCase()
+                            .replaceAll(' ', '_') as keyof ClosetTokenWithMeta
+                        ] = a.value;
+                      }
+                    });
                   }
                   return tmp ?? null;
                 }),
@@ -91,9 +121,7 @@ export const useLoadCloset = () => {
               .filter((m) => m !== null)
               .reduce((prev, curr) => {
                 if (!!curr) {
-                  const pieceType = curr.meta.attributes.find(
-                    (a) => a.trait_type === 'Piece Type',
-                  )?.value;
+                  const pieceType = curr.piece_type;
                   if (typeof pieceType === 'string') {
                     if (prev.has(pieceType)) {
                       prev.get(pieceType)?.set(curr.id.toString(), curr);
@@ -122,7 +150,7 @@ export const useLoadCloset = () => {
                 }
 
                 return prev;
-              }, new Map<string, Map<string, TokenWithMeta>>()),
+              }, new Map<string, Map<string, ClosetTokenWithMeta>>()),
           );
           setClosetPieces(meta);
           setClosetLoaded(true);
@@ -141,5 +169,6 @@ export const useLoadCloset = () => {
     closetPieces,
     closetLoading,
     closetError,
+    itemMinted,
   };
 };

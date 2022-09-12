@@ -45,6 +45,7 @@ const defaultClosetContext: ClosetContextType = {
   closetPieces: new Map(),
   handleChangeRat: async () => {},
   getBase64Image: async () => {},
+  itemMinted: () => {},
 };
 
 export const ClosetContext = createContext(defaultClosetContext);
@@ -58,7 +59,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
   const [mirrorLoading, setMirrorLoading] = useState(false);
   const [cart, cartDispatch] = useReducer(closetCartReducer, {});
 
-  const { closetPieces, closetLoading } = useLoadCloset();
+  const { closetPieces, closetLoading, itemMinted } = useLoadCloset();
   const { rats, ratsLoading } = useLoadRats();
 
   const handleChangeRat = useCallback(
@@ -83,7 +84,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
 
         const piece = closetPieces.get(key)?.get(val);
         if (!!piece) {
-          return piece.meta.image;
+          return piece.image;
         }
         return `${RAT_PIECES_PREFIX}${key}-${val}.png`;
       };
@@ -224,6 +225,7 @@ export const ClosetContextProvider: FC = ({ children }) => {
         handleChangeRat,
         getBase64Image,
         tryOnClothes,
+        itemMinted,
       }}>
       {children}
     </ClosetContext.Provider>

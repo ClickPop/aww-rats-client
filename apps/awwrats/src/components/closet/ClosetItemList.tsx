@@ -6,11 +6,10 @@ import {
   FilterShowEnum,
   FilterTypeEnum,
   ReactSelectOption,
-  TokenWithMeta,
+  ClosetTokenWithMeta,
 } from '~/types';
 import { titleCase } from '~/utils/string';
 import type { MouseEvent } from 'react';
-import { GetRatsSubscription } from '~/schema/generated';
 
 export const ClosetItemList = () => {
   const { loading, closetPieces } = useContext(ClosetContext);
@@ -41,7 +40,10 @@ export const ClosetItemList = () => {
     }
   };
 
-  const filterShowMethod = (piece: TokenWithMeta, state: FilterShowEnum) => {
+  const filterShowMethod = (
+    piece: ClosetTokenWithMeta,
+    state: FilterShowEnum,
+  ) => {
     switch (state) {
       case FilterShowEnum.Unowned:
         return (piece.amount.toNumber() ?? 0) > 0 ? false : true;
@@ -162,11 +164,7 @@ export const ClosetItemList = () => {
                     <ClosetItem
                       key={piece.id.toString()}
                       piece={piece}
-                      pieceType={String(
-                        piece.meta.attributes.find(
-                          (a) => a.trait_type === 'Piece Type',
-                        )?.value!,
-                      )}
+                      pieceType={String(piece.piece_type)}
                     />
                   ))}
               </div>
@@ -188,11 +186,7 @@ export const ClosetItemList = () => {
                       <ClosetItem
                         key={piece.id.toString()}
                         piece={piece}
-                        pieceType={
-                          piece.meta.attributes.find(
-                            (a) => a.trait_type === 'Piece Type',
-                          )?.value as string
-                        }
+                        pieceType={piece.piece_type}
                       />
                     ))}
                 </div>

@@ -1,15 +1,16 @@
 import { ethers, BigNumber } from 'ethers';
 import React, { useContext, useState, FC } from 'react';
-import { LOADING_STATE, TokenWithMeta } from '~/types';
+import { LOADING_STATE, ClosetTokenWithMeta } from '~/types';
 import { ERC20 } from 'types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { ContractsContext } from '~/components/context/ContractsContext';
 import { useProvider, useSigner } from 'wagmi';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { ClosetContext } from '../context/ClosetContext';
 
 type Props = {
-  piece: TokenWithMeta;
+  piece: ClosetTokenWithMeta;
   tokenMaxReached: boolean;
   noMaxTokens: boolean;
   walletMaxReached: boolean;
@@ -28,6 +29,7 @@ export const ClosetMintButton: FC<Props> = ({
   const signerAddr = useSignerAddress();
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const { closet } = useContext(ContractsContext);
+  const { itemMinted } = useContext(ClosetContext);
 
   const canMint =
     (!tokenMaxReached || noMaxTokens) &&
@@ -61,6 +63,7 @@ export const ClosetMintButton: FC<Props> = ({
         await approveWeth();
         setLoading('TOKEN');
         await closet.mint(piece.id, 1).then((t) => t.wait());
+        itemMinted(piece.piece_type, piece.id.toString());
       } catch (err) {
         console.error(err);
       }

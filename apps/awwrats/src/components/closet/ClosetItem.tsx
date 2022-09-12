@@ -1,14 +1,14 @@
 import { ethers } from 'ethers';
-import React, { useContext, FC, useMemo } from 'react';
+import React, { useContext, FC } from 'react';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { Image } from '~/components/shared/Image';
 import PolyEthIcon from '~/assets/svg/PolyEthIcon.svg';
 import { ClosetMintButton } from '~/components/closet/ClosetMintButton';
 import { Link } from 'common/components/shared/Link';
-import { PieceTypeUnion, TokenWithMeta } from '~/types';
+import { PieceTypeUnion, ClosetTokenWithMeta } from '~/types';
 
 type Props = {
-  piece: TokenWithMeta;
+  piece: ClosetTokenWithMeta;
   pieceType: string;
 };
 
@@ -29,19 +29,6 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
   const selected =
     currentRat?.[pieceType as keyof typeof currentRat] === piece.id.toString();
 
-  const sponsorName = useMemo(
-    () =>
-      piece.meta.attributes.find((a) => a.trait_type === 'Sponsor')?.value ??
-      null,
-    [piece.meta.attributes],
-  );
-  const sponsorURL = useMemo(
-    () =>
-      piece.meta.attributes.find((a) => a.trait_type === 'Sponsor URL')
-        ?.value ?? null,
-    [piece.meta.attributes],
-  );
-
   if (!ownedItem && !piece.token.active) {
     return null;
   }
@@ -53,7 +40,7 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
       } flex flex-col justify-between bg-gray-700 bg-opacity-50 shadow-lg text-sm text-gray-200 overflow-hidden relative`}>
       <div className='overflow-hidden aspect-w-1 aspect-h-1 w-full'>
         <Image
-          src={`/closet/image-thumbnails/${piece.meta.image
+          src={`/closet/image-thumbnails/${piece.image
             .split('/')
             .slice(-1)[0]
             .replace('.png', '.webp')}`}
@@ -81,16 +68,16 @@ export const ClosetItem: FC<Props> = ({ piece, pieceType }) => {
         <div className='px-2'>
           <div className='text-gray-400'>Name</div>
           <h5>
-            {piece.meta.name}{' '}
-            {sponsorName && sponsorURL && (
+            {piece.name}{' '}
+            {piece.sponsor && piece.sponsor_url && (
               <div>
                 by{' '}
                 <a
                   className='underline'
-                  href={sponsorURL as string}
+                  href={piece.sponsor_url}
                   target='_blank'
                   rel='noreferrer'>
-                  {sponsorName}
+                  {piece.sponsor}
                 </a>
               </div>
             )}

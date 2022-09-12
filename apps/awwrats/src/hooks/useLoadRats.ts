@@ -34,7 +34,7 @@ export const useLoadRats = () => {
                   data.attributes.reduce<RatToken>(
                     (prev, curr) => {
                       if (curr.trait_type) {
-                        //Typescript is upset about this...
+                        //HACK: Typescript is upset about this...
                         //@ts-ignore
                         prev[curr.trait_type.toLowerCase() as keyof RatToken] =
                           curr.value;

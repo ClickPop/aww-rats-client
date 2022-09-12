@@ -83,9 +83,10 @@ export interface ClosetContextType {
   cart: ClosetCartState;
   cartDispatch: Dispatch<ClosetCartAction>;
   tryOnClothes: (pieceType: PieceTypeUnion, piece: string) => void;
-  closetPieces: Map<string, Map<string, TokenWithMeta>>;
+  closetPieces: Map<string, Map<string, ClosetTokenWithMeta>>;
   handleChangeRat: (rat: SingleValue<SelectRat>) => Promise<void>;
   getBase64Image: (file: Blob) => Promise<any | Error>;
+  itemMinted: (pieceType: string, piece: string) => void;
 }
 
 export type CombinedCanvas = fabric.StaticCanvas | fabric.Canvas;
@@ -207,10 +208,15 @@ export type PieceTypeUnion =
 export type PieceTypes = Exclude<FilterTypeEnum, typeof FilterTypeEnum.All>;
 
 export type RattributeUnion = 'cuteness' | 'cunning' | 'rattitude';
-export interface TokenWithMeta extends UserTokenStructOutput {
-  meta: Metadata;
-  minted: BigNumber;
-}
+export type ClosetTokenWithMeta = UserTokenStructOutput &
+  Record<RattributeUnion, number | undefined> &
+  Pick<Metadata, 'name' | 'image' | 'description'> & {
+    piece_type: PieceTypeUnion;
+    minted: BigNumber;
+    sponsor?: string;
+    sponsor_url?: string;
+    collection?: string;
+  };
 
 export type RatToken = Pick<Metadata, 'name' | 'image' | 'description'> & {
   id: string;
