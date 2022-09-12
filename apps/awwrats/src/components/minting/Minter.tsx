@@ -35,14 +35,18 @@ const Minter = () => {
   const [tokenMetadata, setTokenMetadata] = useState<Metadata | null>(null);
   const [mintingError, setMintingError] = useState('');
   const network = useNetwork();
-  const { data: canMint } = useContractRead({
-    addressOrName: CONTRACT_ADDRESS ?? '',
+  const {
+    data: canMint,
+    error,
+    isLoading,
+  } = useContractRead({
+    addressOrName: CONTRACT_ADDRESS,
     contractInterface: RatJSON.abi,
     functionName: 'canMint',
   });
 
   const { data: cost } = useContractRead({
-    addressOrName: CONTRACT_ADDRESS ?? '',
+    addressOrName: CONTRACT_ADDRESS,
     contractInterface: RatJSON.abi,
     functionName: 'cost',
   });
@@ -61,10 +65,13 @@ const Minter = () => {
   const { data: signer } = useSigner();
 
   useEffect(() => {
-    if (!canMint) {
+    if (!canMint && !error && !isLoading) {
       setMintingError('Minting is currently closed.');
+    } else if (!!error) {
+      console.error(error);
+      setMintingError(error.message);
     }
-  }, [canMint]);
+  }, [canMint, error, isLoading]);
 
   const handleMintAndGenerate = async (
     skip?: LOADING_STATE[],
