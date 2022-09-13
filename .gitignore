@@ -36,16 +36,16 @@ gcloud-key.json
 # smart-contracts
 /**/cache/
 /**/artifacts/
+/**/typechain/
 /**/constructor-args.js
 /**/.openzeppelin/unknown-*.json
 /**/!.openzeppelin/unknown-80001.json
 /**/!.openzeppelin/unknown-137.json
 /**/initial-tokens.json
 /**/.env
-/**/src/types/typechain/
 /**/generated.ts
 /**/gcloud-key.json
-
+/**/temp/
 # TurboRepo
 .turbo
 

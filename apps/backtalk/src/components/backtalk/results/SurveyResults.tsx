@@ -64,6 +64,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
   const toast = useToast();
 
   const { push } = useRouter();
+  const prot = location.protocol;
 
   const multiChoiceData = useMemo(
     () =>
@@ -113,7 +114,7 @@ export const SurveyResults: FC<Props> = ({ host }) => {
     [data?.surveys_by_pk?.id],
   );
 
-  const { hasCopied, onCopy } = useClipboard(surveyLink);
+  const { hasCopied, onCopy } = useClipboard(prot + `${host}` + surveyLink);
 
   const handleDataExport = () => {
     const headers = `Wallet,Date,${data?.surveys_by_pk?.contracts

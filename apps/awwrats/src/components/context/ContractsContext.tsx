@@ -1,8 +1,7 @@
-import { createContext, FC, useContext, useMemo } from 'react';
+import { createContext, FC, useMemo } from 'react';
 import { Closet__factory, Rat__factory, Closet, Rat } from 'types';
 import { CONTRACT_ADDRESS, CLOSET_ADDRESS } from '~/config/env';
-import { EthersContext } from 'common/components/context/EthersContext';
-import { useContractRead, useSigner } from 'wagmi';
+import { useSigner } from 'wagmi';
 
 type ContractsContext = {
   closet?: Closet;

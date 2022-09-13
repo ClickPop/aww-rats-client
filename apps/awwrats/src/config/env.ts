@@ -2,8 +2,8 @@ export const currentURL =
   process.env.VERCEL_URL ?? `http://localhost:${process.env.PORT ?? 3000}`;
 export const CHAIN_ID = 137;
 export const ETH_CHAIN_ID = 1;
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-export const CLOSET_ADDRESS = process.env.NEXT_PUBLIC_CLOSET_ADDRESS;
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '';
+export const CLOSET_ADDRESS = process.env.NEXT_PUBLIC_CLOSET_ADDRESS ?? '';
 export const PROJECT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID;
 export const API_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_PUBSUB_API_KEY;
