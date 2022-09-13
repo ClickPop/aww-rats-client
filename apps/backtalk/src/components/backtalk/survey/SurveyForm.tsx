@@ -116,6 +116,7 @@ const SurveyForm = () => {
       contractAddress,
       prompt,
       option,
+      survey_image: undefined,
     };
 
     onSubmitCallBack(data);
