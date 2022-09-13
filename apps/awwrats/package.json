@@ -26,6 +26,7 @@
     "axios": "^0.22.0",
     "common": "workspace:*",
     "date-fns": "^2.24.0",
+    "deep-object-diff": "^1.1.7",
     "ethers": "^5.4.6",
     "fabric-pure-browser": "^4.6.0",
     "feeder-react-feedback": "^0.0.6",
@@ -55,7 +56,7 @@
     "smart-contracts": "workspace:*",
     "subscriptions-transport-ws": "^0.11.0",
     "uuid": "^8.3.2",
-    "wagmi": "^0.3.4"
+    "wagmi": "^0.6.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.3.0",
@@ -81,7 +82,6 @@
     "tsconfig": "workspace:*",
     "types": "workspace:*",
     "typescript": "^4.6.4"
-
   },
   "main": "next.config.js",
   "keywords": [],

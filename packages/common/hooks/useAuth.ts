@@ -10,7 +10,7 @@ export const useAuth: UseAuthHook = (
   signerMsg,
 ) => {
   const { signMessageAsync } = useSignMessage();
-  const { data: account } = useAccount();
+  const account = useAccount();
 
   const handleLogin = async () => {
     const wallet = account?.address;

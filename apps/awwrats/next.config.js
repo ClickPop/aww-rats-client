@@ -32,6 +32,7 @@ module.exports = withTM({
       'www.awwrats.com',
       'awwrats.com',
       'storage.googleapis.com',
+      'awwrats.infura-ipfs.io'
     ],
   },
   experimental: {

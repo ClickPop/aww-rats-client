@@ -2,7 +2,7 @@ import { Button } from '@chakra-ui/react';
 import { FC, useContext } from 'react';
 import { EthersContext } from '../../components/context/EthersContext';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useSwitchNetwork } from 'wagmi';
 
 interface Props {
   login?: boolean;
@@ -11,15 +11,12 @@ interface Props {
 
 const Login: FC<Props> = ({ login, chain }) => {
   const { handleLogin, isLoggedIn, authLoading } = useContext(EthersContext);
-  const { data: account } = useAccount();
-  const network = useNetwork();
+  const account = useAccount();
+  const { switchNetwork } = useSwitchNetwork();
 
   if (chain && !!account?.connector?.chains?.find((c) => c.id === chain)) {
     return (
-      <Button
-        onClick={() =>
-          network?.switchNetworkAsync && network.switchNetworkAsync(chain)
-        }>
+      <Button onClick={() => !!switchNetwork && switchNetwork(chain)}>
         Looks like you're on the wrong network. Click here to switch.
       </Button>
     );

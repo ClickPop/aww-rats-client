@@ -7,11 +7,7 @@ import { EthersContext } from 'common/components/context/EthersContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import Login from 'common/components/access/Login';
 import { Image } from '~/components/shared/Image';
-import {
-  CHAIN_ID,
-  RAT_CLOSET_PLACEHOLDER,
-  REMOVABLE_CLOSET_PIECES,
-} from '~/config/env';
+import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
 
@@ -59,12 +55,12 @@ export const ClosetMirror = () => {
   return (
     <>
       {!connected && <Login />}
-      {loading.data && <CheeseLoader className='w-10 mx-auto' />}
-      {!loading.data && rats && (
+      {loading.rats && <CheeseLoader className='w-10 mx-auto' />}
+      {!loading.rats && rats && (
         <Select
           className='select-search mx-auto w-80 my-4'
           options={rats.map((rat) =>
-            rat ? { label: rat.id, value: rat.id, rat } : null,
+            rat ? { label: rat.name, value: rat.name, rat } : null,
           )}
           placeholder='Select your rat'
           onChange={handleChangeRat}
@@ -76,7 +72,10 @@ export const ClosetMirror = () => {
                   layout='fixed'
                   width={24}
                   height={24}
-                  src={`https://storage.googleapis.com/aww-rats/rats/cached-images/${opt.rat.id}.png`}
+                  src={`https://awwrats.infura-ipfs.io/ipfs/${opt.rat.image.replace(
+                    'ipfs://',
+                    '',
+                  )}`}
                   alt='rat thumbnail'
                   className='mr-4'
                 />

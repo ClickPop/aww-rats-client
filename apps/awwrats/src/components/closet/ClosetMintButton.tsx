@@ -1,17 +1,16 @@
 import { ethers, BigNumber } from 'ethers';
 import React, { useContext, useState, FC } from 'react';
-import { EthersContext } from 'common/components/context/EthersContext';
-import { LOADING_STATE } from '~/types';
+import { LOADING_STATE, ClosetTokenWithMeta } from '~/types';
 import { ERC20 } from 'types';
 import ERC20ABI from 'smart-contracts/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
-import { GetClosetDataSubscription } from '~/schema/generated';
 import { ContractsContext } from '~/components/context/ContractsContext';
 import { useProvider, useSigner } from 'wagmi';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
+import { ClosetContext } from '../context/ClosetContext';
 
 type Props = {
-  piece: GetClosetDataSubscription['closet_pieces'][0];
+  piece: ClosetTokenWithMeta;
   tokenMaxReached: boolean;
   noMaxTokens: boolean;
   walletMaxReached: boolean;
@@ -30,20 +29,21 @@ export const ClosetMintButton: FC<Props> = ({
   const signerAddr = useSignerAddress();
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const { closet } = useContext(ContractsContext);
+  const { itemMinted } = useContext(ClosetContext);
 
   const canMint =
     (!tokenMaxReached || noMaxTokens) &&
     (!walletMaxReached || noWalletMax) &&
-    piece.active;
+    piece.token.active;
 
   const approveWeth = async () => {
     if (closet && signer && signerAddr && provider) {
       setLoading('INITIAL');
       const wethAddr = await closet.erc20();
       const weth = new ethers.Contract(wethAddr, ERC20ABI.abi, signer) as ERC20;
-      const cost = piece.cost;
+      const cost = piece.token.cost;
       const allowance = await weth.allowance(signerAddr, closet.address);
-      if (cost > 0 && allowance.lt(cost)) {
+      if (cost.gt(0) && allowance.lt(cost)) {
         setLoading('APPROVAL');
         const bal: BigNumber = await weth.balanceOf(await signer.getAddress());
         if (bal.lt(cost)) {
@@ -63,6 +63,7 @@ export const ClosetMintButton: FC<Props> = ({
         await approveWeth();
         setLoading('TOKEN');
         await closet.mint(piece.id, 1).then((t) => t.wait());
+        itemMinted(piece.piece_type, piece.id.toString());
       } catch (err) {
         console.error(err);
       }
@@ -76,11 +77,11 @@ export const ClosetMintButton: FC<Props> = ({
         return 'Max Owned';
       case tokenMaxReached && !noMaxTokens:
         return 'View on OpenSea';
-      case !piece.active:
+      case !piece.token.active:
         return 'Unavailable';
-      case piece.cost > 0:
+      case piece.token.cost.gt(0):
         return <>Buy Now</>;
-      case piece.cost === 0:
+      case piece.token.cost.eq(0):
         return 'Free';
       default:
         return null;

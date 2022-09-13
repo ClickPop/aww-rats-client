@@ -181,17 +181,21 @@ contract Closet is
     virtual
     returns (UserToken[] memory)
   {
-    UserToken[] memory userTokens = new UserToken[](existingTokenIds.length);
+    uint256[] memory tokenIds = new uint256[](existingTokenIds.length);
     uint256 tokensCount = 0;
     for (uint256 i = 0; i < existingTokenIds.length; i++) {
       if (balanceOf(wallet, existingTokenIds[i]) > 0) {
-        userTokens[tokensCount] = UserToken(
-          existingTokenIds[i],
-          balanceOf(wallet, existingTokenIds[i]),
-          idToToken[existingTokenIds[i]]
-        );
+        tokenIds[tokensCount] = existingTokenIds[i];
         tokensCount++;
       }
+    }
+    UserToken[] memory userTokens = new UserToken[](tokensCount);
+    for (uint256 i = 0; i < tokensCount; i++) {
+      userTokens[i] = UserToken(
+        tokenIds[i],
+        balanceOf(wallet, tokenIds[i]),
+        idToToken[tokenIds[i]]
+      );
     }
     return userTokens;
   }
