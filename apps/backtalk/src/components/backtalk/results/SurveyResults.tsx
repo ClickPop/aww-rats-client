@@ -28,6 +28,7 @@ import {
   useDisclosure,
   Tooltip,
 } from '@chakra-ui/react';
+import { default as NextLink } from 'next/link';
 import { useSignerAddress } from 'common/hooks/useSignerAddress';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
@@ -217,6 +218,12 @@ export const SurveyResults: FC<Props> = ({ host }) => {
               size='xs'>
               Export
             </Button>
+            <NextLink
+              href={`/edit/${hashids.encode(data?.surveys_by_pk?.id ?? -1)}`}>
+              <Button colorScheme='teal' ml={2} size='xs'>
+                Edit
+              </Button>
+            </NextLink>
             <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
               <PopoverTrigger>
                 <Button ml={2} colorScheme='red' size='xs'>

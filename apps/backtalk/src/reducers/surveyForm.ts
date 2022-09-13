@@ -227,6 +227,7 @@ export const surveyFormReducer = (
       return {
         ...state,
         image_id: undefined,
+        survey_image: undefined,
       };
     default:
       return state;

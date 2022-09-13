@@ -1,16 +1,4 @@
-import {
-  Center,
-  Link,
-  Table,
-  Tbody,
-  Td,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
-import NextLink from 'next/link';
-import { format } from 'date-fns';
+import { Center } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { LayoutDashboard } from '~/components/backtalk/LayoutDashboard';
@@ -36,8 +24,6 @@ const WalletPage: NextPage = () => {
     console.error(error);
     return <Center>An error occurred</Center>;
   }
-
-  console.log(data);
 
   return (
     <LayoutDashboard>

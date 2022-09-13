@@ -22,7 +22,7 @@ const Login: FC<Props> = ({ login, chain }) => {
     );
   }
 
-  if (login && account && !isLoggedIn) {
+  if (login && account.isConnected && !isLoggedIn) {
     return (
       <Button isLoading={authLoading} onClick={handleLogin}>
         Login

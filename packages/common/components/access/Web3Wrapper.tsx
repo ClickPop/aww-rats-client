@@ -11,7 +11,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { INFURA_ID } from '../../env';
 
 const { chains, provider } = configureChains(
-  [chain.polygon],
+  [chain.polygon, chain.mainnet],
   [infuraProvider({ apiKey: INFURA_ID }), publicProvider()],
 );
 const { wallets } = getDefaultWallets({
