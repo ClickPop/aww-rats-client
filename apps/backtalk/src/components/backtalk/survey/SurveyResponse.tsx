@@ -37,7 +37,7 @@ export const SurveyResponse: FC = () => {
   const ethProvider = useProvider({ chainId: 1 });
   const polyProvider = useProvider({ chainId: 137 });
 
-  const { data: account } = useAccount();
+  const account = useAccount();
 
   const signerAddr = account?.address;
 
