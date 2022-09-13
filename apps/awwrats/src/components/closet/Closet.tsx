@@ -4,7 +4,6 @@ import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { ClosetContext } from '~/components/context/ClosetContext';
 import { ClosetItemList } from '~/components/closet/ClosetItemList';
 import { ClosetMirror } from '~/components/closet/ClosetMirror';
-import { EthersContext } from 'common/components/context/EthersContext';
 import { CHAIN_ID } from '~/config/env';
 import { useNetwork } from 'wagmi';
 
@@ -43,12 +42,12 @@ const Closet = () => {
         </div>
 
         <div className='container relative mx-auto flex justify-center p-4 md:max-h-2/3 md:overflow-y-auto'>
-          {loading.data && (
+          {loading.closet && (
             <div className='w-full mx-auto mt-40 h-3/4 items-center text-center absolute'>
               <CheeseLoader className='w-20 h-20' />
             </div>
           )}
-          {network?.activeChain?.id === CHAIN_ID && <ClosetItemList />}
+          {network?.chain?.id === CHAIN_ID && <ClosetItemList />}
         </div>
       </div>
     </div>

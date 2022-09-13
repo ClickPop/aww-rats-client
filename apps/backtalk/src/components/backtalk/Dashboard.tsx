@@ -4,29 +4,20 @@ import {
   UnorderedList,
   ListItem,
   Spacer,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
   Text,
   Button,
   Box,
   Center,
   useToast,
 } from '@chakra-ui/react';
-import { format, isEqual } from 'date-fns';
 import { Link } from 'common/components/shared/Link';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useGetSurveysByWalletQuery } from '~/schema/generated';
 import { useAccount } from 'wagmi';
-import { hashids } from '~/utils/hash-ids';
 import { SurveyList } from '~/components/backtalk/SurveyList';
 
 export const Dashboard = () => {
-  const { data: account } = useAccount();
+  const account = useAccount();
 
   const signerAddr = account?.address;
 

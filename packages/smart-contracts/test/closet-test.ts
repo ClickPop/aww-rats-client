@@ -791,6 +791,33 @@ describe('Closet', () => {
         'revShare',
       ]);
     });
+
+    it('should load all tokens for a specific address', async () => {
+      const tokens = await contract.getTokensByWallet(user.address);
+      const tokens2 = await contract.getTokensByWallet(user2.address);
+      const tokens3 = await contract.getTokensByWallet(user3.address);
+      expect(tokens).to.have.length(2);
+      expect(tokens2).to.have.length(2);
+      expect(tokens3).to.have.length(2);
+      expect(
+        tokens.map((token) => [token.id, token.amount, token.token.name]),
+      ).to.deep.eq([
+        [BigNumber.from(2), BigNumber.from(1), 'hat'],
+        [BigNumber.from(3), BigNumber.from(1), 'revShare'],
+      ]);
+      expect(
+        tokens2.map((token) => [token.id, token.amount, token.token.name]),
+      ).to.deep.eq([
+        [BigNumber.from(1), BigNumber.from(5), 'sweater'],
+        [BigNumber.from(3), BigNumber.from(1), 'revShare'],
+      ]);
+      expect(
+        tokens3.map((token) => [token.id, token.amount, token.token.name]),
+      ).to.deep.eq([
+        [BigNumber.from(1), BigNumber.from(1), 'sweater'],
+        [BigNumber.from(4), BigNumber.from(1), 'shirt'],
+      ]);
+    });
   });
 
   describe('Upgrades', () => {

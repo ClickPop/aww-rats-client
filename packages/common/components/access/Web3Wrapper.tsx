@@ -1,22 +1,25 @@
 import React, { FC } from 'react';
 import '@rainbow-me/rainbowkit/styles.css';
 import {
-  apiProvider,
-  configureChains,
+  connectorsForWallets,
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { chain, createClient, WagmiProvider } from 'wagmi';
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { publicProvider } from 'wagmi/providers/public';
 import { INFURA_ID } from '../../env';
 
 const { chains, provider } = configureChains(
   [chain.polygon, chain.mainnet],
-  [apiProvider.infura(INFURA_ID), apiProvider.fallback()],
+  [infuraProvider({ apiKey: INFURA_ID }), publicProvider()],
 );
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
   appName: 'My RainbowKit App',
   chains,
 });
+
+const connectors = connectorsForWallets(wallets);
 
 const wagmiClient = createClient({
   autoConnect: true,
@@ -26,8 +29,8 @@ const wagmiClient = createClient({
 
 export const Web3Wrapper: FC = ({ children }) => {
   return (
-    <WagmiProvider client={wagmiClient}>
+    <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
-    </WagmiProvider>
+    </WagmiConfig>
   );
 };

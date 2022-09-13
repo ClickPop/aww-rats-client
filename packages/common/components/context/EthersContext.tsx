@@ -44,7 +44,7 @@ export const EthersContextProvider = <
 }: Props<D>) => {
   const [login, { loading: loginLoading, error: authError }] = useLogin();
   const authState = useAuth<D>(checkAuth, login, checkFunc);
-  const { data: account } = useAccount();
+  const account = useAccount();
   const connected = useMemo(() => !!account?.address, [account]);
 
   return (

@@ -11,6 +11,5 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["./src/**/*.ts", "./test/**/*.ts"],
-  "files": ["./hardhat.config.ts"]
+  "include": ["./src/**/*.ts", "./test/**/*.ts"]
 }
