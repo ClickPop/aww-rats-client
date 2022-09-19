@@ -4,7 +4,6 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "codegen": "graphql-codegen",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -12,7 +11,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.2",
     "@babel/core": "^7.17.9",
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.3",
@@ -31,11 +29,6 @@
     "fabric-pure-browser": "^4.6.0",
     "feeder-react-feedback": "^0.0.6",
     "framer-motion": "5",
-    "google-protobuf": "^3.20.1",
-    "graphql": "^15.0.0",
-    "graphql-request": "^3.7.0",
-    "graphql-tag": "^2.12.6",
-    "graphql-ws": "^5.8.1",
     "js-confetti": "^0.10.2",
     "jsdom": "^18.1.1",
     "lodash.debounce": "^4.0.8",
@@ -54,15 +47,10 @@
     "react-transition-group": "^4.4.2",
     "simplebar-react": "^2.3.6",
     "smart-contracts": "workspace:*",
-    "subscriptions-transport-ws": "^0.11.0",
     "uuid": "^8.3.2",
     "wagmi": "^0.6.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.3.0",
-    "@graphql-codegen/typescript": "^2.4.1",
-    "@graphql-codegen/typescript-operations": "^2.2.1",
-    "@graphql-codegen/typescript-react-apollo": "^3.2.2",
     "@neupauer/tailwindcss-plugin-colors": "^1.0.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/forms": "^0.3.0",
@@ -75,7 +63,6 @@
     "autoprefixer": "^10.3.4",
     "concurrently": "^6.2.1",
     "eslint-config-rats": "workspace:*",
-    "graphql": "^16.3.0",
     "postcss": "^8.3.6",
     "sass": "^1.42.0",
     "tailwindcss": "^2.2.15",

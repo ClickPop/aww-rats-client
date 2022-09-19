@@ -3,16 +3,17 @@ import { fabric } from 'fabric';
 import React, { useContext, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { ClosetContext } from '~/components/context/ClosetContext';
-import { EthersContext } from 'common/components/context/EthersContext';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import Login from 'common/components/access/Login';
 import { Image } from '~/components/shared/Image';
 import { RAT_CLOSET_PLACEHOLDER, REMOVABLE_CLOSET_PIECES } from '~/config/env';
 import { useCanvas } from '~/hooks/useCanvas';
 import { CanvasOpts } from '~/types';
+import { useAccount } from 'wagmi';
 
 export const ClosetMirror = () => {
-  const { connected } = useContext(EthersContext);
+  const account = useAccount();
+  const connected = account.isConnected;
   const {
     currentRat,
     loading,

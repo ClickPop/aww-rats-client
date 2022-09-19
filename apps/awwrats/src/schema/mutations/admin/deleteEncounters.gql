@@ -1,5 +1,0 @@
-mutation deleteEncounters($ids: [Int!]!) {
-  delete_encounters(where: { id: { _in: $ids } }) {
-    affected_rows
-  }
-}
