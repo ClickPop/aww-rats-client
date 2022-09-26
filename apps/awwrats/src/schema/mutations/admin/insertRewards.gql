@@ -1,7 +1,0 @@
-mutation insertRewards($rewards: [rewards_insert_input!]!) {
-  insert_rewards(objects: $rewards) {
-    returning {
-      id
-    }
-  }
-}
