@@ -3,12 +3,7 @@ import { Rat, Closet } from 'smart-contracts/src/types/index';
 import { ICanvasOptions } from 'fabric/fabric-impl';
 import { Dispatch, SetStateAction } from 'react';
 import { SingleValue } from 'react-select';
-import {
-  GetClosetDataSubscription,
-  GetRatsSubscription,
-} from '~/schema/generated';
 import { UserTokenStructOutput } from 'smart-contracts/src/types/typechain/src/contracts/Closet';
-export * from '~/types/game';
 
 export interface ReducerAction {
   type: string;

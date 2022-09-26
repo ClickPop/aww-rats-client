@@ -1,4 +1,3 @@
-import { Center, Text } from '@chakra-ui/react';
 import { FC, ReactElement, useContext } from 'react';
 import { EthersContext } from '../context/EthersContext';
 

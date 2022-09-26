@@ -11,12 +11,17 @@ import { CHAIN_ID, CONTRACT_ADDRESS, RAT_EGG_BLUR } from '~/config/env';
 import { Image } from '~/components/shared/Image';
 import { RatPackSize } from '~/components/minting/RatPackSize';
 import { format } from 'date-fns';
-import { EthersContext } from 'common/components/context/EthersContext';
 import Login from 'common/components/access/Login';
 import { formatEther } from '@ethersproject/units';
 import { CheeseLoader } from '~/components/shared/CheeseLoader';
 import { ContractsContext } from '~/components/context/ContractsContext';
-import { useContractRead, useNetwork, useProvider, useSigner } from 'wagmi';
+import {
+  useAccount,
+  useContractRead,
+  useNetwork,
+  useProvider,
+  useSigner,
+} from 'wagmi';
 import RatJSON from 'smart-contracts/artifacts/src/contracts/Rat.sol/Rat.json';
 
 type MintAndGenerateData = {
@@ -25,7 +30,8 @@ type MintAndGenerateData = {
 };
 
 const Minter = () => {
-  const { connected } = useContext(EthersContext);
+  const account = useAccount();
+  const connected = account.isConnected;
   const [loading, setLoading] = useState<LOADING_STATE>(null);
   const [mintTx, setMintTx] = useState('');
   const [completedRat, setCompletedRat] = useState<GeneratorResponse | null>(
