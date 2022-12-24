@@ -25,12 +25,22 @@
 @import "includes/select_search";
 @import "includes/closet";
 @import "includes/ratrace";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap');
 
 /** Fix issue with Next image component adding space below images **/
 .imgfix > div > div {
     display: block !important;
 }
-
+html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+}
+.col1 {
+  background-color: red;
+}
 .ratvatar {
     min-height: 180px;
     min-width: 180px;

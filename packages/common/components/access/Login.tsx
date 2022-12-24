@@ -27,8 +27,8 @@ const Login: FC<Props> = ({ login, chain }) => {
 
   if (login && account && !isLoggedIn) {
     return (
-      <Button isLoading={authLoading} onClick={handleLogin}>
-        Login
+      <Button isLoading={authLoading} onClick={handleLogin} color = 'white' backgroundColor='#0500FF' fontFamily='Work Sans' textTransform='uppercase'>
+        Connect Wallet
       </Button>
     );
   }
@@ -38,6 +38,7 @@ const Login: FC<Props> = ({ login, chain }) => {
       showBalance={false}
       accountStatus='address'
       chainStatus='icon'
+      
     />
   );
 };

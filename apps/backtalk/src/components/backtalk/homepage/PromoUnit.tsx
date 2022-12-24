@@ -22,7 +22,7 @@ export const PromoUnit: FC<Props> = ({
   return (
     <Box
       backgroundColor={bgcolor ? bgcolor : 'backtalk.yellow'}
-      borderRadius={12}
+      borderRadius={2}
       color={textcolor ? textcolor : 'black'}
       fontSize='xl'
       {...rest}>
@@ -34,7 +34,7 @@ export const PromoUnit: FC<Props> = ({
         }}
         gap={8}>
         <GridItem p={12} colSpan={3}>
-          <Heading mb={4} size='xl'>
+          <Heading mb={4} size='lg'>
             {title ? title : 'Please enter a title'}
           </Heading>
           {children}
