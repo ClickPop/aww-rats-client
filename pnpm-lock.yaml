@@ -148,7 +148,9 @@ importers:
       '@chakra-ui/system': ^1.12.1
       '@emotion/react': '11'
       '@emotion/styled': '11'
+      '@fontsource/space-grotesk': ^4.5.13
       '@fontsource/vollkorn': ^4.5.6
+      '@fontsource/work-sans': ^4.5.14
       '@google-cloud/storage': ^5.18.1
       '@graphql-codegen/cli': ^2.3.0
       '@graphql-codegen/typescript': ^2.4.1
@@ -207,7 +209,9 @@ importers:
       '@chakra-ui/system': 1.12.1_bgqmsvm4hz6izcmpcwescmz73y
       '@emotion/react': 11.9.0_426xlbpu4clsxae4qx32qwknde
       '@emotion/styled': 11.8.1_neh35hrqppbvdgjxxnlc3q5icm
+      '@fontsource/space-grotesk': 4.5.13
       '@fontsource/vollkorn': 4.5.6
+      '@fontsource/work-sans': 4.5.14
       '@google-cloud/storage': 5.19.3
       '@rainbow-me/rainbowkit': 0.1.0_35gmfpzwgnnfoe7ucvyymfkhzy
       abort-controller: 3.0.0
@@ -4038,8 +4042,16 @@ packages:
       '@ethersproject/properties': 5.6.0
       '@ethersproject/strings': 5.6.0
 
+  /@fontsource/space-grotesk/4.5.13:
+    resolution: {integrity: sha512-HYjs3C/ME3N55+9la5FGH3NebpBqyCP03DJzDLYlQ/fpnYOoQcEEoojtMyqDr8kBlQtrB6FSoa3vy84Wh0ZFqw==}
+    dev: false
+
   /@fontsource/vollkorn/4.5.6:
     resolution: {integrity: sha512-1IBBJM4Tj2UZ7fzoJEfHBY/oOqkyVzynFbX/Hdl3smDYB7Zw8BwcGBNHIT1alyZi2aI/9ir3cI/mynBSVUJ8Cw==}
+    dev: false
+
+  /@fontsource/work-sans/4.5.14:
+    resolution: {integrity: sha512-AFBSDBA3hnSCXHwb52qBOMEGqF5nfdbANp+y5/hbE1PMjYfFY0lUdtUwL5J7mRAdyn1NJwobJlhduHtlAyPzmA==}
     dev: false
 
   /@google-cloud/paginator/3.0.7:
