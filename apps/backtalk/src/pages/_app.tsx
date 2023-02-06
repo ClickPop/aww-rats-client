@@ -84,6 +84,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         red: '#FF7558',
         green: '#51ECAF',
       },
+      homepage: {
+        background: '#CDDBE9',
+        blue: '#0500FF',
+      },
     },
   });
 
