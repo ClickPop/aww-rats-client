@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box,
   Button,
+  Center,
   Flex,
   Grid,
   GridItem,
@@ -18,192 +19,190 @@ import BacktalkLogo from 'src/assets/images/backtalk-logo.svg';
 import AwwRatsLogo from '~/assets/images/aww-rats-logo.png';
 import Login from 'common/components/access/Login';
 import { PromoUnit } from '~/components/backtalk/homepage/PromoUnit';
+import Pool from '~/assets/svg/backtalk-hero/pool.svg';
+import Stairs from '~/assets/svg/backtalk-hero/illustration.svg';
+import Critters from '~/assets/svg/backtalk-critters.svg';
+import { ArrowDownIcon } from '@chakra-ui/icons';
 
 const Homepage = () => {
   return (
-    <Box backgroundColor='backtalk.background' minH='100vh'>
-      <Flex
-        backgroundColor='backtalk.background'
-        borderBottom='1px'
-        borderColor='darkAlpha.50'
-        position='fixed'
-        width='100%'
-        zIndex='100'>
-        <Flex alignItems='end' mx='auto' p={2} pb={4} width='6xl'>
-          <NextImage
-            alt='Backtalk'
-            height='40'
-            src={BacktalkLogo}
-            width='200'
-          />
-          <Spacer />
+    <Box
+      scrollSnapType='y mandatory'
+      overflowY='scroll'
+      scrollBehavior='smooth'
+      fontFamily='Work Sans'
+      backgroundColor='homepage.background'
+      h='100vh'>
+      <Box
+        scrollSnapAlign='start'
+        overflow='hidden'
+        position='relative'
+        w='100vw'
+        h='100vh'
+        maxW='1700px'
+        mx='auto'>
+        <Flex
+          position='absolute'
+          width='100%'
+          zIndex='100'
+          alignItems='end'
+          justifyContent='space-between'
+          pt='4'
+          px='12'>
+          <Heading
+            fontFamily='Space Grotesk'
+            fontWeight={500}
+            fontSize='2rem'
+            color='homepage.blue'>
+            Backtalk
+          </Heading>
           <Login login />
         </Flex>
-      </Flex>
-
-      <Grid
-        alignItems='center'
-        maxW='6xl'
-        mx='auto'
-        mb={12}
-        templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
-        px={4}
-        pt={{ base: 20, lg: 24 }}
-        gap={8}>
-        <GridItem fontSize='2xl'>
-          <Heading my={4} size='2xl' lineHeight='1.3' fontWeight='900'>
-            The Web3 Community Feedback Tool
+        <Center
+          color='homepage.blue'
+          border='2px #3E464E solid'
+          position='absolute'
+          w='100%'
+          h='4rem'
+          bottom='0'
+          backgroundColor='white'>
+          <ArrowDownIcon boxSize='1.5rem' />
+          <Text mx='2' fontSize='1.5rem'>
+            Dip In
+          </Text>
+          <ArrowDownIcon boxSize='1.5rem' />
+        </Center>
+        <Box h='430px' w='1270px' position='absolute' bottom='1.25rem'>
+          <Pool style={{ width: '100%', height: '100%' }} />
+        </Box>
+        <Box h='815px' w='700px' position='absolute' right='0' bottom='2rem'>
+          <Stairs style={{ width: '100%', height: '100%' }} />
+        </Box>
+        <Box mt='32' ml='24'>
+          <Heading
+            fontSize='3.25rem'
+            color='homepage.blue'
+            fontFamily='Space Grotesk'>
+            The Web3 Community <br /> Feedback Tool
           </Heading>
-          <Text mb={4}>
-            Get feedback you can trust from validated members of your community.
+          <Text fontSize='1.25rem' my='4'>
+            Get Insights from validated <br /> members of your community.
           </Text>
           <Login login />
-        </GridItem>
-        <GridItem p={8}>
-          <NextImage
-            alt='Illustration of feedback from an NFT audience.'
-            height='100%'
-            layout='responsive'
-            src='/images/screenshot-homepage.png'
-            width='100%'
-          />
-        </GridItem>
-      </Grid>
-
-      <Box background='gray.700'>
-        <Box maxW='6xl' mx='auto' px={4} py={12}>
-          <VStack mb={4} color='gray.100' fontSize='lg'>
-            <Text>Used by communities like:</Text>
-          </VStack>
-
-          <Grid
-            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
-            gap={12}
-            mb={4}>
-            <GridItem alignSelf='center'></GridItem>
-            <GridItem alignSelf='center'>
-              <NextImage
-                src={AwwRatsLogo}
-                alt='Aww, Rats! Logo'
-                placeholder='blur'
-              />
-            </GridItem>
-            <GridItem alignSelf='center'></GridItem>
-          </Grid>
         </Box>
+        <Box
+          as='a'
+          href='#info'
+          w='100%'
+          h='4rem'
+          bottom='0'
+          position='absolute'></Box>
       </Box>
 
-      <Box maxW='6xl' mx='auto' pb={8}>
-        <VStack align='left' my={16} mx={4} spacing={8}>
-          <Heading textAlign='center' mb={4} size='xl'>
-            Get feedback and make decisions
-          </Heading>
-
-          <PromoUnit
-            imgAlt='A survey asking people how long they have been collecting NFTs'
-            imgSrc='/images/screenshot-general.png'
-            title='Get Verified feedback'>
-            <Text>
-              Make sure that the feedback you&apos;re getting from your
-              community is actually coming from your community.
-            </Text>
-          </PromoUnit>
-
-          <PromoUnit
-            bgcolor='white'
-            imgAlt='A survey asking people to enter their wallet address for a presale'
-            imgSrc='/images/screenshot-presale.png'
-            title='Pre-sale List Building'>
-            <Text>
-              Gather wallet addresses from interested people to help your new
-              project launch with momentum.
-            </Text>
-          </PromoUnit>
-
-          <PromoUnit
-            bgcolor='backtalk.blue'
-            color='white'
-            imgAlt='A survey asking people to connect their wallet to verify their response'
-            imgSrc='/images/screenshot-doa-lite.png'
-            title='DIY DAO-lite'>
-            <Text>
-              Give your community voting weight on ideas and initiatives based
-              on the tokens they own.
-            </Text>
-          </PromoUnit>
-        </VStack>
-
-        <VStack align='left' spacing={8} my={16} mx={4}>
-          <Heading textAlign='center' mb={2} size='xl'>
-            Useful features
-          </Heading>
-
-          <Grid
-            templateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' }}
-            gap={8}>
-            <GridItem>
-              <PromoUnit
-                bgcolor='backtalk.red'
-                color='white'
-                title='Get feedback from verified holders'>
-                <List>
-                  <UnorderedList>
-                    <ListItem>
-                      Tie responses back to wallet addresses and token holders.
-                    </ListItem>
-                    <ListItem>
-                      Get to know your community over time by seeing all of the
-                      survey responses over time with a wallet.
-                    </ListItem>
-                    <ListItem>
-                      <strong>Coming soon:</strong> Capture the amount of tokens
-                      a respondent has when they responded.
-                    </ListItem>
-                  </UnorderedList>
-                </List>
-              </PromoUnit>
-            </GridItem>
-
-            <GridItem>
-              <PromoUnit
-                bgcolor='white'
-                title='Lock Surveys to Specific People'>
-                <List>
-                  <UnorderedList>
-                    <ListItem>
-                      Limit surveys to holders of tokens on specific contracts.
-                    </ListItem>
-                    <ListItem>
-                      Cap the number of responses for things like POAPs,
-                      pre-sales, etc.
-                    </ListItem>
-                    <ListItem>
-                      <strong>Coming soon:</strong> Limit participation to
-                      specific wallets.
-                    </ListItem>
-                  </UnorderedList>
-                </List>
-              </PromoUnit>
-            </GridItem>
-          </Grid>
-
-          <PromoUnit bgcolor='white' title='Easily Explore Community Feedback'>
-            <List>
-              <UnorderedList>
-                <ListItem>
-                  Clear and simple reports make it easy to see what your
-                  community is thinking as a group, and then dive in to see
-                  which individuals have specific feedback.
-                </ListItem>
-                <ListItem>
-                  <strong>Coming soon:</strong> Associate feedback with the
-                  number of tokens someone has to understand what your superfans
-                  are thinking.
-                </ListItem>
-              </UnorderedList>
-            </List>
-          </PromoUnit>
-        </VStack>
+      <Box
+        id='info'
+        scrollSnapAlign='start'
+        overflow='hidden'
+        position='relative'
+        w='100vw'
+        h='100vh'
+        maxW='1700px'
+        mx='auto'>
+        <Flex w='100%' h='100%'>
+          <Flex flexDir='column' w='50%' h='100%' backgroundColor='white'>
+            <Box
+              border='2px #3E464E solid'
+              px='4rem'
+              py='1.5rem'
+              borderTop='none'>
+              <Heading
+                fontFamily='Space Grotesk'
+                color='homepage.blue'
+                fontSize='2.5rem'
+                mb='1.5rem'>
+                What is Backtalk?
+              </Heading>
+              <Text fontSize='1.25rem' mb='1rem'>
+                Web3 is all about building relationships. It’s a space where
+                security & privacy are paramount.
+              </Text>
+              <Text fontSize='1.25rem'>
+                Backtalk is the best way to collect community feedback and move
+                ideas forward in a secure, streamlined way.
+              </Text>
+            </Box>
+            <Box border='2px #3E464E solid' borderTop='none' overflowY='hidden'>
+              <Box px='4rem' py='1.5rem'>
+                <Heading
+                  fontFamily='Space Grotesk'
+                  fontSize='2rem'
+                  color='homepage.blue'
+                  mb='1.5rem'>
+                  Coming Soon...
+                </Heading>
+                <UnorderedList spacing={4} fontSize='1.25rem'>
+                  <ListItem>
+                    Capture the amount of tokens a respondent has when they
+                    responded.
+                  </ListItem>
+                  <ListItem>Limit participation to specific wallets.</ListItem>
+                  <ListItem>
+                    Associate feedback with the number of tokens someone has to
+                    understand what your superfans are thinking.
+                  </ListItem>
+                </UnorderedList>
+              </Box>
+              <Box>
+                <Critters style={{ width: '100%' }} />
+              </Box>
+            </Box>
+          </Flex>
+          <Flex
+            gap={8}
+            alignItems='center'
+            justifyContent='space-evenly'
+            flexDir='column'
+            w='50%'
+            h='100%'
+            py='1rem'
+            px='2.5rem'>
+            <Heading
+              fontFamily='Space Grotesk'
+              color='homepage.blue'
+              fontSize='2rem'>
+              Features
+            </Heading>
+            <PromoUnit
+              imgAlt='A survey asking people how long they have been collecting NFTs'
+              imgSrc='/images/screenshot-general.png'
+              title='Get Verified feedback'>
+              <Text fontFamily='Work Sans' fontSize='1rem'>
+                Make sure that the feedback you&apos;re getting from your
+                community is actually coming from your community.
+              </Text>
+            </PromoUnit>
+            <PromoUnit
+              bgcolor='white'
+              imgAlt='A survey asking people to enter their wallet address for a presale'
+              imgSrc='/images/screenshot-presale.png'
+              title='Pre-sale List Building'>
+              <Text fontFamily='Work Sans' fontSize='1rem'>
+                Gather wallet addresses from interested people to help your new
+                project launch with momentum.
+              </Text>
+            </PromoUnit>
+            <PromoUnit
+              bgcolor='white'
+              imgAlt='A survey asking people to connect their wallet to verify their response'
+              imgSrc='/images/screenshot-doa-lite.png'
+              title='DIY DAO-lite'>
+              <Text fontFamily='Work Sans' fontSize='1rem'>
+                Give your community voting weight on ideas and initiatives based
+                on the tokens they own.
+              </Text>
+            </PromoUnit>
+          </Flex>
+        </Flex>
       </Box>
     </Box>
   );

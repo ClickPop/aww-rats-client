@@ -21,26 +21,29 @@ export const PromoUnit: FC<Props> = ({
 }) => {
   return (
     <Box
-      backgroundColor={bgcolor ? bgcolor : 'backtalk.yellow'}
-      borderRadius={12}
+      backgroundColor={bgcolor ? bgcolor : 'white'}
       color={textcolor ? textcolor : 'black'}
+      border='2px #3E464E solid'
       fontSize='xl'
       {...rest}>
       <Grid
         alignItems='center'
         templateColumns={{
           base: '1fr',
-          lg: imgSrc ? 'repeat(5, 1fr)' : 'repeat(1, 1fr)',
-        }}
-        gap={8}>
-        <GridItem p={12} colSpan={3}>
-          <Heading mb={4} size='xl'>
+          lg: imgSrc ? 'repeat(16, 1fr)' : 'repeat(1, 1fr)',
+        }}>
+        <GridItem pl={4} colSpan={9}>
+          <Heading
+            mb={2}
+            fontSize='1.5rem'
+            fontFamily='Work Sans'
+            fontWeight={400}>
             {title ? title : 'Please enter a title'}
           </Heading>
           {children}
         </GridItem>
         {imgSrc && (
-          <GridItem colSpan={2} pt={{ base: 0, lg: 6 }}>
+          <GridItem colSpan={7}>
             <Box maxW='400px' mx='auto' fontSize='0'>
               <NextImage
                 alt={imgAlt}

@@ -1,13 +1,16 @@
+import '~/styles/index.scss';
+import 'feeder-react-feedback/dist/feeder-react-feedback.css';
+import '@fontsource/vollkorn/500.css';
+import '@fontsource/vollkorn/700.css';
+import '@fontsource/space-grotesk/400.css';
+import '@fontsource/work-sans/400.css';
+import '@fontsource/work-sans/500.css';
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { EthersContextProvider } from 'common/components/context/EthersContext';
 import { client } from '~/lib/graphql';
-import '~/styles/index.scss';
-import 'feeder-react-feedback/dist/feeder-react-feedback.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import '@fontsource/vollkorn/500.css';
-import '@fontsource/vollkorn/700.css';
 import {
   useCheckAuthQuery,
   useBacktalkLoginMutation,
@@ -83,6 +86,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         blue: '#00A5FF',
         red: '#FF7558',
         green: '#51ECAF',
+      },
+      homepage: {
+        background: '#CDDBE9',
+        blue: '#0500FF',
       },
     },
   });
